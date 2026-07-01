@@ -27,7 +27,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/ct-log ./trillian/ctfe/ct_server 2>/dev/null || true && \
-    test -s /app/ct-log && strip --strip-all /app/ct-log 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    test -s /app/ct-log && strip --strip-all /app/ct-log 2>/dev/null && \' || { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

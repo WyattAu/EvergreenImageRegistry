@@ -9,7 +9,7 @@ ARG VERSION=23.2.3
 RUN mkdir -p /opt/cockroach/cockroach || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz -o /cockroach.tar.gz ; echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /cockroach.tar.gz" | sha256sum -c  ; mkdir -p /opt/cockroach ; \
-    [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach ; chmod +x /opt/cockroach/cockroach && { echo "Binary not available - download failed" >&2; exit 1; }
+    [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach ; chmod +x /opt/cockroach/cockroach || { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/null || true

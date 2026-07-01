@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4/crawlergo_linux_amd64 -o /crawlergo.tar.gz ; \
     echo "cdf072120615104423a9827dc4134953133a9113626286ab38e9de1e6160dd3b  /crawlergo.tar.gz" | sha256sum -c ; \
     [ -f /crawlergo.tar.gz ] && tar -xzf /crawlergo.tar.gz -C / && rm -f /crawlergo.tar.gz && chmod +x /crawlergo 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4/crawlergo_linux_amd64 -o /crawlergo && { echo "Binary not available - download failed" >&2; exit 1; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4/crawlergo_linux_amd64 -o /crawlergo || { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -36,7 +36,7 @@ RUN touch /cfssljson && \ RUN touch /cfssl && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/mkbundle_1.6.5_linux_amd64 -o /mkbundle && \
         echo "a325dbc21d1ee5cffbc0cdf1c7ef5cd5cc117ee1c072609ab0618f1cb2184e85  /mkbundle" | sha256sum -c ; \
     chmod +x /cfssl /cfssljson /mkbundle && \
-    strip --strip-all /cfssl /cfssljson /mkbundle 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
+    strip --strip-all /cfssl /cfssljson /mkbundle 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

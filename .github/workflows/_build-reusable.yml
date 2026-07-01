@@ -131,14 +131,9 @@ jobs:
           BUILT=0; FAILED=0; SKIPPED=0
           CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
           recreate_builder() {
-            echo "::notice::Recreating BuildKit builder..."
-            [ -n "$CURRENT_BUILDER" ] && docker buildx rm "$CURRENT_BUILDER" 2>/dev/null || true
-            CURRENT_BUILDER="evergreen-$(date +%s)"
-            docker buildx create --name "$CURRENT_BUILDER" --driver docker-container \
-              --driver-opt image=moby/buildkit:v0.12.0 \
-              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 \
-              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=10 \
-              --use 2>/dev/null || true
+            echo "::notice::Using default Docker builder (inherits host credentials)..."
+            docker buildx create --name "evergreen-default" --driver docker --use 2>/dev/null || true
+            CURRENT_BUILDER="evergreen-default"
           }
           build_image() {
             local image="$1"

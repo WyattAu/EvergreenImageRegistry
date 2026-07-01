@@ -18,3 +18,4 @@ package-lock.json
 .dep_spec/
 .specs/
 docs/common-problems.md
+docs/sis-deployment-lessons.md

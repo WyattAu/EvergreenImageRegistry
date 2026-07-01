@@ -12,6 +12,7 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v1.2.0
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=1.2.0
 RUN mkdir -p /install && \
@@ -25,7 +26,6 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN     find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; && \
     mkdir -p /etc/ssl/certs 2>/dev/null  ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-ARG SHIM_VERSION=v1.2.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

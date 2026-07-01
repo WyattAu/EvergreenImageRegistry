@@ -2,6 +2,7 @@ ARG VERSION=2.8.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v1.2.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
@@ -9,7 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         "https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator_v${VERSION}_linux_amd64" \
         -o /tmp/couchbase-operator || true ; \
     chmod +x /tmp/couchbase-operator 2>/dev/null ; \' && { echo "Binary not available - download failed" >&2; exit 1; }
-ARG SHIM_VERSION=v1.2.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

@@ -27,7 +27,7 @@ jobs:
       total: ${{ steps.set-matrix.outputs.total }}
       skipped: ${{ steps.set-matrix.outputs.skipped }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
       - name: Download image references
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -55,7 +55,7 @@ jobs:
           crane version
 
       - name: Login to GHCR
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        uses: docker/login-action@c99871dec2022cc055c062a10cc1a1310835ceb4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -126,9 +126,9 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@c99871dec2022cc055c062a10cc1a1310835ceb4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

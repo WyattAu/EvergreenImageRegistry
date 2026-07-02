@@ -1,8 +1,8 @@
 ARG SHIM_VERSION=v1.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM quay.io/coreos/etcd:v3.5.15
 
-FROM quay.io/coreos/etcd:v3.5
+FROM quay.io/coreos/etcd:v3.5.15
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -1,6 +1,6 @@
 ARG SHIM_VERSION=v1.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM strpll/dnsmasq:latest
 
 FROM strpll/dnsmasq:latest
 COPY --from=shim /shim /usr/local/bin/shim

@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM fluxcd/flux2:latest
+FROM ghcr.io/fluxcd/flux2:v2.3.0
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

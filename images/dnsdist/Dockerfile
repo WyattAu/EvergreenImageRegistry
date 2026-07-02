@@ -1,6 +1,6 @@
 ARG SHIM_VERSION=v1.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM powerdns/dnsdist-1.8:latest
 
 FROM powerdns/dnsdist-1.8:latest
 COPY --from=shim /shim /usr/local/bin/shim

@@ -8,8 +8,6 @@ COPY --from=shim /shim /usr/local/bin/shim
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8787"]
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD []
 
 ENV SHIM_METRICS_ENABLED="true"
 

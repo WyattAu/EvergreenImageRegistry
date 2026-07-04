@@ -6,8 +6,11 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM ghcr.io/gurucomputing/headscale-ui:2026.03.17
 
+USER root
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
+
+USER appuser
 
 ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 80 9101

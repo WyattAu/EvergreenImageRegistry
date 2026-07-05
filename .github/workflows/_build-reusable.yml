@@ -40,11 +40,6 @@ on:
         required: false
         type: string
         default: 'standard'
-    secrets:
-        description: 'Docker Hub username'
-        required: false
-        description: 'Docker Hub token'
-        required: false
 
 env:
   REGISTRY: ghcr.io

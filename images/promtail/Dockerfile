@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM grafana/promtail
+FROM grafana/promtail:3.6.11
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
@@ -20,3 +20,10 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9080 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/promtail"]
+
+USER 65532:65532
+
+LABEL org.opencontainers.image.title="promtail" \
+      evergreen.image.tier="2"

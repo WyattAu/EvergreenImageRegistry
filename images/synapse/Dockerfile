@@ -20,3 +20,10 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 8008 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/synapse"]
+
+USER 65532:65532
+
+LABEL org.opencontainers.image.title="synapse" \
+      evergreen.image.tier="2"

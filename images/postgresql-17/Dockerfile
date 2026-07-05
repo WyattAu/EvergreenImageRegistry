@@ -20,3 +20,10 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 5432 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/postgresql_17"]
+
+USER 65532:65532
+
+LABEL org.opencontainers.image.title="postgresql-17" \
+      evergreen.image.tier="2"

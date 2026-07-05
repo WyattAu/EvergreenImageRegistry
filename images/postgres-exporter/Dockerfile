@@ -26,6 +26,8 @@ STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="postgres-exporter" \
       evergreen.image.tier="2"
 
+
+
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgres_exporter"]
 
 USER 65532:65532

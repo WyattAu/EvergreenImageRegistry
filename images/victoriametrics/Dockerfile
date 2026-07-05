@@ -26,6 +26,8 @@ STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="victoriametrics" \
       evergreen.image.tier="2"
 
+
+
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/victoria-metrics-prod"]
 
 USER 65532:65532

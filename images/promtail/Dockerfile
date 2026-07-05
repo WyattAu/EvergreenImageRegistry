@@ -26,6 +26,8 @@ STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="promtail" \
       evergreen.image.tier="2"
 
+
+
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/promtail"]
 
 USER 65532:65532

@@ -26,6 +26,8 @@ STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="vmalert" \
       evergreen.image.tier="2"
 
+
+
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vmalert-prod"]
 
 USER 65532:65532

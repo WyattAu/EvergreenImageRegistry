@@ -41,10 +41,8 @@ on:
         type: string
         default: 'standard'
     secrets:
-      DOCKERHUB_USERNAME:
         description: 'Docker Hub username'
         required: false
-      DOCKERHUB_TOKEN:
         description: 'Docker Hub token'
         required: false
 
@@ -111,15 +109,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Docker Hub
-        if: inputs.push
-        continue-on-error: true
-        id: dockerhub-login
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build images (multi-arch or amd64 tarballs)
         env:
@@ -133,22 +122,18 @@ jobs:
           build_image() {
             local image="$1"
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            local DOCKERHUB_REF="docker.io/wyattau/${image}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
-            local DOCKERHUB_REF="docker.io/wyattau/${image}"
             local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
-            if [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
-              TAG_FLAGS="${TAG_FLAGS} -t ${DOCKERHUB_REF}:${TAG} -t ${DOCKERHUB_REF}:latest"
-            fi
+            # GHCR only — no Docker Hub tags
             # Use plain docker build (inherits host credentials, no buildx driver issues)
             if timeout 900 docker build \
                 ${TAG_FLAGS} \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
-                --build-arg "SHIM_VERSION=v1.2.0" \
+                --build-arg "SHIM_VERSION=v1.3.0" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                 --label "org.opencontainers.image.revision=${{ github.sha }}" \
                 "./images/${image}"; then

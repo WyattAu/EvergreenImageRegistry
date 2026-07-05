@@ -33,4 +33,5 @@ LABEL evergreen.security.cap-drop="ALL"
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 STOPSIGNAL SIGTERM

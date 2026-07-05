@@ -21,9 +21,11 @@ EXPOSE 9100 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/node_exporter"]
 
-USER 65532:65532
 
 LABEL org.opencontainers.image.title="node-exporter" \
       evergreen.image.tier="2"
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/node_exporter"]
+
+USER 65532:65532

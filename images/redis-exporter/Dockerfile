@@ -21,9 +21,11 @@ EXPOSE 9121 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/redis_exporter"]
 
-USER 65532:65532
 
 LABEL org.opencontainers.image.title="redis-exporter" \
       evergreen.image.tier="2"
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/redis_exporter"]
+
+USER 65532:65532

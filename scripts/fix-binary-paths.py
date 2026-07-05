@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fix EIR stub Dockerfiles with correct binary paths."""
 
-import os, re, sys
+import re
 from pathlib import Path
 
 # Correct binary paths from upstream image entrypoints
@@ -30,27 +30,40 @@ for img in IMAGES_TO_FIX:
     if not dockerfile_path.exists():
         print(f"  ❌ {img}: No Dockerfile")
         continue
-    
+
     content = dockerfile_path.read_text()
     binary = BINARY_MAP[img]
-    
+
     if binary is None:
-        print(f"  ⚠️  {img}: No binary mapping (complex entrypoint), skipping ENTRYPOINT")
+        print(
+            f"  ⚠️  {img}: No binary mapping (complex entrypoint), skipping ENTRYPOINT"
+        )
         continue
-    
+
     # Remove old ENTRYPOINT/USER/LABELS we added
-    content = re.sub(r'\nENTRYPOINT \[.*?\]\n', '\n', content)
-    content = re.sub(r'\nUSER 65532:65532\n', '\n', content)
-    content = re.sub(r'\nLABEL org\.opencontainers\.image\.title.*?evergreen\.image\.tier.*?\n', '\n', content)
-    
+    content = re.sub(r"\nENTRYPOINT \[.*?\]\n", "\n", content)
+    content = re.sub(r"\nUSER 65532:65532\n", "\n", content)
+    content = re.sub(
+        r"\nLABEL org\.opencontainers\.image\.title.*?evergreen\.image\.tier.*?\n",
+        "\n",
+        content,
+    )
+
     # Add correct ENTRYPOINT
     content += f'\nENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "{binary}"]\n'
-    
+
     # Add USER only for images where non-root works
     # Databases need root for init, skip USER for postgres/mariadb/redis
-    if img not in ("postgres", "mariadb", "redis-7", "freshrss", "homepage", "uptime-kuma"):
-        content += '\nUSER 65532:65532\n'
-    
+    if img not in (
+        "postgres",
+        "mariadb",
+        "redis-7",
+        "freshrss",
+        "homepage",
+        "uptime-kuma",
+    ):
+        content += "\nUSER 65532:65532\n"
+
     dockerfile_path.write_text(content)
     print(f"  ✅ {img}: ENTRYPOINT={binary}")
 

@@ -9,7 +9,6 @@ Usage:
 """
 
 import argparse
-import os
 import re
 import sys
 from pathlib import Path
@@ -17,15 +16,31 @@ from pathlib import Path
 # SIS-critical images that should be fixed first
 SIS_CRITICAL = [
     # Monitoring
-    "victoriametrics", "vmalert", "victoria-logs", "promtail",
-    "node-exporter", "blackbox-exporter", "cadvisor",
-    "postgres-exporter", "redis-exporter",
+    "victoriametrics",
+    "vmalert",
+    "victoria-logs",
+    "promtail",
+    "node-exporter",
+    "blackbox-exporter",
+    "cadvisor",
+    "postgres-exporter",
+    "redis-exporter",
     # Databases
-    "postgres", "postgresql-17", "postgresql-16", "postgresql-18",
-    "redis", "redis-7", "mariadb",
+    "postgres",
+    "postgresql-17",
+    "postgresql-16",
+    "postgresql-18",
+    "redis",
+    "redis-7",
+    "mariadb",
     # Apps
-    "freshrss", "homepage", "uptime-kuma", "crowdsec",
-    "synapse", "element-web", "paperless-ngx",
+    "freshrss",
+    "homepage",
+    "uptime-kuma",
+    "crowdsec",
+    "synapse",
+    "element-web",
+    "paperless-ngx",
     # Infrastructure
     "wireguard",
 ]
@@ -76,22 +91,24 @@ def get_binary_and_port(image_name, dockerfile_content):
     # Check binary map first
     if image_name in BINARY_MAP:
         return BINARY_MAP[image_name]
-    
+
     # Try to extract from HEALTHCHECK line
-    port_match = re.search(r'healthcheck.*?--tcp.*?127\.0\.0\.1:(\d+)', dockerfile_content, re.IGNORECASE)
+    port_match = re.search(
+        r"healthcheck.*?--tcp.*?127\.0\.0\.1:(\d+)", dockerfile_content, re.IGNORECASE
+    )
     port = port_match.group(1) if port_match else "8080"
-    
+
     # Binary name = image name with - replaced by _
-    binary = image_name.replace('-', '_')
-    
+    binary = image_name.replace("-", "_")
+
     return (binary, int(port))
 
 
 def get_version(image_name):
     """Get version string for VERSION file."""
     upstream = UPSTREAM_VERSIONS.get(image_name, "")
-    if ':' in upstream:
-        return upstream.split(':')[-1]
+    if ":" in upstream:
+        return upstream.split(":")[-1]
     return ""
 
 
@@ -100,84 +117,86 @@ def fix_dockerfile(image_name, dry_run=False):
     img_dir = Path(f"images/{image_name}")
     dockerfile_path = img_dir / "Dockerfile"
     version_path = img_dir / "VERSION"
-    
+
     if not dockerfile_path.exists():
         print(f"  ❌ {image_name}: No Dockerfile found")
         return False
-    
+
     content = dockerfile_path.read_text()
     changes = []
-    
+
     # 1. Add VERSION file
     version = get_version(image_name)
     if not version:
         print(f"  ⚠️  {image_name}: No version mapping, skipping")
         return False
-    
+
     if not version_path.exists() or version_path.read_text().strip() != version:
         if not dry_run:
             version_path.write_text(version + "\n")
         changes.append(f"VERSION={version}")
-    
+
     # 2. Check if ENTRYPOINT exists
-    has_entrypoint = 'ENTRYPOINT' in content
-    
+    has_entrypoint = "ENTRYPOINT" in content
+
     if has_entrypoint:
         # Already has ENTRYPOINT, might just need VERSION
         if changes:
-            print(f"  ✅ {image_name}: {'+'.join(changes)} (ENTRYPOINT already present)")
+            print(
+                f"  ✅ {image_name}: {'+'.join(changes)} (ENTRYPOINT already present)"
+            )
         else:
             print(f"  ✅ {image_name}: Already fixed")
         return True
-    
+
     # 3. Get binary name and port
     binary, port = get_binary_and_port(image_name, content)
-    
+
     # 4. Determine if this is a distroless/slim image (no shell)
     # Distroless images can't use "shim run -c <binary>" because shim
     # needs to fork/exec. For distroless, we need to use the shim differently.
     # For now, assume all stubs have shells (they're FROM upstream images with shells)
-    
+
     # 5. Fix FROM line to pin version
     upstream = UPSTREAM_VERSIONS.get(image_name, "")
-    
+
     if upstream:
         # Replace bare FROM lines with versioned ones
         # Pattern: FROM <image> or FROM <image>:latest
-        base_image = upstream.split(':')[0]
+        base_image = upstream.split(":")[0]
         content = re.sub(
-            rf'FROM {re.escape(base_image)}(?::latest)?\s*$',
-            f'FROM {upstream}',
+            rf"FROM {re.escape(base_image)}(?::latest)?\s*$",
+            f"FROM {upstream}",
             content,
-            flags=re.MULTILINE
+            flags=re.MULTILINE,
         )
         changes.append(f"FROM={upstream}")
-    
+
     # 6. Add ENTRYPOINT
     # For repack images (FROM upstream + COPY shim), the shim should wrap the original binary
-    entrypoint = f'''
+    entrypoint = f"""
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/{binary}"]
-'''
+"""
     content += entrypoint
     changes.append("ENTRYPOINT")
-    
+
     # 7. Add USER if not present
-    if 'USER ' not in content or content.count('USER ') == 0:
-        content += '\nUSER 65532:65532\n'
+    if "USER " not in content or content.count("USER ") == 0:
+        content += "\nUSER 65532:65532\n"
         changes.append("USER=65532")
-    
+
     # 8. Add OCI labels if missing
-    if 'org.opencontainers.image.title' not in content:
+    if "org.opencontainers.image.title" not in content:
         labels = f'''
 LABEL org.opencontainers.image.title="{image_name}" \\
       evergreen.image.tier="2"
 '''
         content += labels
         changes.append("LABELS")
-    
+
     if not dry_run:
         dockerfile_path.write_text(content)
-    
+
     print(f"  ✅ {image_name}: {' + '.join(changes)}")
     return True
 
@@ -186,10 +205,12 @@ def main():
     parser = argparse.ArgumentParser(description="Fix EIR stub Dockerfiles")
     parser.add_argument("--image", help="Fix a single image")
     parser.add_argument("--batch", help="Comma-separated list of images")
-    parser.add_argument("--all-sis", action="store_true", help="Fix all SIS-critical images")
+    parser.add_argument(
+        "--all-sis", action="store_true", help="Fix all SIS-critical images"
+    )
     parser.add_argument("--dry-run", action="store_true", help="Don't write changes")
     args = parser.parse_args()
-    
+
     if args.image:
         images = [args.image]
     elif args.batch:
@@ -199,9 +220,9 @@ def main():
     else:
         parser.print_help()
         sys.exit(1)
-    
+
     print(f"Fixing {len(images)} images...\n")
-    
+
     fixed = 0
     skipped = 0
     for img in images:
@@ -212,7 +233,7 @@ def main():
             fixed += 1
         else:
             skipped += 1
-    
+
     print(f"\nDone: {fixed} fixed, {skipped} skipped")
 
 

@@ -7,14 +7,15 @@ For each active image:
 3. Tag and push to ghcr.io/wyattau/evergreenimageregistry/__mirror__/<name>
 4. Update Dockerfile to use mirror
 """
+
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
 REGISTRY = "ghcr.io/wyattau/evergreenimageregistry"
 MIRROR_PREFIX = f"{REGISTRY}/__mirror__"
+
 
 def get_upstream(dockerfile_path: Path) -> str | None:
     """Extract the upstream FROM from a Dockerfile."""
@@ -28,11 +29,13 @@ def get_upstream(dockerfile_path: Path) -> str | None:
                 return parts[1]
     return None
 
+
 def sanitize_name(upstream: str) -> str:
     """Convert upstream name to valid GHCR package name."""
     name = upstream.replace("/", "-").replace(":", "-")
-    name = re.sub(r'[^a-zA-Z0-9._-]', '', name)
+    name = re.sub(r"[^a-zA-Z0-9._-]", "", name)
     return name.lower()
+
 
 def main():
     mirrored = 0
@@ -61,21 +64,20 @@ def main():
 
         # Pull from Docker Hub
         result = subprocess.run(
-            ["docker", "pull", upstream],
-            capture_output=True, text=True, timeout=120
+            ["docker", "pull", upstream], capture_output=True, text=True, timeout=120
         )
         if result.returncode != 0:
             print(f"❌ PULL FAIL: {img_dir.name} <- {upstream}")
             continue
 
         # Tag for mirror
-        subprocess.run(["docker", "tag", upstream, mirror_ref],
-                      capture_output=True, timeout=30)
+        subprocess.run(
+            ["docker", "tag", upstream, mirror_ref], capture_output=True, timeout=30
+        )
 
         # Push to GHCR
         result = subprocess.run(
-            ["docker", "push", mirror_ref],
-            capture_output=True, text=True, timeout=300
+            ["docker", "push", mirror_ref], capture_output=True, text=True, timeout=300
         )
         if result.returncode == 0:
             mirrored += 1
@@ -89,10 +91,12 @@ def main():
             print(f"⚠️ PUSH FAIL: {mirror_ref}")
 
         # Cleanup
-        subprocess.run(["docker", "rmi", upstream, mirror_ref],
-                      capture_output=True, timeout=30)
+        subprocess.run(
+            ["docker", "rmi", upstream, mirror_ref], capture_output=True, timeout=30
+        )
 
     print(f"\nMirrored: {mirrored} | Updated: {updated} | Skipped: {skipped}")
+
 
 if __name__ == "__main__":
     main()

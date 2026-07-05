@@ -35,7 +35,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v1.2.0
+ARG SHIM_VERSION=v1.3.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

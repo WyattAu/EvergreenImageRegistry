@@ -5,6 +5,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM freshrss/freshrss:${VERSION}
 COPY --from=shim /shim /usr/local/bin/shim
+USER root
 
 # Keep upstream entrypoint (FreshRSS uses its own startup scripts)
 # Shim is only used for HEALTHCHECK

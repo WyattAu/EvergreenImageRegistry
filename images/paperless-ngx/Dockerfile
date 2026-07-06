@@ -33,6 +33,7 @@ FROM ghcr.io/paperless-ngx/paperless-ngx:${VERSION}
 # Drop in the evergreen health-shim, which wraps the upstream
 # docker-entrypoint.sh with supervision, healthchecks, and metrics.
 COPY --from=shim /shim /usr/local/bin/shim
+USER root
 RUN chmod +x /usr/local/bin/shim
 
 ENV EVERGREEN_LOG_LEVEL=info \

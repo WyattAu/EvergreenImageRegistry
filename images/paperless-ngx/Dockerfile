@@ -42,7 +42,7 @@ ENV EVERGREEN_LOG_LEVEL=info \
 WORKDIR /usr/src/paperless
 EXPOSE 8000
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=120s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
 # Keep upstream /init as entrypoint (s6-overlay must be PID 1)

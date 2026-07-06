@@ -1,22 +1,45 @@
+ARG VERSION=3.1.2
 ARG SHIM_VERSION=v1.3.0
 
+# Download Traefik binary
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+ARG VERSION
+ARG TARGETARCH
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    arch=$(case ${TARGETARCH} in amd64) echo "amd64";; arm64) echo "arm64";; *) echo "amd64";; esac) && \
+    curl -fsSL "https://github.com/traefik/traefik/releases/download/v${VERSION}/traefik_v${VERSION}_linux_${arch}.tar.gz" -o /tmp/traefik.tar.gz && \
+    tar -xzf /tmp/traefik.tar.gz -C /tmp && \
+    mv /tmp/traefik /traefik && chmod +x /traefik
+
+# Shim
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM traefik:v3.1.2
+# Final: scratch with binary + shim
+FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=downloader /traefik /traefik
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
-
-
+USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 
-LABEL evergreen.entrypoint.pattern="repack-upstream-init"
+EXPOSE 80 443 8080 9101
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/traefik"]
+
+LABEL org.opencontainers.image.title="traefik" \
+      org.opencontainers.image.description="Traefik - binary download, scratch, non-root" \
+      org.opencontainers.image.version="${VERSION}" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.distroless="true"
+LABEL evergreen.base.image="scratch"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
-
-EXPOSE 80 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -41,7 +41,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 # immich does not publish a `:latest` tag; `release` tracks the current
 # release. Pin to vX.Y.Z (e.g. v2.7.5) for reproducible builds.
-FROM ghcr.io/immich-app/immich-server:release
+FROM ghcr.io/immich-app/immich-server:v1.116.2
 
 # Drop in the evergreen health-shim, which wraps the app with supervision,
 # signal handling, healthchecks, and metrics.

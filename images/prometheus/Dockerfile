@@ -24,22 +24,21 @@ USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9090 9101
-WORKDIR /data
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
 
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/prometheus"]
 
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.description="Prometheus - Go binary, scratch, non-root" \
+      org.opencontainers.image.version="${VERSION}" \
       evergreen.image.tier="critical" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.distroless="true"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="false"
 LABEL evergreen.security.seccomp="runtime-default"
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

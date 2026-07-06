@@ -31,6 +31,5 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 STOPSIGNAL SIGTERM
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/freshrss"]
 
 USER 65532:65532

@@ -24,8 +24,7 @@ USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9090 9101
-VOLUME /prometheus
-WORKDIR /prometheus
+WORKDIR /data
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]

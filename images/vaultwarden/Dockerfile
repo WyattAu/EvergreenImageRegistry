@@ -8,7 +8,7 @@ COPY --from=shim /shim /usr/local/bin/shim
 
 # Create non-root user and set permissions
 RUN groupadd -g 65532 app && useradd -u 65532 -g app -d /data -s /sbin/nologin app && \
-    chown -R app:app /data /web-vault
+    chown -R app:app /data /web-vault /vaultwarden
 
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true" \

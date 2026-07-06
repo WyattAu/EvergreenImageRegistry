@@ -9,7 +9,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM debian:bookworm-slim
 COPY --from=shim /shim /usr/local/bin/shim
 
-RUN apt-get update && apt-get install -y --no-install-recommends libssl3 ca-certificates libmariadb3 && rm -rf /var/lib/apt/lists/* && mkdir -p /data && groupadd -g 65532 app && useradd -u 65532 -g app -d /data -s /usr/sbin/nologin app && \
+RUN apt-get update && apt-get install -y --no-install-recommends libssl3 ca-certificates libmariadb3 libpq5 && rm -rf /var/lib/apt/lists/* && mkdir -p /data && groupadd -g 65532 app && useradd -u 65532 -g app -d /data -s /usr/sbin/nologin app && \
     chown -R app:app /data
 
 COPY --from=upstream /vaultwarden /vaultwarden

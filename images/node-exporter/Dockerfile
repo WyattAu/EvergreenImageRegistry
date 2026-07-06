@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="node-exporter" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/node_exporter"]
 
 USER 65532:65532

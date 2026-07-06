@@ -64,7 +64,6 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=5 \
 
 # Keep upstream entrypoint (tini must be PID 1 for signal handling)
 # Shim is only used for HEALTHCHECK
-ENTRYPOINT ["tini", "--"]
 CMD ["python", "-m", "immich_ml"]
 
 LABEL org.opencontainers.image.title="immich-ml" \

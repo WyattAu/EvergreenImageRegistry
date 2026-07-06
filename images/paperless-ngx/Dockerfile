@@ -46,7 +46,6 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
 
 # Keep upstream /init as entrypoint (s6-overlay must be PID 1)
 # Shim is only used for HEALTHCHECK
-ENTRYPOINT ["/init"]
 
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \

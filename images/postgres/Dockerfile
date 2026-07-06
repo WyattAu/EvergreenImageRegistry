@@ -27,4 +27,3 @@ LABEL org.opencontainers.image.title="postgres" \
       evergreen.image.tier="2"
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "docker-entrypoint.sh postgres"]

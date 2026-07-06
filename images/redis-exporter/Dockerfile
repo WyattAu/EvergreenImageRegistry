@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="redis-exporter" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/redis_exporter"]
 
 USER 65532:65532

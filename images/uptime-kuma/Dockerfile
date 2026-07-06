@@ -27,4 +27,3 @@ LABEL org.opencontainers.image.title="uptime-kuma" \
       evergreen.image.tier="2"
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node server/server.js"]

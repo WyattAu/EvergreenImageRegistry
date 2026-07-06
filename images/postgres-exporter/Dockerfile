@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="postgres-exporter" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgres_exporter"]
 
 USER 65532:65532

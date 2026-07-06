@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="vmalert" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vmalert-prod"]
 
 USER 65532:65532

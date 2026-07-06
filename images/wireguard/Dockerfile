@@ -21,7 +21,6 @@ EXPOSE 8080 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/wireguard"]
 
 USER 65532:65532
 

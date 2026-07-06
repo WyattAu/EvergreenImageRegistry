@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="promtail" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/promtail"]
 
 USER 65532:65532

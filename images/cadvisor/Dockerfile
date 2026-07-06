@@ -28,6 +28,5 @@ LABEL org.opencontainers.image.title="cadvisor" \
 
 
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/cadvisor"]
 
 USER 65532:65532

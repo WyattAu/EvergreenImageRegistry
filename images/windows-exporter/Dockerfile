@@ -15,7 +15,6 @@ WORKDIR /tmp
 EXPOSE 9182 9101
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL org.opencontainers.image.title="windows-exporter" \
       org.opencontainers.image.version="${VERSION}" \

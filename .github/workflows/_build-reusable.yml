@@ -416,3 +416,20 @@ jobs:
             docker rm -f "$name" >/dev/null 2>&1
           done
           echo "Smoke test: ${PASSED} passed, ${FAILED} failed"
+
+      - name: Security scan with Trivy
+        if: always() && inputs.push
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          VULN_HIGH=0; VULN_CRITICAL=0
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            if ! docker image inspect "$REF" >/dev/null 2>&1; then continue; fi
+            echo "::group::Scan ${image}"
+            trivy image --severity HIGH,CRITICAL --exit-code 0 --format summary "$REF" 2>/dev/null || true
+            echo "::endgroup::"
+          done

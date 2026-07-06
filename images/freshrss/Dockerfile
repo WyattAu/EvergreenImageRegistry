@@ -33,4 +33,3 @@ LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 STOPSIGNAL SIGTERM
 
 
-USER 65532:65532

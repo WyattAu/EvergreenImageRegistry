@@ -19,6 +19,7 @@ COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 USER 65532:65532
+WORKDIR /data
 ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9093 9101

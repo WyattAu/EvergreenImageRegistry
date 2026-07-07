@@ -77,11 +77,15 @@ jobs:
             echo "TAG=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Set up QEMU (for multi-arch builds)
+        if: inputs.multiarch == true
+        uses: docker/setup-qemu-action@49b3bc8a6a4ab6f7c92304b9299a1cded3273e16
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
         with:
           driver-opts: |
-            image=moby/buildkit:v0.12.0
+            image=moby/buildkit:v0.13.0
             env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
             env.BUILDKIT_STEP_LOG_MAX_SPEED=10
 
@@ -128,23 +132,41 @@ jobs:
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
-            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
             local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
-            # GHCR only — no Docker Hub tags
-            # Use plain docker build (inherits host credentials, no buildx driver issues)
-            if timeout 900 docker build \
-                ${TAG_FLAGS} \
-                --build-arg "BUILD_DATE=${TAG}" \
-                --build-arg "VCS_REF=${TAG}" \
-                --build-arg "SHIM_VERSION=v1.3.0" \
-                --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-                --label "org.opencontainers.image.revision=${{ github.sha }}" \
-                "./images/${image}"; then
-              echo "${REF}" >> /tmp/built-images.txt
-              return 0
+            
+            if [ "${{ inputs.multiarch }}" = "true" ]; then
+              # Multi-arch: buildx with QEMU emulation, push directly (no local tarball)
+              if timeout 1200 docker buildx build \
+                  ${TAG_FLAGS} \
+                  --platform linux/amd64,linux/arm64 \
+                  --build-arg "BUILD_DATE=${TAG}" \
+                  --build-arg "VCS_REF=${TAG}" \
+                  --build-arg "SHIM_VERSION=v1.3.0" \
+                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+                  --label "org.opencontainers.image.revision=${{ github.sha }}" \
+                  --push \
+                  "./images/${image}"; then
+                echo "${REF}" >> /tmp/built-images.txt
+                return 0
+              else
+                return 1
+              fi
             else
-              return 1
+              # Single-arch: plain docker build (inherits host credentials)
+              if timeout 900 docker build \
+                  ${TAG_FLAGS} \
+                  --build-arg "BUILD_DATE=${TAG}" \
+                  --build-arg "VCS_REF=${TAG}" \
+                  --build-arg "SHIM_VERSION=v1.3.0" \
+                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+                  --label "org.opencontainers.image.revision=${{ github.sha }}" \
+                  "./images/${image}"; then
+                echo "${REF}" >> /tmp/built-images.txt
+                return 0
+              else
+                return 1
+              fi
             fi
           }
           for image in "${IMAGE_LIST[@]}"; do

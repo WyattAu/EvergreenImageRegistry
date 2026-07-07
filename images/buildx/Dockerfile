@@ -3,14 +3,14 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 ARG SHIM_VERSION=v1.3.0
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
 ARG TARGETARCH
 ARG VERSION=0.33.0
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/docker/buildx/releases/download/v0.33.0/buildx-v0.33.0.linux-${TARGETARCH} -o /buildx && \
     echo "b1b5a38f78311cfed70a0e68096df0e9ed7dd1b1fcd09adbb117d74e3bad6f32  /buildx" | sha256sum -c ; \
     chmod +x /buildx && strip /buildx || { echo "Binary not available - download failed" >&2; exit 1; }
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/buildx /var/cache/buildx 2>/dev/null || true
 

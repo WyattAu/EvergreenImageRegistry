@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v1.3.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM python:3.11-slim
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-python-3.11-slim:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

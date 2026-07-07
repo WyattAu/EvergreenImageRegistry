@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v1.3.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
 ARG VERSION=2.7.6
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "99587cf77c595f0bf62cc23c9ea101f9879fa016c7b689d498ce054904821f22  /caddy.tar.gz" | sha256sum -c ; [ -f /caddy.tar.gz ] && \
     [ -f /caddy.tar.gz ] && tar -xzf /caddy.tar.gz -C / && rm -f /caddy.tar.gz && chmod +x /caddy 2>/dev/null ; \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_${TARGETARCH}.tar.gz -o /caddy || { echo "Binary not available - download failed" >&2; exit 1; }
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy 2>/dev/null || true
 
 

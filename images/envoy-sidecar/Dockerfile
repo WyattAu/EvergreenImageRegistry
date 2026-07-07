@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v1.3.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM envoyproxy/envoy:v1.30.0
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-envoyproxy-envoy-v1.30.0:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -7,7 +7,7 @@ Hardened container images for production: 987 images built non-root, distroless,
 - GHCR: `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` (primary)
 - Docker Hub: `docker.io/wyattau/<image>:latest` (mirror)
 
-Version: v29.0.0, Phase 102
+Version: v32.0.0, Phase 115
 
 ## Repository Structure
 

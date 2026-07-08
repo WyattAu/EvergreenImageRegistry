@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v1.3.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM apache/hive:3.1.3
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-apache-hive-3.1.3:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

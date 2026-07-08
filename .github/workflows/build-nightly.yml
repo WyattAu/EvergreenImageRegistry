@@ -244,7 +244,7 @@ jobs:
       tag: ${{ github.sha }}
       push: true
       sign: false
-      multiarch: false
+      multiarch: true
       tier: standard
     secrets: inherit
 

@@ -80,7 +80,7 @@ jobs:
 
       - name: Set up QEMU (for multi-arch builds)
         if: inputs.multiarch == true
-        uses: docker/setup-qemu-action@49b3bc8a6a4ab6f7c92304b9299a1cded3273e16
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: amd64,arm64,s390x,ppc64le
 
@@ -121,19 +121,19 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd624481760ca1a
+        uses: sigstore/cosign-installer@v3
         with:
           cosign-release: 'v2.4.1'
 
       - name: Install Syft
-        uses: anchore/sbom-action/download-syft@v0
-        with:
-          syft-version: 'v1.16.0'
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v1.16.0
+          syft version
 
       - name: Install Grype
-        uses: anchore/scan-action/download-grype@v3
-        with:
-          grype-version: 'v0.80.0'
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v0.80.0
+          grype version
 
       - name: Build images (multi-arch or amd64 tarballs)
         env:

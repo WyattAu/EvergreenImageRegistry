@@ -84,7 +84,10 @@ list_all_images() {
     cd "${REPO_ROOT}" && find images -maxdepth 2 -name Dockerfile \
         -not -path '*/__pycache__/*' \
         -not -path '*/tests/*' \
+        -not -path '*/_archive/*' \
+        -not -path '*/_wip/*' \
         -not -path '*/health-shim/*' \
+        -not -path '*/clawdius/*' \
         | sed 's|images/||' \
         | sed 's|/Dockerfile||' \
         | sort
@@ -100,6 +103,8 @@ get_changed_images() {
         | grep "^images/" \
         | sed "s|images/||" \
         | sed 's|/.*||' \
+        | grep -v "^_" \
+        | grep -v "^clawdius$" \
         | sort -u)
 
     # Also check for changes to shared scripts, top-level manifest, or CI

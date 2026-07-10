@@ -55,6 +55,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -116,6 +117,21 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd624481760ca1a
+        with:
+          cosign-release: 'v2.4.1'
+
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
+        with:
+          syft-version: 'v1.16.0'
+
+      - name: Install Grype
+        uses: anchore/scan-action/download-grype@v3
+        with:
+          grype-version: 'v0.80.0'
 
 
       - name: Build images (multi-arch or amd64 tarballs)
@@ -342,53 +358,106 @@ jobs:
             echo "::warning::${FAILED} image(s) skipped/failed push in batch ${{ matrix.batch }}"
           fi
 
-      - name: Generate SBOMs with syft
+      - name: Sign, SBOM, and Attest images
         if: always() && inputs.push
-        # continue-on-error: true
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          SIGNED=0; ATTESTED=0; FAILED=0
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             [ ! -f "./images/${image}/Dockerfile" ] && continue
-            SBOM="./images/${image}/sbom.spdx.json"
-            echo "::group::SBOM ${image}"
-            if syft "dir:./images/${image}" -o spdx-json > "${SBOM}" 2>&1; then
-              echo "Generated SBOM for ${image}"
-            else
-              echo "::warning::syft failed for ${image}, generating placeholder"
-              python3 -c "import json,sys; json.dump({'spdxVersion':'SPDX-2.3','dataLicense':'CC0-1.0','SPDXID':'SPDXRef-DOCUMENT','name':sys.argv[1],'documentNamespace':'https://github.com/evergreen-registry/'+sys.argv[1]}, open(sys.argv[2],'w'), indent=2)" "${image}" "${SBOM}"
-            fi
-            echo "::endgroup::"
-          done
-
-      - name: Attest SBOMs with cosign
-        if: always() && inputs.push
-        # continue-on-error: true
-        run: |
-          TAG="${{ steps.resolve-tag.outputs.TAG }}"
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
-          for image in "${IMAGE_LIST[@]}"; do
-            [ -z "$image" ] && continue
-            [ ! -f "./images/${image}/Dockerfile" ] && continue
-            SBOM="./images/${image}/sbom.spdx.json"
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            echo "::group::Attest SBOM ${image}"
-            if [ -f "$SBOM" ]; then
-              if cosign attest --yes \
-                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
-                --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-                --predicate "$SBOM" \
-                --type spdxjson "$REF" 2>&1; then
-                echo "Attested SBOM for ${image}"
-              else
-                echo "::warning::cosign attest failed for ${image}"
-              fi
-            else
-              echo "::warning::no SBOM file for ${image}, skipping attestation"
+            echo "::group::Sign + SBOM + Attest ${image}"
+
+            # Check if image exists in registry
+            if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
+              echo "  SKIP: ${image} not pushed, skipping sign/attest"
+              FAILED=$((FAILED+1))
+              echo "::endgroup::"
+              continue
             fi
+
+            # 1. Sign the image with cosign (keyless via OIDC)
+            if cosign sign --yes "$REF" 2>&1; then
+              SIGNED=$((SIGNED+1))
+              echo "  ✅ Signed ${image}"
+            else
+              echo "  ⚠️ Sign failed for ${image} (non-blocking)"
+            fi
+
+            # 2. Generate SPDX SBOM from the built image (not the Dockerfile context)
+            SBOM_SPDX="./images/${image}/sbom.spdx.json"
+            if syft scan "$REF" -o spdx-json > "$SBOM_SPDX" 2>/dev/null; then
+              echo "  ✅ SPDX SBOM generated for ${image}"
+              # Attest SPDX SBOM
+              cosign attest --yes --predicate "$SBOM_SPDX" --type spdxjson "$REF" 2>&1 && \
+                echo "  ✅ SPDX attested" || echo "  ⚠️ SPDX attest failed"
+            else
+              echo "  ⚠️ SPDX generation failed for ${image}"
+            fi
+
+            # 3. Generate CycloneDX SBOM
+            SBOM_CDX="./images/${image}/sbom.cyclonedx.json"
+            if syft scan "$REF" -o cyclone-dx-json > "$SBOM_CDX" 2>/dev/null; then
+              echo "  ✅ CycloneDX SBOM generated for ${image}"
+              # Attest CycloneDX SBOM
+              cosign attest --yes --predicate "$SBOM_CDX" --type cyclonedx "$REF" 2>&1 && \
+                echo "  ✅ CycloneDX attested" || echo "  ⚠️ CycloneDX attest failed"
+            else
+              echo "  ⚠️ CycloneDX generation failed for ${image}"
+            fi
+
+            # 4. Generate SLSA provenance attestation
+            PROV_FILE="/tmp/provenance-${image//\//-}.json"
+            cat > "$PROV_FILE" <<PROVJSON
+          {
+            "_type": "https://in-toto.io/Statement/v0.1",
+            "predicateType": "https://slsa.dev/provenance/v1",
+            "subject": [{
+              "name": "${REF}",
+              "digest": {"sha256": "$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{}])[0].get("digest","unknown").replace("sha256:",""))' 2>/dev/null || echo 'unknown')"}
+            }],
+            "predicate": {
+              "buildDefinition": {
+                "buildType": "https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml",
+                "externalParameters": {
+                  "image": "${image}",
+                  "tag": "${TAG}",
+                  "tier": "${{ inputs.tier }}",
+                  "multiarch": "${{ inputs.multiarch }}",
+                  "sha": "${{ github.sha }}"
+                },
+                "internalParameters": {
+                  "githubRunId": "${{ github.run_id }}",
+                  "githubRunAttempt": "${{ github.run_attempt }}",
+                  "githubRef": "${{ github.ref }}",
+                  "githubRepository": "${{ github.repository }}"
+                },
+                "resolvedDependencies": [{
+                  "uri": "git+${{ github.server_url }}/${{ github.repository }}",
+                  "digest": {"sha1": "${{ github.sha }}"}
+                }]
+              },
+              "runDetails": {
+                "builder": {
+                  "id": "github-actions:${{ github.run_id }}"
+                },
+                "metadata": {
+                  "invocationId": "${{ github.run_id }}-${{ github.run_attempt }}",
+                  "startedOn": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                }
+              }
+            }
+          }
+          PROVJSON
+            cosign attest --yes --predicate "$PROV_FILE" --type slsaprovenance "$REF" 2>&1 && \
+              ATTESTED=$((ATTESTED+1)) && echo "  ✅ SLSA provenance attested" || \
+              echo "  ⚠️ SLSA attest failed"
+
             echo "::endgroup::"
           done
+          echo "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} skipped"
 
   report:
     name: Build Report (${{ inputs.tier }})

@@ -1,5 +1,5 @@
 ARG VERSION=1.27.1
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 # Extract nginx binary from official image
 FROM nginx:${VERSION} AS upstream

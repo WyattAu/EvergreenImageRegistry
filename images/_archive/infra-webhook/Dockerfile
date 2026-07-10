@@ -3,7 +3,7 @@
 # Multi-tool deployment webhook (ansible, docker, sops, age)
 # wolfi-base (needs bash, python3, git, docker-cli)
 # =============================================================================
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 ARG SOPS_VERSION=3.12.2
 ARG AGE_VERSION=1.2.0
 ARG WEBHOOK_VERSION=2.8.3

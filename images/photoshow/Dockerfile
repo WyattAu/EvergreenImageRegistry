@@ -1,4 +1,4 @@
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

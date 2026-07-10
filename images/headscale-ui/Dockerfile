@@ -1,6 +1,6 @@
 # Evergreen hardened headscale-ui
 # Repack of upstream gurucomputing/headscale-ui with health-shim overlay
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

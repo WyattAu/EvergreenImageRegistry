@@ -1,5 +1,5 @@
 ARG VERSION=8.0.2
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 # Build stage: compile Redis from source as static binary
 FROM cgr.dev/chainguard/wolfi-base AS builder

@@ -1,5 +1,5 @@
 ARG VERSION=7.15.3
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION

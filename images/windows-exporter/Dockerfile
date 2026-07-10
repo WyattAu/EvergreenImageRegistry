@@ -2,7 +2,7 @@
 # This image exists for registry completeness only.
 # Uses shim to keep container alive (health server) on Linux.
 ARG VERSION=0.25.0
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

@@ -1,7 +1,7 @@
 # Evergreen hardened headscale
 # Repack of upstream headscale/headscale with health-shim overlay
 # Note: headscale base is distroless (ko-built, no /bin/sh) — no RUN commands possible
-ARG SHIM_VERSION=v1.3.0
+ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

@@ -1,0 +1,29 @@
+# apko proof-of-concept: Redis from source-build
+# This demonstrates reproducible builds with apko
+# Goal: same input → same digest
+
+contents:
+  repositories:
+    - https://apk.cgr.dev/chainguard
+  packages:
+    - ca-certificates-bundle
+
+accounts:
+  run-as: "65532:65532"
+
+entrypoint:
+  command: /usr/local/bin/redis-server
+
+work-dir: /data
+
+paths:
+  - path: /data
+    type: directory
+    uid: 65532
+    gid: 65532
+    permissions: 0o777
+
+# Note: This would need the Redis binary compiled separately
+# and included via a melange pipeline or external builder.
+# For a true reproducible build, the binary would be built
+# from source with deterministic flags (SOURCE_DATE_EPOCH).

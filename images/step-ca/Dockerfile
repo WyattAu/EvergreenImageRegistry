@@ -2,21 +2,17 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM smallstep/step-ca
+FROM smallstep/step-ca:latest
+USER 0
 COPY --from=shim /shim /usr/local/bin/shim
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
-
+USER 1000
 
 ENV SHIM_METRICS_ENABLED="true"
 
-LABEL evergreen.entrypoint.pattern="repack-upstream-init"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
-
 EXPOSE 9000 9101
-LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
+
+LABEL org.opencontainers.image.title="step-ca" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
+LABEL evergreen.entrypoint.pattern="chainguard-repack" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM

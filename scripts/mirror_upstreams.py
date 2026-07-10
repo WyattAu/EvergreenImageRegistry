@@ -73,9 +73,7 @@ def normalize_ref(image: str) -> str:
         ):
             if "/" not in image:
                 # Official image: "python:3.11" → "docker.io/library/python:3.11"
-                name, tag = (
-                    image.split(":") if ":" in image else [image, "latest"]
-                )
+                name, tag = image.split(":") if ":" in image else [image, "latest"]
                 return f"docker.io/library/{name}:{tag}"
     return f"docker.io/{image}"
 
@@ -127,8 +125,6 @@ def find_all_upstreams() -> dict[str, list[Path]]:
             if len(parts) < 2:
                 continue
             ref = parts[1]
-            # Remove digest/tag for matching but keep for pulling
-            ref_base = ref.split("@")[0].split(":")[0]
             if is_docker_hub(ref):
                 upstreams[ref].append(dockerfile)
 
@@ -177,7 +173,7 @@ def pull_and_mirror(upstream: str, mirror_ref: str, dry_run: bool = False) -> bo
         print(f"  ❌ PUSH FAIL: {result.stderr.strip()}")
         return False
 
-    print(f"  ✅ Mirrored")
+    print("  ✅ Mirrored")
     return True
 
 
@@ -218,7 +214,9 @@ def main():
         count = len(upstreams[upstream])
         mirror_name = sanitize_name(upstream)
         mirror_ref = f"{MIRROR_PREFIX}/{mirror_name}"
-        print(f"  {upstream:50s} → {mirror_ref} ({count} ref{'s' if count > 1 else ''})")
+        print(
+            f"  {upstream:50s} → {mirror_ref} ({count} ref{'s' if count > 1 else ''})"
+        )
 
     if args.dry_run:
         print("\n[DRY RUN] No changes made.")
@@ -259,7 +257,7 @@ def main():
             timeout=30,
         )
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Mirrored: {mirrored} | Failed: {failed} | Updated files: {updated}")
     if failed > 0:
         sys.exit(1)

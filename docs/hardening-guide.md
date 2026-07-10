@@ -144,11 +144,11 @@ For each hardened image, verify ALL of the following:
 
 ## Common Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Container exits immediately | Binary not found at expected path | Check `COPY --from=downloader` paths |
-| Permission denied | Non-root UID can't write to data dir | Use `--tmpfs /data:uid=65532,gid=65532` or pre-create directories |
-| HEALTHCHECK fails | App needs more startup time | Increase `--start-period` |
-| Can't bind port | Port < 1024 requires root | Use ports > 1024 or add `NET_BIND_SERVICE` capability |
-| Missing CA certs | scratch has no certs | `COPY --from=downloader /etc/ssl/certs/ca-certificates.crt` |
-| DNS resolution fails | scratch has no /etc/resolv.conf | Mount or copy resolv.conf |
+| Issue                       | Cause                                | Solution                                                          |
+| --------------------------- | ------------------------------------ | ----------------------------------------------------------------- |
+| Container exits immediately | Binary not found at expected path    | Check `COPY --from=downloader` paths                              |
+| Permission denied           | Non-root UID can't write to data dir | Use `--tmpfs /data:uid=65532,gid=65532` or pre-create directories |
+| HEALTHCHECK fails           | App needs more startup time          | Increase `--start-period`                                         |
+| Can't bind port             | Port < 1024 requires root            | Use ports > 1024 or add `NET_BIND_SERVICE` capability             |
+| Missing CA certs            | scratch has no certs                 | `COPY --from=downloader /etc/ssl/certs/ca-certificates.crt`       |
+| DNS resolution fails        | scratch has no /etc/resolv.conf      | Mount or copy resolv.conf                                         |

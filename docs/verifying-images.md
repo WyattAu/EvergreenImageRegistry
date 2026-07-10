@@ -66,9 +66,9 @@ syft ghcr.io/wyattau/evergreenimageregistry/redis:latest
 
 ## Supply Chain Summary
 
-| Artifact | Method | How to Verify |
-|----------|--------|---------------|
-| Image signature | Cosign keyless (Sigstore) | `cosign verify` |
-| SPDX SBOM | Syft + cosign attest | `cosign verify-attestation --type spdxjson` |
-| CycloneDX SBOM | Syft + cosign attest | `cosign verify-attestation --type cyclonedx` |
+| Artifact        | Method                           | How to Verify                                     |
+| --------------- | -------------------------------- | ------------------------------------------------- |
+| Image signature | Cosign keyless (Sigstore)        | `cosign verify`                                   |
+| SPDX SBOM       | Syft + cosign attest             | `cosign verify-attestation --type spdxjson`       |
+| CycloneDX SBOM  | Syft + cosign attest             | `cosign verify-attestation --type cyclonedx`      |
 | SLSA provenance | Custom predicate + cosign attest | `cosign verify-attestation --type slsaprovenance` |

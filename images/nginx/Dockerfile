@@ -1,9 +1,6 @@
 ARG VERSION=1.27.1
 ARG SHIM_VERSION=v2.0.0
 
-# Extract nginx binary from official image
-FROM nginx:${VERSION} AS upstream
-
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base

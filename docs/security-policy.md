@@ -10,20 +10,20 @@
 
 EIR uses [Trivy](https://trivy.dev/) severity classifications, which map to CVSS v3 scores:
 
-| Severity | CVSS v3 Score | Examples |
-|----------|--------------|----------|
-| CRITICAL | 9.0 - 10.0 | Remote code execution, authentication bypass |
-| HIGH | 7.0 - 8.9 | Privilege escalation, SQL injection |
-| MEDIUM | 4.0 - 6.9 | Information disclosure, denial of service |
-| LOW | 0.1 - 3.9 | Minor information leaks |
+| Severity | CVSS v3 Score | Examples                                     |
+| -------- | ------------- | -------------------------------------------- |
+| CRITICAL | 9.0 - 10.0    | Remote code execution, authentication bypass |
+| HIGH     | 7.0 - 8.9     | Privilege escalation, SQL injection          |
+| MEDIUM   | 4.0 - 6.9     | Information disclosure, denial of service    |
+| LOW      | 0.1 - 3.9     | Minor information leaks                      |
 
 ### Remediation Timeframes
 
-| Tier | CRITICAL | HIGH | MEDIUM | LOW |
-|------|----------|------|--------|-----|
-| **Critical images** (101) | 7 days | 14 days | 30 days | Best effort |
-| **Standard images** (623) | 14 days | 30 days | Best effort | Best effort |
-| **Community images** | Best effort | Best effort | Best effort | N/A |
+| Tier                      | CRITICAL    | HIGH        | MEDIUM      | LOW         |
+| ------------------------- | ----------- | ----------- | ----------- | ----------- |
+| **Critical images** (101) | 7 days      | 14 days     | 30 days     | Best effort |
+| **Standard images** (623) | 14 days     | 30 days     | Best effort | Best effort |
+| **Community images**      | Best effort | Best effort | Best effort | N/A         |
 
 ### Remediation Process
 
@@ -54,6 +54,7 @@ Vulnerabilities may be excluded from remediation if:
 3. The vulnerability is in an optional component that is not enabled
 
 All exclusions must be documented in `compliance/cve-exclusions.md` with:
+
 - CVE ID
 - Affected component
 - Justification for exclusion
@@ -78,23 +79,23 @@ All exclusions must be documented in `compliance/cve-exclusions.md` with:
 
 ### Approved Base Images
 
-| Base | Use Case | Example Images |
-|------|----------|----------------|
-| `scratch` | Static binaries (Go, Rust, C) | redis, traefik, prometheus, nats |
-| `cgr.dev/chainguard/wolfi-base` | Images needing glibc + apk | nginx |
-| `cgr.dev/chainguard/<app>` | Complex apps with Chainguard equivalent | postgresql-16, mariadb |
-| Upstream repack | Apps without Chainguard equivalent (last resort) | vaultwarden, freshrss |
+| Base                            | Use Case                                         | Example Images                   |
+| ------------------------------- | ------------------------------------------------ | -------------------------------- |
+| `scratch`                       | Static binaries (Go, Rust, C)                    | redis, traefik, prometheus, nats |
+| `cgr.dev/chainguard/wolfi-base` | Images needing glibc + apk                       | nginx                            |
+| `cgr.dev/chainguard/<app>`      | Complex apps with Chainguard equivalent          | postgresql-16, mariadb           |
+| Upstream repack                 | Apps without Chainguard equivalent (last resort) | vaultwarden, freshrss            |
 
 ### Banned Base Images
 
 The following are **prohibited** for new images:
 
-| Base | Reason |
-|------|--------|
-| `debian` / `debian-slim` | Too large, unnecessary packages |
-| `ubuntu` | Too large, unnecessary packages |
-| `alpine` | musl libc incompatibility, smaller packages available in wolfi |
-| `centos` / `rockylinux` | EOL or unnecessary for container images |
+| Base                     | Reason                                                         |
+| ------------------------ | -------------------------------------------------------------- |
+| `debian` / `debian-slim` | Too large, unnecessary packages                                |
+| `ubuntu`                 | Too large, unnecessary packages                                |
+| `alpine`                 | musl libc incompatibility, smaller packages available in wolfi |
+| `centos` / `rockylinux`  | EOL or unnecessary for container images                        |
 
 > Exception: Build stages (`FROM debian AS builder`) may use any base. Only the **final stage** must use approved bases.
 

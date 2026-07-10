@@ -135,7 +135,6 @@ jobs:
         with:
           grype-version: 'v0.80.0'
 
-
       - name: Build images (multi-arch or amd64 tarballs)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

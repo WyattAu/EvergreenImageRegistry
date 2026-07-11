@@ -14,7 +14,7 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v2.0.0
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f70dc8d6a8b6:latest AS builder
+FROM debian:bookworm-slim AS builder
 ARG TARGETARCH
 ARG VERSION=23.2.3
 RUN mkdir -p /usr/local/bin/cockroach || true

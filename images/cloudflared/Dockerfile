@@ -1,7 +1,7 @@
 ARG VERSION=2026.7.1
 ARG SHIM_VERSION=v2.0.0
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-bookworm-slim:latest AS downloader
+FROM debian:bookworm-slim AS downloader
 ARG VERSION
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* &&     arch=$(case ${TARGETARCH} in amd64) echo "amd64";; arm64) echo "arm64";; *) echo "amd64";; esac) &&     curl -fsSL "https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${arch}" -o /cloudflared &&     chmod +x /cloudflared

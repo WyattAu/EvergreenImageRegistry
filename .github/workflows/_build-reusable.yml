@@ -122,7 +122,6 @@ jobs:
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3
-        with:
 
       - name: Install Syft
         run: |

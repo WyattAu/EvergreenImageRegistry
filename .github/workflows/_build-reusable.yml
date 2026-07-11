@@ -409,47 +409,46 @@ jobs:
 
             # 4. Generate SLSA provenance attestation
             PROV_FILE="/tmp/provenance-${image//\//-}.json"
-            cat > "$PROV_FILE" <<PROVJSON
-          {
-            "_type": "https://in-toto.io/Statement/v0.1",
-            "predicateType": "https://slsa.dev/provenance/v1",
-            "subject": [{
-              "name": "${REF}",
-              "digest": {"sha256": "$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{}])[0].get("digest","unknown").replace("sha256:",""))' 2>/dev/null || echo 'unknown')"}
-            }],
-            "predicate": {
-              "buildDefinition": {
-                "buildType": "https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml",
-                "externalParameters": {
-                  "image": "${image}",
-                  "tag": "${TAG}",
-                  "tier": "${{ inputs.tier }}",
-                  "multiarch": "${{ inputs.multiarch }}",
-                  "sha": "${{ github.sha }}"
-                },
-                "internalParameters": {
-                  "githubRunId": "${{ github.run_id }}",
-                  "githubRunAttempt": "${{ github.run_attempt }}",
-                  "githubRef": "${{ github.ref }}",
-                  "githubRepository": "${{ github.repository }}"
-                },
-                "resolvedDependencies": [{
-                  "uri": "git+${{ github.server_url }}/${{ github.repository }}",
-                  "digest": {"sha1": "${{ github.sha }}"}
-                }]
-              },
-              "runDetails": {
-                "builder": {
-                  "id": "github-actions:${{ github.run_id }}"
-                },
-                "metadata": {
-                  "invocationId": "${{ github.run_id }}-${{ github.run_attempt }}",
-                  "startedOn": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-                }
-              }
+            DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{}])[0].get("digest","unknown"))' 2>/dev/null || echo "sha256:unknown")
+            RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
+            BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            python3 -c "
+import json, sys
+prov = {
+    '_type': 'https://in-toto.io/Statement/v0.1',
+    'predicateType': 'https://slsa.dev/provenance/v1',
+    'subject': [{
+        'name': '${REF}',
+        'digest': {'sha256': '${DIGEST}'.replace('sha256:', '')}
+    }],
+    'predicate': {
+        'buildDefinition': {
+            'buildType': 'https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml',
+            'externalParameters': {
+                'image': '${image}',
+                'tag': '${TAG}',
+                'tier': '${{ inputs.tier }}',
+                'multiarch': '${{ inputs.multiarch }}',
+                'sha': '${{ github.sha }}'
+            },
+            'resolvedDependencies': [{
+                'uri': 'git+${{ github.server_url }}/${{ github.repository }}',
+                'digest': {'sha1': '${{ github.sha }}'}
+            }]
+        },
+        'runDetails': {
+            'builder': {
+                'id': 'github-actions:${RUN_ID}'
+            },
+            'metadata': {
+                'invocationId': '${RUN_ID}',
+                'startedOn': '${BUILD_DATE}'
             }
-          }
-          PROVJSON
+        }
+    }
+}
+json.dump(prov, open(sys.argv[1], 'w'), indent=2)
+" "$PROV_FILE"
             cosign attest --yes --predicate "$PROV_FILE" --type slsaprovenance "$REF" 2>&1 && \
               ATTESTED=$((ATTESTED+1)) && echo "  ✅ SLSA provenance attested" || \
               echo "  ⚠️ SLSA attest failed"

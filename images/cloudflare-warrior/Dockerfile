@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v2.0.0
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
+FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=2026.5.0
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
+FROM debian:bookworm-slim AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/cloudflared /etc/cloudflared 2>/dev/null || true
 

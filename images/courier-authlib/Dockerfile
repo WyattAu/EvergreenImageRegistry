@@ -10,7 +10,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
+FROM debian:bookworm-slim AS builder
 RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /usr/bin/false appuser
 
 

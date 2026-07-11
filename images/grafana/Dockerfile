@@ -1,7 +1,7 @@
 ARG VERSION=11.2.0
 ARG SHIM_VERSION=v2.0.0
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
+FROM debian:bookworm-slim AS downloader
 ARG VERSION
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \

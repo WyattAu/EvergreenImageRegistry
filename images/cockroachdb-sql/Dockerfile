@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v2.0.0
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
+FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=23.2.3
 WORKDIR /tmp
@@ -12,7 +12,7 @@ RUN mkdir -p /tmp/cockroach || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o cockroach.tgz ; echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  cockroach.tgz" | sha256sum -c  ; [ -f cockroach.tgz ] && tar -xzf cockroach.tgz ; \
     strip --strip-all cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach 2>/dev/null; mv cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /tmp/cockroach || { echo "Binary not available - download failed" >&2; exit 1; }
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
+FROM debian:bookworm-slim AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql 2>/dev/null || true
 

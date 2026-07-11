@@ -3,7 +3,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 ARG SHIM_VERSION=v2.0.0
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS downloader
+FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.4.4
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-f9c6a2fd2ddb:latest AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/crawlergo /var/cache/crawlergo 2>/dev/null || true
 
 

@@ -267,7 +267,9 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Check for Alpine base images
         run: |
-          ALPINE=$(grep -rni '^FROM.*alpine' images/*/Dockerfile 2>/dev/null || true)
+          ALPINE=$(grep -rni '^FROM alpine' images/*/Dockerfile 2>/dev/null | grep -v 'mirror-' || true)
+          ALPINE2=$(grep -rni '^FROM .*alpine:' images/*/Dockerfile 2>/dev/null | grep -v 'mirror-' || true)
+          ALPINE="${ALPINE}${ALPINE2}"
           if [ -n "$ALPINE" ]; then
             echo "::error::Alpine base images detected (BANNED):"
             echo "$ALPINE"

@@ -1,7 +1,7 @@
 ARG VERSION=v3.7.0
 ARG SHIM_VERSION=v2.0.0
 
-FROM debian:bookworm-slim AS downloader
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-debian-bookworm-slim:latest AS downloader
 ARG VERSION
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* &&     arch=$(case ${TARGETARCH} in amd64) echo "amd64";; arm64) echo "arm64";; *) echo "amd64";; esac) &&     curl -fsSL "https://github.com/etcd-io/etcd/releases/download/${VERSION}/etcd-${VERSION}-linux-${arch}.tar.gz" -o /tmp/etcd.tar.gz &&     tar -xzf /tmp/etcd.tar.gz -C /tmp &&     cp /tmp/etcd-${VERSION}-linux-${arch}/etcd /etcd &&     cp /tmp/etcd-${VERSION}-linux-${arch}/etcdctl /etcdctl &&     chmod +x /etcd /etcdctl

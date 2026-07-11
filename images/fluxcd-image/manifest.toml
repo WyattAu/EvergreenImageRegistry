@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/fluxcd/image-reflector-controller"
 [runtime]
 entrypoint = ["/flux", "bootstrap", "image-automation"]
 

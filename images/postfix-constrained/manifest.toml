@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/mwader-postfix-relay"
 [runtime]
 entrypoint = ["postfix", "-c", "/etc/postfix", "start-fg"]
 

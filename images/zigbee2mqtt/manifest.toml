@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/koenkk/zigbee2mqtt"
 [runtime]
 entrypoint = ["node", "index.js"]
 

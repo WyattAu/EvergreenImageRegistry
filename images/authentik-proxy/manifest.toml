@@ -37,3 +37,6 @@ expose = [9101]
 "evergreen.security.no-new-privileges" = "true"
 "evergreen.security.read-only-rootfs" = "true"
 "evergreen.security.seccomp" = "runtime-default"
+
+[source]
+url = "https://hub.docker.com/_/beryju-authentik-proxy"

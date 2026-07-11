@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/thanosio-thanos-v0.35.0"
 [runtime]
 entrypoint = ["/thanos"]
 

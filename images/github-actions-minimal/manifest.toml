@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/github/actions-runner"
 [runtime]
 entrypoint = ["/app/runner/bin/Runner.Worker"]
 cmd = ["--disableupdate"]

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/registry.opensource.zalanado/charts/patroni"
 [runtime]
 entrypoint = ["python3", "-m", "patroni"]
 

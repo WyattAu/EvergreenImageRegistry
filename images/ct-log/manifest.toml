@@ -12,7 +12,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/projectsigstore/fulcio"
 [runtime]
 entrypoint = ["/ct-log"]
 

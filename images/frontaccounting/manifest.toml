@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/frontaccounting/frontaccounting"
 [runtime]
 entrypoint = ["php-fpm8.4"]
 

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/gurucomputing/headscale-ui"
 [runtime]
 entrypoint = ["/app/fileserver"]
 

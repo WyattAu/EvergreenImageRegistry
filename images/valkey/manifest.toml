@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/cgr.dev/chainguard/valkey"
 [runtime]
 entrypoint = ["sh", "-c", "valkey"]
 

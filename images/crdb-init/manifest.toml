@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/debian-f70dc8d6a8b6"
 [runtime]
 entrypoint = ["/usr/local/bin/cockroach", "init"]
 

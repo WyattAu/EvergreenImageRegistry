@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/taigaio/taiga-front-dist"
 [runtime]
 entrypoint = ["nginx", "-g", "daemon off;"]
 

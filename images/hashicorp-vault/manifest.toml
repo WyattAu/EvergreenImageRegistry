@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/hashicorp-vault-1.15"
 [runtime]
 entrypoint = ["/vault"]
 

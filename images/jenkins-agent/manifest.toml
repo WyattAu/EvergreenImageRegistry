@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/jenkins-inbound-agent-latest"
 [runtime]
 entrypoint = ["java", "-jar", "/app/agent.jar"]
 

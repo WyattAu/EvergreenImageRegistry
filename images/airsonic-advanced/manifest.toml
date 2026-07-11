@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/kagemomiji/airsonic-advanced"
 [runtime]
 entrypoint = ["java", "-jar", "/app/airsonic-advanced-11.1.5.war"]
 

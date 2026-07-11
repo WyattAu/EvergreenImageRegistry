@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/clamav-clamav-latest"
 [runtime]
 entrypoint = ["freshclam"]
 cmd = ["--daemon"]

@@ -12,7 +12,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/lscr.io/linuxserver/calibre-web"
 [runtime]
 entrypoint = ["python"]
 

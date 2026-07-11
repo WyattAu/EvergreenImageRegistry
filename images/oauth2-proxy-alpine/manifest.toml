@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/oauth2-proxy/oauth2-proxy"
 [runtime]
 entrypoint = ["/oauth2-proxy"]
 

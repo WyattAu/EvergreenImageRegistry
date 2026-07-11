@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/abdbarho/stable-diffusion-webui"
 [runtime]
 entrypoint = ["python3", "/opt/automatic1111/launch.py", "--listen", "--port", "7860"]
 

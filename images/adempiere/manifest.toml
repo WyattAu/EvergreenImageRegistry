@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/adempiere/adempiere"
 [runtime]
 entrypoint = ["java", "-jar", "/opt/adempiere/Adempiere"]
 

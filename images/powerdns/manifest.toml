@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/powerdns-pdns-auth-48"
 [runtime]
 entrypoint = ["pdns"]
 

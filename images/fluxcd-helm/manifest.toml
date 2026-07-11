@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/fluxcd/helm-controller"
 [runtime]
 entrypoint = ["/flux", "bootstrap", "helm-release"]
 

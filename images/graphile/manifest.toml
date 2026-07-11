@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/graphile/postgraphile"
 [runtime]
 entrypoint = ["node", "/opt/graphile/cli.js"]
 

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/enix-x509-certificate-exporter-3.10.0"
 [runtime]
 entrypoint = ["/x509-certificate-exporter"]
 

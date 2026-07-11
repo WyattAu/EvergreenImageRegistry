@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/mvance/unbound"
 [runtime]
 entrypoint = ["/usr/sbin/unbound"]
 cmd = ["-d"]

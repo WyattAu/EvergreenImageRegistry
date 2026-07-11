@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/matrixdotorg/synapse"
 [runtime]
 entrypoint = ["python3", "-m", "synapse.app.media_repository"]
 

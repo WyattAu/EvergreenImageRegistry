@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/mattermost/focalboard"
 [runtime]
 entrypoint = ["/opt/focalboard/bin/focalboard-server"]
 

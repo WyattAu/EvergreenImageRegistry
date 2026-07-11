@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/mbentley/rsyslog"
 [runtime]
 entrypoint = ["/usr/sbin/rsyslogd"]
 cmd = ["-n", "-f", "/app/conf/rsyslog.conf"]

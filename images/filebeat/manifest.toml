@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/docker.elastic.co/beats/filebeat"
 [runtime]
 entrypoint = ["/opt/filebeat/filebeat"]
 

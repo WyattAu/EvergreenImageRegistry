@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/graylog/graylog"
 [runtime]
 entrypoint = ["/opt/graylog/bin/graylogctl"]
 cmd = ["run"]

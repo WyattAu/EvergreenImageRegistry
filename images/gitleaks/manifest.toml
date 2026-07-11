@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/zricethezav/gitleaks"
 [runtime]
 entrypoint = ["/gitleaks"]
 cmd = ["--help"]

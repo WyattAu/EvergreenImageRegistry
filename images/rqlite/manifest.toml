@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/rqlite/rqlite"
 [runtime]
 entrypoint = ["/usr/local/bin/rqlited"]
 

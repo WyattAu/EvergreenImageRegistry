@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/kylemanna/openvpn"
 [runtime]
 entrypoint = ["/usr/local/bin/openvpn"]
 

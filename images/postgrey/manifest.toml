@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/martin/postgrey"
 [runtime]
 entrypoint = ["postgrey"]
 cmd = ["--inet", "--listen=0.0.0.0:10023"]

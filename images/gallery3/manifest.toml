@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/linuxserver/gallery3"
 [runtime]
 entrypoint = ["python3", "/opt/gallery3/manage.py", "runserver", "0.0.0.0:8000"]
 

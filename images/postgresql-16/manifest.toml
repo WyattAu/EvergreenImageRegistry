@@ -1,3 +1,26 @@
-version = "16.4"
 [metadata]
+name = "postgresql-16"
+version = "16.4"
+description = "PostgreSQL 16 - Chainguard wolfi-base, non-root, health shim"
 tier = "critical"
+
+[build]
+base = "cgr.dev/chainguard/postgres:latest"
+user = "70"
+stopsignal = "SIGINT"
+
+[source]
+url = "https://github.com/chainguard-images/images/tree/main/images/postgres"
+
+[runtime]
+entrypoint = ["docker-entrypoint.sh", "postgres"]
+
+[ports]
+expose = [5432, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "postgresql-16"
+"org.opencontainers.image.version" = "16.4"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.image.tier" = "critical"

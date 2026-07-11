@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/docker.elastic.co/elasticsearch/elasticsearch"
 [runtime]
 entrypoint = ["/opt/elasticsearch/bin/elasticsearch"]
 

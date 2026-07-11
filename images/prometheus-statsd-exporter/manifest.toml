@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/prom/statsd-exporter"
 [runtime]
 entrypoint = ["/statsd_exporter"]
 

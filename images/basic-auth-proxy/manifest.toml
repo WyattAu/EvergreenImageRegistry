@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/beeceptor/basic-auth-proxy"
 [runtime]
 entrypoint = ["/opt/nginx/sbin/nginx"]
 cmd = ["-c", "/app/conf/nginx.conf", "-g", "daemon off;"]

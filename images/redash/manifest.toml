@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/redash/redash"
 [runtime]
 entrypoint = ["redash", "server"]
 

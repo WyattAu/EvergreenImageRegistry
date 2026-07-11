@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/openproject/openproject"
 [runtime]
 entrypoint = ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 

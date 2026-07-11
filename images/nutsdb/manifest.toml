@@ -12,7 +12,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/nutsdb/nutsdb"
 [runtime]
 entrypoint = ["/usr/local/bin/nutsdb"]
 

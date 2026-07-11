@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/powerdns/dnsdist-1.8"
 [runtime]
 entrypoint = ["/usr/local/bin/dnsdist"]
 

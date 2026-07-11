@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/wekanteam/wekan"
 [runtime]
 entrypoint = ["node", "/opt/wekan/main.js"]
 

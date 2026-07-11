@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/vectorim/hydrogen-web"
 [runtime]
 entrypoint = ["busybox", "httpd", "-f", "-p", "8080", "-h", "/app"]
 

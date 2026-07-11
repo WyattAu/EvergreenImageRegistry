@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/jupyter/scipy-notebook"
 [runtime]
 entrypoint = ["jupyter-lab"]
 

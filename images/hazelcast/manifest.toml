@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/hazelcast/hazelcast"
 [runtime]
 entrypoint = ["/opt/hazelcast/bin/hazelcast"]
 

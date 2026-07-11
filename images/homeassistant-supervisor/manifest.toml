@@ -13,7 +13,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/homeassistant-home-assistant"
 [runtime]
 entrypoint = ["python", "-m", "homeassistant-assistant"]
 cmd = ["--help"]

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/docker.elastic.co/kibana/kibana-oss"
 [runtime]
 entrypoint = ["/opt/kibana/bin/kibana"]
 

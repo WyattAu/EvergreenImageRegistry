@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/prom/haproxy-exporter"
 [runtime]
 entrypoint = ["/haproxy_exporter"]
 

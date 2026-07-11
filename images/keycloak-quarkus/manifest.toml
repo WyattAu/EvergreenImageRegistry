@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/keycloak/keycloak"
 [runtime]
 entrypoint = ["/opt/keycloak/bin/kc.sh"]
 cmd = ["start-dev"]

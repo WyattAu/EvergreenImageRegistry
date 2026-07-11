@@ -12,7 +12,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/registry.k8s.io/ingress-nginx/controller"
 [runtime]
 entrypoint = ["/nginx-ingress-controller"]
 

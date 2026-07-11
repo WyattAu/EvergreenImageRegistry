@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/jupyter/pytorch-notebook"
 [runtime]
 entrypoint = ["jupyter-lab"]
 

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "base-image"
-
+url = "https://github.com/distroless/static-debian12"
 [ports]
 expose = [9101]
 

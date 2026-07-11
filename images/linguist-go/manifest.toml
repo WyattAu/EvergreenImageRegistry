@@ -14,7 +14,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/golang-latest"
 [runtime]
 entrypoint = ["/linguist"]
 

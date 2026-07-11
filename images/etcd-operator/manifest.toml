@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/coreos/etcd-operator"
 [runtime]
 entrypoint = ["/usr/local/bin/etcdctl"]
 

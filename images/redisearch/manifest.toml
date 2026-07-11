@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/redislabs/redisearch"
 [runtime]
 entrypoint = ["redis-server", "--loadmodule", "/opt/redis/modules/redisearch.so"]
 

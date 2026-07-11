@@ -14,7 +14,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/kfdm/prometheus-fail2ban-exporter"
 [runtime]
 entrypoint = ["/fail2ban-exporter"]
 cmd = ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]

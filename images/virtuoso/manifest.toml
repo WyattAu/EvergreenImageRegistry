@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/tenforce/virtuoso"
 [runtime]
 entrypoint = ["virtuoso-t", "-f", "-c", "/etc/virtuoso/virtuoso.ini"]
 

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/gitlab/gitlab-ce"
 [runtime]
 entrypoint = ["/usr/local/bin/backup"]
 

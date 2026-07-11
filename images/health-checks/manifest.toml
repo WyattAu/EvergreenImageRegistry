@@ -12,7 +12,7 @@ multiarch = false
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/healthchecks/healthchecks"
 [runtime]
 entrypoint = ["/health-checks"]
 

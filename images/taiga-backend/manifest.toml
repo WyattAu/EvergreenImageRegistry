@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/taigaio-taiga-back-latest"
 [runtime]
 entrypoint = ["python", "-m", "taiga"]
 

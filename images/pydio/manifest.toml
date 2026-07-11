@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/pydio-cells"
 [runtime]
 entrypoint = ["php-fpm8.4"]
 

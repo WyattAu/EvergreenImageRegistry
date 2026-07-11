@@ -37,3 +37,4 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
 ENTRYPOINT ["/stackdriver-prometheus-sidecar"]
+LABEL evergreen.entrypoint.pattern="no-op"

@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/neo4j"
 [runtime]
 entrypoint = ["/opt/neo4j/bin/neo4j"]
 

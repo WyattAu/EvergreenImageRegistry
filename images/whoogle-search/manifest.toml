@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://hub.docker.com/_/benbusby-whoogle-search"
 [runtime]
 entrypoint = ["whoogle-search"]
 cmd = ["--port", "5000"]

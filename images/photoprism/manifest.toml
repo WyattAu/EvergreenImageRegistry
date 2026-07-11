@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-
+url = "https://github.com/photoprism/photoprism"
 [runtime]
 entrypoint = ["/opt/photoprism"]
 

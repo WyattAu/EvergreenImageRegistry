@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM vaultwarden/server:latest
+FROM ghcr.io/wyattau/evergreenimageregistry/mirror-vaultwarden-server-latest:latest
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 USER 65532:65532

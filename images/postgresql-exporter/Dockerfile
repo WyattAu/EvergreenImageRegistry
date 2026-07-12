@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM ghcr.io/wyattau/evergreenimageregistry/mirror-prometheuscommunity-postgres-exporter:latest
+FROM prometheuscommunity/postgres-exporter
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

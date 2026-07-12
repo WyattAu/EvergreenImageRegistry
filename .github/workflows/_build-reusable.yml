@@ -346,9 +346,9 @@ jobs:
               GHCR_PKG="evergreenimageregistry%2F${image}"
               gh api -X PATCH "/user/packages/container/${GHCR_PKG}/visibility" \
                 -f visibility=public 2>/dev/null || true
-              # Also push to Docker Hub org for discoverability
-              DH_REF="docker.io/evergreenimageregistry/${image}:${TAG}"
-              DH_LATEST="docker.io/evergreenimageregistry/${image}:latest"
+              # Also push to Docker Hub for discoverability
+              DH_REF="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${image}:${TAG}"
+              DH_LATEST="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${image}:latest"
               docker tag "${REF}" "${DH_REF}" 2>/dev/null || true
               docker tag "${REF}" "${DH_LATEST}" 2>/dev/null || true
               timeout 300 docker push "${DH_REF}" 2>&1 || echo "::warning::${image}: Docker Hub push failed (non-blocking)"

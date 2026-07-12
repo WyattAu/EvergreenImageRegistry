@@ -5,7 +5,7 @@
 Hardened container images for production: 987 images built non-root, distroless, and fully auditable. Registries:
 
 - GHCR: `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` (primary)
-- Docker Hub: `docker.io/evergreenimageregistry/<image>:latest` (org mirror)
+- Docker Hub: `docker.io/wyattau/<image>:latest` (org mirror)
 
 Version: v35.0.0, Phase 130
 
@@ -111,4 +111,4 @@ docker build -t evergreen-redis images/redis/
 - **68/70 EIR images** available for SimpleInfrastructureStack migration
 - 35/38 SIS images (92%) have direct Evergreen equivalents
 - Blocking: immich custom postgres (vector extensions), infra-webhook (custom build)
-- Docker Hub mirror: `docker.io/evergreenimageregistry/<image>:latest` for broader ecosystem access
+- Docker Hub mirror: `docker.io/wyattau/<image>:latest` for broader ecosystem access

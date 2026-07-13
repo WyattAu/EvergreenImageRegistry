@@ -1,0 +1,23 @@
+[metadata]
+name = "ttyd"
+version = "1.7.7"
+description = "ttyd - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/tsl0922/ttyd"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "https://github.com/tsl0922/ttyd"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [7681 9101]

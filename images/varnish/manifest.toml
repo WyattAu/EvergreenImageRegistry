@@ -1,0 +1,23 @@
+[metadata]
+name = "varnish"
+version = "latest"
+description = "varnish - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/varnish"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-download"
+url = "https://github.com/varnish"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [6081 9101]

@@ -1,0 +1,23 @@
+[metadata]
+name = "zookeeper"
+version = "latest"
+description = "zookeeper - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/zookeeper"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-download"
+url = "https://github.com/zookeeper"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [2181 9101]

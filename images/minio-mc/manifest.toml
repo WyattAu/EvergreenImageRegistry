@@ -1,0 +1,23 @@
+[metadata]
+name = "minio-mc"
+version = "RELEASE.2025-08-13T08-35-41Z"
+description = "minio-mc - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/minio/mc"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "https://github.com/minio/mc"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [9101]

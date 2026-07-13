@@ -1,0 +1,23 @@
+[metadata]
+name = "mongodb-exporter"
+version = "0.51.0"
+description = "mongodb-exporter - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/percona/mongodb_exporter"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "https://github.com/percona/mongodb_exporter"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [9216 9101]

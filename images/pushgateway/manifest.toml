@@ -1,0 +1,23 @@
+[metadata]
+name = "pushgateway"
+version = "1.11.3"
+description = "pushgateway - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://github.com/prometheus/pushgateway"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "https://github.com/prometheus/pushgateway"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [9091 9101]

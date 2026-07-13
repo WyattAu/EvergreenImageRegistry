@@ -10,6 +10,7 @@ RUN mkdir -p /app /var/log/prometheus-gcp-exporter /var/cache/prometheus-gcp-exp
 
 
 FROM scratch
+COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 COPY --from=upstream /prometheus-to-sd /stackdriver-prometheus-sidecar
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -35,6 +36,7 @@ USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
 ENTRYPOINT ["/stackdriver-prometheus-sidecar"]
 LABEL evergreen.entrypoint.pattern="no-op"

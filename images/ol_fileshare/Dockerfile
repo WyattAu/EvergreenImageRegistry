@@ -8,6 +8,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates tzdata && \
     addgroup -S -g 65532 fileshare 2>/dev/null || true && \
     adduser -u 65532 -G fileshare -D -D -h /srv/share -s /bin/false fileshare 2>/dev/null || true && \
@@ -36,5 +37,6 @@ EXPOSE 9101
 LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:139/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:445"]
 CMD ["/bin/sh"]

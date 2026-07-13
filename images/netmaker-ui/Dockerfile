@@ -10,6 +10,7 @@ FROM gravitl/netmaker-ui@sha256:e3cde240375ae137e037e8ec33d144441b70486f688c5a00
 
 
 FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
+COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 
 COPY --from=upstream /usr/share/nginx/html /www
 
@@ -21,7 +22,8 @@ EXPOSE 8080
 
 
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
 ENTRYPOINT ["sleep", "infinity"]
 

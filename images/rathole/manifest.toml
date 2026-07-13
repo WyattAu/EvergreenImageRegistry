@@ -20,4 +20,4 @@ url = "https://github.com/rapiz1/rathole"
 entrypoint = []
 
 [ports]
-expose = [7000 9101]
+expose = [7000, 9101]

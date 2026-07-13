@@ -18,3 +18,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
 LABEL org.opencontainers.image.title="vaultwarden" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
 LABEL evergreen.entrypoint.pattern="repack-upstream-init" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.no-new-privileges="true"

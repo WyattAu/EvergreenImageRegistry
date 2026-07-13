@@ -20,4 +20,4 @@ url = "https://github.com/tsl0922/ttyd"
 entrypoint = []
 
 [ports]
-expose = [7681 9101]
+expose = [7681, 9101]

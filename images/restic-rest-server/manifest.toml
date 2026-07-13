@@ -20,4 +20,4 @@ url = "https://github.com/restic/rest-server"
 entrypoint = []
 
 [ports]
-expose = [8000 9101]
+expose = [8000, 9101]

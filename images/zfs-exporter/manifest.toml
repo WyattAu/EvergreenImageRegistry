@@ -1,0 +1,26 @@
+[metadata]
+name = "zfs-exporter"
+version = "latest"
+description = "zfs-exporter - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://hub.docker.com/_/zfs-exporter"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "upstream"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "zfs-exporter"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [9104, 9101]
+
+[labels]
+"evergreen.entrypoint.pattern" = "repack-upstream-init"

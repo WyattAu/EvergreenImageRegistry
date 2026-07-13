@@ -28,3 +28,4 @@ CMD []
 LABEL org.opencontainers.image.title="etcd" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
 LABEL evergreen.base.image="scratch" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.no-new-privileges="true"

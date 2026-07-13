@@ -1,23 +1,26 @@
 [metadata]
 name = "zookeeper"
 version = "latest"
-description = "zookeeper - Evergreen hardened image"
+description = "Apache ZooKeeper - hardened container image"
 vendor = "Evergreen"
-source = "https://github.com/zookeeper"
+source = "https://github.com/apache/zookeeper"
 license = "Apache-2.0"
 tier = "standard"
 
 [build]
-base = "scratch"
+base = "upstream"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "binary-download"
-url = "https://github.com/zookeeper"
+type = "upstream-repack"
+url = "zookeeper"
 
 [runtime]
 entrypoint = []
 
 [ports]
-expose = [2181 9101]
+expose = [2181, 9101]
+
+[labels]
+"evergreen.entrypoint.pattern" = "repack-upstream-init"

@@ -16,3 +16,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 LABEL org.opencontainers.image.title="dex" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
 LABEL evergreen.entrypoint.pattern="chainguard-repack" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.no-new-privileges="true"

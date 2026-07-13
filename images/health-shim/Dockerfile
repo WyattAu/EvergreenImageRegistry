@@ -25,4 +25,7 @@ USER ${APP_UID}:${APP_GID}
 EXPOSE 9101
 ENTRYPOINT ["/usr/local/bin/shim"]
 LABEL evergreen.entrypoint.pattern="base-image"
+LABEL evergreen.image.tier="standard"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"

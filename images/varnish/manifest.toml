@@ -20,4 +20,4 @@ url = "https://github.com/varnish"
 entrypoint = []
 
 [ports]
-expose = [6081 9101]
+expose = [6081, 9101]

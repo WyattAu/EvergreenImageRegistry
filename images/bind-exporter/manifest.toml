@@ -1,26 +1,23 @@
 [metadata]
 name = "bind-exporter"
-version = "0.8.0"
-description = "bind-exporter - hardened container image"
+version = "latest"
+description = "BIND exporter for Prometheus"
 vendor = "Evergreen"
-source = "https://github.com/prometheus-community/bind_exporter" if '/' in upstream else "https://hub.docker.com/_/prometheus-community/bind_exporter"
+source = "https://github.com/prometheus-community/bind_exporter"
 license = "Apache-2.0"
 tier = "standard"
 
 [build]
-base = "scratch"
+base = "upstream"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
 type = "binary-download"
-url = "https://github.com/prometheus-community/bind_exporter/releases/download/v0.8.0/bind-exporter-v0.8.0-linux-amd64.tar.gz"
+url = "https://github.com/prometheus-community/bind_exporter"
 
 [runtime]
 entrypoint = []
 
 [ports]
 expose = [9119, 9101]
-
-[labels]
-"evergreen.constraint.nonroot" = "true"

@@ -20,4 +20,4 @@ url = "https://github.com/sorenisanerd/gotty"
 entrypoint = []
 
 [ports]
-expose = [8080 9101]
+expose = [8080, 9101]

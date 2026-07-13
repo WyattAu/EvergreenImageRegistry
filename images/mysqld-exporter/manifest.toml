@@ -1,0 +1,26 @@
+[metadata]
+name = "mysqld-exporter"
+version = "latest"
+description = "mysqld-exporter - Evergreen hardened image"
+vendor = "Evergreen"
+source = "https://hub.docker.com/_/mysqld-exporter"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "upstream"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "upstream-repack"
+url = "mysqld-exporter"
+
+[runtime]
+entrypoint = []
+
+[ports]
+expose = [9104, 9101]
+
+[labels]
+"evergreen.entrypoint.pattern" = "repack-upstream-init"

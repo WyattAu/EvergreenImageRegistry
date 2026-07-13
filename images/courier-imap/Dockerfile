@@ -15,6 +15,7 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /u
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /etc/group /etc/group
@@ -36,7 +37,8 @@ EXPOSE 9101
 LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:143/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:143"]
 CMD ["/bin/sh"]
 LABEL org.opencontainers.image.description="courier-imap container image" \
       org.opencontainers.image.title="Courier IMAP" \

@@ -20,4 +20,4 @@ url = "https://github.com/FairwindsOps/polaris"
 entrypoint = []
 
 [ports]
-expose = [8080 9101]
+expose = [8080, 9101]

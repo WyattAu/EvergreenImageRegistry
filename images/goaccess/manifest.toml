@@ -20,4 +20,4 @@ url = "https://github.com/allinurl/goaccess"
 entrypoint = []
 
 [ports]
-expose = [7890 9101]
+expose = [7890, 9101]

@@ -20,4 +20,4 @@ url = "https://github.com/prometheus/pushgateway"
 entrypoint = []
 
 [ports]
-expose = [9091 9101]
+expose = [9091, 9101]

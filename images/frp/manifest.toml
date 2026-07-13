@@ -20,4 +20,4 @@ url = "https://github.com/fatedier/frp"
 entrypoint = []
 
 [ports]
-expose = [7000 9101]
+expose = [7000, 9101]

@@ -19,3 +19,4 @@ LABEL org.opencontainers.image.title="valkey" evergreen.image.tier="critical" ev
 LABEL evergreen.base.image="wolfi" evergreen.entrypoint.pattern="chainguard-repack"
 LABEL evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.no-new-privileges="true"

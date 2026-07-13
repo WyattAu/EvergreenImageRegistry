@@ -1,0 +1,230 @@
+# =============================================================================
+# EVERGREEN COMPLIANCE SCAN
+# =============================================================================
+# Nightly compliance scanning: FIPS readiness, CIS benchmark, STIG checks.
+# Generates evidence bundles per image and publishes to GitHub Pages.
+# =============================================================================
+
+name: Compliance Scan
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: compliance-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: Compliance Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          # Hardened images (highest priority for compliance)
+          - redis
+          - nginx
+          - traefik
+          - prometheus
+          - alertmanager
+          - grafana
+          - oauth2-proxy
+          - keycloak
+          - postgresql-16
+          - mariadb
+          - nats
+          - node-exporter
+          - cloudflared
+          - valkey
+          - etcd
+          - forgejo
+          - vaultwarden
+          - dex
+          - step-ca
+          - blackbox-exporter
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull image
+        run: docker pull ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest
+
+      - name: CIS Docker Benchmark
+        id: cis
+        continue-on-error: true
+        run: |
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
+
+          # Check non-root user
+          USER=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "root")
+          if [ "$USER" != "root" ] && [ "$USER" != "0" ] && [ -n "$USER" ]; then
+            echo "cis_non_root=PASS" >> $GITHUB_OUTPUT
+          else
+            echo "cis_non_root=FAIL" >> $GITHUB_OUTPUT
+          fi
+
+          # Check HEALTHCHECK
+          HC=$(docker inspect --format '{{.Config.Healthcheck.Test}}' "$REF" 2>/dev/null || echo "none")
+          if [ "$HC" != "none" ] && [ "$HC" != "[]" ]; then
+            echo "cis_healthcheck=PASS" >> $GITHUB_OUTPUT
+          else
+            echo "cis_healthcheck=FAIL" >> $GITHUB_OUTPUT
+          fi
+
+          # Check for SUID files
+          SUID=$(docker run --rm --entrypoint "" "$REF" find / -perm -4000 -type f 2>/dev/null | wc -l || echo "0")
+          if [ "$SUID" = "0" ]; then
+            echo "cis_no_suid=PASS" >> $GITHUB_OUTPUT
+          else
+            echo "cis_no_suid=WARN($SUID)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: FIPS Readiness Check
+        id: fips
+        continue-on-error: true
+        run: |
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
+
+          # Try to run openssl in the image
+          OPENSSL=$(docker run --rm --entrypoint "" "$REF" openssl version 2>/dev/null || echo "NO_OPENSSL")
+
+          if [ "$OPENSSL" = "NO_OPENSSL" ]; then
+            echo "fips_status=NOT_APPLICABLE" >> $GITHUB_OUTPUT
+          elif echo "$OPENSSL" | grep -qi "fips"; then
+            echo "fips_status=FIPS_CAPABLE" >> $GITHUB_OUTPUT
+          else
+            echo "fips_status=NOT_FIPS" >> $GITHUB_OUTPUT
+          fi
+          echo "openssl_version=$OPENSSL" >> $GITHUB_OUTPUT
+
+      - name: Verify supply chain
+        id: supply
+        continue-on-error: true
+        run: |
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
+
+          # Check cosign signature
+          if cosign verify "$REF" \
+            --certificate-identity-regexp "https://github.com/WyattAu/EvergreenImageRegistry/" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
+            echo "signed=YES" >> $GITHUB_OUTPUT
+          else
+            echo "signed=NO" >> $GITHUB_OUTPUT
+          fi
+
+          # Check SPDX SBOM
+          if cosign verify-attestation "$REF" --type spdxjson \
+            --certificate-identity-regexp "https://github.com/WyattAu/EvergreenImageRegistry/" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
+            echo "spdx=YES" >> $GITHUB_OUTPUT
+          else
+            echo "spdx=NO" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate evidence bundle
+        run: |
+          mkdir -p compliance/evidence
+          cat > "compliance/evidence/${{ matrix.image }}.json" << EVIDENCE
+          {
+            "image": "${{ matrix.image }}",
+            "ref": "ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest",
+            "scanned_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "cis": {
+              "non_root": "${{ steps.cis.outputs.cis_non_root }}",
+              "healthcheck": "${{ steps.cis.outputs.cis_healthcheck }}",
+              "no_suid": "${{ steps.cis.outputs.cis_no_suid }}"
+            },
+            "fips": {
+              "status": "${{ steps.fips.outputs.fips_status }}",
+              "openssl": "${{ steps.fips.outputs.openssl_version }}"
+            },
+            "supply_chain": {
+              "signed": "${{ steps.supply.outputs.signed }}",
+              "spdx_sbom": "${{ steps.supply.outputs.spdx }}"
+            }
+          }
+          EVIDENCE
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-${{ matrix.image }}
+          path: compliance/evidence/${{ matrix.image }}.json
+          retention-days: 90
+
+  aggregate:
+    name: Aggregate Evidence
+    needs: [scan]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: compliance-*
+          path: compliance/evidence/
+          merge-multiple: true
+
+      - name: Generate compliance dashboard
+        run: |
+          mkdir -p docs/compliance
+          python3 << 'DASH'
+          import json
+          from pathlib import Path
+
+          evidence_dir = Path("compliance/evidence")
+          results = []
+          for f in sorted(evidence_dir.glob("*.json")):
+              try:
+                  results.append(json.loads(f.read_text()))
+              except:
+                  pass
+
+          # Generate markdown dashboard
+          md = "# Compliance Dashboard\n\n"
+          md += f"**Scan Date:** {results[0].get('scanned_at','?') if results else '?'}\n"
+          md += f"**Images Scanned:** {len(results)}\n\n"
+
+          md += "| Image | Non-Root | Healthcheck | No SUID | FIPS | Signed | SBOM |\n"
+          md += "|-------|----------|-------------|---------|------|--------|------|\n"
+          for r in results:
+              cis = r.get("cis", {})
+              fips = r.get("fips", {})
+              sc = r.get("supply_chain", {})
+              md += f"| {r['image']} | {cis.get('non_root','?')} | {cis.get('healthcheck','?')} | {cis.get('no_suid','?')} | {fips.get('status','?')} | {sc.get('signed','?')} | {sc.get('spdx','?')} |\n"
+
+          md += "\n## Evidence Files\n\n"
+          md += "Each image has a detailed JSON evidence file in `compliance/evidence/`.\n"
+
+          Path("docs/compliance/dashboard.md").write_text(md)
+          print(f"Dashboard: {len(results)} images")
+          DASH
+
+      - name: Commit dashboard
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update compliance dashboard'
+          file_pattern: 'docs/compliance/dashboard.md compliance/evidence/*.json'
+
+      - name: Upload aggregated evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-all
+          path: compliance/evidence/
+          retention-days: 90

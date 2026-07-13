@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """Catalog Expansion Engine for Evergreen Image Registry."""
-import json, subprocess, sys
+
+import json
+import subprocess
 from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
-EVERGREENCTL = str(Path(__file__).resolve().parent.parent / "evergreenctl" / "target" / "release" / "evergreenctl")
+EVERGREENCTL = str(
+    Path(__file__).resolve().parent.parent
+    / "evergreenctl"
+    / "target"
+    / "release"
+    / "evergreenctl"
+)
 
 GITHUB_GO_PROJECTS = {
     "postgres-exporter": ("prometheus-community/postgres_exporter", 9187),
@@ -38,30 +46,36 @@ DH_OFFICIAL_IMAGES = {
     "surrealdb": ("surrealdb/surrealdb", 8000),
 }
 
+
 def get_latest_tag(repo):
     try:
-        r = subprocess.run(["curl","-s",f"https://api.github.com/repos/{repo}/releases/latest"],
-                          capture_output=True, text=True, timeout=10)
-        return json.loads(r.stdout).get("tag_name","latest")
-    except:
+        r = subprocess.run(
+            ["curl", "-s", f"https://api.github.com/repos/{repo}/releases/latest"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return json.loads(r.stdout).get("tag_name", "latest")
+    except Exception:
         return "latest"
+
 
 def create_image(name, upstream, port):
     img_dir = IMAGES_DIR / name
     if (img_dir / "Dockerfile").exists():
         return False
-    
+
     img_dir.mkdir(parents=True, exist_ok=True)
-    
+
     version = get_latest_tag(upstream) if "/" in upstream else "latest"
     clean_ver = version.lstrip("v")
-    
+
     # Detect type
     if upstream.count("/") == 1 and "." not in upstream.split("/")[0]:
         stype = "upstream-repack"
     else:
         stype = "binary-download"
-    
+
     manifest = f'''[metadata]
 name = "{name}"
 version = "{clean_ver}"
@@ -87,14 +101,19 @@ entrypoint = []
 expose = [{port if port else ""}{" " if port else ""}9101]
 '''
     (img_dir / "manifest.toml").write_text(manifest)
-    
+
     # Generate Dockerfile
-    r = subprocess.run([EVERGREENCTL, "generate", str(img_dir)],
-                      capture_output=True, text=True, timeout=10)
+    r = subprocess.run(
+        [EVERGREENCTL, "generate", str(img_dir)],
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
     if r.returncode == 0:
         (img_dir / "Dockerfile").write_text(r.stdout)
-    
+
     return True
+
 
 def main():
     added = 0
@@ -103,14 +122,15 @@ def main():
         if create_image(name, repo, port):
             print(f"  ✅ {name} → github.com/{repo}")
             added += 1
-    
+
     print("\n=== Docker Hub Official images ===")
     for name, (upstream, port) in sorted(DH_OFFICIAL_IMAGES.items()):
         if create_image(name, upstream, port):
             print(f"  ✅ {name} → {upstream}")
             added += 1
-    
+
     print(f"\nTotal new images: {added}")
+
 
 if __name__ == "__main__":
     main()

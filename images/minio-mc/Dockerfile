@@ -31,3 +31,5 @@ LABEL org.opencontainers.image.title="minio-mc" \
 
 STOPSIGNAL SIGTERM
 
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

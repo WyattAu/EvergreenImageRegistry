@@ -17,3 +17,5 @@ LABEL org.opencontainers.image.title="step-ca" evergreen.image.tier="critical" e
 LABEL evergreen.entrypoint.pattern="chainguard-repack" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

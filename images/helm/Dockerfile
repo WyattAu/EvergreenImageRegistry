@@ -37,3 +37,5 @@ LABEL evergreen.base.image="scratch" \
       evergreen.security.cap-drop="ALL" \
       evergreen.security.no-new-privileges="true"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

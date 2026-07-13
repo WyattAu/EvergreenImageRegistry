@@ -15,3 +15,5 @@ STOPSIGNAL SIGTERM
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 EXPOSE 8080 9101
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

@@ -30,3 +30,4 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 LABEL evergreen.entrypoint.pattern="chainguard-repack"
 STOPSIGNAL SIGINT
+LABEL evergreen.security.read-only-rootfs="false"

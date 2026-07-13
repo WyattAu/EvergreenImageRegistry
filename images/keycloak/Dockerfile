@@ -19,3 +19,5 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 LABEL evergreen.entrypoint.pattern="chainguard-repack"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

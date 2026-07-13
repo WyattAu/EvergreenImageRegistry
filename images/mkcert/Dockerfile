@@ -31,3 +31,5 @@ LABEL org.opencontainers.image.title="mkcert" \
 
 STOPSIGNAL SIGTERM
 
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

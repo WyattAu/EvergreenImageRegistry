@@ -20,3 +20,5 @@ LABEL evergreen.base.image="wolfi" evergreen.entrypoint.pattern="chainguard-repa
 LABEL evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

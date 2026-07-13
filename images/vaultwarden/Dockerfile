@@ -19,3 +19,5 @@ LABEL org.opencontainers.image.title="vaultwarden" evergreen.image.tier="critica
 LABEL evergreen.entrypoint.pattern="repack-upstream-init" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"

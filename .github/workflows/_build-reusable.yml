@@ -314,10 +314,12 @@ jobs:
               echo "::endgroup::"
               continue
             fi
-            # Push SHA tag to GHCR with exponential backoff
+            # Push :latest only (reduce GHCR rate limit issues)
+            LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
+            docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
             PUSH_OK=0
-            for attempt in 1 2 3 4 5; do
-              if timeout 300 docker push "${REF}" 2>&1; then
+            for attempt in 1 2 3; do
+              if timeout 300 docker push "${LATEST_REF}" 2>&1; then
                 PUSH_OK=1; break
               fi
               echo "Push attempt $attempt failed for ${image}, retrying..."
@@ -325,38 +327,18 @@ jobs:
             done
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))
-              # Push latest tag to GHCR
-              LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
-              docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
-              for attempt in 1 2 3; do
-                timeout 600 docker push "${LATEST_REF}" 2>&1 && break
-                sleep $((attempt * 10))
-              done
-              # Push version tag
-              if [ -n "${VERSION_TAG}" ]; then
-                VERSION_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
-                docker tag "${REF}" "${VERSION_REF}" 2>/dev/null || true
-                timeout 600 docker push "${VERSION_REF}" 2>&1 || true
-              fi
               # Set visibility public on GHCR
               GHCR_PKG="evergreenimageregistry%2F${image}"
               gh api -X PATCH "/user/packages/container/${GHCR_PKG}/visibility" \
                 -f visibility=public 2>/dev/null || true
-              # Push to Docker Hub with retries
+              # Push to Docker Hub (:latest only)
               DH_USER="${{ secrets.DOCKERHUB_USERNAME }}"
               if [ -n "$DH_USER" ]; then
                 DH_LATEST="docker.io/${DH_USER}/${image}:latest"
                 docker tag "${REF}" "$DH_LATEST" 2>/dev/null || true
-                for attempt in 1 2 3; do
-                  if timeout 300 docker push "$DH_LATEST" 2>&1; then
-                    echo "  Docker Hub push OK"
-                    break
-                  fi
-                  echo "  Docker Hub push attempt $attempt failed, retrying..."
-                  sleep $((attempt * 10))
-                done
+                timeout 300 docker push "$DH_LATEST" 2>&1 || echo "::warning::${image}: Docker Hub push failed"
               fi
-              # Throttle between images to avoid GHCR rate limiting
+              # Throttle between images
               sleep 2
             else
               echo "::warning::${image}: push failed after 3 attempts"

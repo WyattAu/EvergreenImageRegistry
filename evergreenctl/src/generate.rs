@@ -62,10 +62,7 @@ impl DockerfileGenerator {
         ));
 
         // Downloader stage
-        s.push_str(&format!(
-            "FROM {} AS downloader\n",
-            DEFAULT_BUILDER_BASE
-        ));
+        s.push_str(&format!("FROM {} AS downloader\n", DEFAULT_BUILDER_BASE));
         s.push_str("ARG VERSION\nARG TARGETARCH\n");
         s.push_str(
             "RUN apt-get update && apt-get install -y --no-install-recommends \\\n\
@@ -111,7 +108,9 @@ impl DockerfileGenerator {
         s.push_str("COPY --from=downloader /tmp/download /usr/local/bin/");
         s.push_str(m.name());
         s.push('\n');
-        s.push_str("COPY --from=downloader /ca-certificates.crt /etc/ssl/certs/ca-certificates.crt\n\n");
+        s.push_str(
+            "COPY --from=downloader /ca-certificates.crt /etc/ssl/certs/ca-certificates.crt\n\n",
+        );
 
         // User, env, expose
         s.push_str(&self.user_env_expose());
@@ -152,7 +151,9 @@ impl DockerfileGenerator {
         let uid = self.extract_uid();
         s.push_str(&format!(
             "RUN chown -R {}:{} /var/lib/{} 2>/dev/null || true\n",
-            uid, uid, m.name()
+            uid,
+            uid,
+            m.name()
         ));
         s.push_str(&format!("USER {}\n\n", uid));
 
@@ -205,7 +206,11 @@ impl DockerfileGenerator {
         // Final stage
         s.push_str("FROM scratch\n");
         s.push_str("COPY --from=shim /shim /usr/local/bin/shim\n");
-        s.push_str(&format!("COPY --from=builder /{} /usr/local/bin/{}\n\n", m.name(), m.name()));
+        s.push_str(&format!(
+            "COPY --from=builder /{} /usr/local/bin/{}\n\n",
+            m.name(),
+            m.name()
+        ));
 
         s.push_str(&self.user_env_expose());
         s.push_str(&self.healthcheck());
@@ -240,7 +245,12 @@ impl DockerfileGenerator {
         s.push_str(&format!(
             "    mkdir -p /var/lib/{} /var/log/{} /var/run/{} && \\\n\
              \x20   chown -R 65532:65532 /var/lib/{} /var/log/{} /var/run/{}\n\n",
-            m.name(), m.name(), m.name(), m.name(), m.name(), m.name()
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name()
         ));
 
         s.push_str("COPY --from=shim /shim /usr/local/bin/shim\n");
@@ -433,9 +443,6 @@ impl DockerfileGenerator {
             return "65532".to_string();
         }
         // Extract UID from "65532:65532" or "65532" or "1000"
-        user.split(':')
-            .next()
-            .unwrap_or("65532")
-            .to_string()
+        user.split(':').next().unwrap_or("65532").to_string()
     }
 }

@@ -213,7 +213,7 @@ jobs:
               fi
             else
               echo "::warning::${image}: build failed, retrying..."
-              sleep 5
+              sleep 2
               if build_image "${image}"; then
                 BUILT=$((BUILT+1)); sleep 1
               else
@@ -317,11 +317,11 @@ jobs:
             # Push SHA tag to GHCR with exponential backoff
             PUSH_OK=0
             for attempt in 1 2 3 4 5; do
-              if timeout 600 docker push "${REF}" 2>&1; then
+              if timeout 300 docker push "${REF}" 2>&1; then
                 PUSH_OK=1; break
               fi
-              echo "Push attempt $attempt failed for ${image}, retrying in $((attempt * 15))s..."
-              sleep $((attempt * 15))
+              echo "Push attempt $attempt failed for ${image}, retrying..."
+              sleep 10
             done
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))
@@ -348,7 +348,7 @@ jobs:
                 DH_LATEST="docker.io/${DH_USER}/${image}:latest"
                 docker tag "${REF}" "$DH_LATEST" 2>/dev/null || true
                 for attempt in 1 2 3; do
-                  if timeout 600 docker push "$DH_LATEST" 2>&1; then
+                  if timeout 300 docker push "$DH_LATEST" 2>&1; then
                     echo "  Docker Hub push OK"
                     break
                   fi
@@ -357,9 +357,9 @@ jobs:
                 done
               fi
               # Throttle between images to avoid GHCR rate limiting
-              sleep 5
+              sleep 2
             else
-              echo "::warning::${image}: push failed after 5 attempts"
+              echo "::warning::${image}: push failed after 3 attempts"
               FAILED=$((FAILED+1))
             fi
             echo "::endgroup::"

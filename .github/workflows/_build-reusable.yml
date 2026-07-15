@@ -296,7 +296,7 @@ jobs:
 
       - name: Push to registry (single-arch fallback)
         if: always() && inputs.push && !inputs.multiarch
-        timeout-minutes: 90
+        timeout-minutes: 120
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
@@ -304,13 +304,9 @@ jobs:
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             [ ! -f "./images/${image}/Dockerfile" ] && continue
-            SAFE="${image//\//-}"
-            TAR="/tmp/images/${SAFE}.tar"
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            # Extract VERSION from Dockerfile for semantic version tag
             VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
             echo "::group::Push ${image}"
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             # Check if image was actually built
             if ! docker image inspect "${REF}" >/dev/null 2>&1; then
               echo "::warning::${image}: not built, skipping push"
@@ -318,46 +314,54 @@ jobs:
               echo "::endgroup::"
               continue
             fi
-            # Push SHA tag
+            # Push SHA tag to GHCR with exponential backoff
             PUSH_OK=0
-            for attempt in 1 2 3; do
+            for attempt in 1 2 3 4 5; do
               if timeout 600 docker push "${REF}" 2>&1; then
                 PUSH_OK=1; break
               fi
-              echo "Push attempt $attempt failed for ${image}, retrying..."
-              sleep 15
+              echo "Push attempt $attempt failed for ${image}, retrying in $((attempt * 15))s..."
+              sleep $((attempt * 15))
             done
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))
-              # Push latest tag
+              # Push latest tag to GHCR
               LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
               docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
               for attempt in 1 2 3; do
                 timeout 600 docker push "${LATEST_REF}" 2>&1 && break
-                sleep 10
+                sleep $((attempt * 10))
               done
               # Push version tag
               if [ -n "${VERSION_TAG}" ]; then
                 VERSION_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
                 docker tag "${REF}" "${VERSION_REF}" 2>/dev/null || true
-                timeout 300 docker push "${VERSION_REF}" 2>&1 || true
+                timeout 600 docker push "${VERSION_REF}" 2>&1 || true
               fi
-              # Set visibility public on GHCR (package name: evergreenimageregistry/<image>)
+              # Set visibility public on GHCR
               GHCR_PKG="evergreenimageregistry%2F${image}"
               gh api -X PATCH "/user/packages/container/${GHCR_PKG}/visibility" \
                 -f visibility=public 2>/dev/null || true
-              # Also push to Docker Hub for discoverability
-              DH_REF="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${image}:${TAG}"
-              DH_LATEST="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${image}:latest"
-              docker tag "${REF}" "${DH_REF}" 2>/dev/null || true
-              docker tag "${REF}" "${DH_LATEST}" 2>/dev/null || true
-              timeout 300 docker push "${DH_REF}" 2>&1 || echo "::warning::${image}: Docker Hub push failed (non-blocking)"
-              timeout 300 docker push "${DH_LATEST}" 2>&1 || true
+              # Push to Docker Hub with retries
+              DH_USER="${{ secrets.DOCKERHUB_USERNAME }}"
+              if [ -n "$DH_USER" ]; then
+                DH_LATEST="docker.io/${DH_USER}/${image}:latest"
+                docker tag "${REF}" "$DH_LATEST" 2>/dev/null || true
+                for attempt in 1 2 3; do
+                  if timeout 600 docker push "$DH_LATEST" 2>&1; then
+                    echo "  Docker Hub push OK"
+                    break
+                  fi
+                  echo "  Docker Hub push attempt $attempt failed, retrying..."
+                  sleep $((attempt * 10))
+                done
+              fi
+              # Throttle between images to avoid GHCR rate limiting
+              sleep 5
             else
-              echo "::warning::${image}: push failed"
+              echo "::warning::${image}: push failed after 5 attempts"
               FAILED=$((FAILED+1))
             fi
-            sleep 2
             echo "::endgroup::"
           done
           echo "Push: ${PUSHED} ok, ${FAILED} failed"

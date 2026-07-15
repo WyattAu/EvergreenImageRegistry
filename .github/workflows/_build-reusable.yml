@@ -319,10 +319,11 @@ jobs:
             docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
             PUSH_OK=0
             for attempt in 1 2 3; do
-              if timeout 300 docker push "${LATEST_REF}" 2>&1; then
+              PUSH_OUTPUT=$(timeout 300 docker push "${LATEST_REF}" 2>&1) && {
                 PUSH_OK=1; break
-              fi
-              echo "Push attempt $attempt failed for ${image}, retrying..."
+              }
+              echo "Push attempt $attempt failed for ${image}:"
+              echo "$PUSH_OUTPUT" | tail -5
               sleep 10
             done
             if [ "$PUSH_OK" = "1" ]; then
@@ -354,16 +355,15 @@ jobs:
       - name: Sign, SBOM, and Attest images
         if: always() && inputs.push
         run: |
-          TAG="${{ steps.resolve-tag.outputs.TAG }}"
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           SIGNED=0; ATTESTED=0; FAILED=0
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             [ ! -f "./images/${image}/Dockerfile" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
             echo "::group::Sign + SBOM + Attest ${image}"
 
-            # Check if image exists in registry
+            # Check if image exists in registry (use :latest since that's what we push)
             if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
               echo "  SKIP: ${image} not pushed, skipping sign/attest"
               FAILED=$((FAILED+1))

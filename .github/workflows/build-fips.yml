@@ -62,11 +62,11 @@ jobs:
           - tidb
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
 
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -115,11 +115,11 @@ jobs:
           - mongodb
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
 
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -159,11 +159,11 @@ jobs:
       inputs.image == 'envoy'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
 
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -199,11 +199,11 @@ jobs:
       inputs.image == 'keycloak'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
 
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -234,7 +234,7 @@ jobs:
           IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/keycloak:${{ steps.meta.outputs.version }}-fips"
           cosign sign --yes "${IMAGE_TAG}"
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: fips-build-logs-keycloak

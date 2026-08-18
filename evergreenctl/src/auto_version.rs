@@ -77,7 +77,9 @@ pub struct AutoVersionError {
 
 /// Compare two semver strings and determine if bump is safe.
 /// Returns (is_safe, reason).
-fn is_safe_bump(current: &str, latest: &str, max_minor_jump: u8) -> (bool, String) {
+/// Compare two semver strings and determine if bump is safe.
+/// Returns (is_safe, reason).
+pub fn is_safe_bump(current: &str, latest: &str, max_minor_jump: u8) -> (bool, String) {
     let current = current.trim_start_matches('v');
     let latest = latest.trim_start_matches('v');
 

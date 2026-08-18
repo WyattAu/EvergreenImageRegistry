@@ -117,23 +117,23 @@ pub enum ImageStatus {
 // Constraint definitions
 // ---------------------------------------------------------------------------
 
-struct ConstraintContext<'a> {
-    name: &'a str,
-    tier: u8,
-    manifest_exists: bool,
-    manifest_name: String,
-    manifest_version: String,
-    manifest_source_url: String,
-    manifest_base: String,
-    manifest_tier: String,
-    dockerfile_exists: bool,
-    dockerfile_content: String,
-    sbom_exists: bool,
-    sbom_valid: bool,
+pub struct ConstraintContext<'a> {
+    pub name: &'a str,
+    pub tier: u8,
+    pub manifest_exists: bool,
+    pub manifest_name: String,
+    pub manifest_version: String,
+    pub manifest_source_url: String,
+    pub manifest_base: String,
+    pub manifest_tier: String,
+    pub dockerfile_exists: bool,
+    pub dockerfile_content: String,
+    pub sbom_exists: bool,
+    pub sbom_valid: bool,
 }
 
 /// Run all constraints against a single image context
-fn check_constraints(ctx: &ConstraintContext) -> Vec<ConstraintResult> {
+pub fn check_constraints(ctx: &ConstraintContext) -> Vec<ConstraintResult> {
     let mut results = Vec::new();
     let name = ctx.name;
 

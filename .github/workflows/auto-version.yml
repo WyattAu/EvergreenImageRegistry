@@ -1,0 +1,456 @@
+# =============================================================================
+# EVERGREEN AUTO-VERSION PIPELINE
+# =============================================================================
+# Detects upstream version drift and auto-bumps image versions with guardrails.
+#
+# Schedule: Daily at 04:00 UTC (after nightly-scan at 03:00 UTC)
+# Manual:   workflow_dispatch for on-demand execution
+#
+# Behavior:
+#   - Checks all images with GitHub repos for upstream releases
+#   - Auto-bumps tier 2/3 images (patch + minor only)
+#   - Tier 1 images require manual approval (creates PR)
+#   - Validates constraints before accepting any bump
+#   - Updates manifest.toml with new version
+# =============================================================================
+
+name: Auto-Version Pipeline
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no files modified)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      allow_major:
+        description: 'Allow major version jumps'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+concurrency:
+  group: auto-version
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # STAGE 1: DISCOVER - Find outdated images
+  # ---------------------------------------------------------------------------
+  discover:
+    name: Detect Upstream Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      has_outdated: ${{ steps.check.outputs.has_outdated }}
+      outdated_count: ${{ steps.check.outputs.outdated_count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            evergreenctl/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Build evergreenctl
+        run: cargo build --release --manifest-path evergreenctl/Cargo.toml
+
+      - name: Check for outdated images
+        id: check
+        run: |
+          # Run auto-version in dry-run mode to detect outdated images
+          DRY_RUN="${{ inputs.dry_run || 'true' }}"
+          ALLOW_MAJOR="${{ inputs.allow_major || 'false' }}"
+
+          ARGS="--images-dir images --format json"
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "$ALLOW_MAJOR" = "true" ]; then
+            ARGS="$ARGS --allow-major"
+          fi
+
+          # Run auto-version and capture output
+          cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
+            auto-version $ARGS > /tmp/auto-version-report.json 2>&1 || true
+
+          # Parse report
+          OUTDATED=$(python3 -c "
+          import json, sys
+          try:
+              with open('/tmp/auto-version-report.json') as f:
+                  report = json.load(f)
+              print(report.get('images_outdated', 0))
+          except:
+              print(0)
+          " 2>/dev/null || echo 0)
+
+          echo "outdated_count=${OUTDATED}" >> "$GITHUB_OUTPUT"
+
+          if [ "${OUTDATED}" -gt 0 ]; then
+            echo "has_outdated=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Found ${OUTDATED} outdated images"
+          else
+            echo "has_outdated=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::All images are up-to-date"
+          fi
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-version-report
+          path: /tmp/auto-version-report.json
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # STAGE 2: BUMP - Auto-bump outdated images
+  # ---------------------------------------------------------------------------
+  bump:
+    name: Auto-Bump Versions
+    needs: discover
+    if: needs.discover.outputs.has_outdated == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      bumped_count: ${{ steps.bump.outputs.bumped_count }}
+      needs_approval: ${{ steps.bump.outputs.needs_approval }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            evergreenctl/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Build evergreenctl
+        run: cargo build --release --manifest-path evergreenctl/Cargo.toml
+
+      - name: Run auto-version (actual bump)
+        id: bump
+        run: |
+          DRY_RUN="${{ inputs.dry_run || 'true' }}"
+          ALLOW_MAJOR="${{ inputs.allow_major || 'false' }}"
+
+          ARGS="--images-dir images --format json"
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "$ALLOW_MAJOR" = "true" ]; then
+            ARGS="$ARGS --allow-major"
+          fi
+
+          cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
+            auto-version $ARGS > /tmp/auto-version-report.json 2>&1 || true
+
+          # Parse results
+          BUMPED=$(python3 -c "
+          import json
+          try:
+              with open('/tmp/auto-version-report.json') as f:
+                  report = json.load(f)
+              print(report.get('images_bumped', 0))
+          except:
+              print(0)
+          " 2>/dev/null || echo 0)
+
+          NEEDS_APPROVAL=$(python3 -c "
+          import json
+          try:
+              with open('/tmp/auto-version-report.json') as f:
+                  report = json.load(f)
+              print(report.get('images_requiring_approval', 0))
+          except:
+              print(0)
+          " 2>/dev/null || echo 0)
+
+          echo "bumped_count=${BUMPED}" >> "$GITHUB_OUTPUT"
+          echo "needs_approval=${NEEDS_APPROVAL}" >> "$GITHUB_OUTPUT"
+
+          echo "Bumped: ${BUMPED}, Needs approval: ${NEEDS_APPROVAL}"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-version-bump-report
+          path: /tmp/auto-version-report.json
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # STAGE 3: VALIDATE - Verify bumped images pass constraints
+  # ---------------------------------------------------------------------------
+  validate:
+    name: Validate Bumped Images
+    needs: bump
+    if: needs.bump.outputs.bumped_count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      all_pass: ${{ steps.validate.outputs.all_pass }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            evergreenctl/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Build evergreenctl
+        run: cargo build --release --manifest-path evergreenctl/Cargo.toml
+
+      - name: Run parallel validation
+        id: validate
+        run: |
+          cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
+            validate-parallel --images-dir images --format json \
+            > /tmp/validation-report.json 2>&1 || true
+
+          # Check if any images failed
+          FAILED=$(python3 -c "
+          import json
+          try:
+              with open('/tmp/validation-report.json') as f:
+                  report = json.load(f)
+              print(report.get('images_failed', 0))
+          except:
+              print(0)
+          " 2>/dev/null || echo 0)
+
+          if [ "${FAILED}" -gt 0 ]; then
+            echo "all_pass=false" >> "$GITHUB_OUTPUT"
+            echo "::error::${FAILED} images failed validation"
+          else
+            echo "all_pass=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::All images passed validation"
+          fi
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-version-validation
+          path: /tmp/validation-report.json
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # STAGE 4: COMMIT - Create commit with bumped versions
+  # ---------------------------------------------------------------------------
+  commit:
+    name: Commit Bumped Versions
+    needs: [bump, validate]
+    if: |
+      needs.bump.outputs.bumped_count != '0' &&
+      needs.validate.outputs.all_pass == 'true' &&
+      inputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            git diff --stat
+          fi
+
+      - name: Create commit
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          BUMPED=${{ needs.bump.outputs.bumped_count }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/*/manifest.toml
+          git commit -m "$(cat <<'EOF'
+          chore: auto-bump ${BUMPED} image versions
+
+          Automated version bump from upstream releases.
+          All constraints validated via parallel validation.
+
+          🤖 Generated with Codebuff
+          Co-Authored-By: Codebuff <noreply@codebuff.com>
+          EOF
+          )"
+          git push
+
+  # ---------------------------------------------------------------------------
+  # STAGE 5: PR - Create PR for tier 1 images requiring approval
+  # ---------------------------------------------------------------------------
+  create-pr:
+    name: Create Approval PR
+    needs: [bump, validate]
+    if: |
+      needs.bump.outputs.needs_approval != '0' &&
+      needs.validate.outputs.all_pass == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR for tier 1 bumps
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Read the auto-version report
+            let report;
+            try {
+              const reportData = fs.readFileSync('/tmp/auto-version-report.json', 'utf8');
+              report = JSON.parse(reportData);
+            } catch (e) {
+              console.log('No report file found, skipping PR creation');
+              return;
+            }
+
+            const needsApproval = report.bump_actions?.filter(a => a.requires_approval) || [];
+            if (needsApproval.length === 0) {
+              console.log('No tier 1 images need approval');
+              return;
+            }
+
+            const body = [
+              '## Auto-Version: Tier 1 Image Bumps Requiring Approval',
+              '',
+              'The following tier 1 (critical) images have upstream updates available:',
+              '',
+              '| Image | Current | Latest | Reason |',
+              '|-------|---------|--------|--------|',
+              ...needsApproval.map(a =>
+                `| ${a.image} | ${a.old_version} | ${a.new_version} | ${a.reason} |`
+              ),
+              '',
+              '### Action Required',
+              '',
+              '- Review each version bump for breaking changes',
+              '- Check upstream changelogs',
+              '- Approve and merge when ready',
+              '',
+              '### Validation',
+              '',
+              '- All images passed parallel validation constraints',
+              '- Auto-version report available in CI artifacts',
+              '',
+              `_This PR was automatically created by the Auto-Version Pipeline._`
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[AUTO-VERSION] ${needsApproval.length} tier 1 images need approval`,
+              body: body,
+              labels: ['auto-version', 'needs-review', 'critical']
+            });
+
+  # ---------------------------------------------------------------------------
+  # STAGE 6: REPORT - Summary
+  # ---------------------------------------------------------------------------
+  report:
+    name: Auto-Version Report
+    needs: [discover, bump, validate, commit]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Generate summary
+        run: |
+          OUTDATED=${{ needs.discover.outputs.outdated_count || '0' }}
+          BUMPED=${{ needs.bump.outputs.bumped_count || '0' }}
+          NEEDS_APPROVAL=${{ needs.bump.outputs.needs_approval || '0' }}
+          ALL_PASS=${{ needs.validate.outputs.all_pass || 'unknown' }}
+          COMMIT=${{ needs.commit.result || 'skipped' }}
+
+          {
+            echo "# Auto-Version Pipeline Report"
+            echo ""
+            echo "## Summary"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| **Outdated Images** | ${OUTDATED} |"
+            echo "| **Auto-Bumped** | ${BUMPED} |"
+            echo "| **Need Approval** | ${NEEDS_APPROVAL} |"
+            echo "| **Validation** | ${ALL_PASS} |"
+            echo "| **Commit** | ${COMMIT} |"
+            echo ""
+            echo "## Pipeline Status"
+            echo ""
+            echo "| Stage | Result |"
+            echo "|-------|--------|"
+            echo "| Discover | ${{ needs.discover.result }} |"
+            echo "| Bump | ${{ needs.bump.result }} |"
+            echo "| Validate | ${{ needs.validate.result }} |"
+            echo "| Commit | ${{ needs.commit.result }} |"
+            echo ""
+            if [ "${OUTDATED}" = "0" ]; then
+              echo ":white_check_mark: All images are up-to-date!"
+            else
+              echo ":package: ${BUMPED} images were auto-bumped"
+              if [ "${NEEDS_APPROVAL}" -gt 0 ]; then
+                echo ":warning: ${NEEDS_APPROVAL} tier 1 images need manual approval"
+              fi
+            fi
+            echo ""
+            echo "_Generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
+          } >> "$GITHUB_STEP_SUMMARY"

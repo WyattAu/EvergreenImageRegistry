@@ -238,8 +238,17 @@ enum Commands {
         #[arg(short, long, default_value = "text")]
         format: String,
     },
-    /// Build/rebuild SQLite registry index
+    /// Build/rebuild SQLite registry index (full)
     Index {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+        /// Path to SQLite database
+        #[arg(long, default_value = ".registry.db")]
+        db_path: String,
+    },
+    /// Incrementally update registry index (only changed images)
+    IndexUpdate {
         /// Path to images directory
         #[arg(long, default_value = "images")]
         images_dir: String,
@@ -255,6 +264,15 @@ enum Commands {
         /// Output format (text, json)
         #[arg(short, long, default_value = "text")]
         format: String,
+    },
+    /// Generate HTML dashboard from registry index
+    Dashboard {
+        /// Path to SQLite database
+        #[arg(long, default_value = ".registry.db")]
+        db_path: String,
+        /// Output file path
+        #[arg(long, default_value = "dashboard.html")]
+        output: String,
     },
     /// Query images by tier from registry index
     IndexQuery {
@@ -710,6 +728,15 @@ async fn main() -> anyhow::Result<()> {
             println!("Indexed {} images into {}", count, db_path.display());
         }
 
+        Commands::IndexUpdate { images_dir, db_path } => {
+            let db_path = Path::new(&db_path);
+            let conn = evergreenctl::registry_index::open_index(db_path)?;
+            let (added, updated, unchanged) = evergreenctl::registry_index::update_index_incremental(
+                &conn, Path::new(&images_dir)
+            )?;
+            println!("Incremental update: {} added, {} updated, {} unchanged", added, updated, unchanged);
+        }
+
         Commands::IndexStats { db_path, format } => {
             let db_path = Path::new(&db_path);
             let conn = evergreenctl::registry_index::open_index(db_path)?;
@@ -767,6 +794,16 @@ async fn main() -> anyhow::Result<()> {
             } else {
                 anyhow::bail!("Specify --tier or --source-type to filter");
             }
+        }
+
+        Commands::Dashboard { db_path, output } => {
+            let db_path = Path::new(&db_path);
+            let conn = evergreenctl::registry_index::open_index(db_path)?;
+            let data = evergreenctl::dashboard::collect_dashboard_data(&conn)?;
+            let html = evergreenctl::dashboard::generate_dashboard_html(&data);
+            std::fs::write(&output, &html)?;
+            println!("Dashboard generated: {}", output);
+            println!("Open in browser: file://{}", std::fs::canonicalize(&output)?.display());
         }
 
         Commands::Completion { shell } => {

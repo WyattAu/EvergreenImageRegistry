@@ -3,6 +3,7 @@ pub mod auto_version;
 pub mod bump;
 pub mod changelog;
 pub mod ci_diff;
+pub mod dashboard;
 pub mod deprecated;
 pub mod discover;
 pub mod dockerfile_utils;

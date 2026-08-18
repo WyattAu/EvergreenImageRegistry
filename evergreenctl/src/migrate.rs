@@ -1,74 +1,16 @@
 use anyhow::{Context, Result};
-use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
 
+use crate::dockerfile_utils::*;
 use crate::manifest::*;
-use crate::patterns::*;
-
-fn extract_download_url(content: &str) -> Option<String> {
-    RE_DOWNLOAD_URL
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-}
-
-fn extract_ports(content: &str) -> Vec<String> {
-    let mut ports = Vec::new();
-    for cap in RE_EXPOSE_PORTS.captures_iter(content) {
-        for part in cap[1].split_whitespace() {
-            if let Some(port_str) = part.split('/').next() {
-                if let Ok(port) = port_str.parse::<u16>() {
-                    ports.push(port.to_string());
-                }
-            }
-        }
-    }
-    ports.sort();
-    ports.dedup();
-    ports
-}
-
-fn extract_entrypoint(content: &str) -> Vec<String> {
-    RE_ENTRYPOINT
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| {
-            m.as_str()
-                .split(',')
-                .map(|s| s.trim().trim_matches('"').to_string())
-                .filter(|s| !s.is_empty())
-                .collect()
-        })
-        .unwrap_or_else(|| vec!["/app/entrypoint".to_string()])
-}
-
-fn extract_description(content: &str) -> String {
-    RE_DESCRIPTION_LABEL
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "Evergreen hardened container image".to_string())
-}
-
-fn extract_source_type(content: &str) -> String {
-    if content.contains("apk add") || content.contains("apt-get install") {
-        "package-manager".to_string()
-    } else if content.contains("git clone") {
-        "source-build".to_string()
-    } else if content.contains("curl ") || content.contains("wget ") {
-        "binary-download".to_string()
-    } else {
-        "copy-from".to_string()
-    }
-}
 
 /// Parse an existing Dockerfile and extract manifest fields
 pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Result<Manifest> {
     let content = std::fs::read_to_string(dockerfile_path)
         .with_context(|| format!("Failed to read Dockerfile: {}", dockerfile_path.display()))?;
 
-    let version = extract_version(&content);
+    let version = extract_version(&content).unwrap_or_else(|| "0.0.0".to_string());
     let download_url = extract_download_url(&content);
     let ports = extract_ports(&content);
     let entrypoint = extract_entrypoint(&content);
@@ -126,75 +68,7 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
     })
 }
 
-fn extract_version(content: &str) -> String {
-    RE_ARG_VERSION
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "0.0.0".to_string())
-}
 
-fn extract_vendor(content: &str) -> String {
-    RE_VENDOR_LABEL
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "Unknown".to_string())
-}
-
-fn extract_tier(content: &str) -> u8 {
-    RE_TIER_LABEL
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .and_then(|m| m.as_str().parse::<u8>().ok())
-        .unwrap_or(3)
-}
-
-fn extract_github_source(content: &str) -> Option<String> {
-    RE_GITHUB_SOURCE
-        .captures(content)
-        .and_then(|c| c.get(0))
-        .map(|m| m.as_str().trim_end_matches('/').to_string())
-}
-
-fn extract_base_image(content: &str) -> String {
-    RE_FROM_IMAGE
-        .captures_iter(content)
-        .last()
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "scratch".to_string())
-}
-
-fn extract_user(content: &str) -> String {
-    RE_USER
-        .captures_iter(content)
-        .last()
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "65532:65532".to_string())
-}
-
-fn extract_stop_signal(content: &str) -> String {
-    RE_STOPSIGNAL
-        .captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "SIGTERM".to_string())
-}
-
-fn extract_all_labels(content: &str) -> HashMap<String, String> {
-    let mut labels = HashMap::new();
-    for cap in RE_KEY_VALUE_LABEL.captures_iter(content) {
-        let key = cap[1].to_string();
-        let val = cap[2].to_string();
-        // Only include meaningful labels (skip build-time instructions)
-        if key.contains('.') && !key.starts_with("ARG") {
-            labels.insert(key, val);
-        }
-    }
-    labels
-}
 
 /// Migrate all images: generate manifests from existing Dockerfiles
 pub fn migrate_all(images_dir: &Path, dry_run: bool) -> Result<Vec<String>> {
@@ -235,9 +109,9 @@ mod tests {
 
     #[test]
     fn test_extract_version() {
-        assert_eq!(extract_version("ARG VERSION=1.0.0"), "1.0.0");
-        assert_eq!(extract_version("ARG VERSION=\"2.0.0\""), "2.0.0");
-        assert_eq!(extract_version("FROM scratch"), "0.0.0");
+        assert_eq!(extract_version("ARG VERSION=1.0.0"), Some("1.0.0".to_string()));
+        assert_eq!(extract_version("ARG VERSION=\"2.0.0\""), Some("2.0.0".to_string()));
+        assert_eq!(extract_version("FROM scratch"), None);
     }
 
     #[test]

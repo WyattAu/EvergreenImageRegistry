@@ -27,8 +27,8 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
             .map(|n| n.to_string_lossy().to_string())
             .unwrap_or_else(|| "unknown".to_string());
         let version =
-            extract_version_from_dockerfile(&content).unwrap_or_else(|| "latest".to_string());
-        let base = extract_base_from_dockerfile(&content).unwrap_or_else(|| "unknown".to_string());
+            extract_version(&content).unwrap_or_else(|| "latest".to_string());
+        let base = extract_base_image(&content);
         (name, version, base)
     } else {
         anyhow::bail!("No manifest.toml or Dockerfile found in {}", dir.display());
@@ -103,72 +103,48 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     Ok(())
 }
 
-fn extract_version_from_dockerfile(content: &str) -> Option<String> {
-    for line in content.lines() {
-        let line = line.trim();
-        if line.starts_with("ARG VERSION=") {
-            let ver = line.strip_prefix("ARG VERSION=")?.trim().to_string();
-            return Some(ver);
-        }
-    }
-    None
-}
-
-fn extract_base_from_dockerfile(content: &str) -> Option<String> {
-    for line in content.lines() {
-        let line = line.trim();
-        if line.starts_with("FROM ") && !line.contains(" AS ") {
-            let base = line
-                .strip_prefix("FROM ")?
-                .split_whitespace()
-                .next()?
-                .to_string();
-            return Some(base);
-        }
-    }
-    None
-}
+use crate::dockerfile_utils::{extract_version, extract_base_image};
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::dockerfile_utils::{extract_version, extract_base_image};
 
     #[test]
-    fn test_extract_version_from_dockerfile() {
+    fn test_extract_version_basic() {
         let content = "FROM scratch\nARG VERSION=1.0.0\nRUN echo hi";
         assert_eq!(
-            extract_version_from_dockerfile(content),
+            extract_version(content),
             Some("1.0.0".to_string())
         );
     }
 
     #[test]
-    fn test_extract_version_from_dockerfile_no_version() {
+    fn test_extract_version_no_version() {
         let content = "FROM scratch\nRUN echo hi";
-        assert_eq!(extract_version_from_dockerfile(content), None);
+        assert_eq!(extract_version(content), None);
     }
 
     #[test]
-    fn test_extract_base_from_dockerfile() {
+    fn test_extract_base_multistage() {
         let content = "FROM scratch AS builder\nRUN echo hi\nFROM scratch";
         assert_eq!(
-            extract_base_from_dockerfile(content),
-            Some("scratch".to_string())
+            extract_base_image(content),
+            "scratch"
         );
     }
 
     #[test]
-    fn test_extract_base_from_dockerfile_with_digest() {
+    fn test_extract_base_with_digest() {
         let content = "FROM cgr.dev/chainguard/wolfi-base:latest@sha256:abc123";
         assert_eq!(
-            extract_base_from_dockerfile(content),
-            Some("cgr.dev/chainguard/wolfi-base:latest@sha256:abc123".to_string())
+            extract_base_image(content),
+            "cgr.dev/chainguard/wolfi-base:latest@sha256:abc123"
         );
     }
 
     #[test]
-    fn test_extract_base_from_dockerfile_no_from() {
+    fn test_extract_base_no_from() {
         let content = "RUN echo hi";
-        assert_eq!(extract_base_from_dockerfile(content), None);
+        assert_eq!(extract_base_image(content), "scratch");
     }
 }

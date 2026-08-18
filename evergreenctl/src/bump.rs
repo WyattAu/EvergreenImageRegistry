@@ -1,3 +1,4 @@
+use crate::dockerfile_utils::extract_version_from_file;
 use crate::manifest::Manifest;
 use anyhow::{Context, Result};
 use std::path::Path;
@@ -20,7 +21,7 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
         let manifest = Manifest::from_file(&manifest_path)?;
         manifest.version().to_string()
     } else {
-        extract_version_from_dockerfile(&dockerfile_path)?
+        extract_version_from_file(&dockerfile_path)?
     };
 
     println!("Image: {}", image);
@@ -51,16 +52,7 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
     Ok(())
 }
 
-fn extract_version_from_dockerfile(dockerfile_path: &Path) -> Result<String> {
-    let content = std::fs::read_to_string(dockerfile_path)?;
-    for line in content.lines() {
-        if let Some(version) = line.strip_prefix("ARG VERSION=") {
-            let version = version.split_whitespace().next().unwrap_or(version);
-            return Ok(version.to_string());
-        }
-    }
-    anyhow::bail!("Could not find ARG VERSION in Dockerfile");
-}
+
 
 fn bump_with_manifest(
     manifest_path: &Path,
@@ -250,21 +242,21 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn test_extract_version_from_dockerfile() {
+    fn test_extract_version_from_file() {
         let dir = tempfile::tempdir().unwrap();
         let df_path = dir.path().join("Dockerfile");
         fs::write(&df_path, "FROM scratch\nARG VERSION=1.2.3\nUSER 65532\n").unwrap();
-        let version = extract_version_from_dockerfile(&df_path).unwrap();
+        let version = extract_version_from_file(&df_path).unwrap();
         assert_eq!(version, "1.2.3");
     }
 
     #[test]
-    fn test_extract_version_from_dockerfile_quoted() {
+    fn test_extract_version_from_file_quoted() {
         let dir = tempfile::tempdir().unwrap();
         let df_path = dir.path().join("Dockerfile");
         fs::write(&df_path, "FROM scratch\nARG VERSION=\"2.0.0\"\n").unwrap();
-        let version = extract_version_from_dockerfile(&df_path).unwrap();
-        assert_eq!(version, "\"2.0.0\"");
+        let version = extract_version_from_file(&df_path).unwrap();
+        assert_eq!(version, "2.0.0");
     }
 
     #[test]
@@ -272,7 +264,7 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let df_path = dir.path().join("Dockerfile");
         fs::write(&df_path, "FROM scratch\nUSER 65532\n").unwrap();
-        let result = extract_version_from_dockerfile(&df_path);
+        let result = extract_version_from_file(&df_path);
         assert!(result.is_err());
     }
 

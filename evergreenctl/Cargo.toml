@@ -21,6 +21,8 @@ tracing = "0.1"
 tracing-subscriber = "0.3"
 semver = "1"
 chrono = "0.4"
+rayon = "1.10"
+rusqlite = { version = "0.31", features = ["bundled"] }
 
 [[bin]]
 name = "evergreenctl"

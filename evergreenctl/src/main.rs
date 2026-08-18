@@ -1,5 +1,66 @@
 use clap::{CommandFactory, Parser, Subcommand};
-use std::path::Path;
+use rusqlite::params;
+use std::path::{Path, PathBuf};
+
+/// Validate a path argument to prevent path traversal attacks.
+/// Returns the canonicalized absolute path, or an error if the path is invalid
+/// or attempts to escape the allowed directory boundaries.
+fn validate_path(path: &str, allowed_root: Option<&Path>) -> anyhow::Result<PathBuf> {
+    let p = Path::new(path);
+
+    // Reject paths with traversal components
+    for component in p.components() {
+        match component {
+            std::path::Component::ParentDir => {
+                anyhow::bail!(
+                    "Path traversal detected: '{}' contains '..' component",
+                    path
+                );
+            }
+            std::path::Component::Normal(c) => {
+                // Reject hidden directories (starting with .)
+                if let Some(s) = c.to_str() {
+                    if s.starts_with('.') && s != "." {
+                        anyhow::bail!(
+                            "Hidden path component rejected: '{}'",
+                            path
+                        );
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    // If an allowed root is specified, verify the path doesn't escape it
+    if let Some(root) = allowed_root {
+        if let Ok(canonical) = p.canonicalize() {
+            if !canonical.starts_with(root) {
+                anyhow::bail!(
+                    "Path '{}' escapes allowed root '{}'",
+                    path,
+                    root.display()
+                );
+            }
+            return Ok(canonical);
+        }
+        // If canonicalize fails (path doesn't exist yet), validate the prefix
+        let root_str = root.to_string_lossy();
+        let path_str = p.to_string_lossy();
+        if !path_str.starts_with(&*root_str) {
+            // Relative paths within images/ are OK
+            if !p.is_relative() {
+                anyhow::bail!(
+                    "Path '{}' is outside allowed root '{}'",
+                    path,
+                    root.display()
+                );
+            }
+        }
+    }
+
+    Ok(p.to_path_buf())
+}
 
 #[derive(Parser)]
 #[command(name = "evergreenctl")]
@@ -153,6 +214,63 @@ enum Commands {
         #[arg(long, default_value = "images")]
         images_dir: String,
     },
+    /// Parallel validation (5k+ scale, uses rayon)
+    ValidateParallel {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+        /// Output format (text, json)
+        #[arg(short, long, default_value = "text")]
+        format: String,
+    },
+    /// Auto-version pipeline (detect upstream changes, auto-bump)
+    AutoVersion {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+        /// Dry run (don't write files)
+        #[arg(long)]
+        dry_run: bool,
+        /// Allow major version jumps
+        #[arg(long)]
+        allow_major: bool,
+        /// Output format (text, json)
+        #[arg(short, long, default_value = "text")]
+        format: String,
+    },
+    /// Build/rebuild SQLite registry index
+    Index {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+        /// Path to SQLite database
+        #[arg(long, default_value = ".registry.db")]
+        db_path: String,
+    },
+    /// Query registry index statistics
+    IndexStats {
+        /// Path to SQLite database
+        #[arg(long, default_value = ".registry.db")]
+        db_path: String,
+        /// Output format (text, json)
+        #[arg(short, long, default_value = "text")]
+        format: String,
+    },
+    /// Query images by tier from registry index
+    IndexQuery {
+        /// Path to SQLite database
+        #[arg(long, default_value = ".registry.db")]
+        db_path: String,
+        /// Filter by tier (1, 2, or 3)
+        #[arg(long)]
+        tier: Option<u8>,
+        /// Filter by source type
+        #[arg(long)]
+        source_type: Option<String>,
+        /// Output format (text, json)
+        #[arg(short, long, default_value = "text")]
+        format: String,
+    },
     /// Generate shell completions
     Completion {
         #[arg(long, value_enum)]
@@ -165,6 +283,75 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
     let cli = Cli::parse();
+
+    // Validate all path arguments for traversal attacks
+    // This applies to every subcommand that accepts a path
+    match &cli.command {
+        Commands::Discover { image, .. } => {
+            validate_path(image, None)?;
+        }
+        Commands::Verify { path } => {
+            validate_path(path, None)?;
+        }
+        Commands::Generate { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Commands::Drift { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Commands::Sign { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Commands::Snapshot { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Commands::Audit { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Commands::Migrate { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Commands::Validate { path } => {
+            validate_path(path, None)?;
+        }
+        Commands::VerifyAll { path } => {
+            validate_path(path, None)?;
+        }
+        Commands::Outdated { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Commands::Bump { image, .. } => {
+            // Bump uses image name (not a full path), validate it's a simple name
+            if image.contains('/') || image.contains("..") || image.starts_with('.') {
+                anyhow::bail!(
+                    "Invalid image name '{}': must be a simple name without path separators",
+                    image
+                );
+            }
+        }
+        Commands::PinDigests { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Commands::Deprecated { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Commands::Changelog { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Commands::ValidateStrict { images_dir } => {
+            validate_path(images_dir, None)?;
+        }
+        Commands::ValidateParallel { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Commands::AutoVersion { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Commands::Index { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        _ => {} // CiDiff, Report, Completion, IndexStats, IndexQuery don't take user path args
+    }
 
     match cli.command {
         Commands::Discover {
@@ -476,6 +663,110 @@ async fn main() -> anyhow::Result<()> {
 
         Commands::ValidateStrict { images_dir } => {
             evergreenctl::validate_strict::cmd_validate_strict(&images_dir)?;
+        }
+
+        Commands::ValidateParallel { images_dir, format } => {
+            let report = evergreenctl::validate_parallel::validate_all_parallel(&images_dir)?;
+            match format.as_str() {
+                "json" => {
+                    println!("{}", serde_json::to_string_pretty(&report)?);
+                }
+                _ => {
+                    println!("{}", evergreenctl::validate_parallel::format_report_text(&report));
+                }
+            }
+            if report.images_failed > 0 {
+                anyhow::bail!(
+                    "{} images failed validation ({} violations)",
+                    report.images_failed, report.total_violations
+                );
+            }
+        }
+
+        Commands::AutoVersion { images_dir, dry_run, allow_major, format } => {
+            let report = evergreenctl::auto_version::run_auto_version(
+                &images_dir, dry_run, allow_major
+            ).await?;
+            match format.as_str() {
+                "json" => {
+                    println!("{}", serde_json::to_string_pretty(&report)?);
+                }
+                _ => {
+                    println!("{}", evergreenctl::auto_version::format_report_text(&report));
+                }
+            }
+            if report.images_failed > 0 {
+                anyhow::bail!(
+                    "{} images failed auto-version check",
+                    report.images_failed
+                );
+            }
+        }
+
+        Commands::Index { images_dir, db_path } => {
+            let db_path = Path::new(&db_path);
+            let conn = evergreenctl::registry_index::open_index(db_path)?;
+            let count = evergreenctl::registry_index::build_index(&conn, Path::new(&images_dir))?;
+            println!("Indexed {} images into {}", count, db_path.display());
+        }
+
+        Commands::IndexStats { db_path, format } => {
+            let db_path = Path::new(&db_path);
+            let conn = evergreenctl::registry_index::open_index(db_path)?;
+            let stats = evergreenctl::registry_index::get_stats(&conn)?;
+            match format.as_str() {
+                "json" => {
+                    println!("{}", serde_json::to_string_pretty(&stats)?);
+                }
+                _ => {
+                    println!("{}", evergreenctl::registry_index::format_stats_text(&stats));
+                }
+            }
+        }
+
+        Commands::IndexQuery { db_path, tier, source_type, format } => {
+            let db_path = Path::new(&db_path);
+            let conn = evergreenctl::registry_index::open_index(db_path)?;
+
+            if let Some(t) = tier {
+                let records = evergreenctl::registry_index::query_by_tier(&conn, t)?;
+                match format.as_str() {
+                    "json" => {
+                        println!("{}", serde_json::to_string_pretty(&records)?);
+                    }
+                    _ => {
+                        println!("Tier {} images ({}):", t, records.len());
+                        for r in &records {
+                            let status = r.build_status.as_deref().unwrap_or("unknown");
+                            println!("  {:<30} {:<15} {:<20} {}", r.name, r.version, r.source_type, status);
+                        }
+                    }
+                }
+            } else if let Some(st) = source_type {
+                let mut stmt = conn.prepare(
+                    "SELECT name, version, tier, source_type, build_status
+                     FROM images WHERE source_type = ?1 ORDER BY name"
+                )?;
+                let records: Vec<(String, String, i32, String, Option<String>)> = stmt
+                    .query_map(params![st], |row| {
+                        Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?))
+                    })?
+                    .collect::<Result<Vec<_>, _>>()?;
+                match format.as_str() {
+                    "json" => {
+                        println!("{}", serde_json::to_string_pretty(&records)?);
+                    }
+                    _ => {
+                        println!("Source type '{}' images ({}):", st, records.len());
+                        for (name, ver, tier, _, status) in &records {
+                            let s = status.as_deref().unwrap_or("unknown");
+                            println!("  {:<30} {:<15} tier{} {}", name, ver, tier, s);
+                        }
+                    }
+                }
+            } else {
+                anyhow::bail!("Specify --tier or --source-type to filter");
+            }
         }
 
         Commands::Completion { shell } => {

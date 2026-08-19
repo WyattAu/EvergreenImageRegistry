@@ -24,3 +24,5 @@ expose = [2181, 9101]
 
 [labels]
 "evergreen.entrypoint.pattern" = "repack-upstream-init"
+
+"evergreen.image.tier" = "standard"

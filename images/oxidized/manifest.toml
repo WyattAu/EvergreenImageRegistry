@@ -21,3 +21,5 @@ expose = [9101]
 [labels]
 "org.opencontainers.image.title" = "oxidized"
 "evergreen.base.image" = "wolfi"
+
+"evergreen.image.tier" = "standard"

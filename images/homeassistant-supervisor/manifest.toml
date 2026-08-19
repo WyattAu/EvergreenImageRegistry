@@ -20,3 +20,6 @@ cmd = ["--help"]
 
 [ports]
 expose = [9101]
+
+[labels]
+"evergreen.image.tier" = "standard"

@@ -1,0 +1,236 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY - SBOM GENERATION
+# =============================================================================
+# Generates SBOMs (SPDX 2.3) for all images using Syft.
+# Runs on schedule and can be triggered manually.
+#
+# Schedule: Weekly on Wednesday at 04:00 UTC
+# Manual:   workflow_dispatch with optional image filter
+# =============================================================================
+
+name: Generate SBOMs
+
+on:
+  schedule:
+    - cron: '0 4 * * 3'  # Weekly on Wednesday at 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      image_filter:
+        description: 'Image name to generate SBOM for (empty = all)'
+        required: false
+        default: ''
+        type: string
+      force:
+        description: 'Regenerate even if SBOM exists'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: generate-sboms
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-sboms:
+    name: Generate SBOMs
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft version
+
+      - name: Find images needing SBOMs
+        id: find
+        run: |
+          FILTER="${{ inputs.image_filter }}"
+          FORCE="${{ inputs.force }}"
+
+          # Find all active image directories
+          find images -maxdepth 1 -type d \
+            ! -name images \
+            ! -name '_wip' \
+            ! -name '_archive' \
+            ! -name 'tests' \
+            | sed 's|images/||' | sort > /tmp/all-images.txt
+
+          # Filter if specified
+          if [ -n "$FILTER" ]; then
+            grep "^${FILTER}$" /tmp/all-images.txt > /tmp/target-images.txt || true
+          else
+            cp /tmp/all-images.txt /tmp/target-images.txt
+          fi
+
+          # Skip images that already have SBOMs (unless force)
+          if [ "$FORCE" != "true" ]; then
+            while IFS= read -r img; do
+              if [ -f "images/${img}/sbom.spdx.json" ]; then
+                continue
+              fi
+              echo "$img"
+            done < /tmp/target-images.txt > /tmp/pending-images.txt
+          else
+            cp /tmp/target-images.txt /tmp/pending-images.txt
+          fi
+
+          TOTAL=$(wc -l < /tmp/pending-images.txt)
+          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL} images needing SBOMs"
+
+          # Create batches of 50
+          python3 << 'PYEOF'
+          import json, os
+          batch_size = 50
+          with open("/tmp/pending-images.txt") as f:
+              images = [l.strip() for l in f if l.strip()]
+          batches = []
+          for i in range(0, len(images), batch_size):
+              chunk = images[i:i + batch_size]
+              batches.append({
+                  "batch": i // batch_size,
+                  "images": ",".join(chunk),
+                  "count": len(chunk),
+              })
+          matrix = json.dumps({"include": batches}) if batches else '{"include":[]}'
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"matrix={matrix}\n")
+          print(f"Created {len(batches)} batches")
+          PYEOF
+
+      - name: Generate SBOMs (Batch ${{ matrix.batch }})
+        if: steps.find.outputs.total != '0'
+        needs: find
+        runs-on: ubuntu-latest
+        timeout-minutes: 180
+        strategy:
+          fail-fast: false
+          matrix: ${{ fromJson(needs.find.outputs.matrix) }}
+        steps:
+          - name: Checkout
+            uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+
+          - name: Login to GHCR
+            uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+            with:
+              registry: ghcr.io
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: Install Syft
+            run: |
+              curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+          - name: Generate SBOMs
+            run: |
+              IFS=',' read -ra IMAGES <<< "${{ matrix.images }}"
+              GENERATED=0
+              SKIPPED=0
+              FAILED=0
+
+              for img in "${IMAGES[@]}"; do
+                [ -z "$img" ] && continue
+
+                # Skip if SBOM exists
+                if [ -f "images/${img}/sbom.spdx.json" ] && [ "${{ inputs.force }}" != "true" ]; then
+                  SKIPPED=$((SKIPPED + 1))
+                  continue
+                fi
+
+                # Skip if no Dockerfile
+                if [ ! -f "images/${img}/Dockerfile" ]; then
+                  echo "SKIP: ${img} (no Dockerfile)"
+                  SKIPPED=$((SKIPPED + 1))
+                  continue
+                fi
+
+                echo "::group::SBOM ${img}"
+
+                # Try to pull from GHCR first
+                REF="ghcr.io/${{ github.repository_owner }}/${img}:latest"
+                if docker pull "$REF" > /dev/null 2>&1; then
+                  # Generate SBOM from pulled image
+                  if syft "$REF" -o spdx-json="images/${img}/sbom.spdx.json" 2>/dev/null; then
+                    GENERATED=$((GENERATED + 1))
+                    echo "Generated SBOM for ${img} (from GHCR)"
+                  else
+                    echo "::warning::Failed to generate SBOM for ${img}"
+                    FAILED=$((FAILED + 1))
+                  fi
+                else
+                  # Build locally and generate SBOM
+                  if docker buildx build \
+                      --platform linux/amd64 \
+                      -t "sbom-temp:${img}" \
+                      --load \
+                      "images/${img}" > /dev/null 2>&1; then
+                    if syft "sbom-temp:${img}" -o spdx-json="images/${img}/sbom.spdx.json" 2>/dev/null; then
+                      GENERATED=$((GENERATED + 1))
+                      echo "Generated SBOM for ${img} (from local build)"
+                    else
+                      echo "::warning::Failed to generate SBOM for ${img}"
+                      FAILED=$((FAILED + 1))
+                    fi
+                    docker rmi "sbom-temp:${img}" > /dev/null 2>&1 || true
+                  else
+                    echo "::warning::Failed to build ${img} for SBOM generation"
+                    FAILED=$((FAILED + 1))
+                  fi
+                fi
+
+                echo "::endgroup::"
+              done
+
+              echo "Batch ${{ matrix.batch }}: ${GENERATED} generated, ${SKIPPED} skipped, ${FAILED} failed"
+
+      - name: Verify SBOMs
+        if: steps.find.outputs.total != '0'
+        run: |
+          echo "=== SBOM Verification ==="
+          TOTAL=$(find images -maxdepth 2 -name 'sbom.spdx.json' ! -path '*_wip*' ! -path '*_archive*' | wc -l)
+          echo "Total SBOMs in active images: ${TOTAL}"
+
+          # Validate SBOM format
+          ERRORS=0
+          for sbom in images/*/sbom.spdx.json; do
+            [ -f "$sbom" ] || continue
+            if ! python3 -c "import json; d=json.load(open('$sbom')); assert 'spdxVersion' in d" 2>/dev/null; then
+              echo "INVALID: $sbom"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::warning::${ERRORS} invalid SBOMs found"
+          else
+            echo "All SBOMs valid"
+          fi
+
+      - name: Generate summary
+        if: always()
+        run: |
+          TOTAL=$(find images -maxdepth 2 -name 'sbom.spdx.json' ! -path '*_wip*' ! -path '*_archive*' | wc -l)
+          {
+            echo "## SBOM Generation Summary"
+            echo ""
+            echo "| Metric | Count |"
+            echo "|--------|-------|"
+            echo "| Target images | ${{ steps.find.outputs.total }} |"
+            echo "| Total SBOMs (active) | ${TOTAL} |"
+            echo ""
+            echo "SBOMs are generated in SPDX 2.3 format using Syft."
+          } >> "$GITHUB_STEP_SUMMARY"

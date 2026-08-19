@@ -274,7 +274,7 @@ proptest! {
             manifest_base: "scratch".into(),
             manifest_tier: "2".into(),
             dockerfile_exists: true,
-            dockerfile_content: "FROM scratch\nUSER 65532:65532\n".into(),
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\n".into(),
             sbom_exists: false,
             sbom_valid: false,
         };
@@ -313,6 +313,113 @@ proptest! {
         for code in &["C003", "C004", "C005", "C006"] {
             let check = results.iter().find(|r| r.code == *code).unwrap();
             prop_assert_eq!(check.status, ConstraintStatus::Skip);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property: Trait-based constraint system invariants
+// ---------------------------------------------------------------------------
+
+proptest! {
+    #[test]
+    fn test_all_constraints_have_unique_codes(name in "[a-z][a-z0-9]{0,10}") {
+        use evergreenctl::validate_parallel::{check_constraints, ConstraintContext};
+
+        let ctx = ConstraintContext {
+            name: &name,
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: name.clone(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/repo".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nARG VERSION=1.0.0\n".into(),
+            sbom_exists: true,
+            sbom_valid: true,
+        };
+
+        let results = check_constraints(&ctx);
+        let codes: Vec<&str> = results.iter().map(|r| r.code.as_str()).collect();
+        let unique_codes: std::collections::HashSet<_> = codes.iter().collect();
+        prop_assert_eq!(codes.len(), unique_codes.len(), "Constraint codes must be unique");
+    }
+
+    #[test]
+    fn test_constraint_count_is_14(name in "[a-z][a-z0-9]{0,10}") {
+        use evergreenctl::validate_parallel::{check_constraints, ConstraintContext};
+
+        let ctx = ConstraintContext {
+            name: &name,
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: name.clone(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nARG VERSION=1.0.0\n".into(),
+            sbom_exists: true,
+            sbom_valid: true,
+        };
+
+        let results = check_constraints(&ctx);
+        prop_assert_eq!(results.len(), 14, "Should have exactly 14 constraints");
+    }
+
+    #[test]
+    fn test_valid_images_pass_all_block_constraints(name in "[a-z][a-z0-9]{0,10}") {
+        use evergreenctl::validate_parallel::{check_constraints, ConstraintContext, ConstraintStatus, Severity};
+
+        let ctx = ConstraintContext {
+            name: &name,
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: name.clone(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/repo".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nARG VERSION=1.0.0\n".into(),
+            sbom_exists: true,
+            sbom_valid: true,
+        };
+
+        let results = check_constraints(&ctx);
+        let block_failures: Vec<_> = results.iter()
+            .filter(|r| r.severity == Severity::Block && r.status == ConstraintStatus::Fail)
+            .collect();
+        prop_assert!(block_failures.is_empty(), "Valid images should pass all Block constraints, but got: {:?}", block_failures);
+    }
+
+    #[test]
+    fn test_each_constraint_returns_valid_result(name in "[a-z][a-z0-9]{0,10}") {
+        use evergreenctl::validate_parallel::{check_constraints, ConstraintContext};
+
+        let ctx = ConstraintContext {
+            name: &name,
+            tier: 2,
+            manifest_exists: true,
+            manifest_name: name.clone(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "".into(),
+            manifest_base: "wolfi-base".into(),
+            manifest_tier: "2".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base\nUSER 65532:65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+
+        let results = check_constraints(&ctx);
+        for r in &results {
+            prop_assert!(!r.code.is_empty(), "Constraint code must not be empty");
+            prop_assert!(!r.message.is_empty(), "Constraint message must not be empty");
+            prop_assert_eq!(&r.image, name.as_str(), "Image name must match");
         }
     }
 }

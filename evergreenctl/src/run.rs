@@ -35,6 +35,10 @@ pub async fn execute(command: Commands) -> anyhow::Result<()> {
             Ok(())
         }
 
+        Commands::Diff { image_dir, generated } => {
+            handle_diff(&image_dir, generated)
+        }
+
         Commands::Sign { image_dir } => {
             crate::sign::cmd_sign(&image_dir)?;
             Ok(())
@@ -235,6 +239,69 @@ async fn handle_discover(
             anyhow::bail!("Dockerfile not found at {}", dockerfile.display());
         }
     }
+    Ok(())
+}
+
+fn handle_diff(image_dir: &str, show_generated: bool) -> anyhow::Result<()> {
+    let dir = Path::new(image_dir);
+    let manifest_path = dir.join("manifest.toml");
+    let dockerfile_path = dir.join("Dockerfile");
+
+    if !manifest_path.exists() {
+        anyhow::bail!("No manifest.toml found at {}", manifest_path.display());
+    }
+
+    let manifest = crate::manifest::Manifest::from_file(&manifest_path)?;
+    let gen = crate::generate::DockerfileGenerator::new(manifest.clone());
+    let generated = gen.generate()?;
+
+    if show_generated || !dockerfile_path.exists() {
+        // Just show the generated Dockerfile
+        println!("Generated Dockerfile for {}:", manifest.name());
+        println!("---");
+        println!("{}", generated);
+        return Ok(());
+    }
+
+    // Show diff between generated and actual
+    let actual = std::fs::read_to_string(&dockerfile_path)?;
+
+    let name = manifest.name();
+    println!("Diff: {} (generated vs actual)", name);
+    println!("=== Generated (from manifest.toml) ===");
+    println!("---");
+
+    // Simple line-by-line diff
+    let gen_lines: Vec<&str> = generated.lines().collect();
+    let act_lines: Vec<&str> = actual.lines().collect();
+
+    let mut diffs = 0;
+    let max_lines = gen_lines.len().max(act_lines.len());
+
+    for i in 0..max_lines {
+        let gen_line = gen_lines.get(i).unwrap_or(&"");
+        let act_line = act_lines.get(i).unwrap_or(&"");
+
+        if gen_line != act_line {
+            diffs += 1;
+            if gen_line.is_empty() {
+                println!("- {}", act_line);
+            } else if act_line.is_empty() {
+                println!("+ {}", gen_line);
+            } else {
+                println!("- {}", act_line);
+                println!("+ {}", gen_line);
+            }
+        }
+    }
+
+    println!("---");
+    if diffs == 0 {
+        println!("No differences found.");
+    } else {
+        println!("{} line(s) differ.", diffs);
+    }
+
     Ok(())
 }
 

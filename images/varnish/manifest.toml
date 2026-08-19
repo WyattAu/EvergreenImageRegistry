@@ -21,3 +21,6 @@ entrypoint = []
 
 [ports]
 expose = [6081, 9101]
+
+[labels]
+"evergreen.image.tier" = "standard"

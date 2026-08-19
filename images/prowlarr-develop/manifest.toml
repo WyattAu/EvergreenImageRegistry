@@ -22,3 +22,5 @@ expose = [9696, 9101]
 "org.opencontainers.image.title" = "prowlarr-develop"
 "evergreen.health.type" = "exec"
 "evergreen.metrics.native" = "ztunnel"
+
+"evergreen.image.tier" = "standard"

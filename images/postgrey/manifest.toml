@@ -23,3 +23,5 @@ expose = [10023, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.health.type" = "exec"
 "evergreen.metrics.native" = "ztunnel"
+
+"evergreen.image.tier" = "standard"

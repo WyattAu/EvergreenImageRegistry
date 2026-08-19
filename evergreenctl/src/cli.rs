@@ -108,6 +108,14 @@ pub enum Commands {
         /// Path to image directory
         image_dir: String,
     },
+    /// Compare two versions of a Dockerfile or show generated vs actual
+    Diff {
+        /// Path to image directory
+        image_dir: String,
+        /// Show diff of generated Dockerfile vs actual (default)
+        #[arg(long)]
+        generated: bool,
+    },
     /// Generate Cosign signing commands for an image
     Sign {
         /// Path to image directory

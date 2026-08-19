@@ -1,22 +1,33 @@
-use anyhow::{Context, Result};
 use sha2::{Digest, Sha256, Sha512};
 use tracing::info;
 
+use crate::error::{EvergreenError, Result};
+
 /// Compute SHA-256 of a file
 pub fn sha256_file(path: &std::path::Path) -> Result<String> {
-    let mut file = std::fs::File::open(path)
-        .with_context(|| format!("Failed to open file: {}", path.display()))?;
+    let mut file = std::fs::File::open(path).map_err(|e| EvergreenError::ReadError {
+        path: path.to_path_buf(),
+        source: e,
+    })?;
     let mut hasher = Sha256::new();
-    std::io::copy(&mut file, &mut hasher)?;
+    std::io::copy(&mut file, &mut hasher).map_err(|e| EvergreenError::ReadError {
+        path: path.to_path_buf(),
+        source: e,
+    })?;
     Ok(hex::encode(hasher.finalize()))
 }
 
 /// Compute SHA-512 of a file
 pub fn sha512_file(path: &std::path::Path) -> Result<String> {
-    let mut file = std::fs::File::open(path)
-        .with_context(|| format!("Failed to open file: {}", path.display()))?;
+    let mut file = std::fs::File::open(path).map_err(|e| EvergreenError::ReadError {
+        path: path.to_path_buf(),
+        source: e,
+    })?;
     let mut hasher = Sha512::new();
-    std::io::copy(&mut file, &mut hasher)?;
+    std::io::copy(&mut file, &mut hasher).map_err(|e| EvergreenError::ReadError {
+        path: path.to_path_buf(),
+        source: e,
+    })?;
     Ok(hex::encode(hasher.finalize()))
 }
 
@@ -25,7 +36,9 @@ pub fn compute_checksum(path: &std::path::Path, algorithm: &str) -> Result<Strin
     match algorithm.to_lowercase().as_str() {
         "sha256" => sha256_file(path),
         "sha512" => sha512_file(path),
-        other => anyhow::bail!("Unsupported checksum algorithm: {}", other),
+        other => Err(EvergreenError::UnsupportedAlgorithm {
+            algorithm: other.to_string(),
+        }),
     }
 }
 
@@ -92,20 +105,34 @@ pub async fn download_and_verify(
         .header("User-Agent", crate::USER_AGENT)
         .send()
         .await
-        .context("Download failed")?;
+        .map_err(|e| EvergreenError::DownloadError {
+            url: url.to_string(),
+            reason: e.to_string(),
+        })?;
 
     if !resp.status().is_success() {
-        anyhow::bail!("Download returned status: {}", resp.status());
+        return Err(EvergreenError::DownloadError {
+            url: url.to_string(),
+            reason: format!("HTTP {}", resp.status()),
+        });
     }
 
-    let bytes = resp.bytes().await.context("Failed to read response body")?;
+    let bytes = resp.bytes().await.map_err(|e| EvergreenError::DownloadError {
+        url: url.to_string(),
+        reason: e.to_string(),
+    })?;
 
     if let Some(parent) = dest.parent() {
-        std::fs::create_dir_all(parent)?;
+        std::fs::create_dir_all(parent).map_err(|e| EvergreenError::WriteError {
+            path: dest.to_path_buf(),
+            source: e,
+        })?;
     }
 
-    std::fs::write(dest, &bytes)
-        .with_context(|| format!("Failed to write to: {}", dest.display()))?;
+    std::fs::write(dest, &bytes).map_err(|e| EvergreenError::WriteError {
+        path: dest.to_path_buf(),
+        source: e,
+    })?;
 
     info!("Downloaded {} bytes to {}", bytes.len(), dest.display());
 
@@ -221,7 +248,7 @@ mod tests {
         let result = compute_checksum(&path, "md5");
         assert!(result.is_err());
         let err = result.unwrap_err().to_string();
-        assert!(err.contains("Unsupported checksum algorithm"));
+        assert!(err.contains("unsupported checksum algorithm"), "Error was: {}", err);
         let _ = std::fs::remove_file(&path);
     }
 
@@ -268,7 +295,7 @@ mod tests {
         if sbom_path.exists() {
             let content = std::fs::read_to_string(sbom_path);
             assert!(content.is_ok(), "SBOM file should be readable");
-            let json: Result<serde_json::Value, _> = serde_json::from_str(&content.unwrap());
+            let json: std::result::Result<serde_json::Value, _> = serde_json::from_str(&content.unwrap());
             assert!(json.is_ok(), "SBOM should be valid JSON");
             let data = json.unwrap();
             assert!(

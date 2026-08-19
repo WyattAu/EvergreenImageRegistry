@@ -11,13 +11,13 @@
 //   - Structured JSON/text output for CI integration
 // =============================================================================
 
-use anyhow::{Context, Result};
 use rayon::prelude::*;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
 
 use crate::dockerfile_utils::*;
+use crate::error::{EvergreenError, Result};
 
 // ---------------------------------------------------------------------------
 // Data types
@@ -471,14 +471,18 @@ pub fn check_constraints(ctx: &ConstraintContext) -> Vec<ConstraintResult> {
 pub fn validate_all_parallel(images_dir: &str) -> Result<ValidationReport> {
     let dir = Path::new(images_dir);
     if !dir.exists() {
-        anyhow::bail!("Images directory not found: {}", images_dir);
+        return Err(EvergreenError::DirectoryNotFound {
+            path: dir.to_path_buf(),
+        });
     }
 
     let start = std::time::Instant::now();
 
     // Collect all image directories first (sequential, fast)
     let image_dirs = crate::dockerfile_utils::iter_image_dirs(dir)
-        .context("Failed to scan image directories")?;
+        .map_err(|_e| EvergreenError::DirectoryNotFound {
+            path: dir.to_path_buf(),
+        })?;
 
     let total = image_dirs.len();
     tracing::info!("Validating {} images in parallel...", total);
@@ -486,7 +490,7 @@ pub fn validate_all_parallel(images_dir: &str) -> Result<ValidationReport> {
     // Parallel validation using rayon
     let results: Vec<ImageValidationResult> = image_dirs
         .par_iter()
-        .map(|img| validate_single_image(img))
+        .map(validate_single_image)
         .collect();
 
     let duration_ms = start.elapsed().as_millis() as u64;

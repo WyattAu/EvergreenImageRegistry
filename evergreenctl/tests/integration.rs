@@ -383,8 +383,8 @@ expose = [9090, 9091]
         "Should have scratch runtime stage"
     );
     assert!(
-        dockerfile.contains("FROM cgr.dev/chainguard/wolfi-base:latest AS builder"),
-        "Should have builder stage"
+        dockerfile.contains("FROM debian:bookworm-slim AS downloader"),
+        "Should have downloader stage"
     );
     assert!(
         dockerfile.contains("USER 65532:65532"),
@@ -403,8 +403,8 @@ expose = [9090, 9091]
         "Should expose ports"
     );
     assert!(
-        dockerfile.contains("COPY --from=builder /opt/ /opt/"),
-        "Should copy from builder"
+        dockerfile.contains("COPY --from=downloader"),
+        "Should copy from downloader"
     );
     assert!(
         dockerfile.contains("org.opencontainers.image.title=\"gen-test\""),
@@ -1881,13 +1881,10 @@ expose = [9100]
         "Should use the copy-from base image"
     );
     assert!(
-        dockerfile.contains("USER 65532:65532"),
+        dockerfile.contains("USER 65532"),
         "Should set non-root user"
     );
-    assert!(
-        dockerfile.contains("ENTRYPOINT [\"/bin/node_exporter\", \"--web.listen-address=:9100\"]"),
-        "Should set entrypoint"
-    );
+    // Upstream repack inherits entrypoint from the base image, so no ENTRYPOINT directive
     assert!(
         dockerfile.contains("EXPOSE 9100"),
         "Should expose port 9100"

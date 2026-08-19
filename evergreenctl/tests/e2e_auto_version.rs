@@ -316,29 +316,19 @@ fn test_e2e_registry_index_build_history() {
     .unwrap();
 
     // Record some build events
-    evergreenctl::registry_index::record_build(
-        &conn,
-        "redis",
-        "abc123",
-        "def456",
-        "pass",
-        Some(45000),
-        Some(12582912),
-        Some(7),
+    let redis_build = evergreenctl::registry_index::BuildRecord::new(
+        "redis", "abc123", "def456", "pass",
     )
-    .unwrap();
+    .with_duration_ms(45000)
+    .with_size_bytes(12582912)
+    .with_layer_count(7);
+    evergreenctl::registry_index::record_build(&conn, &redis_build).unwrap();
 
-    evergreenctl::registry_index::record_build(
-        &conn,
-        "nginx",
-        "ghi789",
-        "jkl012",
-        "fail",
-        Some(30000),
-        None,
-        None,
+    let nginx_build = evergreenctl::registry_index::BuildRecord::new(
+        "nginx", "ghi789", "jkl012", "fail",
     )
-    .unwrap();
+    .with_duration_ms(30000);
+    evergreenctl::registry_index::record_build(&conn, &nginx_build).unwrap();
 
     // Query build history
     let mut stmt = conn

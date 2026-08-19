@@ -65,29 +65,29 @@ impl DockerfileGenerator {
         s.push_str(&format!("FROM {} AS downloader\n", DEFAULT_BUILDER_BASE));
         s.push_str("ARG VERSION\nARG TARGETARCH\n");
         s.push_str(
-            "RUN apt-get update && apt-get install -y --no-install-recommends \\\n\
-             \x20   curl ca-certificates && \\\n\
+            "RUN apt-get update && apt-get install -y --no-install-recommends \\\
+             \x20   curl ca-certificates && \\\
              \x20   rm -rf /var/lib/apt/lists/*\n\n",
         );
 
         // Download logic — supports tar.gz, zip, and raw binaries
         let url = &m.source.url;
         s.push_str(&format!(
-            "RUN arch=$(case ${{TARGETARCH}} in \\\n\
-             \x20   amd64) echo \"amd64\";; \\\n\
-             \x20   arm64) echo \"arm64\";; \\\n\
-             \x20   s390x) echo \"s390x\";; \\\n\
-             \x20   ppc64le) echo \"ppc64le\";; \\\n\
-             \x20   *) echo \"amd64\";; \\\n\
-             \x20   esac) && \\\n\
-             \x20   curl -fsSL \"{url}\" -o /tmp/download && \\\n\
-             \x20   chmod +x /tmp/download || \\\n\
-             \x20   (curl -fsSL \"{url}\" -o /tmp/download.tar.gz && \\\n\
-             \x20    tar -xzf /tmp/download.tar.gz -C /tmp && \\\n\
-             \x20    chmod +x /tmp/{name}) || \\\n\
-             \x20   (apt-get update && apt-get install -y unzip && \\\n\
-             \x20    curl -fsSL \"{url}\" -o /tmp/download.zip && \\\n\
-             \x20    unzip /tmp/download.zip -d /tmp && \\\n\
+            "RUN arch=$(case ${{TARGETARCH}} in \\\
+             \x20   amd64) echo \"amd64\";; \\\
+             \x20   arm64) echo \"arm64\";; \\\
+             \x20   s390x) echo \"s390x\";; \\\
+             \x20   ppc64le) echo \"ppc64le\";; \\\
+             \x20   *) echo \"amd64\";; \\\
+             \x20   esac) && \\\
+             \x20   curl -fsSL \"{url}\" -o /tmp/download && \\\
+             \x20   chmod +x /tmp/download || \\\
+             \x20   (curl -fsSL \"{url}\" -o /tmp/download.tar.gz && \\\
+             \x20    tar -xzf /tmp/download.tar.gz -C /tmp && \\\
+             \x20    chmod +x /tmp/{name}) || \\\
+             \x20   (apt-get update && apt-get install -y unzip && \\\
+             \x20    curl -fsSL \"{url}\" -o /tmp/download.zip && \\\
+             \x20    unzip /tmp/download.zip -d /tmp && \\\
              \x20    chmod +x /tmp/{name})\n\n",
             url = url,
             name = m.name()
@@ -155,9 +155,8 @@ impl DockerfileGenerator {
             uid,
             m.name()
         ));
-        s.push_str(&format!("USER {}\n\n", uid));
 
-        // Env + expose
+        // Env + expose (now includes USER)
         s.push_str(&self.user_env_expose());
 
         // Healthcheck (TCP check — Chainguard inherits upstream entrypoint)
@@ -188,10 +187,10 @@ impl DockerfileGenerator {
         s.push_str("FROM rust:bookworm AS builder\n");
         s.push_str("ARG VERSION\n");
         s.push_str(&format!(
-            "RUN curl -fsSL \"{url}\" -o /tmp/src.tar.gz && \\\n\
-             \x20   tar -xzf /tmp/src.tar.gz -C /tmp && \\\n\
-             \x20   cd /tmp/*{name}* && \\\n\
-             \x20   cargo build --release && \\\n\
+            "RUN curl -fsSL \"{url}\" -o /tmp/src.tar.gz && \\\
+             \x20   tar -xzf /tmp/src.tar.gz -C /tmp && \\\
+             \x20   cd /tmp/*{name}* && \\\
+             \x20   cargo build --release && \\\
              \x20   cp target/release/{name} /{name}\n\n",
             url = m.source.url,
             name = m.name()
@@ -243,18 +242,12 @@ impl DockerfileGenerator {
         s.push_str(m.name());
         s.push_str(" ca-certificates && \\\n");
         s.push_str(&format!(
-            "    mkdir -p /var/lib/{} /var/log/{} /var/run/{} && \\\n\
+            "    mkdir -p /var/lib/{} /var/log/{} /var/run/{} && \\\
              \x20   chown -R 65532:65532 /var/lib/{} /var/log/{} /var/run/{}\n\n",
-            m.name(),
-            m.name(),
-            m.name(),
-            m.name(),
-            m.name(),
-            m.name()
+            m.name(), m.name(), m.name(), m.name(), m.name(), m.name()
         ));
 
         s.push_str("COPY --from=shim /shim /usr/local/bin/shim\n");
-        s.push_str("USER 65532:65532\n\n");
 
         s.push_str(&self.user_env_expose());
         s.push_str(&self.healthcheck());
@@ -294,14 +287,18 @@ impl DockerfileGenerator {
         s.push_str("USER 0\n");
         s.push_str("COPY --from=shim /shim /usr/local/bin/shim\n");
 
-        // Try to set non-root, but allow override
+        // Fix ownership for non-root
         let uid = self.extract_uid();
         if uid != "0" {
-            s.push_str(&format!("USER {}\n\n", uid));
-        } else {
-            s.push('\n');
+            s.push_str(&format!(
+                "RUN chown -R {}:{} /var/lib/{} 2>/dev/null || true\n",
+                uid,
+                uid,
+                m.name()
+            ));
         }
 
+        // Env + expose (now includes USER)
         s.push_str(&self.user_env_expose());
         s.push_str(&self.healthcheck_tcp_only());
         s.push_str(&self.labels_with_exemption("repack-upstream-init"));
@@ -332,6 +329,12 @@ impl DockerfileGenerator {
         let m = &self.manifest;
         let mut s = String::new();
 
+        // Non-root user
+        let user = m.user();
+        if !user.is_empty() {
+            s.push_str(&format!("USER {}\n\n", user));
+        }
+
         // Environment
         s.push_str("ENV SHIM_METRICS_ENABLED=\"true\"\n");
 
@@ -352,7 +355,7 @@ impl DockerfileGenerator {
         let primary_port = ports.first().map(|s| s.as_str()).unwrap_or("8080");
 
         format!(
-            "HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \\\n\
+            "HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \\\
              \x20 CMD [\"/usr/local/bin/shim\", \"healthcheck\", \"--tcp\", \"127.0.0.1:{}\"]\n\n",
             primary_port
         )
@@ -365,7 +368,7 @@ impl DockerfileGenerator {
         let primary_port = ports.first().map(|s| s.as_str()).unwrap_or("8080");
 
         format!(
-            "HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \\\n\
+            "HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \\\
              \x20 CMD [\"/usr/local/bin/shim\", \"healthcheck\", \"--tcp\", \"127.0.0.1:{}\"]\n\n",
             primary_port
         )
@@ -420,6 +423,11 @@ impl DockerfileGenerator {
 
         if !exemption.is_empty() {
             labels.push(format!("evergreen.entrypoint.pattern=\"{}\"", exemption));
+        }
+
+        // Include custom labels from the manifest [labels] section
+        for (key, value) in &m.labels {
+            labels.push(format!("{}=\"{}\"", key, value));
         }
 
         // Multi-label format (max 3 per line)

@@ -226,6 +226,28 @@ pub struct ImageDir {
     pub sbom_path: Option<PathBuf>,
 }
 
+impl ImageDir {
+    /// Load the manifest from this image directory.
+    ///
+    /// Returns `None` if no manifest.toml exists, or an error if parsing fails.
+    pub fn manifest(&self) -> Option<Result<crate::manifest::Manifest>> {
+        self.manifest_path.as_ref().map(|p| {
+            crate::manifest::Manifest::from_file(p)
+                .with_context(|| format!("Failed to parse manifest for {}", self.name))
+        })
+    }
+
+    /// Read the Dockerfile content for this image directory.
+    ///
+    /// Returns `None` if no Dockerfile exists, or an error if reading fails.
+    pub fn dockerfile_content(&self) -> Option<Result<String>> {
+        self.dockerfile_path.as_ref().map(|p| {
+            std::fs::read_to_string(p)
+                .with_context(|| format!("Failed to read Dockerfile for {}", self.name))
+        })
+    }
+}
+
 /// Iterate over image subdirectories in a root directory.
 ///
 /// Yields `ImageDir` entries sorted by name. Non-directory entries and

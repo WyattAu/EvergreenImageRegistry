@@ -1,7 +1,8 @@
-use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
+
+use crate::error::{EvergreenError, Result};
 
 /// Manifest representation matching the actual TOML format used in the registry.
 ///
@@ -125,17 +126,30 @@ where
 
 impl Manifest {
     pub fn from_file(path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(path)
-            .with_context(|| format!("Failed to read manifest: {}", path.display()))?;
-        let manifest: Manifest = toml::from_str(&content)
-            .with_context(|| format!("Failed to parse manifest: {}", path.display()))?;
+        let content = std::fs::read_to_string(path).map_err(|e| EvergreenError::ReadError {
+            path: path.to_path_buf(),
+            source: e,
+        })?;
+        let manifest: Manifest = toml::from_str(&content).map_err(|e| {
+            EvergreenError::ManifestParseError {
+                path: path.to_path_buf(),
+                reason: e.to_string(),
+            }
+        })?;
         Ok(manifest)
     }
 
     pub fn to_file(&self, path: &Path) -> Result<()> {
-        let content = toml::to_string_pretty(self).context("Failed to serialize manifest")?;
-        std::fs::write(path, content)
-            .with_context(|| format!("Failed to write manifest: {}", path.display()))?;
+        let content = toml::to_string_pretty(self).map_err(|e| {
+            EvergreenError::ManifestParseError {
+                path: path.to_path_buf(),
+                reason: format!("serialization failed: {e}"),
+            }
+        })?;
+        std::fs::write(path, content).map_err(|e| EvergreenError::WriteError {
+            path: path.to_path_buf(),
+            source: e,
+        })?;
         Ok(())
     }
 

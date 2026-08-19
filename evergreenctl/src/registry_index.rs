@@ -428,26 +428,70 @@ pub fn query_violations(conn: &Connection, constraint_code: &str) -> Result<Vec<
     Ok(results)
 }
 
+/// Parameters for recording a build event.
+#[derive(Debug, Clone)]
+pub struct BuildRecord {
+    pub image_name: String,
+    pub manifest_sha: String,
+    pub dockerfile_sha: String,
+    pub build_status: String,
+    pub duration_ms: Option<i64>,
+    pub image_size_bytes: Option<i64>,
+    pub layer_count: Option<i32>,
+}
+
+impl BuildRecord {
+    /// Create a new build record with required fields.
+    pub fn new(
+        image_name: impl Into<String>,
+        manifest_sha: impl Into<String>,
+        dockerfile_sha: impl Into<String>,
+        build_status: impl Into<String>,
+    ) -> Self {
+        Self {
+            image_name: image_name.into(),
+            manifest_sha: manifest_sha.into(),
+            dockerfile_sha: dockerfile_sha.into(),
+            build_status: build_status.into(),
+            duration_ms: None,
+            image_size_bytes: None,
+            layer_count: None,
+        }
+    }
+
+    /// Set build duration in milliseconds.
+    pub fn with_duration_ms(mut self, ms: i64) -> Self {
+        self.duration_ms = Some(ms);
+        self
+    }
+
+    /// Set image size in bytes.
+    pub fn with_size_bytes(mut self, bytes: i64) -> Self {
+        self.image_size_bytes = Some(bytes);
+        self
+    }
+
+    /// Set layer count.
+    pub fn with_layer_count(mut self, count: i32) -> Self {
+        self.layer_count = Some(count);
+        self
+    }
+}
+
 /// Record a build event
-pub fn record_build(
-    conn: &Connection,
-    image_name: &str,
-    manifest_sha: &str,
-    dockerfile_sha: &str,
-    build_status: &str,
-    duration_ms: Option<i64>,
-    image_size_bytes: Option<i64>,
-    layer_count: Option<i32>,
-) -> Result<()> {
+pub fn record_build(conn: &Connection, record: &BuildRecord) -> Result<()> {
     conn.execute(
         "INSERT INTO build_history (image_name, manifest_sha, dockerfile_sha, build_status, build_duration_ms, image_size_bytes, layer_count)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
-        params![image_name, manifest_sha, dockerfile_sha, build_status, duration_ms, image_size_bytes, layer_count],
+        params![
+            record.image_name, record.manifest_sha, record.dockerfile_sha,
+            record.build_status, record.duration_ms, record.image_size_bytes, record.layer_count
+        ],
     )?;
 
     conn.execute(
         "UPDATE images SET build_status = ?1, last_built = datetime('now') WHERE name = ?2",
-        params![build_status, image_name],
+        params![record.build_status, record.image_name],
     )?;
 
     Ok(())

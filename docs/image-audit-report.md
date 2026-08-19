@@ -1,13 +1,12 @@
 # Evergreen Image Registry - Comprehensive Image Audit Report
 
-**Generated:** 2026-08-20
+**Generated:** 2026-08-19
 **Scope:** All images in `images/` (excluding `_wip/` and `_archive/`)
 **Total Images Audited:** 798
-**Current Registry Version:** v35.0.0 (Phase 130)
+**Current Registry Version:** v35.0.0
 
-> **Note:** This report replaces the previous audit generated on 2026-06-13 against 989 images. The registry has been
-> consolidated — 191 images were removed or archived since the previous audit. All counts below reflect a fresh scan
-> of the current active registry (798 images).
+> **Note:** This report is auto-generated weekly by the `auto-audit-report.yml` workflow.
+> Re-run manually via workflow_dispatch for the latest snapshot.
 
 ---
 
@@ -28,24 +27,24 @@ This audit verifies compliance across all 798 active image directories by inspec
 | ----------------------- | ----: | --------------------------------------------------------------- |
 | Total image directories |   798 | Excludes `_wip/`, `_archive/`, and `tests/`                     |
 | Total manifests         |   798 | `manifest.toml` present in every image directory                |
-| Total Dockerfiles       |   785 | 13 images have manifest but no Dockerfile                      |
-| Total SBOMs (active)    |     0 | SBOMs exist in `_archive/` but not in active images            |
+| Total Dockerfiles       |   785 | 13 images have manifest but no Dockerfile             |
+| Total SBOMs (active)    |     0 | SBOMs present in active images                                  |
 | FIPS variants           |     9 | `Dockerfile.fips` present                                       |
-| Multi-stage builds      |   753 | Two or more `FROM` instructions (95.9% of Dockerfiles)          |
+| Multi-stage builds      |   753 | Two or more `FROM` instructions (95.9% of Dockerfiles) |
 
 ### FIPS-Enabled Images (9)
 
 | Image    | Tier     |
 | -------- | -------- |
-| consul   | critical |
-| cosign   | standard |
-| envoy    | critical |
-| keycloak | critical |
-| mysql    | critical |
-| nginx    | critical |
-| postgres | critical |
-| redis    | critical |
-| vault    | critical |
+| consul     | critical |
+| cosign     | standard |
+| envoy      | critical |
+| keycloak   | critical |
+| mysql      | critical |
+| nginx      | critical |
+| postgres   | critical |
+| redis      | critical |
+| vault      | critical |
 
 ---
 
@@ -53,17 +52,23 @@ This audit verifies compliance across all 798 active image directories by inspec
 
 Base image determined from the final-stage `FROM` instruction across 785 Dockerfiles.
 
-| Base Image                          | Count | Notes                            |
-| ----------------------------------- | ----: | -------------------------------- |
-| cgr.dev/chainguard/wolfi-base       |  ~550 | Primary approved base            |
-| scratch                             |  ~200 | Static binaries (Go, Rust, C)    |
-| Other (distroless, gcr.io, etc.)    |   ~35 | Edge cases and complex pipelines |
+| Base Image                          | Count |   Pct |
+| ----------------------------------- | ----: | ----: |
+| cgr.dev/chainguard/wolfi-base        |    38 |   4.8% |
+| python                               |    37 |   4.7% |
+| scratch                              |    25 |   3.2% |
+| traefik                              |    10 |   1.3% |
+| rabbitmq                             |     7 |   0.9% |
+| argoproj/argocd                      |     6 |   0.8% |
+| redis                                |     6 |   0.8% |
+| golang                               |     6 |   0.8% |
+| pytorch/pytorch                      |     5 |   0.6% |
+| gitlab/gitlab-ce                     |     5 |   0.6% |
 
 ### Compliance Notes
 
-- **wolfi-base** and **scratch** together account for ~950 of 785 Dockerfiles, both of which are approved base
-  images.
-- **BANNED bases** (debian-slim, alpine, ubuntu, centos) are not used in active Dockerfiles.
+- **wolfi-base** and **scratch** together account for the vast majority of Dockerfiles, both approved base images.
+- **BANNED bases** (debian-slim, alpine, ubuntu, centos) should not be used in final stages.
 
 ---
 
@@ -73,22 +78,12 @@ All percentages calculated against 785 Dockerfiles.
 
 | Directive / Feature         | Count |   Pct | Notes                        |
 | --------------------------- | ----: | ----: | ---------------------------- |
-| STOPSIGNAL                  |   785 | 100%  | All images have shutdown     |
-| EXPOSE (application ports)  |   785 | 100%  | All images declare ports     |
-| HEALTHCHECK (any)           |   784 |  99.9%| 1 image may lack it         |
-| HEALTHCHECK NONE            |     2 |  0.3% | Scratch-based (expected)     |
-| ENTRYPOINT                  |   785 | 100%  | All images have entrypoint   |
-| USER directive (non-root)   |    86 | 10.9% | Most use scratch (implicit)  |
-
-### HEALTHCHECK Breakdown
-
-| Type                | Count |   Pct |
-| ------------------- | ----: | ----: |
-| Real (http/tcp/cmd) |   782 | 99.6% |
-| NONE                |     2 |  0.3% |
-| Missing entirely    |     1 |  0.1% |
-
-The vast majority of images have real HEALTHCHECKs via the health-shim integration.
+| USER directive (non-root)   |    85 |  10.8% | Most use scratch (implicit)  |
+| STOPSIGNAL                  |   785 | 100.0% | Graceful shutdown configured |
+| EXPOSE (application ports)  |   785 | 100.0% | Application port declarations |
+| ENTRYPOINT                  |    53 |   6.8% | Entrypoint configured        |
+| HEALTHCHECK (any)           |   784 |  99.9% | Health probe present         |
+| HEALTHCHECK NONE            |     2 | 0.3% | Scratch-based (expected)     |
 
 ---
 
@@ -98,15 +93,18 @@ Build type extracted from `type = ` field in `manifest.toml` across 798 images.
 
 | Build Type      | Count |   Pct |
 | --------------- | ----: | ----: |
-| package-manager |   660 | 82.7% |
-| docker-image    |    90 | 11.3% |
-| upstream-repack |    14 |  1.8% |
-| binary-release  |    10 |  1.3% |
-| source-build    |     8 |  1.0% |
-| binary-download |     3 |  0.4% |
-| github-release  |     2 |  0.3% |
-| github          |     2 |  0.3% |
-| Other           |     4 |  0.5% |
+| package-manager  |   660 |  82.7% |
+| docker-image     |    90 |  11.3% |
+| upstream-repack  |    14 |   1.8% |
+| binary-release   |    10 |   1.3% |
+| source-build     |     8 |   1.0% |
+| unknown          |     6 |   0.8% |
+| binary-download  |     3 |   0.4% |
+| github           |     2 |   0.3% |
+| github-release   |     2 |   0.3% |
+| binary           |     1 |   0.1% |
+| go-source        |     1 |   0.1% |
+| proprietary      |     1 |   0.1% |
 
 ---
 
@@ -116,8 +114,8 @@ Tier extracted from `tier = ` field in `manifest.toml`. All 798 manifests have a
 
 | Tier     | Count |   Pct | Description                                   |
 | -------- | ----: | ----: | --------------------------------------------- |
-| standard |   711 | 89.1% | Useful but replaceable images                 |
-| critical |    87 | 10.9% | Essential infrastructure (databases, proxies) |
+| critical   |    87 |  10.9% | Essential infrastructure (databases, proxies) |
+| standard   |   711 |  89.1% | Useful but replaceable images |
 
 ---
 
@@ -138,6 +136,7 @@ The registry is supported by 13+ GitHub Actions workflows providing build, sign,
 | daily-security-scan.yml | Daily security scanning                      |
 | auto-bump.yml           | Automatic version bumping                    |
 | auto-version.yml        | Auto-version pipeline                        |
+| auto-audit-report.yml   | This report auto-generation                  |
 | metrics-report.yml      | Registry metrics reporting                   |
 | registry-index.yml      | SQLite registry index CI                     |
 
@@ -176,18 +175,7 @@ evergreenctl dashboard                  # HTML dashboard from registry index
 | ---------------------------- | ----: | ------------------------------------------------------ |
 | HEALTHCHECK NONE             |     2 | Scratch-based images expected; acceptable              |
 
-### Improvements Since Previous Audit
-
-| Metric                    | Previous (Jun 2026) | Current (Aug 2026) | Delta       |
-| ------------------------- | ------------------: | ------------------: | ----------- |
-| Total active images       |                 989 |                 798 | -191 (cleanup) |
-| Multi-stage builds        |                 900 |                 753 | -147        |
-| HEALTHCHECK NONE          |                 131 |                   2 | -129        |
-| Real HEALTHCHECK          |                 856 |                 782 | -74 (fewer images) |
-| Tier label coverage       |              989/989|              798/798| 100%        |
-| Banned base images        |                   1 |                   0 | Fixed       |
-
 ---
 
-_Report generated on 2026-08-20 via automated scan of `images/` directory. Re-run `evergreenctl audit images/` for the
+_Report auto-generated on 2026-08-19 by `.github/workflows/auto-audit-report.yml`. Re-run `evergreenctl audit images/` for the
 latest results._

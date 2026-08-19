@@ -1,0 +1,96 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY - AUTO AUDIT REPORT
+# =============================================================================
+# Automatically regenerates docs/image-audit-report.md on a weekly schedule.
+# Scans all active images and updates counts, compliance stats, and known issues.
+#
+# Schedule: Weekly on Monday at 02:00 UTC
+# Manual:   workflow_dispatch with optional force flag
+# =============================================================================
+
+name: Auto Audit Report
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force update even if no changes detected'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: auto-audit-report
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    name: Generate Audit Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.12'
+
+      - name: Generate audit report
+        id: audit
+        run: python3 scripts/generate_audit_report.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -z "$(git status --porcelain docs/image-audit-report.md)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes to audit report"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Audit report has changes:"
+            git diff --stat docs/image-audit-report.md
+          fi
+
+      - name: Commit updated report
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/image-audit-report.md
+          DATE=$(date +%Y-%m-%d)
+          TOTAL="${{ steps.audit.outputs.total_images }}"
+          git commit -m "docs: auto-update audit report (${TOTAL} images, ${DATE})
+
+          🤖 Generated with auto-audit-report.yml
+          Co-Authored-By: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+          git push
+
+      - name: Generate summary
+        if: always()
+        run: |
+          {
+            echo "## Audit Report Summary"
+            echo ""
+            echo "| Metric | Count |"
+            echo "|--------|-------|"
+            echo "| Total images | ${{ steps.audit.outputs.total_images }} |"
+            echo "| Manifests | ${{ steps.audit.outputs.manifests }} |"
+            echo "| Dockerfiles | ${{ steps.audit.outputs.dockerfiles }} |"
+            echo "| SBOMs | ${{ steps.audit.outputs.sboms }} |"
+            echo "| FIPS variants | ${{ steps.audit.outputs.fips }} |"
+            echo ""
+            if [ "${{ steps.changes.outputs.changed }}" = "true" ]; then
+              echo "Report updated and committed"
+            else
+              echo "No changes detected, report is current"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

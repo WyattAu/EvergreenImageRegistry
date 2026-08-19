@@ -244,7 +244,12 @@ impl DockerfileGenerator {
         s.push_str(&format!(
             "    mkdir -p /var/lib/{} /var/log/{} /var/run/{} && \\\
              \x20   chown -R 65532:65532 /var/lib/{} /var/log/{} /var/run/{}\n\n",
-            m.name(), m.name(), m.name(), m.name(), m.name(), m.name()
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name(),
+            m.name()
         ));
 
         s.push_str("COPY --from=shim /shim /usr/local/bin/shim\n");

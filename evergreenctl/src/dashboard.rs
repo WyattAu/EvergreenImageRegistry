@@ -64,17 +64,53 @@ pub struct ImageRow {
 pub fn collect_dashboard_data(conn: &Connection) -> Result<DashboardData> {
     // Summary stats
     let total_images: usize = conn.query_row("SELECT COUNT(*) FROM images", [], |r| r.get(0))?;
-    let with_sbom: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| r.get(0))?;
-    let with_healthcheck: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE has_healthcheck = 1", [], |r| r.get(0))?;
-    let digest_pinned: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE digest_pinned = 1", [], |r| r.get(0))?;
-    let deprecated: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE is_deprecated = 1", [], |r| r.get(0))?;
-    let tier1_count: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 1", [], |r| r.get(0))?;
-    let tier2_count: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 2", [], |r| r.get(0))?;
-    let tier3_count: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 3", [], |r| r.get(0))?;
+    let with_sbom: usize =
+        conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| {
+            r.get(0)
+        })?;
+    let with_healthcheck: usize = conn.query_row(
+        "SELECT COUNT(*) FROM images WHERE has_healthcheck = 1",
+        [],
+        |r| r.get(0),
+    )?;
+    let digest_pinned: usize = conn.query_row(
+        "SELECT COUNT(*) FROM images WHERE digest_pinned = 1",
+        [],
+        |r| r.get(0),
+    )?;
+    let deprecated: usize = conn.query_row(
+        "SELECT COUNT(*) FROM images WHERE is_deprecated = 1",
+        [],
+        |r| r.get(0),
+    )?;
+    let tier1_count: usize =
+        conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 1", [], |r| {
+            r.get(0)
+        })?;
+    let tier2_count: usize =
+        conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 2", [], |r| {
+            r.get(0)
+        })?;
+    let tier3_count: usize =
+        conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 3", [], |r| {
+            r.get(0)
+        })?;
 
-    let sbom_pct = if total_images > 0 { with_sbom as f64 / total_images as f64 * 100.0 } else { 0.0 };
-    let healthcheck_pct = if total_images > 0 { with_healthcheck as f64 / total_images as f64 * 100.0 } else { 0.0 };
-    let pinned_pct = if total_images > 0 { digest_pinned as f64 / total_images as f64 * 100.0 } else { 0.0 };
+    let sbom_pct = if total_images > 0 {
+        with_sbom as f64 / total_images as f64 * 100.0
+    } else {
+        0.0
+    };
+    let healthcheck_pct = if total_images > 0 {
+        with_healthcheck as f64 / total_images as f64 * 100.0
+    } else {
+        0.0
+    };
+    let pinned_pct = if total_images > 0 {
+        digest_pinned as f64 / total_images as f64 * 100.0
+    } else {
+        0.0
+    };
 
     let summary = SummaryStats {
         total_images,
@@ -91,7 +127,10 @@ pub fn collect_dashboard_data(conn: &Connection) -> Result<DashboardData> {
     };
 
     // Tier distribution
-    let tier_distribution = query_distribution(conn, "SELECT tier, COUNT(*) FROM images GROUP BY tier ORDER BY tier")?;
+    let tier_distribution = query_distribution(
+        conn,
+        "SELECT tier, COUNT(*) FROM images GROUP BY tier ORDER BY tier",
+    )?;
 
     // Source type distribution
     let source_type_distribution = query_distribution(conn, "SELECT source_type, COUNT(*) FROM images WHERE source_type != '' GROUP BY source_type ORDER BY COUNT(*) DESC")?;
@@ -107,18 +146,20 @@ pub fn collect_dashboard_data(conn: &Connection) -> Result<DashboardData> {
         "SELECT name, version, tier, source_type, has_sbom, has_healthcheck, digest_pinned, COALESCE(build_status, 'unknown')
          FROM images ORDER BY tier, name"
     )?;
-    let images: Vec<ImageRow> = stmt.query_map([], |row| {
-        Ok(ImageRow {
-            name: row.get(0)?,
-            version: row.get(1)?,
-            tier: row.get::<_, i32>(2)? as u8,
-            source_type: row.get(3)?,
-            has_sbom: row.get(4)?,
-            has_healthcheck: row.get(5)?,
-            digest_pinned: row.get(6)?,
-            build_status: row.get(7)?,
-        })
-    })?.collect::<Result<Vec<_>, _>>()?;
+    let images: Vec<ImageRow> = stmt
+        .query_map([], |row| {
+            Ok(ImageRow {
+                name: row.get(0)?,
+                version: row.get(1)?,
+                tier: row.get::<_, i32>(2)? as u8,
+                source_type: row.get(3)?,
+                has_sbom: row.get(4)?,
+                has_healthcheck: row.get(5)?,
+                digest_pinned: row.get(6)?,
+                build_status: row.get(7)?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
 
     Ok(DashboardData {
         summary,
@@ -127,15 +168,19 @@ pub fn collect_dashboard_data(conn: &Connection) -> Result<DashboardData> {
         build_status_distribution,
         top_violations,
         images,
-        generated_at: chrono::Utc::now().format("%Y-%m-%d %H:%M:%S UTC").to_string(),
+        generated_at: chrono::Utc::now()
+            .format("%Y-%m-%d %H:%M:%S UTC")
+            .to_string(),
     })
 }
 
 fn query_distribution(conn: &Connection, sql: &str) -> Result<Vec<(String, usize)>> {
     let mut stmt = conn.prepare(sql)?;
-    let rows = stmt.query_map([], |row| {
-        Ok((row.get::<_, String>(0)?, row.get::<_, usize>(1)?))
-    })?.collect::<Result<Vec<_>, _>>()?;
+    let rows = stmt
+        .query_map([], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, usize>(1)?))
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
     Ok(rows)
 }
 
@@ -187,7 +232,7 @@ pub fn generate_dashboard_html(data: &DashboardData) -> String {
     };
 
     format!(
-r#"<!DOCTYPE html>
+        r#"<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -335,7 +380,9 @@ fn generate_pie_chart(data: &[(&str, usize, &str)]) -> String {
         return "<p>No data</p>".to_string();
     }
 
-    let mut svg = String::from("<div class=\"pie-container\"><svg width=\"160\" height=\"160\" viewBox=\"0 0 36 36\">");
+    let mut svg = String::from(
+        "<div class=\"pie-container\"><svg width=\"160\" height=\"160\" viewBox=\"0 0 36 36\">",
+    );
     let mut offset = 0.0;
 
     for &(_label, count, color) in data {
@@ -366,7 +413,9 @@ fn generate_bar_chart(data: &[(String, usize)]) -> String {
     }
 
     let max_val = data.iter().map(|(_, c)| *c).max().unwrap_or(1) as f64;
-    let colors = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4", "#ec4899", "#14b8a6"];
+    let colors = [
+        "#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4", "#ec4899", "#14b8a6",
+    ];
 
     let mut html = String::new();
     for (i, (label, count)) in data.iter().enumerate() {
@@ -415,7 +464,10 @@ mod tests {
                 pinned_pct: 85.0,
             },
             tier_distribution: vec![("1".into(), 30), ("2".into(), 50), ("3".into(), 20)],
-            source_type_distribution: vec![("binary-download".into(), 50), ("pkg-install".into(), 50)],
+            source_type_distribution: vec![
+                ("binary-download".into(), 50),
+                ("pkg-install".into(), 50),
+            ],
             build_status_distribution: vec![("pass".into(), 95), ("fail".into(), 5)],
             top_violations: vec![],
             images: vec![],
@@ -431,10 +483,7 @@ mod tests {
 
     #[test]
     fn test_generate_pie_chart() {
-        let chart = generate_pie_chart(&[
-            ("Tier 1", 30, "#ef4444"),
-            ("Tier 2", 50, "#f59e0b"),
-        ]);
+        let chart = generate_pie_chart(&[("Tier 1", 30, "#ef4444"), ("Tier 2", 50, "#f59e0b")]);
         assert!(chart.contains("<svg"));
         assert!(chart.contains("Tier 1: 30"));
         assert!(chart.contains("Tier 2: 50"));
@@ -442,10 +491,8 @@ mod tests {
 
     #[test]
     fn test_generate_bar_chart() {
-        let chart = generate_bar_chart(&[
-            ("binary-download".into(), 50),
-            ("pkg-install".into(), 30),
-        ]);
+        let chart =
+            generate_bar_chart(&[("binary-download".into(), 50), ("pkg-install".into(), 30)]);
         assert!(chart.contains("binary-download"));
         assert!(chart.contains("50"));
     }

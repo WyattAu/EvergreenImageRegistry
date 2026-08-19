@@ -91,9 +91,18 @@ pub fn is_safe_bump(current: &str, latest: &str, max_minor_jump: u8) -> (bool, S
             if cv >= lv {
                 (true, "already up-to-date".into())
             } else if lv.major > cv.major {
-                (false, format!("major version jump: {} → {}", cv.major, lv.major))
+                (
+                    false,
+                    format!("major version jump: {} → {}", cv.major, lv.major),
+                )
             } else if lv.minor > cv.minor + max_minor_jump as u64 {
-                (false, format!("minor version jump exceeds {}: {} → {}", max_minor_jump, cv.minor, lv.minor))
+                (
+                    false,
+                    format!(
+                        "minor version jump exceeds {}: {} → {}",
+                        max_minor_jump, cv.minor, lv.minor
+                    ),
+                )
             } else {
                 (true, format!("safe bump: {} → {}", cv, lv))
             }
@@ -103,7 +112,10 @@ pub fn is_safe_bump(current: &str, latest: &str, max_minor_jump: u8) -> (bool, S
             if current == latest {
                 (true, "same version".into())
             } else {
-                (true, "non-semver version change (manual review recommended)".into())
+                (
+                    true,
+                    "non-semver version change (manual review recommended)".into(),
+                )
             }
         }
     }
@@ -118,10 +130,7 @@ struct GithubRelease {
     tag_name: String,
 }
 
-async fn query_latest_release(
-    client: &reqwest::Client,
-    repo: &str,
-) -> Result<String> {
+async fn query_latest_release(client: &reqwest::Client, repo: &str) -> Result<String> {
     let url = format!("https://api.github.com/repos/{}/releases/latest", repo);
 
     let mut attempt = 0u32;
@@ -273,7 +282,11 @@ pub async fn run_auto_version(
         tokio::time::sleep(sleep_duration).await;
 
         // Compare versions
-        let max_minor = if allow_major { 255 } else { MAX_AUTO_BUMP_MINOR };
+        let max_minor = if allow_major {
+            255
+        } else {
+            MAX_AUTO_BUMP_MINOR
+        };
         let (is_safe, reason) = is_safe_bump(&current_version, &latest_version, max_minor);
 
         if current_version == latest_version {
@@ -292,7 +305,9 @@ pub async fn run_auto_version(
             tier,
             requires_approval,
             auto_bumped: false,
-            manifest_path: img.manifest_path.as_ref()
+            manifest_path: img
+                .manifest_path
+                .as_ref()
                 .map(|p| p.to_string_lossy().to_string())
                 .unwrap_or_default(),
             reason: reason.clone(),
@@ -319,11 +334,15 @@ pub async fn run_auto_version(
             let mut updated_manifest = manifest.clone();
             updated_manifest.metadata.version = latest_version.clone();
             if !updated_manifest.source.url.is_empty() {
-                updated_manifest.source.url = updated_manifest.source.url
+                updated_manifest.source.url = updated_manifest
+                    .source
+                    .url
                     .replace(&current_version, &latest_version);
             }
             if !updated_manifest.metadata.source.is_empty() {
-                updated_manifest.metadata.source = updated_manifest.metadata.source
+                updated_manifest.metadata.source = updated_manifest
+                    .metadata
+                    .source
                     .replace(&current_version, &latest_version);
             }
 
@@ -347,7 +366,9 @@ pub async fn run_auto_version(
 
         tracing::info!(
             "{}: {} → {} ({})",
-            img.name, current_version, latest_version,
+            img.name,
+            current_version,
+            latest_version,
             if dry_run { "dry-run" } else { "auto-bumped" }
         );
     }
@@ -370,13 +391,19 @@ pub fn format_report_text(report: &AutoVersionReport) -> String {
     out.push_str(&format!("Up-to-date:     {}\n", report.images_up_to_date));
     out.push_str(&format!("Outdated:       {}\n", report.images_outdated));
     out.push_str(&format!("Auto-bumped:    {}\n", report.images_bumped));
-    out.push_str(&format!("Need approval:  {}\n", report.images_requiring_approval));
+    out.push_str(&format!(
+        "Need approval:  {}\n",
+        report.images_requiring_approval
+    ));
     out.push_str(&format!("Failed:         {}\n", report.images_failed));
     out.push_str(&format!("Checked at:     {}\n\n", report.checked_at));
 
     if !report.bump_actions.is_empty() {
         out.push_str("Bump Actions:\n");
-        out.push_str(&format!("  {:<30} {:<15} → {:<15} Tier  Status\n", "IMAGE", "OLD", "NEW"));
+        out.push_str(&format!(
+            "  {:<30} {:<15} → {:<15} Tier  Status\n",
+            "IMAGE", "OLD", "NEW"
+        ));
         out.push_str(&format!("  {} {}\n", "-".repeat(30), "-".repeat(50)));
         for action in &report.bump_actions {
             let status = if action.auto_bumped {
@@ -468,18 +495,16 @@ mod tests {
             images_bumped: 10,
             images_requiring_approval: 3,
             images_failed: 2,
-            bump_actions: vec![
-                BumpAction {
-                    image: "redis".into(),
-                    old_version: "7.4.0".into(),
-                    new_version: "7.4.1".into(),
-                    tier: 2,
-                    requires_approval: false,
-                    auto_bumped: true,
-                    manifest_path: "images/redis/manifest.toml".into(),
-                    reason: "safe bump: 7.4.0 → 7.4.1".into(),
-                },
-            ],
+            bump_actions: vec![BumpAction {
+                image: "redis".into(),
+                old_version: "7.4.0".into(),
+                new_version: "7.4.1".into(),
+                tier: 2,
+                requires_approval: false,
+                auto_bumped: true,
+                manifest_path: "images/redis/manifest.toml".into(),
+                reason: "safe bump: 7.4.0 → 7.4.1".into(),
+            }],
             errors: vec![],
             checked_at: "2026-08-19T10:00:00Z".into(),
         };

@@ -5,8 +5,10 @@
 // Uses shared extraction functions from dockerfile_utils to avoid duplication.
 // =============================================================================
 
-use crate::dockerfile_utils::{extract_base_image, extract_entrypoint, extract_ports,
-    extract_stop_signal, extract_user, extract_version, extract_all_labels};
+use crate::dockerfile_utils::{
+    extract_all_labels, extract_base_image, extract_entrypoint, extract_ports, extract_stop_signal,
+    extract_user, extract_version,
+};
 use crate::manifest::Manifest;
 use anyhow::{Context, Result};
 use std::collections::HashSet;
@@ -101,9 +103,7 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
     }
 
     // Exposed ports drift
-    let df_ports: HashSet<String> = extract_ports(&dockerfile_content)
-        .into_iter()
-        .collect();
+    let df_ports: HashSet<String> = extract_ports(&dockerfile_content).into_iter().collect();
     let expected_ports: HashSet<String> = manifest
         .exposed_ports()
         .iter()

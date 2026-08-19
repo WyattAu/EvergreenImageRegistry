@@ -17,9 +17,8 @@ use proptest::prelude::*;
 // ---------------------------------------------------------------------------
 
 fn arbitrary_semver() -> impl Strategy<Value = String> {
-    (0u32..100, 0u32..100, 0u32..1000).prop_map(|(major, minor, patch)| {
-        format!("{}.{}.{}", major, minor, patch)
-    })
+    (0u32..100, 0u32..100, 0u32..1000)
+        .prop_map(|(major, minor, patch)| format!("{}.{}.{}", major, minor, patch))
 }
 
 fn arbitrary_semver_with_prefix() -> impl Strategy<Value = String> {

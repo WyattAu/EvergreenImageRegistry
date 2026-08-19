@@ -130,22 +130,20 @@ impl Manifest {
             path: path.to_path_buf(),
             source: e,
         })?;
-        let manifest: Manifest = toml::from_str(&content).map_err(|e| {
-            EvergreenError::ManifestParseError {
+        let manifest: Manifest =
+            toml::from_str(&content).map_err(|e| EvergreenError::ManifestParseError {
                 path: path.to_path_buf(),
                 reason: e.to_string(),
-            }
-        })?;
+            })?;
         Ok(manifest)
     }
 
     pub fn to_file(&self, path: &Path) -> Result<()> {
-        let content = toml::to_string_pretty(self).map_err(|e| {
-            EvergreenError::ManifestParseError {
+        let content =
+            toml::to_string_pretty(self).map_err(|e| EvergreenError::ManifestParseError {
                 path: path.to_path_buf(),
                 reason: format!("serialization failed: {e}"),
-            }
-        })?;
+            })?;
         std::fs::write(path, content).map_err(|e| EvergreenError::WriteError {
             path: path.to_path_buf(),
             source: e,

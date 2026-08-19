@@ -196,8 +196,7 @@ pub fn extract_all_labels(content: &str) -> std::collections::HashMap<String, St
 pub fn extract_version_from_file(path: &Path) -> Result<String> {
     let content = std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read Dockerfile: {}", path.display()))?;
-    extract_version(&content)
-        .with_context(|| format!("No ARG VERSION found in {}", path.display()))
+    extract_version(&content).with_context(|| format!("No ARG VERSION found in {}", path.display()))
 }
 
 /// Read a Dockerfile and extract the base image from the final FROM.
@@ -294,11 +293,18 @@ mod tests {
 
     #[test]
     fn test_extract_version_basic() {
-        assert_eq!(extract_version("ARG VERSION=1.0.0"), Some("1.0.0".to_string()));
+        assert_eq!(
+            extract_version("ARG VERSION=1.0.0"),
+            Some("1.0.0".to_string())
+        );
     }
 
     #[test]
-    fn test_extract_version_quoted() {        assert_eq!(extract_version("ARG VERSION=\"2.0.0\""), Some("2.0.0".to_string()));
+    fn test_extract_version_quoted() {
+        assert_eq!(
+            extract_version("ARG VERSION=\"2.0.0\""),
+            Some("2.0.0".to_string())
+        );
     }
 
     #[test]
@@ -363,10 +369,7 @@ mod tests {
     #[test]
     fn test_extract_description_basic() {
         let content = "LABEL org.opencontainers.image.description=\"Redis in-memory store\"";
-        assert_eq!(
-            extract_description(content),
-            "Redis in-memory store"
-        );
+        assert_eq!(extract_description(content), "Redis in-memory store");
     }
 
     #[test]

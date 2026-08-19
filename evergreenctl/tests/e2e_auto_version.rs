@@ -131,11 +131,51 @@ fn test_e2e_registry_index_build_and_query() {
     let tmp = TempDir::new().unwrap();
 
     // Create 5 test images across tiers
-    create_test_image(&tmp, "redis", "7.4.1", "1", "binary-download", "scratch", true);
-    create_test_image(&tmp, "nginx", "1.27.1", "2", "pkg-install", "cgr.dev/chainguard/wolfi-base:latest", true);
-    create_test_image(&tmp, "postgres", "16.4", "1", "chainguard-repack", "cgr.dev/chainguard/wolfi-base:latest", true);
-    create_test_image(&tmp, "curl", "8.9.0", "3", "pkg-install", "cgr.dev/chainguard/wolfi-base:latest", false);
-    create_test_image(&tmp, "old-image", "0.1.0", "3", "binary-download", "scratch", true);
+    create_test_image(
+        &tmp,
+        "redis",
+        "7.4.1",
+        "1",
+        "binary-download",
+        "scratch",
+        true,
+    );
+    create_test_image(
+        &tmp,
+        "nginx",
+        "1.27.1",
+        "2",
+        "pkg-install",
+        "cgr.dev/chainguard/wolfi-base:latest",
+        true,
+    );
+    create_test_image(
+        &tmp,
+        "postgres",
+        "16.4",
+        "1",
+        "chainguard-repack",
+        "cgr.dev/chainguard/wolfi-base:latest",
+        true,
+    );
+    create_test_image(
+        &tmp,
+        "curl",
+        "8.9.0",
+        "3",
+        "pkg-install",
+        "cgr.dev/chainguard/wolfi-base:latest",
+        false,
+    );
+    create_test_image(
+        &tmp,
+        "old-image",
+        "0.1.0",
+        "3",
+        "binary-download",
+        "scratch",
+        true,
+    );
 
     // Build index
     let db_path = tmp.path().join("test.db");
@@ -174,7 +214,15 @@ fn test_e2e_parallel_validation() {
     let tmp = TempDir::new().unwrap();
 
     // Create mix of compliant and non-compliant images
-    create_test_image(&tmp, "good-image", "1.0.0", "1", "binary-download", "scratch", true);
+    create_test_image(
+        &tmp,
+        "good-image",
+        "1.0.0",
+        "1",
+        "binary-download",
+        "scratch",
+        true,
+    );
     // Create another-good manually with digest-pinned FROM for full compliance
     let good2_dir = tmp.path().join("another-good");
     fs::create_dir_all(&good2_dir).unwrap();
@@ -190,7 +238,10 @@ fn test_e2e_parallel_validation() {
     .unwrap();
     fs::write(
         good2_dir.join("sbom.spdx.json"),
-        serde_json::to_string_pretty(&serde_json::json!({"spdxVersion": "SPDX-2.3", "packages": []})).unwrap(),
+        serde_json::to_string_pretty(
+            &serde_json::json!({"spdxVersion": "SPDX-2.3", "packages": []}),
+        )
+        .unwrap(),
     )
     .unwrap();
 
@@ -221,10 +272,9 @@ entrypoint = ["/app"]
     fs::write(bad_dir.join("manifest.toml"), bad_manifest).unwrap();
 
     // Run parallel validation
-    let report = evergreenctl::validate_parallel::validate_all_parallel(
-        tmp.path().to_str().unwrap(),
-    )
-    .unwrap();
+    let report =
+        evergreenctl::validate_parallel::validate_all_parallel(tmp.path().to_str().unwrap())
+            .unwrap();
 
     assert_eq!(report.total_images, 3);
     assert_eq!(report.images_failed, 1); // alpine-bad should fail
@@ -283,7 +333,11 @@ fn test_e2e_auto_version_comparison() {
 
     // Minor bump exceeding limit should be unsafe
     let (safe, reason) = is_safe_bump("1.0.0", "1.3.0", 1);
-    assert!(!safe, "Minor bump exceeding limit should be unsafe: {}", reason);
+    assert!(
+        !safe,
+        "Minor bump exceeding limit should be unsafe: {}",
+        reason
+    );
 
     // Same version should be safe (no-op)
     let (safe, _) = is_safe_bump("1.2.3", "1.2.3", 1);
@@ -316,18 +370,16 @@ fn test_e2e_registry_index_build_history() {
     .unwrap();
 
     // Record some build events
-    let redis_build = evergreenctl::registry_index::BuildRecord::new(
-        "redis", "abc123", "def456", "pass",
-    )
-    .with_duration_ms(45000)
-    .with_size_bytes(12582912)
-    .with_layer_count(7);
+    let redis_build =
+        evergreenctl::registry_index::BuildRecord::new("redis", "abc123", "def456", "pass")
+            .with_duration_ms(45000)
+            .with_size_bytes(12582912)
+            .with_layer_count(7);
     evergreenctl::registry_index::record_build(&conn, &redis_build).unwrap();
 
-    let nginx_build = evergreenctl::registry_index::BuildRecord::new(
-        "nginx", "ghi789", "jkl012", "fail",
-    )
-    .with_duration_ms(30000);
+    let nginx_build =
+        evergreenctl::registry_index::BuildRecord::new("nginx", "ghi789", "jkl012", "fail")
+            .with_duration_ms(30000);
     evergreenctl::registry_index::record_build(&conn, &nginx_build).unwrap();
 
     // Query build history
@@ -404,7 +456,11 @@ fn test_e2e_policy_violations() {
     evergreenctl::registry_index::record_violations(&conn, "alpine-bad", &new_violations).unwrap();
 
     let c004_after = evergreenctl::registry_index::query_violations(&conn, "C004").unwrap();
-    assert_eq!(c004_after.len(), 1, "Should have exactly 1 violation after re-recording");
+    assert_eq!(
+        c004_after.len(),
+        1,
+        "Should have exactly 1 violation after re-recording"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -416,7 +472,15 @@ fn test_e2e_manifest_to_index_round_trip() {
     let tmp = TempDir::new().unwrap();
 
     // Create a realistic image
-    create_test_image(&tmp, "roundtrip-test", "3.0.0", "1", "binary-download", "scratch", true);
+    create_test_image(
+        &tmp,
+        "roundtrip-test",
+        "3.0.0",
+        "1",
+        "binary-download",
+        "scratch",
+        true,
+    );
 
     // Build index
     let db_path = tmp.path().join("test.db");

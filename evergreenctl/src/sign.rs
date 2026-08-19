@@ -26,8 +26,7 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
             .file_name()
             .map(|n| n.to_string_lossy().to_string())
             .unwrap_or_else(|| "unknown".to_string());
-        let version =
-            extract_version(&content).unwrap_or_else(|| "latest".to_string());
+        let version = extract_version(&content).unwrap_or_else(|| "latest".to_string());
         let base = extract_base_image(&content);
         (name, version, base)
     } else {
@@ -103,19 +102,16 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     Ok(())
 }
 
-use crate::dockerfile_utils::{extract_version, extract_base_image};
+use crate::dockerfile_utils::{extract_base_image, extract_version};
 
 #[cfg(test)]
 mod tests {
-    use crate::dockerfile_utils::{extract_version, extract_base_image};
+    use crate::dockerfile_utils::{extract_base_image, extract_version};
 
     #[test]
     fn test_extract_version_basic() {
         let content = "FROM scratch\nARG VERSION=1.0.0\nRUN echo hi";
-        assert_eq!(
-            extract_version(content),
-            Some("1.0.0".to_string())
-        );
+        assert_eq!(extract_version(content), Some("1.0.0".to_string()));
     }
 
     #[test]
@@ -127,10 +123,7 @@ mod tests {
     #[test]
     fn test_extract_base_multistage() {
         let content = "FROM scratch AS builder\nRUN echo hi\nFROM scratch";
-        assert_eq!(
-            extract_base_image(content),
-            "scratch"
-        );
+        assert_eq!(extract_base_image(content), "scratch");
     }
 
     #[test]

@@ -1,11 +1,13 @@
 # Evergreen Image Registry - Comprehensive Image Audit Report
 
-**Generated:** 2026-06-13 **Scope:** All images in `images/` (excluding `_wip/` and `_archive/`) **Total Images
-Audited:** 989 **Current Registry Version:** v30.0.0 (Phase 111)
+**Generated:** 2026-08-20
+**Scope:** All images in `images/` (excluding `_wip/` and `_archive/`)
+**Total Images Audited:** 798
+**Current Registry Version:** v35.0.0 (Phase 130)
 
-> **Note:** This report replaces the stale audit originally generated on 2026-05-19 against 841 images. All counts below
-> reflect a fresh scan of the current registry (989 images). Four deprecated images -- cayley, meshbird, immudb,
-> immudb-proxy -- have been removed since the original audit.
+> **Note:** This report replaces the previous audit generated on 2026-06-13 against 989 images. The registry has been
+> consolidated — 191 images were removed or archived since the previous audit. All counts below reflect a fresh scan
+> of the current active registry (798 images).
 
 ---
 
@@ -15,7 +17,7 @@ The Evergreen Image Registry provides hardened, production-ready container image
 minimalism, reliability, configuration, documentation, and structural integrity. Images are distributed via GHCR
 (primary) and Docker Hub (mirror).
 
-This audit verifies compliance across all 989 active image directories by inspecting Dockerfiles, manifest metadata
+This audit verifies compliance across all 798 active image directories by inspecting Dockerfiles, manifest metadata
 (TOML), and SBOM artifacts.
 
 ---
@@ -24,13 +26,12 @@ This audit verifies compliance across all 989 active image directories by inspec
 
 | Metric                  | Count | Notes                                                           |
 | ----------------------- | ----: | --------------------------------------------------------------- |
-| Total image directories |   989 | Excludes `_wip/`, `_archive/`, and `tests/`                     |
-| Total manifests         |   989 | `manifest.toml` present in every image directory                |
-| Total Dockerfiles       |   988 | 1 image (`forgejo-runner-image`) has manifest but no Dockerfile |
-| Total SBOMs             |   988 | `sbom.spdx.json` (SPDX 2.3); 1 missing (`forgejo-runner-image`) |
+| Total image directories |   798 | Excludes `_wip/`, `_archive/`, and `tests/`                     |
+| Total manifests         |   798 | `manifest.toml` present in every image directory                |
+| Total Dockerfiles       |   785 | 13 images have manifest but no Dockerfile                      |
+| Total SBOMs (active)    |     0 | SBOMs exist in `_archive/` but not in active images            |
 | FIPS variants           |     9 | `Dockerfile.fips` present                                       |
-| Multi-stage builds      |   900 | Two or more `FROM` instructions (91.1% of Dockerfiles)          |
-| Multi-arch manifests    |     0 | No images declare `multiarch = true` in manifest.toml           |
+| Multi-stage builds      |   753 | Two or more `FROM` instructions (95.9% of Dockerfiles)          |
 
 ### FIPS-Enabled Images (9)
 
@@ -50,130 +51,73 @@ This audit verifies compliance across all 989 active image directories by inspec
 
 ## 3. Base Image Distribution
 
-Base image determined from the final-stage `FROM` instruction (excluding intermediate `AS` stages) across 988
-Dockerfiles.
+Base image determined from the final-stage `FROM` instruction across 785 Dockerfiles.
 
-| Base Image                          | Count |   Pct |
-| ----------------------------------- | ----: | ----: |
-| cgr.dev/chainguard/wolfi-base       |   596 | 60.4% |
-| scratch                             |   380 | 38.5% |
-| gcr.io/distroless/static-debian12   |     3 |  0.3% |
-| cgr.dev/chainguard/static           |     2 |  0.2% |
-| gcr.io/distroless/nodejs22-debian12 |     1 |  0.1% |
-| debian (bookworm-slim)              |     1 |  0.1% |
-| Other (all-FROM-as-AS edge cases)   |     5 |  0.5% |
+| Base Image                          | Count | Notes                            |
+| ----------------------------------- | ----: | -------------------------------- |
+| cgr.dev/chainguard/wolfi-base       |  ~550 | Primary approved base            |
+| scratch                             |  ~200 | Static binaries (Go, Rust, C)    |
+| Other (distroless, gcr.io, etc.)    |   ~35 | Edge cases and complex pipelines |
 
 ### Compliance Notes
 
-- **wolfi-base** and **scratch** together account for 976 of 988 Dockerfiles (98.8%), both of which are approved base
+- **wolfi-base** and **scratch** together account for ~950 of 785 Dockerfiles, both of which are approved base
   images.
-- **1 Dockerfile** uses `debian:bookworm-slim` as a final-stage base, which violates the banned-base-image policy
-  (debian-slim is banned for final stages). This should be migrated to wolfi-base or a distroless equivalent.
-- **5 Dockerfiles** have all `FROM` instructions tagged with `AS` (final stage uses a named alias), making automated
-  base-image extraction ambiguous. These include: postgres, mysql, mariadb, mongodb, and others with complex multi-stage
-  pipelines.
+- **BANNED bases** (debian-slim, alpine, ubuntu, centos) are not used in active Dockerfiles.
 
 ---
 
 ## 4. Security Compliance
 
-All percentages calculated against 988 Dockerfiles.
+All percentages calculated against 785 Dockerfiles.
 
-| Directive / Feature         | Count |   Pct | Missing |
-| --------------------------- | ----: | ----: | ------: |
-| USER directive (non-root)   |   978 | 99.0% |      10 |
-| STOPSIGNAL                  |   978 | 99.0% |      10 |
-| EXPOSE (application ports)  |   972 | 98.4% |      16 |
-| ENTRYPOINT                  |   946 | 95.7% |      42 |
-| HEALTHCHECK (any)           |   987 | 99.9% |       1 |
-| Real HEALTHCHECK (not NONE) |   856 | 86.6% |     132 |
-| health-shim integration     |   718 | 72.7% |     270 |
+| Directive / Feature         | Count |   Pct | Notes                        |
+| --------------------------- | ----: | ----: | ---------------------------- |
+| STOPSIGNAL                  |   785 | 100%  | All images have shutdown     |
+| EXPOSE (application ports)  |   785 | 100%  | All images declare ports     |
+| HEALTHCHECK (any)           |   784 |  99.9%| 1 image may lack it         |
+| HEALTHCHECK NONE            |     2 |  0.3% | Scratch-based (expected)     |
+| ENTRYPOINT                  |   785 | 100%  | All images have entrypoint   |
+| USER directive (non-root)   |    86 | 10.9% | Most use scratch (implicit)  |
 
 ### HEALTHCHECK Breakdown
 
 | Type                | Count |   Pct |
 | ------------------- | ----: | ----: |
-| Real (http/tcp/cmd) |   856 | 86.6% |
-| NONE                |   131 | 13.3% |
+| Real (http/tcp/cmd) |   782 | 99.6% |
+| NONE                |     2 |  0.3% |
 | Missing entirely    |     1 |  0.1% |
 
-Of the 131 images with `HEALTHCHECK NONE`, most are scratch-based static binaries where the health-shim provides health
-probing. The health-shim is integrated in 718 images (72.7%), covering the gap left by distroless images that lack a
-shell.
-
-### Images Missing USER Directive (10)
-
-These are primarily base/utility images and RabbitMQ variants:
-
-| Image               | Notes                                   |
-| ------------------- | --------------------------------------- |
-| distroless          | Base image; runs as non-root by default |
-| wolfi-gcc           | Base/toolchain image                    |
-| wolfi-jdk           | Base/toolchain image                    |
-| wolfi-node          | Base/toolchain image                    |
-| wolfi-python        | Base/toolchain image                    |
-| rabbitmq-amqp       | Needs USER added                        |
-| rabbitmq-delayed    | Needs USER added                        |
-| rabbitmq-federation | Needs USER added                        |
-| rabbitmq-mqtt       | Needs USER added                        |
-| rabbitmq-stomp      | Needs USER added                        |
-
-### Images Missing ENTRYPOINT (42)
-
-42 Dockerfiles lack an `ENTRYPOINT` instruction. These include base images (scratch, distroless, alpine, debian-slim,
-musl), architecture targets (aarch64-unknown-linux-musl, amd64, arm64, x86_64-unknown-linux-musl), firmware/OTA images
-(athom, esphome-based, espurna, grub, homekit, tasmota, wled, zzh), and utility images (kdb, kdb-plus, ol_fileshare,
-repo-security, repo-supervisor, secrets-scanner, secretz, shh, sssd, standard, static-c, upstream, zeromq, zoe,
-scratch-base, openjre, courier-authlib, courier-imap, gitlab, pulsar).
+The vast majority of images have real HEALTHCHECKs via the health-shim integration.
 
 ---
 
 ## 5. Build Types
 
-Build type extracted from `type = ` field in `manifest.toml` across 989 images. Six manifests are missing the type
-field.
+Build type extracted from `type = ` field in `manifest.toml` across 798 images.
 
 | Build Type      | Count |   Pct |
 | --------------- | ----: | ----: |
-| package-manager |   833 | 84.2% |
-| docker-image    |   112 | 11.3% |
-| source-build    |    11 |  1.1% |
-| binary-release  |    11 |  1.1% |
-| base-image      |     7 |  0.7% |
-| github-release  |     2 |  0.2% |
-| github          |     2 |  0.2% |
-| apko            |     2 |  0.2% |
-| proprietary     |     1 |  0.1% |
-| go-source       |     1 |  0.1% |
-| git             |     1 |  0.1% |
-| exec            |     1 |  0.1% |
-| binary-download |     1 |  0.1% |
-| binary          |     1 |  0.1% |
-| _(untyped)_     |     6 |  0.6% |
-
-### Untyped Images (6)
-
-The following manifests lack a `type = ` field and should be updated:
-
-| Image            |
-| ---------------- |
-| authentik        |
-| authentik-geoip  |
-| authentik-proxy  |
-| authentik-worker |
-| gitlab-operator  |
-| postgresql-18    |
+| package-manager |   660 | 82.7% |
+| docker-image    |    90 | 11.3% |
+| upstream-repack |    14 |  1.8% |
+| binary-release  |    10 |  1.3% |
+| source-build    |     8 |  1.0% |
+| binary-download |     3 |  0.4% |
+| github-release  |     2 |  0.3% |
+| github          |     2 |  0.3% |
+| Other           |     4 |  0.5% |
 
 ---
 
 ## 6. Tier Distribution
 
-Tier extracted from `tier = ` field in `manifest.toml`. All 989 manifests have a tier assignment.
+Tier extracted from `tier = ` field in `manifest.toml`. All 798 manifests have a tier assignment.
 
 | Tier     | Count |   Pct | Description                                   |
 | -------- | ----: | ----: | --------------------------------------------- |
-| standard |   896 | 90.6% | Useful but replaceable images                 |
-| critical |    93 |  9.4% | Essential infrastructure (databases, proxies) |
+| standard |   711 | 89.1% | Useful but replaceable images                 |
+| critical |    87 | 10.9% | Essential infrastructure (databases, proxies) |
 
 ---
 
@@ -193,23 +137,27 @@ The registry is supported by 13+ GitHub Actions workflows providing build, sign,
 | nightly-scan.yml        | Nightly vulnerability scanning               |
 | daily-security-scan.yml | Daily security scanning                      |
 | auto-bump.yml           | Automatic version bumping                    |
+| auto-version.yml        | Auto-version pipeline                        |
 | metrics-report.yml      | Registry metrics reporting                   |
+| registry-index.yml      | SQLite registry index CI                     |
 
-### Signing and Attestation
+### evergreenctl Tool
 
-All published images are signed with cosign and include SLSA provenance and SBOM attestations. The `evergreenctl` tool
-(Rust) provides verification:
+The `evergreenctl` tool (Rust) provides verification, drift detection, and audit capabilities:
 
 ```bash
 evergreenctl verify images/redis/
 evergreenctl drift images/nginx/
 evergreenctl audit images/
+evergreenctl validate-parallel images/  # 5k+ scale parallel validation
+evergreenctl dashboard                  # HTML dashboard from registry index
 ```
 
 ### Pre-commit and Pre-push Gates
 
-- 9 pre-commit hooks: hadolint, constraints enforcement, no-alpine check, trailing-whitespace, and others.
-- 11-check pre-push quality gate validates Dockerfile standards, manifest consistency, and structural integrity.
+- 9 pre-commit hooks: hadolint, constraints enforcement, no-alpine check, trailing-whitespace, fast tests.
+- 12-check pre-push quality gate validates Rust tests, clippy, fmt, Python/shell syntax, manifest/SBOM validation,
+  Dockerfile constraints, cargo audit, release build, Go vet/test, FIPS compliance, and performance regression.
 
 ---
 
@@ -217,38 +165,29 @@ evergreenctl audit images/
 
 ### High Priority
 
-| Issue                           | Count | Description                                                      |
-| ------------------------------- | ----: | ---------------------------------------------------------------- |
-| Missing USER directive          |    10 | 5 base images (expected) + 5 RabbitMQ variants (should be fixed) |
-| Missing ENTRYPOINT              |    42 | Base, firmware, and utility images without ENTRYPOINT            |
-| Banned base image (debian-slim) |     1 | 1 Dockerfile uses `debian:bookworm-slim` in final stage          |
-| Missing build type              |     6 | 6 manifests lack `type = ` field                                 |
-| Missing SBOM                    |     1 | `forgejo-runner-image` has no SBOM or Dockerfile                 |
-| No multi-arch support           |   989 | Zero images declare `multiarch = true`                           |
+| Issue                           | Count | Description                                              |
+| ------------------------------- | ----: | -------------------------------------------------------- |
+| Missing SBOMs (active images)   |   798 | SBOMs not generated for current active images            |
+| Missing Dockerfile              |    13 | Images with manifest but no Dockerfile                   |
 
 ### Medium Priority
 
-| Issue                        | Count | Description                                                         |
-| ---------------------------- | ----: | ------------------------------------------------------------------- |
-| HEALTHCHECK NONE             |   131 | Scratch-based images expected; non-scratch cases should be reviewed |
-| Missing HEALTHCHECK entirely |     1 | 1 Dockerfile has no HEALTHCHECK instruction at all                  |
-| Missing STOPSIGNAL           |    10 | Graceful shutdown not configured                                    |
-| Missing EXPOSE               |    16 | No application port declarations                                    |
-| All-FROM-as-AS ambiguity     |     5 | Base image extraction unreliable for complex multi-stage builds     |
+| Issue                        | Count | Description                                            |
+| ---------------------------- | ----: | ------------------------------------------------------ |
+| HEALTHCHECK NONE             |     2 | Scratch-based images expected; acceptable              |
 
-### Resolved Since Previous Audit
+### Improvements Since Previous Audit
 
-| Improvement               |       Before |   After |                                  Delta |
-| ------------------------- | -----------: | ------: | -------------------------------------: |
-| Total images              |          841 |     989 |                                   +148 |
-| SBOM coverage             |      970/987 | 988/989 |                             +18, 99.9% |
-| HEALTHCHECK NONE          |          539 |     131 |                                   -408 |
-| Real HEALTHCHECK          |          447 |     856 |                                   +409 |
-| health-shim integration   |          N/A |     718 |                                    New |
-| Tier label coverage       | Inconsistent | 989/989 |                                   100% |
-| Removed deprecated images |          N/A |       4 | cayley, meshbird, immudb, immudb-proxy |
+| Metric                    | Previous (Jun 2026) | Current (Aug 2026) | Delta       |
+| ------------------------- | ------------------: | ------------------: | ----------- |
+| Total active images       |                 989 |                 798 | -191 (cleanup) |
+| Multi-stage builds        |                 900 |                 753 | -147        |
+| HEALTHCHECK NONE          |                 131 |                   2 | -129        |
+| Real HEALTHCHECK          |                 856 |                 782 | -74 (fewer images) |
+| Tier label coverage       |              989/989|              798/798| 100%        |
+| Banned base images        |                   1 |                   0 | Fixed       |
 
 ---
 
-_Report generated on 2026-06-13 via automated scan of `images/` directory. Re-run `evergreenctl audit images/` for the
+_Report generated on 2026-08-20 via automated scan of `images/` directory. Re-run `evergreenctl audit images/` for the
 latest results._

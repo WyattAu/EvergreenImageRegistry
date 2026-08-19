@@ -132,8 +132,7 @@ pub fn open_index(db_path: &Path) -> Result<Connection> {
 
 /// Build/rebuild the full index from image directories
 pub fn build_index(conn: &Connection, images_dir: &Path) -> Result<usize> {
-    let image_dirs = iter_image_dirs(images_dir)
-        .context("Failed to scan image directories")?;
+    let image_dirs = iter_image_dirs(images_dir).context("Failed to scan image directories")?;
 
     let mut indexed = 0usize;
     let mut stmt = conn.prepare(
@@ -155,56 +154,110 @@ pub fn build_index(conn: &Connection, images_dir: &Path) -> Result<usize> {
     )?;
 
     for img in &image_dirs {
-        let manifest = img.manifest_path.as_ref()
+        let manifest = img
+            .manifest_path
+            .as_ref()
             .and_then(|p| crate::manifest::Manifest::from_file(p).ok());
 
-        let (version, tier, source_type, base_image, user, is_deprecated) = if let Some(ref m) = manifest {
-            (
-                m.version().to_string(),
-                m.tier_num() as i32,
-                m.source.source_type.clone(),
-                m.base_image().to_string(),
-                m.user().to_string(),
-                m.metadata.deprecated,
-            )
-        } else {
-            (String::new(), 3, String::new(), String::new(), "65532:65532".into(), false)
-        };
-
-        let (_dockerfile_content, has_healthcheck, has_entrypoint, has_stopsignal,
-             has_security_labels, digest_pinned, from_count, from_pinned, is_scratch) =
-            if let Some(ref df_path) = img.dockerfile_path {
-                match std::fs::read_to_string(df_path) {
-                    Ok(content) => {
-                        let hc = content.contains("HEALTHCHECK") && !content.contains("HEALTHCHECK NONE");
-                        let ep = content.contains("ENTRYPOINT");
-                        let ss = content.contains("STOPSIGNAL");
-                        let sec = content.contains("evergreen.security.cap-drop")
-                            && content.contains("evergreen.security.no-new-privileges");
-                        let scratch = content.contains("FROM scratch");
-
-                        let froms: Vec<&str> = content.lines()
-                            .filter(|l| l.trim().starts_with("FROM "))
-                            .collect();
-                        let from_total = froms.len() as i32;
-                        let from_pin = froms.iter().filter(|l| l.contains("@sha256:")).count() as i32;
-                        let pinned = from_pin > 0;
-
-                        (content, hc, ep, ss, sec, pinned, from_total, from_pin, scratch)
-                    }
-                    Err(_) => (String::new(), false, false, false, false, false, 0, 0, false),
-                }
+        let (version, tier, source_type, base_image, user, is_deprecated) =
+            if let Some(ref m) = manifest {
+                (
+                    m.version().to_string(),
+                    m.tier_num() as i32,
+                    m.source.source_type.clone(),
+                    m.base_image().to_string(),
+                    m.user().to_string(),
+                    m.metadata.deprecated,
+                )
             } else {
-                (String::new(), false, false, false, false, false, 0, 0, false)
+                (
+                    String::new(),
+                    3,
+                    String::new(),
+                    String::new(),
+                    "65532:65532".into(),
+                    false,
+                )
             };
+
+        let (
+            _dockerfile_content,
+            has_healthcheck,
+            has_entrypoint,
+            has_stopsignal,
+            has_security_labels,
+            digest_pinned,
+            from_count,
+            from_pinned,
+            is_scratch,
+        ) = if let Some(ref df_path) = img.dockerfile_path {
+            match std::fs::read_to_string(df_path) {
+                Ok(content) => {
+                    let hc =
+                        content.contains("HEALTHCHECK") && !content.contains("HEALTHCHECK NONE");
+                    let ep = content.contains("ENTRYPOINT");
+                    let ss = content.contains("STOPSIGNAL");
+                    let sec = content.contains("evergreen.security.cap-drop")
+                        && content.contains("evergreen.security.no-new-privileges");
+                    let scratch = content.contains("FROM scratch");
+
+                    let froms: Vec<&str> = content
+                        .lines()
+                        .filter(|l| l.trim().starts_with("FROM "))
+                        .collect();
+                    let from_total = froms.len() as i32;
+                    let from_pin = froms.iter().filter(|l| l.contains("@sha256:")).count() as i32;
+                    let pinned = from_pin > 0;
+
+                    (
+                        content, hc, ep, ss, sec, pinned, from_total, from_pin, scratch,
+                    )
+                }
+                Err(_) => (
+                    String::new(),
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0,
+                    false,
+                ),
+            }
+        } else {
+            (
+                String::new(),
+                false,
+                false,
+                false,
+                false,
+                false,
+                0,
+                0,
+                false,
+            )
+        };
 
         let has_sbom = img.sbom_path.is_some();
 
         stmt.execute(params![
-            img.name, version, tier, source_type, base_image, user,
-            has_healthcheck, has_entrypoint, has_stopsignal, has_sbom,
-            has_security_labels, digest_pinned, from_count, from_pinned,
-            is_deprecated, is_scratch,
+            img.name,
+            version,
+            tier,
+            source_type,
+            base_image,
+            user,
+            has_healthcheck,
+            has_entrypoint,
+            has_stopsignal,
+            has_sbom,
+            has_security_labels,
+            digest_pinned,
+            from_count,
+            from_pinned,
+            is_deprecated,
+            is_scratch,
         ])?;
 
         indexed += 1;
@@ -219,17 +272,17 @@ pub fn build_index(conn: &Connection, images_dir: &Path) -> Result<usize> {
 /// Compares the Dockerfile SHA256 stored in the index against the current
 /// file hash. Only images with changed Dockerfiles are re-indexed.
 /// Typical performance: 5000 images with 10 changes = ~0.5s (vs ~15s full rebuild).
-pub fn update_index_incremental(conn: &Connection, images_dir: &Path) -> Result<(usize, usize, usize)> {
-    let image_dirs = iter_image_dirs(images_dir)
-        .context("Failed to scan image directories")?;
+pub fn update_index_incremental(
+    conn: &Connection,
+    images_dir: &Path,
+) -> Result<(usize, usize, usize)> {
+    let image_dirs = iter_image_dirs(images_dir).context("Failed to scan image directories")?;
 
     let mut updated = 0usize;
     let mut unchanged = 0usize;
     let mut added = 0usize;
 
-    let mut stmt = conn.prepare(
-        "SELECT dockerfile_sha FROM images WHERE name = ?1"
-    )?;
+    let mut stmt = conn.prepare("SELECT dockerfile_sha FROM images WHERE name = ?1")?;
 
     let mut upsert_stmt = conn.prepare(
         "INSERT OR REPLACE INTO images (
@@ -252,9 +305,7 @@ pub fn update_index_incremental(conn: &Connection, images_dir: &Path) -> Result<
         };
 
         // Check if image exists and SHA matches
-        let existing_sha: Option<String> = stmt
-            .query_row(params![img.name], |row| row.get(0))
-            .ok();
+        let existing_sha: Option<String> = stmt.query_row(params![img.name], |row| row.get(0)).ok();
 
         match existing_sha {
             Some(ref sha) if sha == &current_sha => {
@@ -270,58 +321,93 @@ pub fn update_index_incremental(conn: &Connection, images_dir: &Path) -> Result<
         }
 
         // Re-index this image
-        let manifest = img.manifest_path.as_ref()
+        let manifest = img
+            .manifest_path
+            .as_ref()
             .and_then(|p| crate::manifest::Manifest::from_file(p).ok());
 
-        let (version, tier, source_type, base_image, user, is_deprecated) = if let Some(ref m) = manifest {
-            (
-                m.version().to_string(),
-                m.tier_num() as i32,
-                m.source.source_type.clone(),
-                m.base_image().to_string(),
-                m.user().to_string(),
-                m.metadata.deprecated,
-            )
-        } else {
-            (String::new(), 3, String::new(), String::new(), "65532:65532".into(), false)
-        };
-
-        let (has_healthcheck, has_entrypoint, has_stopsignal,
-             has_security_labels, digest_pinned, from_count, from_pinned, is_scratch) =
-            if let Some(ref df_path) = img.dockerfile_path {
-                match std::fs::read_to_string(df_path) {
-                    Ok(content) => {
-                        let hc = content.contains("HEALTHCHECK") && !content.contains("HEALTHCHECK NONE");
-                        let ep = content.contains("ENTRYPOINT");
-                        let ss = content.contains("STOPSIGNAL");
-                        let sec = content.contains("evergreen.security.cap-drop")
-                            && content.contains("evergreen.security.no-new-privileges");
-                        let scratch = content.contains("FROM scratch");
-                        let froms: Vec<&str> = content.lines()
-                            .filter(|l| l.trim().starts_with("FROM ")).collect();
-                        let from_total = froms.len() as i32;
-                        let from_pin = froms.iter().filter(|l| l.contains("@sha256:")).count() as i32;
-                        (hc, ep, ss, sec, from_pin > 0, from_total, from_pin, scratch)
-                    }
-                    Err(_) => (false, false, false, false, false, 0, 0, false),
-                }
+        let (version, tier, source_type, base_image, user, is_deprecated) =
+            if let Some(ref m) = manifest {
+                (
+                    m.version().to_string(),
+                    m.tier_num() as i32,
+                    m.source.source_type.clone(),
+                    m.base_image().to_string(),
+                    m.user().to_string(),
+                    m.metadata.deprecated,
+                )
             } else {
-                (false, false, false, false, false, 0, 0, false)
+                (
+                    String::new(),
+                    3,
+                    String::new(),
+                    String::new(),
+                    "65532:65532".into(),
+                    false,
+                )
             };
+
+        let (
+            has_healthcheck,
+            has_entrypoint,
+            has_stopsignal,
+            has_security_labels,
+            digest_pinned,
+            from_count,
+            from_pinned,
+            is_scratch,
+        ) = if let Some(ref df_path) = img.dockerfile_path {
+            match std::fs::read_to_string(df_path) {
+                Ok(content) => {
+                    let hc =
+                        content.contains("HEALTHCHECK") && !content.contains("HEALTHCHECK NONE");
+                    let ep = content.contains("ENTRYPOINT");
+                    let ss = content.contains("STOPSIGNAL");
+                    let sec = content.contains("evergreen.security.cap-drop")
+                        && content.contains("evergreen.security.no-new-privileges");
+                    let scratch = content.contains("FROM scratch");
+                    let froms: Vec<&str> = content
+                        .lines()
+                        .filter(|l| l.trim().starts_with("FROM "))
+                        .collect();
+                    let from_total = froms.len() as i32;
+                    let from_pin = froms.iter().filter(|l| l.contains("@sha256:")).count() as i32;
+                    (hc, ep, ss, sec, from_pin > 0, from_total, from_pin, scratch)
+                }
+                Err(_) => (false, false, false, false, false, 0, 0, false),
+            }
+        } else {
+            (false, false, false, false, false, 0, 0, false)
+        };
 
         let has_sbom = img.sbom_path.is_some();
 
         upsert_stmt.execute(params![
-            img.name, version, tier, source_type, base_image, user,
-            has_healthcheck, has_entrypoint, has_stopsignal, has_sbom,
-            has_security_labels, digest_pinned, from_count, from_pinned,
-            is_deprecated, is_scratch, current_sha,
+            img.name,
+            version,
+            tier,
+            source_type,
+            base_image,
+            user,
+            has_healthcheck,
+            has_entrypoint,
+            has_stopsignal,
+            has_sbom,
+            has_security_labels,
+            digest_pinned,
+            from_count,
+            from_pinned,
+            is_deprecated,
+            is_scratch,
+            current_sha,
         ])?;
     }
 
     tracing::info!(
         "Incremental index update: {} added, {} updated, {} unchanged",
-        added, updated, unchanged
+        added,
+        updated,
+        unchanged
     );
     Ok((added, updated, unchanged))
 }
@@ -338,7 +424,9 @@ pub fn get_stats(conn: &Connection) -> Result<IndexStats> {
     }
 
     let mut by_source_type = std::collections::HashMap::new();
-    let mut stmt = conn.prepare("SELECT source_type, COUNT(*) FROM images WHERE source_type != '' GROUP BY source_type")?;
+    let mut stmt = conn.prepare(
+        "SELECT source_type, COUNT(*) FROM images WHERE source_type != '' GROUP BY source_type",
+    )?;
     for row in stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, usize>(1)?)))? {
         let (stype, count) = row?;
         by_source_type.insert(stype, count);
@@ -351,12 +439,27 @@ pub fn get_stats(conn: &Connection) -> Result<IndexStats> {
         by_build_status.insert(status, count);
     }
 
-    let with_sbom: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| r.get(0))?;
-    let with_healthcheck: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE has_healthcheck = 1", [], |r| r.get(0))?;
-    let deprecated_count: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE is_deprecated = 1", [], |r| r.get(0))?;
+    let with_sbom: usize =
+        conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| {
+            r.get(0)
+        })?;
+    let with_healthcheck: usize = conn.query_row(
+        "SELECT COUNT(*) FROM images WHERE has_healthcheck = 1",
+        [],
+        |r| r.get(0),
+    )?;
+    let deprecated_count: usize = conn.query_row(
+        "SELECT COUNT(*) FROM images WHERE is_deprecated = 1",
+        [],
+        |r| r.get(0),
+    )?;
 
     let digest_pinned_pct: f64 = if total_images > 0 {
-        let pinned: usize = conn.query_row("SELECT COUNT(*) FROM images WHERE digest_pinned = 1", [], |r| r.get(0))?;
+        let pinned: usize = conn.query_row(
+            "SELECT COUNT(*) FROM images WHERE digest_pinned = 1",
+            [],
+            |r| r.get(0),
+        )?;
         pinned as f64 / total_images as f64 * 100.0
     } else {
         0.0
@@ -380,7 +483,7 @@ pub fn query_by_tier(conn: &Connection, tier: u8) -> Result<Vec<ImageRecord>> {
         "SELECT name, version, tier, source_type, base_image,
                 has_healthcheck, has_sbom, has_security_labels, digest_pinned,
                 from_count, from_pinned, is_deprecated, build_status
-         FROM images WHERE tier = ?1 ORDER BY name"
+         FROM images WHERE tier = ?1 ORDER BY name",
     )?;
 
     let rows = stmt.query_map(params![tier as i32], |row| {
@@ -409,12 +512,15 @@ pub fn query_by_tier(conn: &Connection, tier: u8) -> Result<Vec<ImageRecord>> {
 }
 
 /// Query images failing a specific constraint
-pub fn query_violations(conn: &Connection, constraint_code: &str) -> Result<Vec<(String, String, String)>> {
+pub fn query_violations(
+    conn: &Connection,
+    constraint_code: &str,
+) -> Result<Vec<(String, String, String)>> {
     let mut stmt = conn.prepare(
         "SELECT DISTINCT p.image_name, p.severity, p.message
          FROM policy_violations p
          WHERE p.constraint_code = ?1
-         ORDER BY p.image_name"
+         ORDER BY p.image_name",
     )?;
 
     let rows = stmt.query_map(params![constraint_code], |row| {
@@ -504,17 +610,23 @@ pub fn record_violations(
     violations: &[crate::validate_parallel::ConstraintResult],
 ) -> Result<()> {
     // Clear old violations for this image
-    conn.execute("DELETE FROM policy_violations WHERE image_name = ?1", params![image_name])?;
+    conn.execute(
+        "DELETE FROM policy_violations WHERE image_name = ?1",
+        params![image_name],
+    )?;
 
     let mut stmt = conn.prepare(
         "INSERT INTO policy_violations (image_name, constraint_code, severity, message)
-         VALUES (?1, ?2, ?3, ?4)"
+         VALUES (?1, ?2, ?3, ?4)",
     )?;
 
     for v in violations {
         if v.status == crate::validate_parallel::ConstraintStatus::Fail {
             stmt.execute(params![
-                image_name, v.code, v.severity.to_string(), v.message
+                image_name,
+                v.code,
+                v.severity.to_string(),
+                v.message
             ])?;
         }
     }
@@ -550,13 +662,30 @@ pub fn format_stats_text(stats: &IndexStats) -> String {
         out.push_str(&format!("  {}: {}\n", status, count));
     }
 
-    out.push_str(&format!("\nSBOM Coverage:    {}/{} ({:.1}%)\n",
-        stats.with_sbom, stats.total_images,
-        if stats.total_images > 0 { stats.with_sbom as f64 / stats.total_images as f64 * 100.0 } else { 0.0 }));
-    out.push_str(&format!("Healthcheck:      {}/{} ({:.1}%)\n",
-        stats.with_healthcheck, stats.total_images,
-        if stats.total_images > 0 { stats.with_healthcheck as f64 / stats.total_images as f64 * 100.0 } else { 0.0 }));
-    out.push_str(&format!("Digest Pinned:    {:.1}%\n", stats.digest_pinned_pct));
+    out.push_str(&format!(
+        "\nSBOM Coverage:    {}/{} ({:.1}%)\n",
+        stats.with_sbom,
+        stats.total_images,
+        if stats.total_images > 0 {
+            stats.with_sbom as f64 / stats.total_images as f64 * 100.0
+        } else {
+            0.0
+        }
+    ));
+    out.push_str(&format!(
+        "Healthcheck:      {}/{} ({:.1}%)\n",
+        stats.with_healthcheck,
+        stats.total_images,
+        if stats.total_images > 0 {
+            stats.with_healthcheck as f64 / stats.total_images as f64 * 100.0
+        } else {
+            0.0
+        }
+    ));
+    out.push_str(&format!(
+        "Digest Pinned:    {:.1}%\n",
+        stats.digest_pinned_pct
+    ));
     out.push_str(&format!("Deprecated:       {}\n", stats.deprecated_count));
 
     out
@@ -577,11 +706,13 @@ mod tests {
         let conn = open_index(&db_path).unwrap();
 
         // Verify tables exist
-        let count: String = conn.query_row(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='images'",
-            [],
-            |r| r.get(0),
-        ).unwrap();
+        let count: String = conn
+            .query_row(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='images'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(count, "images");
     }
 

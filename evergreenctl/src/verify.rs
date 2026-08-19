@@ -117,10 +117,13 @@ pub async fn download_and_verify(
         });
     }
 
-    let bytes = resp.bytes().await.map_err(|e| EvergreenError::DownloadError {
-        url: url.to_string(),
-        reason: e.to_string(),
-    })?;
+    let bytes = resp
+        .bytes()
+        .await
+        .map_err(|e| EvergreenError::DownloadError {
+            url: url.to_string(),
+            reason: e.to_string(),
+        })?;
 
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent).map_err(|e| EvergreenError::WriteError {
@@ -248,7 +251,11 @@ mod tests {
         let result = compute_checksum(&path, "md5");
         assert!(result.is_err());
         let err = result.unwrap_err().to_string();
-        assert!(err.contains("unsupported checksum algorithm"), "Error was: {}", err);
+        assert!(
+            err.contains("unsupported checksum algorithm"),
+            "Error was: {}",
+            err
+        );
         let _ = std::fs::remove_file(&path);
     }
 
@@ -295,7 +302,8 @@ mod tests {
         if sbom_path.exists() {
             let content = std::fs::read_to_string(sbom_path);
             assert!(content.is_ok(), "SBOM file should be readable");
-            let json: std::result::Result<serde_json::Value, _> = serde_json::from_str(&content.unwrap());
+            let json: std::result::Result<serde_json::Value, _> =
+                serde_json::from_str(&content.unwrap());
             assert!(json.is_ok(), "SBOM should be valid JSON");
             let data = json.unwrap();
             assert!(

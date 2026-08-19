@@ -122,7 +122,10 @@ pub async fn execute(command: Commands) -> anyhow::Result<()> {
             format,
         } => handle_auto_version(&images_dir, dry_run, allow_major, &format).await,
 
-        Commands::Index { images_dir, db_path } => {
+        Commands::Index {
+            images_dir,
+            db_path,
+        } => {
             let db_path = Path::new(&db_path);
             let conn = crate::registry_index::open_index(db_path)?;
             let count = crate::registry_index::build_index(&conn, Path::new(&images_dir))?;
@@ -130,7 +133,10 @@ pub async fn execute(command: Commands) -> anyhow::Result<()> {
             Ok(())
         }
 
-        Commands::IndexUpdate { images_dir, db_path } => {
+        Commands::IndexUpdate {
+            images_dir,
+            db_path,
+        } => {
             let db_path = Path::new(&db_path);
             let conn = crate::registry_index::open_index(db_path)?;
             let (added, updated, unchanged) =
@@ -190,11 +196,7 @@ async fn handle_discover(
         let parts: Vec<&str> = repo_str.split('/').collect();
         if parts.len() == 2 {
             let sources = crate::discover::discover_github_release(
-                &client,
-                parts[0],
-                parts[1],
-                version,
-                None,
+                &client, parts[0], parts[1], version, None,
             )
             .await?;
 
@@ -270,10 +272,7 @@ fn handle_verify(path: &str) -> anyhow::Result<()> {
                 }
             }
         }
-        println!(
-            "\nVerified: {}, Missing source URL: {}",
-            verified, missing
-        );
+        println!("\nVerified: {}, Missing source URL: {}", verified, missing);
     }
     Ok(())
 }
@@ -422,9 +421,7 @@ fn handle_deprecated(
     } else if let Some(image) = unmark {
         crate::deprecated::unmark_deprecated(images_dir, image)?;
     } else {
-        anyhow::bail!(
-            "No operation specified. Use --list, --mark <image>, or --unmark <image>"
-        );
+        anyhow::bail!("No operation specified. Use --list, --mark <image>, or --unmark <image>");
     }
     Ok(())
 }
@@ -436,10 +433,7 @@ fn handle_validate_parallel(images_dir: &str, format: &str) -> anyhow::Result<()
             println!("{}", serde_json::to_string_pretty(&report)?);
         }
         _ => {
-            println!(
-                "{}",
-                crate::validate_parallel::format_report_text(&report)
-            );
+            println!("{}", crate::validate_parallel::format_report_text(&report));
         }
     }
     if report.images_failed > 0 {
@@ -468,10 +462,7 @@ async fn handle_auto_version(
         }
     }
     if report.images_failed > 0 {
-        anyhow::bail!(
-            "{} images failed auto-version check",
-            report.images_failed
-        );
+        anyhow::bail!("{} images failed auto-version check", report.images_failed);
     }
     Ok(())
 }
@@ -561,7 +552,8 @@ mod tests {
         // CiDiff delegates to ci_diff module — just verify it doesn't panic
         let result = execute(Commands::CiDiff {
             base: "HEAD~1".into(),
-        }).await;
+        })
+        .await;
         // May fail (no git history in test env) but shouldn't panic
         let _ = result;
     }
@@ -570,7 +562,8 @@ mod tests {
     async fn test_execute_generate_invalid_dir() {
         let result = execute(Commands::Generate {
             image_dir: "/nonexistent/path".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -578,7 +571,8 @@ mod tests {
     async fn test_execute_drift_invalid_dir() {
         let result = execute(Commands::Drift {
             image_dir: "/nonexistent/path".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -586,7 +580,8 @@ mod tests {
     async fn test_execute_sign_invalid_dir() {
         let result = execute(Commands::Sign {
             image_dir: "/nonexistent/path".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -594,7 +589,8 @@ mod tests {
     async fn test_execute_snapshot_invalid_dir() {
         let result = execute(Commands::Snapshot {
             image_dir: "/nonexistent/path".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -602,7 +598,8 @@ mod tests {
     async fn test_execute_validate_invalid_dir() {
         let result = execute(Commands::Validate {
             path: "/nonexistent/path".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -611,7 +608,8 @@ mod tests {
         let result = execute(Commands::Index {
             images_dir: "/nonexistent/path".into(),
             db_path: ":memory:".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
     }
 
@@ -622,9 +620,13 @@ mod tests {
             mark: None,
             unmark: None,
             images_dir: "images".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
-        assert!(result.unwrap_err().to_string().contains("No operation specified"));
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("No operation specified"));
     }
 
     #[tokio::test]
@@ -634,8 +636,12 @@ mod tests {
             tier: None,
             source_type: None,
             format: "text".into(),
-        }).await;
+        })
+        .await;
         assert!(result.is_err());
-        assert!(result.unwrap_err().to_string().contains("Specify --tier or --source-type"));
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("Specify --tier or --source-type"));
     }
 }

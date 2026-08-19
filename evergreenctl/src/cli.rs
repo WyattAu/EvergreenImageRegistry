@@ -27,10 +27,7 @@ pub fn validate_path(path: &str, allowed_root: Option<&Path>) -> anyhow::Result<
                 // Reject hidden directories (starting with .)
                 if let Some(s) = c.to_str() {
                     if s.starts_with('.') && s != "." {
-                        anyhow::bail!(
-                            "Hidden path component rejected: '{}'",
-                            path
-                        );
+                        anyhow::bail!("Hidden path component rejected: '{}'", path);
                     }
                 }
             }
@@ -42,11 +39,7 @@ pub fn validate_path(path: &str, allowed_root: Option<&Path>) -> anyhow::Result<
     if let Some(root) = allowed_root {
         if let Ok(canonical) = p.canonicalize() {
             if !canonical.starts_with(root) {
-                anyhow::bail!(
-                    "Path '{}' escapes allowed root '{}'",
-                    path,
-                    root.display()
-                );
+                anyhow::bail!("Path '{}' escapes allowed root '{}'", path, root.display());
             }
             return Ok(canonical);
         }
@@ -319,25 +312,63 @@ pub fn validate_command_paths(command: &Commands) -> anyhow::Result<bool> {
     use Commands::*;
 
     match command {
-        Discover { image, .. } => { validate_path(image, None)?; }
-        Verify { path } => { validate_path(path, None)?; }
-        Generate { image_dir } => { validate_path(image_dir, None)?; }
-        Drift { image_dir } => { validate_path(image_dir, None)?; }
-        Sign { image_dir } => { validate_path(image_dir, None)?; }
-        Snapshot { image_dir } => { validate_path(image_dir, None)?; }
-        Audit { path, .. } => { validate_path(path, None)?; }
-        Migrate { path, .. } => { validate_path(path, None)?; }
-        Validate { path } => { validate_path(path, None)?; }
-        VerifyAll { path } => { validate_path(path, None)?; }
-        Outdated { path, .. } => { validate_path(path, None)?; }
-        Bump { image, .. } => { validate_image_name(image)?; }
-        PinDigests { path, .. } => { validate_path(path, None)?; }
-        Deprecated { images_dir, .. } => { validate_path(images_dir, None)?; }
-        Changelog { images_dir, .. } => { validate_path(images_dir, None)?; }
-        ValidateStrict { images_dir } => { validate_path(images_dir, None)?; }
-        ValidateParallel { images_dir, .. } => { validate_path(images_dir, None)?; }
-        AutoVersion { images_dir, .. } => { validate_path(images_dir, None)?; }
-        Index { images_dir, .. } => { validate_path(images_dir, None)?; }
+        Discover { image, .. } => {
+            validate_path(image, None)?;
+        }
+        Verify { path } => {
+            validate_path(path, None)?;
+        }
+        Generate { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Drift { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Sign { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Snapshot { image_dir } => {
+            validate_path(image_dir, None)?;
+        }
+        Audit { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Migrate { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Validate { path } => {
+            validate_path(path, None)?;
+        }
+        VerifyAll { path } => {
+            validate_path(path, None)?;
+        }
+        Outdated { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Bump { image, .. } => {
+            validate_image_name(image)?;
+        }
+        PinDigests { path, .. } => {
+            validate_path(path, None)?;
+        }
+        Deprecated { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Changelog { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        ValidateStrict { images_dir } => {
+            validate_path(images_dir, None)?;
+        }
+        ValidateParallel { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        AutoVersion { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
+        Index { images_dir, .. } => {
+            validate_path(images_dir, None)?;
+        }
         _ => return Ok(false), // CiDiff, Report, Completion, IndexStats, IndexQuery don't take user path args
     }
 

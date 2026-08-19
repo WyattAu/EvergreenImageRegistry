@@ -68,8 +68,6 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
     })
 }
 
-
-
 /// Migrate all images: generate manifests from existing Dockerfiles
 pub fn migrate_all(images_dir: &Path, dry_run: bool) -> Result<Vec<String>> {
     let mut migrated = Vec::new();
@@ -109,8 +107,14 @@ mod tests {
 
     #[test]
     fn test_extract_version() {
-        assert_eq!(extract_version("ARG VERSION=1.0.0"), Some("1.0.0".to_string()));
-        assert_eq!(extract_version("ARG VERSION=\"2.0.0\""), Some("2.0.0".to_string()));
+        assert_eq!(
+            extract_version("ARG VERSION=1.0.0"),
+            Some("1.0.0".to_string())
+        );
+        assert_eq!(
+            extract_version("ARG VERSION=\"2.0.0\""),
+            Some("2.0.0".to_string())
+        );
         assert_eq!(extract_version("FROM scratch"), None);
     }
 

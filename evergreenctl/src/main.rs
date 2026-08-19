@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use evergreenctl::cli::{Cli, validate_command_paths};
+use evergreenctl::cli::{validate_command_paths, Cli};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

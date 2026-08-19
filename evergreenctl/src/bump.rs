@@ -52,8 +52,6 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
     Ok(())
 }
 
-
-
 fn bump_with_manifest(
     manifest_path: &Path,
     dockerfile_path: &Path,

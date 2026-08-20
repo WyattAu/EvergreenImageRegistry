@@ -54,7 +54,7 @@ jobs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: |
           chmod +x scripts/discover-images.sh
           scripts/discover-images.sh tier critical
@@ -71,7 +71,7 @@ jobs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: |
           chmod +x scripts/discover-images.sh
           scripts/discover-images.sh tier standard
@@ -88,7 +88,7 @@ jobs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: |
           chmod +x scripts/discover-images.sh
           scripts/discover-images.sh tier community
@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: |
           set +e  # Don't exit on grep failures in the gate check loop
           PASS=0; FAIL=0
@@ -132,9 +132,9 @@ jobs:
     timeout-minutes: 30
     continue-on-error: true
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
       - name: Benchmark critical image builds
         run: |
           mkdir -p .specs/06_5_regression
@@ -206,9 +206,9 @@ jobs:
     timeout-minutes: 120
     continue-on-error: true
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
       - name: Check binary types in scratch images
         run: |
           chmod +x scripts/check_binary_type.sh

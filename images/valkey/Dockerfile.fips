@@ -1,0 +1,64 @@
+# =============================================================================
+# Valkey FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Valkey (Redis fork) with FIPS-validated OpenSSL.
+# Same TLS architecture as Redis — build from source with FIPS OpenSSL.
+# =============================================================================
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+RUN apk add --no-cache \
+    build-base \
+    linux-headers \
+    openssl-dev \
+    openssl-provider-fips \
+    python3 \
+    wget
+
+ARG VALKEY_VERSION=7.2.6
+
+RUN cd /tmp && \
+    wget -q https://github.com/valkey-io/valkey/archive/refs/tags/${VALKEY_VERSION}.tar.gz && \
+    tar xzf ${VALKEY_VERSION}.tar.gz && \
+    cd valkey-${VALKEY_VERSION} && \
+    make BUILD_TLS=yes \
+         USE_OPENSSL=yes \
+         OPENSSL_PREFIX=/usr \
+         MALLOC=libc \
+         -j$(nproc) && \
+    cp src/valkey-server /usr/local/bin/ && \
+    cp src/valkey-cli /usr/local/bin/
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
+
+RUN apk add --no-cache \
+    openssl \
+    openssl-provider-fips \
+    ca-certificates
+
+ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
+
+COPY --from=builder /usr/local/bin/valkey-server /usr/local/bin/valkey-server
+COPY --from=builder /usr/local/bin/valkey-cli /usr/local/bin/valkey-cli
+
+RUN mkdir -p /data && chown 65532:65532 /data
+
+USER 65532:65532
+
+VOLUME ["/data"]
+
+EXPOSE 6379 6380
+
+ENTRYPOINT ["valkey-server"]
+CMD ["--protected-mode", "yes", "--dir", "/data", "--tls-port", "6380", "--port", "0"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["valkey-cli", "ping"] || exit 1
+
+LABEL org.opencontainers.image.title="valkey-fips" \
+      org.opencontainers.image.description="Valkey with FIPS 140-2 OpenSSL provider" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="openssl-fips"

@@ -1,0 +1,21 @@
+# Default values for postgresql-16
+image:
+  name: postgresql-16
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+tier: standard
+replicas: 1
+
+security:
+  readOnlyRootFs: true
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env: {}
+envFrom: []
+
+persistence:
+  enabled: false

@@ -1,100 +1,83 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-ARG SHIM_VERSION=v2.0.0
-ARG OPENSSL_VERSION=3.0.16
-ARG VERSION=1.27.1
+# =============================================================================
+# Nginx FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Build Nginx from source linked against OpenSSL 3.x FIPS provider.
+# NGINX Plus (commercial) has official FIPS builds.
+# Community Nginx requires source rebuild with FIPS OpenSSL.
+# =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base AS openssl-builder
-ARG OPENSSL_VERSION
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 
-RUN apk add --no-cache gcc make glibc-dev glibc-static linux-headers ca-certificates perl-core wget
+RUN apk add --no-cache \
+    build-base \
+    linux-headers \
+    openssl-dev \
+    openssl-provider-fips \
+    pcre-dev \
+    zlib-dev \
+    wget
 
-WORKDIR /src
-RUN wget -q "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" -O openssl.tar.gz && \
-    tar -xzf openssl.tar.gz
+ARG NGINX_VERSION=1.27.0
 
-WORKDIR /src/openssl-${OPENSSL_VERSION}
-RUN ./config \
-        --prefix=/usr/local/ssl-fips \
-        --openssldir=/etc/ssl/fips \
-        enable-fips && \
-    make -j$(nproc) && \
-    make install_sw && \
-    make install_fips && \
-    make install
-
-FROM cgr.dev/chainguard/wolfi-base AS builder
-ARG VERSION
-
-RUN apk add --no-cache gcc make pcre2-dev zlib-dev linux-headers ca-certificates wget
-
-COPY --from=openssl-builder /src/openssl-${OPENSSL_VERSION:-3.0.16} /src/openssl
-
-WORKDIR /src
-RUN wget -q "https://nginx.org/download/nginx-${VERSION}.tar.gz" -O nginx.tar.gz && \
-    tar -xzf nginx.tar.gz && rm nginx.tar.gz
-
-RUN cd nginx-${VERSION} && \
+RUN cd /tmp && \
+    wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    tar xzf nginx-${NGINX_VERSION}.tar.gz && \
+    cd nginx-${NGINX_VERSION} && \
     ./configure \
         --prefix=/etc/nginx \
-        --sbin-path=/nginx \
-        --with-openssl=/src/openssl \
-        --with-openssl-opt="enable-fips" \
-        --with-http_ssl_module && \
+        --sbin-path=/usr/sbin/nginx \
+        --modules-path=/usr/lib64/nginx/modules \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --pid-path=/var/run/nginx.pid \
+        --lock-path=/var/run/nginx.lock \
+        --with-http_ssl_module \
+        --with-http_v2_module \
+        --with-http_realip_module \
+        --with-http_gzip_static_module \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-openssl=/usr \
+        --with-cc-opt="-fPIE -pie" \
+        --with-ld-opt="-Wl,-z,relro -Wl,-z,now" && \
     make -j$(nproc) && \
     make install
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 
-FROM cgr.dev/chainguard/wolfi-base
-COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /nginx /nginx
-COPY --from=openssl-builder /usr/local/ssl-fips /usr/local/ssl-fips
-COPY --from=openssl-builder /etc/ssl/fips /etc/ssl/fips
-COPY --from=openssl-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY shim.toml /etc/evergreen/shim.toml
+RUN apk add --no-cache \
+    openssl \
+    openssl-provider-fips \
+    ca-certificates \
+    pcre \
+    zlib
 
-RUN ln -sf /usr/local/ssl-fips/lib64/libssl.so.3 /usr/lib/libssl.so.3 && \
-    ln -sf /usr/local/ssl-fips/lib64/libcrypto.so.3 /usr/lib/libcrypto.so.3 && \
-    echo "config_diagnostics = 1" >> /etc/ssl/fipsmodule.cnf && \
-    printf 'openssl_conf = openssl_init\n.include /etc/ssl/fipsmodule.cnf\n[openssl_init]\nproviders = provider_sect\n[provider_sect]\nfips = fips_sect\nbase = base_sect\n[base_sect]\nactivate = 1\n' > /etc/ssl/fips.cnf
+# FIPS mode
+ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
 
-USER ${APP_UID}:${APP_GID}
-ENV OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
-    SHIM_METRICS_ENABLED="true" \
-    SHIM_MANAGEMENT_ENABLED="true" \
-    SHIM_MANAGEMENT_HOST="0.0.0.0" \
-    SHIM_MANAGEMENT_PORT="9102"
-WORKDIR /
-EXPOSE 80 443 9101 9102
+COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=builder /etc/nginx /etc/nginx
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+RUN mkdir -p /var/cache/nginx /var/log/nginx /var/run && \
+    chown -R 65532:65532 /var/cache/nginx /var/log/nginx /var/run
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/nginx"]
-LABEL org.opencontainers.image.title="nginx" \
-      org.opencontainers.image.description="Nginx - HTTP and reverse proxy server (FIPS variant)" \
-      org.opencontainers.image.version="1.27.1" \
-      org.opencontainers.image.vendor="Nginx Inc" \
-      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      org.opencontainers.image.source="https://github.com/nginx/nginx" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.fips="true" \
-      evergreen.fips.module="openssl-3.0" \
-      evergreen.fips.certificate="openssl-fips-3.0"
-LABEL evergreen.base.image="wolfi" \
-      evergreen.build.type="source-fips" \
-      evergreen.metrics.native="ztunnel" \
-      evergreen.health.type="http" \
-      evergreen.health.endpoint="/livez" \
-      evergreen.health.listen="0.0.0.0:9101" \
-      evergreen.security.cap-drop="ALL" \
-      evergreen.security.no-new-privileges="true" \
-      evergreen.security.read-only-rootfs="true" \
-      evergreen.security.seccomp="runtime-default"
+USER 65532:65532
 
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
-STOPSIGNAL SIGTERM
+EXPOSE 80 443
+
+STOPSIGNAL SIGQUIT
+
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["nginx", "-t"] || exit 1
+
+LABEL org.opencontainers.image.title="nginx-fips" \
+      org.opencontainers.image.description="Nginx with FIPS 140-2 OpenSSL provider" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="BSD-2-Clause" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="openssl-fips"

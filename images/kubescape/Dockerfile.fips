@@ -1,0 +1,33 @@
+# =============================================================================
+# Kubescape FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG KUBESCAPE_VERSION=v3.0.25
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${KUBESCAPE_VERSION} https://github.com/kubescape/kubescape.git /go/src/kubescape
+
+WORKDIR /go/src/kubescape
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /kubescape ./cmd/kubescape
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /kubescape /usr/local/bin/kubescape
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+ENTRYPOINT ["/usr/local/bin/kubescape"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/kubescape", "version"] || exit 1
+
+LABEL org.opencontainers.image.title="kubescape-fips" \
+      org.opencontainers.image.description="Kubescape with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

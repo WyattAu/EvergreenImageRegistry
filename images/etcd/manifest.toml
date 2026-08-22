@@ -1,6 +1,6 @@
 [metadata]
 name = "etcd"
-version = "3.6.10"
+version = "v3.7.0"
 description = "etcd - distributed reliable key-value store"
 vendor = "CNCF"
 source = "https://github.com/etcd-io/etcd"

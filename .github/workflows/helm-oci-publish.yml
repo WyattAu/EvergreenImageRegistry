@@ -1,0 +1,88 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY — Helm OCI Publishing
+# =============================================================================
+# Publishes per-image Helm charts to GHCR OCI registry.
+# Triggered on push to charts/ directory or manual dispatch.
+# =============================================================================
+
+name: Helm OCI Publish
+
+on:
+  push:
+    paths:
+      - 'charts/**'
+      - 'helm/**'
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: 'Chart name to publish (empty = all)'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: helm-publish
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  CHART_REPO: ghcr.io/${{ github.repository_owner }}/evergreenimageregistry/charts
+
+jobs:
+  publish:
+    name: Publish Helm Charts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Helm
+        uses: azure/setup-helm@fe7b79cd5ee1e4565c598c5c5852822f167b9f0f
+        with:
+          version: 'v3.14.0'
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username ${{ github.actor }} \
+            --password-stdin
+
+      - name: Package and publish charts
+        run: |
+          CHART_INPUT="${{ inputs.chart }}"
+
+          if [ -n "$CHART_INPUT" ]; then
+            CHARTS="charts/$CHART_INPUT"
+          else
+            CHARTS="charts/*"
+          fi
+
+          for chart_dir in $CHARTS; do
+            [ -d "$chart_dir" ] || continue
+            chart_name=$(basename "$chart_dir")
+
+            echo "::group::Publish $chart_name"
+
+            # Package
+            helm package "$chart_dir" -d /tmp/helm-packages/
+
+            # Push to OCI
+            pkg_file=$(ls /tmp/helm-packages/${chart_name}-*.tgz 2>/dev/null | head -1)
+            if [ -n "$pkg_file" ]; then
+              helm push "$pkg_file" "oci://${{ env.CHART_REPO }}"
+              echo "Published: $chart_name"
+            fi
+
+            echo "::endgroup::"
+          done
+
+      - name: List published charts
+        run: |
+          echo "=== Published Charts ==="
+          helm search repo "oci://${{ env.CHART_REPO }}" 2>/dev/null || \
+            echo "Use: helm pull oci://${{ env.CHART_REPO }}/<chart-name>"

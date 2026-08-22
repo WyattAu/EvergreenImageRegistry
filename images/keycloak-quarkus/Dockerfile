@@ -1,8 +1,9 @@
+ARG VERSION=26.1
 ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM keycloak/keycloak
+FROM keycloak/keycloak:${VERSION}
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
@@ -18,6 +19,8 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 8080 9101
+LABEL org.opencontainers.image.title="keycloak-quarkus" \
+      org.opencontainers.image.version="${VERSION}" \
+      evergreen.image.tier="standard"
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
-LABEL evergreen.image.tier="standard"
 STOPSIGNAL SIGTERM

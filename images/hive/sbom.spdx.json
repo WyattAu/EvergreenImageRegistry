@@ -1,0 +1,71 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-hive",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/hive",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.862463+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-hive",
+      "name": "hive",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/hive",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/hive@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-hive",
+      "name": "hive",
+      "versionInfo": "3.1.3",
+      "supplier": "upstream: apache/hive:3.1.3",
+      "downloadLocation": "https://hub.docker.com/r/apache/hive",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/apache/hive@3.1.3"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-hive",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-hive"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-hive",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-emby-server",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/emby-server",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.844465+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-emby-server",
+      "name": "emby-server",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/emby-server",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/emby-server@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embyserver",
+      "name": "embyserver",
+      "versionInfo": "latest",
+      "supplier": "upstream: emby/embyserver",
+      "downloadLocation": "https://hub.docker.com/r/emby/embyserver",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/emby/embyserver"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-emby-server",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-embyserver"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-emby-server",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

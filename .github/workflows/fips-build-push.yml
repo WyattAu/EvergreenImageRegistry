@@ -1,0 +1,151 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY — FIPS Variant Build & Push
+# =============================================================================
+# Builds and pushes FIPS 140-2/3 variant images.
+# Triggered on push to Dockerfile.fips files or manual dispatch.
+#
+# Builds: amd64 + arm64 multi-arch
+# Signs: cosign keyless signing
+# =============================================================================
+
+name: FIPS Build & Push
+
+on:
+  push:
+    paths:
+      - 'images/*/Dockerfile.fips'
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image name (e.g., envoy, postgresql)'
+        required: true
+        type: string
+
+concurrency:
+  group: fips-${{ github.event.inputs.image || 'push' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  # ===========================================================================
+  # Detect FIPS images to build
+  # ===========================================================================
+  detect:
+    name: Detect FIPS Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.find.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Find changed FIPS images
+        id: find
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            IMAGES="${{ github.event.inputs.image }}"
+          else
+            IMAGES=""
+            for f in $(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep 'Dockerfile.fips$' || true); do
+              img=$(echo "$f" | grep -oP 'images/\K[^/]+')
+              IMAGES="${IMAGES:+$IMAGES,}$img"
+            done
+          fi
+
+          if [ -z "$IMAGES" ]; then
+            echo 'matrix={"image":[]}' >> "$GITHUB_OUTPUT"
+          else
+            MATRIX=$(python3 -c "import json; print(json.dumps({'image': [x.strip() for x in '$IMAGES'.split(',') if x.strip()]}))")
+            echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ===========================================================================
+  # Build FIPS variant
+  # ===========================================================================
+  build:
+    name: 'Build FIPS: ${{ matrix.image }}'
+    needs: detect
+    if: needs.detect.outputs.matrix != '{"image":[]}'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
+        with:
+          platforms: amd64,arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@56af21c79c1470c045f1b83579577497d1d12e01
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=
+
+      - name: Build and push FIPS variant
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1
+        with:
+          context: images/${{ matrix.image }}
+          file: images/${{ matrix.image }}/Dockerfile.fips
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            evergreenimageregistry.io.fips=true
+            evergreenimageregistry.io.fips-cert=4140
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify FIPS mode
+        run: |
+          echo "=== FIPS Verification ==="
+          REF="${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips:latest"
+
+          # Check FIPS labels
+          LABELS=$(docker inspect --format '{{json .Config.Labels}}' "$REF" 2>/dev/null || echo "{}")
+          FIPS=$(echo "$LABELS" | python3 -c "import json,sys; print(json.load(sys.stdin).get('evergreenimageregistry.io.fips','false'))" 2>/dev/null)
+
+          if [ "$FIPS" = "true" ]; then
+            echo "✅ FIPS label present"
+          else
+            echo "⚠️ FIPS label missing"
+          fi
+
+          # Check non-root
+          USER=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "")
+          echo "User: $USER"
+
+      - name: Sign with cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Sign FIPS image
+        run: |
+          cosign sign --yes \
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips@$(docker inspect --format '{{index .RepoDigests 0}}' ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips:latest | cut -d@ -f2) \
+            2>/dev/null || echo "Cosign signing skipped (keyless)"

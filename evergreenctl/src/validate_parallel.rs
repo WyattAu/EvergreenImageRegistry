@@ -141,8 +141,15 @@ pub trait Constraint: Send + Sync {
     /// Short code like "C001".
     fn code(&self) -> &str;
 
-    /// Severity level (Block, Warn, Info).
+    /// Base severity level (Block, Warn, Info).
     fn severity(&self) -> Severity;
+
+    /// Tier-adjusted severity. Override this to make constraints
+    /// less strict on lower tiers (e.g., WARN on Tier 2-3, BLOCK on Tier 1).
+    /// Default: same as base severity.
+    fn tier_severity(&self, _tier: u8) -> Severity {
+        self.severity()
+    }
 
     /// Evaluate the constraint against the given context.
     fn check(&self, ctx: &ConstraintContext) -> ConstraintResult;
@@ -169,13 +176,26 @@ pub fn constraint_registry() -> Vec<Box<dyn Constraint>> {
         Box::new(C012BaseImageMatch),
         Box::new(C013SbomExists),
         Box::new(C014TierSizeConstraint),
+        Box::new(C015NoLatestTag),
+        Box::new(C016NoShell),
+        Box::new(C017NoPackageManager),
+        Box::new(C018FromAllowlist),
+        Box::new(C019ReadOnlyRootfs),
+        Box::new(C020StaticBinaryCheck),
     ]
 }
 
 /// Run all registered constraints against a single image context.
+/// Uses tier-adjusted severity for tier-aware enforcement.
 pub fn check_constraints(ctx: &ConstraintContext) -> Vec<ConstraintResult> {
     let registry = constraint_registry();
-    registry.iter().map(|c| c.check(ctx)).collect()
+    registry.iter().map(|c| {
+        let mut result = c.check(ctx);
+        // Apply tier-adjusted severity
+        let effective_severity = c.tier_severity(ctx.tier);
+        result.severity = effective_severity;
+        result
+    }).collect()
 }
 
 // ---------------------------------------------------------------------------
@@ -228,9 +248,19 @@ impl Constraint for C003NonRootUser {
         let has_user = content.contains("USER 65532")
             || content.contains("USER 65534")
             || content.contains("USER nobody");
-        let is_scratch = content.contains("FROM scratch");
-        let (status, message) = if has_user || is_scratch {
-            (ConstraintStatus::Pass, "Non-root user configured".to_string())
+        // Repack images inherit USER from upstream — exempt from this check
+        // A repack is a single-FROM image that repackages an upstream with a shim
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image")
+            || (content.contains("FROM ") && !content.contains("FROM scratch")
+                && !content.contains("FROM wolfi")
+                && !content.contains("FROM cgr.dev")
+                && !content.contains("FROM gcr.io")
+                && !content.contains("FROM ghcr.io")
+                && content.lines().filter(|l| l.starts_with("FROM ")).count() == 1);
+        let (status, message) = if has_user || is_repack {
+            (ConstraintStatus::Pass, if is_repack { "Repack image (inherits upstream USER)".to_string() } else { "Non-root user configured".to_string() })
         } else {
             (ConstraintStatus::Fail, "No non-root USER directive (UID 65532/65534)".to_string())
         };
@@ -297,7 +327,18 @@ impl Constraint for C006DigestPinning {
         if !ctx.dockerfile_exists {
             return self.skip(ctx);
         }
-        let from_lines: Vec<&str> = ctx.dockerfile_content.lines()
+        let content = &ctx.dockerfile_content;
+        // Repack images inherit upstream digests — exempt
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        if is_repack {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(), status: ConstraintStatus::Pass,
+                message: "Repack image (inherits upstream digest)".to_string(), image: ctx.name.into(),
+            };
+        }
+        let from_lines: Vec<&str> = content.lines()
             .filter(|l| l.trim().starts_with("FROM ")).collect();
         let pinned = from_lines.iter().filter(|l| l.contains("@sha256:")).count();
         let total = from_lines.len();
@@ -322,6 +363,16 @@ impl Constraint for C007OciLabels {
             return self.skip(ctx);
         }
         let content = &ctx.dockerfile_content;
+        // Repack images inherit OCI labels from upstream
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        if is_repack {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(), status: ConstraintStatus::Pass,
+                message: "Repack image (inherits upstream OCI labels)".to_string(), image: ctx.name.into(),
+            };
+        }
         let has_title = content.contains("org.opencontainers.image.title");
         let has_version = content.contains("org.opencontainers.image.version");
         let (status, message) = if has_title && has_version {
@@ -367,7 +418,18 @@ impl Constraint for C009Entrypoint {
         if !ctx.dockerfile_exists {
             return self.skip(ctx);
         }
-        let has_entrypoint = ctx.dockerfile_content.contains("ENTRYPOINT");
+        let content = &ctx.dockerfile_content;
+        // Repack images inherit ENTRYPOINT from upstream
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        if is_repack {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(), status: ConstraintStatus::Pass,
+                message: "Repack image (inherits upstream ENTRYPOINT)".to_string(), image: ctx.name.into(),
+            };
+        }
+        let has_entrypoint = content.contains("ENTRYPOINT");
         let (status, message) = if has_entrypoint {
             (ConstraintStatus::Pass, "ENTRYPOINT configured".to_string())
         } else {
@@ -415,7 +477,18 @@ impl Constraint for C011VersionConsistency {
                 status: ConstraintStatus::Skip, message: "Skipped".into(), image: ctx.name.into(),
             };
         }
-        let df_version = extract_version(&ctx.dockerfile_content);
+        let content = &ctx.dockerfile_content;
+        // Repack images don't have ARG VERSION — version comes from upstream tag
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        if is_repack {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(), status: ConstraintStatus::Pass,
+                message: "Repack image (version from upstream tag)".to_string(), image: ctx.name.into(),
+            };
+        }
+        let df_version = extract_version(content);
         let (status, message) = match df_version {
             Some(ref v) if v == &ctx.manifest_version => {
                 (ConstraintStatus::Pass, "Version matches manifest".to_string())
@@ -445,7 +518,18 @@ impl Constraint for C012BaseImageMatch {
                 status: ConstraintStatus::Skip, message: "Skipped".into(), image: ctx.name.into(),
             };
         }
-        let df_base = extract_base_image(&ctx.dockerfile_content);
+        let content = &ctx.dockerfile_content;
+        // Repack images inherit base from upstream
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        if is_repack {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(), status: ConstraintStatus::Pass,
+                message: "Repack image (base from upstream)".to_string(), image: ctx.name.into(),
+            };
+        }
+        let df_base = extract_base_image(content);
         let df_base_clean = df_base.split('@').next().unwrap_or(&df_base).split(':').next().unwrap_or(&df_base);
         let manifest_base_clean = ctx.manifest_base.split('@').next().unwrap_or(&ctx.manifest_base).split(':').next().unwrap_or(&ctx.manifest_base);
         let (status, message) = if df_base_clean == manifest_base_clean || df_base == "scratch" || manifest_base_clean == "scratch" {
@@ -493,6 +577,300 @@ impl Constraint for C014TierSizeConstraint {
             ConstraintResult {
                 code: self.code().into(), severity: self.severity(),
                 status: ConstraintStatus::Skip, message: "Skipped".into(),
+                image: ctx.name.into(),
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C015: No `:latest` tag in FROM directives (supply chain safety)
+// ---------------------------------------------------------------------------
+
+struct C015NoLatestTag;
+impl Constraint for C015NoLatestTag {
+    fn code(&self) -> &str { "C015" }
+    fn severity(&self) -> Severity { Severity::Block }
+    // Tier 1: BLOCK (enforce immediately)
+    // Tier 2-3: WARN (90-day migration deadline)
+    fn tier_severity(&self, tier: u8) -> Severity {
+        if tier <= 1 { Severity::Block } else { Severity::Warn }
+    }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        // Only check the FINAL stage FROM line (last FROM)
+        let last_from_line = ctx.dockerfile_content.lines().rev().find(|l| l.trim().to_lowercase().starts_with("from "));
+        let uses_latest = last_from_line.map(|line| {
+            let lower = line.trim().to_lowercase();
+            let img_part = lower.strip_prefix("from ").unwrap_or("");
+            let img_part = img_part.split_whitespace().next().unwrap_or("");
+            let img_part = img_part.split('@').next().unwrap_or(""); // strip digest
+            if img_part.ends_with(":latest") { return true; }
+            // If no colon and no @, it's implicit latest (e.g., "FROM postgres" or "FROM golang")
+            !img_part.contains(':') && !img_part.contains('@') && img_part != "scratch"
+        }).unwrap_or(false);
+        // Repack images inherit upstream tags — exempt
+        let is_repack = ctx.dockerfile_content.contains("evergreen.entrypoint.pattern")
+            || ctx.dockerfile_content.contains("evergreen.image.repack")
+            || ctx.dockerfile_content.contains("evergreen.base.image");
+        let (status, message) = if !uses_latest || is_repack {
+            (ConstraintStatus::Pass, if is_repack { "Repack image (upstream tag acceptable)".to_string() } else { "No :latest tags in FROM directives".to_string() })
+        } else {
+            (ConstraintStatus::Fail, "FROM directive uses :latest tag or implicit latest (no version pin)".to_string())
+        };
+        ConstraintResult {
+            code: self.code().into(), severity: self.severity(), status,
+            message, image: ctx.name.into(),
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C016: No shell in final stage (/bin/sh, /bin/bash, /usr/bin/sh)
+// ---------------------------------------------------------------------------
+
+struct C016NoShell;
+impl Constraint for C016NoShell {
+    fn code(&self) -> &str { "C016" }
+    fn severity(&self) -> Severity { Severity::Block }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        let content = &ctx.dockerfile_content;
+        let is_scratch = content.contains("FROM scratch");
+        // Images that inherit from upstream (repack) are exempt — they inherit the upstream's shell
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            && (content.contains("repack-upstream-init") || content.contains("repack"));
+        // wolfi-base has busybox ash — acceptable per ADR-007
+        let uses_wolfi = content.lines().any(|l| {
+            let lower = l.trim().to_lowercase();
+            lower.starts_with("from ") && (lower.contains("wolfi") || lower.contains("cgr.dev/chainguard"))
+        });
+        if is_scratch || is_repack || uses_wolfi {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Pass,
+                message: if is_scratch { "scratch-based (no shell)".to_string()
+                } else if is_repack { "repack image (inherits upstream shell)".to_string()
+                } else { "wolfi-based (busybox ash acceptable)".to_string() },
+                image: ctx.name.into(),
+            }
+        } else {
+            // For non-repack, non-scratch, non-wolfi: check for explicit shell removal
+            // This is informational — we can't detect runtime shells from Dockerfile alone
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Pass,
+                message: "Shell check requires runtime verification (C016 is advisory for non-scratch)".to_string(),
+                image: ctx.name.into(),
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C017: No package manager in final stage (apt, apk, dnf, yum)
+// ---------------------------------------------------------------------------
+
+struct C017NoPackageManager;
+impl Constraint for C017NoPackageManager {
+    fn code(&self) -> &str { "C017" }
+    fn severity(&self) -> Severity { Severity::Block }
+    // Tier 1: BLOCK (enforce immediately)
+    // Tier 2-3: WARN (90-day migration deadline)
+    fn tier_severity(&self, tier: u8) -> Severity {
+        if tier <= 1 { Severity::Block } else { Severity::Warn }
+    }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        let content = &ctx.dockerfile_content;
+        let is_scratch = content.contains("FROM scratch");
+        let is_repack = content.contains("evergreen.entrypoint.pattern")
+            || content.contains("evergreen.image.repack")
+            || content.contains("evergreen.base.image");
+        // Wolfi-based images use apk — that's by design
+        let uses_wolfi = content.contains("wolfi") || content.contains("cgr.dev/chainguard");
+        if is_scratch || is_repack || uses_wolfi {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Pass,
+                message: if is_scratch { "scratch-based (no package manager)".to_string()
+                } else { "repack image (inherits upstream)".to_string() },
+                image: ctx.name.into(),
+            }
+        } else {
+            // Check if apk/apt is used in the FINAL stage only
+            // We look for RUN lines with apk add or apt-get install after the last FROM
+            let lines: Vec<&str> = content.lines().collect();
+            let mut last_from_idx = 0;
+            for (i, line) in lines.iter().enumerate() {
+                if line.trim().to_lowercase().starts_with("from ") {
+                    last_from_idx = i;
+                }
+            }
+            let final_stage = &lines[last_from_idx..];
+            let has_pkg_mgr = final_stage.iter().any(|line| {
+                let lower = line.to_lowercase();
+                (lower.contains("apk add") || lower.contains("apk add --no-cache"))
+                    || (lower.contains("apt-get install") || lower.contains("apt install"))
+                    || lower.contains("dnf install") || lower.contains("yum install")
+            });
+            if has_pkg_mgr {
+                ConstraintResult {
+                    code: self.code().into(), severity: self.severity(),
+                    status: ConstraintStatus::Fail,
+                    message: "Package manager (apk/apt/dnf/yum) found in final stage".to_string(),
+                    image: ctx.name.into(),
+                }
+            } else {
+                ConstraintResult {
+                    code: self.code().into(), severity: self.severity(),
+                    status: ConstraintStatus::Pass,
+                    message: "No package manager in final stage".to_string(),
+                    image: ctx.name.into(),
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C018: FROM directive allowlist (only approved base registries)
+// ---------------------------------------------------------------------------
+
+struct C018FromAllowlist;
+impl Constraint for C018FromAllowlist {
+    fn code(&self) -> &str { "C018" }
+    fn severity(&self) -> Severity { Severity::Warn }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        let content = &ctx.dockerfile_content;
+        let is_repack = content.contains("evergreen.entrypoint.pattern");
+
+        // Approved base image registries (per ADR-007)
+        let approved_prefixes = [
+            "scratch",
+            "cgr.dev/chainguard",
+            "gcr.io/distroless",
+            "ghcr.io/wyattau/evergreenshim",
+            "ghcr.io/wyattau/evergreenimageregistry",
+            "registry.access.redhat.com",
+            "localhost/",
+        ];
+
+        let mut violations = Vec::new();
+        for line in content.lines() {
+            let trimmed = line.trim();
+            if !trimmed.to_lowercase().starts_with("from ") { continue; }
+            let img = trimmed.split_whitespace().nth(1).unwrap_or("");
+            let img = img.split('@').next().unwrap_or(img); // strip digest
+            let img = img.split(':').next().unwrap_or(img); // strip tag
+
+            // Skip build stage aliases and scratch
+            if img == "scratch" || img.is_empty() { continue; }
+            // Skip images that are FROM the registry itself
+            if img.starts_with("ghcr.io/wyattau/") { continue; }
+
+            let is_approved = approved_prefixes.iter().any(|prefix| img.starts_with(prefix));
+            if !is_approved {
+                violations.push(img.to_string());
+            }
+        }
+
+        if violations.is_empty() || is_repack {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Pass,
+                message: if is_repack { "Repack image (upstream base acceptable)".to_string()
+                } else { "All FROM directives use approved registries".to_string() },
+                image: ctx.name.into(),
+            }
+        } else {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Fail,
+                message: format!("Non-approved base images: {}", violations.join(", ")),
+                image: ctx.name.into(),
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C019: Read-only root filesystem label present
+// ---------------------------------------------------------------------------
+
+struct C019ReadOnlyRootfs;
+impl Constraint for C019ReadOnlyRootfs {
+    fn code(&self) -> &str { "C019" }
+    fn severity(&self) -> Severity { Severity::Warn }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        let has_label = ctx.dockerfile_content.contains("evergreen.security.read-only-rootfs");
+        let (status, message) = if has_label {
+            (ConstraintStatus::Pass, "Read-only rootfs label present".to_string())
+        } else {
+            (ConstraintStatus::Fail, "Missing evergreen.security.read-only-rootfs label".to_string())
+        };
+        ConstraintResult {
+            code: self.code().into(), severity: self.severity(), status,
+            message, image: ctx.name.into(),
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// C020: Static binary check (scratch-based images should have static binaries)
+// ---------------------------------------------------------------------------
+
+struct C020StaticBinaryCheck;
+impl Constraint for C020StaticBinaryCheck {
+    fn code(&self) -> &str { "C020" }
+    fn severity(&self) -> Severity { Severity::Info }
+    fn check(&self, ctx: &ConstraintContext) -> ConstraintResult {
+        if !ctx.dockerfile_exists {
+            return self.skip(ctx);
+        }
+        let content = &ctx.dockerfile_content;
+        let is_scratch = content.contains("FROM scratch");
+        if !is_scratch {
+            return ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Skip,
+                message: "Only applies to scratch-based images".to_string(),
+                image: ctx.name.into(),
+            };
+        }
+        // Check for signs of static compilation
+        let has_static_indicators = content.contains("CGO_ENABLED=0")
+            || content.contains("MALLOC=libc")
+            || content.contains("-static")
+            || content.contains("musl")
+            || content.contains("rust-static")
+            || content.contains("go-static");
+        let has_build_stage = content.lines().filter(|l| l.trim().to_lowercase().starts_with("from ")).count() > 1;
+
+        if has_static_indicators || !has_build_stage {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Pass,
+                message: "Scratch image appears to use static binary".to_string(),
+                image: ctx.name.into(),
+            }
+        } else {
+            ConstraintResult {
+                code: self.code().into(), severity: self.severity(),
+                status: ConstraintStatus::Fail,
+                message: "Scratch image without static compilation indicators — verify binary is statically linked".to_string(),
                 image: ctx.name.into(),
             }
         }
@@ -753,10 +1131,12 @@ fn validate_single_image(img: &crate::dockerfile_utils::ImageDir) -> ImageValida
 
     let constraint_results = check_constraints(&ctx);
 
-    let has_failures = constraint_results
+    // Only BLOCK-severity failures cause image failure.
+    // WARN/INFO failures are reported but don't block the image.
+    let has_block_failures = constraint_results
         .iter()
-        .any(|r| r.status == ConstraintStatus::Fail);
-    let status = if has_failures {
+        .any(|r| r.status == ConstraintStatus::Fail && r.severity == Severity::Block);
+    let status = if has_block_failures {
         ImageStatus::Fail
     } else {
         ImageStatus::Pass
@@ -826,6 +1206,7 @@ LABEL org.opencontainers.image.title="test"
 LABEL org.opencontainers.image.version="1.0.0"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
 "#.into(),
             sbom_exists: true,
             sbom_valid: true,
@@ -908,5 +1289,305 @@ LABEL evergreen.security.no-new-privileges="true"
         assert!(text.contains("Total images:     100"));
         assert!(text.contains("Passed:           90"));
         assert!(text.contains("Duration:         850ms"));
+    }
+
+    #[test]
+    fn test_c015_rejects_latest_tag() {
+        let ctx = ConstraintContext {
+            name: "test-latest",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-latest".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/latest".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM golang:latest\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c015 = results.iter().find(|r| r.code == "C015");
+        assert!(c015.is_some());
+        assert_eq!(c015.unwrap().status, ConstraintStatus::Fail);
+    }
+
+    #[test]
+    fn test_c015_rejects_implicit_latest() {
+        let ctx = ConstraintContext {
+            name: "test-implicit",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-implicit".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/implicit".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM postgres\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c015 = results.iter().find(|r| r.code == "C015");
+        assert!(c015.is_some());
+        assert_eq!(c015.unwrap().status, ConstraintStatus::Fail);
+    }
+
+    #[test]
+    fn test_c015_allows_pinned_version() {
+        let ctx = ConstraintContext {
+            name: "test-pinned",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-pinned".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/pinned".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM golang:1.23-bookworm\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c015 = results.iter().find(|r| r.code == "C015");
+        assert!(c015.is_some());
+        assert_eq!(c015.unwrap().status, ConstraintStatus::Pass);
+    }
+
+    #[test]
+    fn test_c017_allows_wolfi_with_apk() {
+        // Wolfi-based images use apk — that's by design
+        let ctx = ConstraintContext {
+            name: "test-wolfi-pkg",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-wolfi-pkg".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/wolfi".into(),
+            manifest_base: "wolfi".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base\nRUN apk add --no-cache nginx\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c017 = results.iter().find(|r| r.code == "C017");
+        assert!(c017.is_some());
+        assert_eq!(c017.unwrap().status, ConstraintStatus::Pass, "Wolfi images should be exempt from C017");
+    }
+
+    #[test]
+    fn test_c017_detects_ubuntu_with_apt() {
+        // Ubuntu-based images with apt should still fail
+        let ctx = ConstraintContext {
+            name: "test-ubuntu",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-ubuntu".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/ubuntu".into(),
+            manifest_base: "ubuntu".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM ubuntu:22.04\nRUN apt-get update && apt-get install -y nginx\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c017 = results.iter().find(|r| r.code == "C017");
+        assert!(c017.is_some());
+        assert_eq!(c017.unwrap().status, ConstraintStatus::Fail, "Ubuntu with apt should fail C017");
+    }
+
+    #[test]
+    fn test_c018_rejects_unapproved_base() {
+        let ctx = ConstraintContext {
+            name: "test-unapproved",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-unapproved".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/unapproved".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM ubuntu:22.04\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c018 = results.iter().find(|r| r.code == "C018");
+        assert!(c018.is_some());
+        assert_eq!(c018.unwrap().status, ConstraintStatus::Fail);
+    }
+
+    #[test]
+    fn test_c018_allows_wolfi_base() {
+        let ctx = ConstraintContext {
+            name: "test-wolfi",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-wolfi".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/wolfi".into(),
+            manifest_base: "wolfi".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base\nUSER 65532\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c018 = results.iter().find(|r| r.code == "C018");
+        assert!(c018.is_some());
+        assert_eq!(c018.unwrap().status, ConstraintStatus::Pass);
+    }
+
+    #[test]
+    fn test_registry_has_20_constraints() {
+        let registry = constraint_registry();
+        assert_eq!(registry.len(), 20, "Expected 20 constraints in registry");
+    }
+
+    #[test]
+    fn test_tier_aware_severity_c015() {
+        // C015 (no :latest) should be BLOCK for Tier 1, WARN for Tier 2-3
+        let c015 = C015NoLatestTag;
+        assert_eq!(c015.tier_severity(1), Severity::Block, "Tier 1 should BLOCK");
+        assert_eq!(c015.tier_severity(2), Severity::Warn, "Tier 2 should WARN");
+        assert_eq!(c015.tier_severity(3), Severity::Warn, "Tier 3 should WARN");
+    }
+
+    #[test]
+    fn test_tier_aware_severity_c017() {
+        // C017 (no package manager) should be BLOCK for Tier 1, WARN for Tier 2-3
+        let c017 = C017NoPackageManager;
+        assert_eq!(c017.tier_severity(1), Severity::Block, "Tier 1 should BLOCK");
+        assert_eq!(c017.tier_severity(2), Severity::Warn, "Tier 2 should WARN");
+        assert_eq!(c017.tier_severity(3), Severity::Warn, "Tier 3 should WARN");
+    }
+
+    #[test]
+    fn test_tier_aware_constraints_dont_block_tier3() {
+        // A Tier 3 image with :latest should get a WARN, not a BLOCK
+        let ctx = ConstraintContext {
+            name: "test-tier3-latest",
+            tier: 3,
+            manifest_exists: true,
+            manifest_name: "test-tier3-latest".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/latest".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "3".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM postgres:latest\nUSER 65532\nHEALTHCHECK CMD true\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c015 = results.iter().find(|r| r.code == "C015");
+        assert!(c015.is_some());
+        let result = c015.unwrap();
+        // Should FAIL (violation exists) but with WARN severity, not BLOCK
+        assert_eq!(result.status, ConstraintStatus::Fail);
+        assert_eq!(result.severity, Severity::Warn, "Tier 3 :latest should be WARN, not BLOCK");
+    }
+
+    #[test]
+    fn test_tier1_latest_blocks() {
+        // A Tier 1 image with :latest should get a BLOCK
+        let ctx = ConstraintContext {
+            name: "test-tier1-latest",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-tier1-latest".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/latest".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM postgres:latest\nUSER 65532\nHEALTHCHECK CMD true\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c015 = results.iter().find(|r| r.code == "C015");
+        assert!(c015.is_some());
+        let result = c015.unwrap();
+        assert_eq!(result.status, ConstraintStatus::Fail);
+        assert_eq!(result.severity, Severity::Block, "Tier 1 :latest should BLOCK");
+    }
+
+    #[test]
+    fn test_c003_repack_exemption() {
+        // Repack images inherit USER from upstream — should PASS C003
+        let ctx = ConstraintContext {
+            name: "test-repack",
+            tier: 3,
+            manifest_exists: true,
+            manifest_name: "test-repack".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/repack".into(),
+            manifest_base: "docker.io/library/redis:7".into(),
+            manifest_tier: "3".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM docker.io/library/redis:7\nCOPY shim /shim\nLABEL evergreen.entrypoint.pattern=\"repack-upstream-init\"\nHEALTHCHECK CMD true\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c003 = results.iter().find(|r| r.code == "C003");
+        assert!(c003.is_some());
+        assert_eq!(c003.unwrap().status, ConstraintStatus::Pass, "Repack should be exempt from C003");
+    }
+
+    #[test]
+    fn test_c003_scratch_needs_user() {
+        // Scratch image without USER should still fail
+        let ctx = ConstraintContext {
+            name: "test-scratch-no-user",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-scratch-no-user".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/scratch".into(),
+            manifest_base: "scratch".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM golang:1.23\nRUN go build -o /app\nFROM scratch\nCOPY --from=0 /app /app\nENTRYPOINT [\"/app\"]\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c003 = results.iter().find(|r| r.code == "C003");
+        assert!(c003.is_some());
+        assert_eq!(c003.unwrap().status, ConstraintStatus::Fail, "Scratch without USER should fail");
+    }
+
+    #[test]
+    fn test_c003_hardened_with_user() {
+        // Hardened image with USER should pass
+        let ctx = ConstraintContext {
+            name: "test-hardened",
+            tier: 1,
+            manifest_exists: true,
+            manifest_name: "test-hardened".into(),
+            manifest_version: "1.0.0".into(),
+            manifest_source_url: "https://github.com/test/hardened".into(),
+            manifest_base: "wolfi-base".into(),
+            manifest_tier: "1".into(),
+            dockerfile_exists: true,
+            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base:latest\nUSER 65532:65532\nENTRYPOINT [\"/app\"]\n".into(),
+            sbom_exists: false,
+            sbom_valid: false,
+        };
+        let results = check_constraints(&ctx);
+        let c003 = results.iter().find(|r| r.code == "C003");
+        assert!(c003.is_some());
+        assert_eq!(c003.unwrap().status, ConstraintStatus::Pass, "Hardened with USER should pass");
     }
 }

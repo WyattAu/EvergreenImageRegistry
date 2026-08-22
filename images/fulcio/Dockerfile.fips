@@ -1,0 +1,35 @@
+# =============================================================================
+# Fulcio FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG FULCIO_VERSION=v1.4.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${FULCIO_VERSION} https://github.com/sigstore/fulcio.git /go/src/fulcio
+
+WORKDIR /go/src/fulcio
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /fulcio ./cmd/fulcio
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /fulcio /bin/fulcio
+
+USER 65532:65532
+
+ENTRYPOINT ["/bin/fulcio"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/bin/fulcio", "version"] || exit 1
+
+LABEL org.opencontainers.image.title="fulcio-fips" \
+      org.opencontainers.image.description="Sigstore Fulcio with FIPS 140-2 BoringCrypto" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.fips-cert="4140" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

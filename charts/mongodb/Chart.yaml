@@ -1,0 +1,16 @@
+apiVersion: v2
+name: mongodb
+description: "Document-oriented NoSQL database — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - mongodb
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/mongodb
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

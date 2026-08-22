@@ -1,0 +1,38 @@
+# =============================================================================
+# Traefik FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG TRAEFIK_VERSION=v3.1.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${TRAEFIK_VERSION} https://github.com/traefik/traefik.git /go/src/traefik
+
+WORKDIR /go/src/traefik
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /traefik ./cmd/traefik
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /traefik /bin/traefik
+
+RUN mkdir -p /etc/traefik /data && chown 65532:65532 /etc/traefik /data
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+EXPOSE 80 443 8080
+
+ENTRYPOINT ["/bin/traefik"]
+CMD ["--configFile=/etc/traefik/traefik.yml"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/bin/traefik", "healthcheck"] || exit 1
+
+LABEL org.opencontainers.image.title="traefik-fips" \
+      org.opencontainers.image.description="Traefik with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

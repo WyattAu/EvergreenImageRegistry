@@ -1,0 +1,70 @@
+# =============================================================================
+# PostgreSQL FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Uses wolfi-base with OpenSSL 3.x FIPS provider.
+# PostgreSQL connects via FIPS-validated OpenSSL for TLS operations.
+#
+# FIPS Compliance:
+#   - OpenSSL 3.x FIPS provider (wolfi native)
+#   - OPENSSL_CONF=/etc/ssl/fipsmodule.cnf
+#   - ssl = on in postgresql.conf
+# =============================================================================
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
+
+# Install PostgreSQL and FIPS OpenSSL provider
+RUN apk add --no-cache \
+    postgresql-17 \
+    postgresql-17-client \
+    openssl \
+    openssl-provider-fips \
+    ca-certificates \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+# Configure FIPS mode
+RUN echo "openssl_conf = openssl_init" > /etc/ssl/openssl.cnf && \
+    echo "" >> /etc/ssl/openssl.cnf && \
+    echo "[openssl_init]" >> /etc/ssl/openssl.cnf && \
+    echo "providers = provider_sect" >> /etc/ssl/openssl.cnf && \
+    echo "" >> /etc/ssl/openssl.cnf && \
+    echo "[provider_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "fips = fips_sect" >> /etc/ssl/openssl.cnf && \
+    echo "base = base_sect" >> /etc/ssl/openssl.cnf && \
+    echo "" >> /etc/ssl/openssl.cnf && \
+    echo "[fips_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "activate = 1" >> /etc/ssl/openssl.cnf && \
+    echo "" >> /etc/ssl/openssl.cnf && \
+    echo "[base_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "activate = 1" >> /etc/ssl/openssl.cnf
+
+ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
+
+# PostgreSQL data directory
+RUN mkdir -p /var/lib/postgresql/data && \
+    chown -R 65532:65532 /var/lib/postgresql
+
+# FIPS mode configuration
+RUN echo "ssl = on" >> /usr/share/postgresql/postgresql.conf.sample && \
+    echo "ssl_cert_file = '/etc/ssl/postgresql/server.crt'" >> /usr/share/postgresql/postgresql.conf.sample && \
+    echo "ssl_key_file = '/etc/ssl/postgresql/server.key'" >> /usr/share/postgresql/postgresql.conf.sample
+
+VOLUME ["/var/lib/postgresql/data"]
+
+USER 65532:65532
+
+EXPOSE 5432
+
+ENTRYPOINT ["postgres"]
+CMD ["-D", "/var/lib/postgresql/data"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+  CMD ["pg_isready", "-U", "postgres"] || exit 1
+
+LABEL org.opencontainers.image.title="postgresql-fips" \
+      org.opencontainers.image.description="PostgreSQL with FIPS 140-2 OpenSSL provider" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="PostgreSQL" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="openssl-fips"

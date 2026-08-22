@@ -1,0 +1,55 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: evergreeneironly
+spec:
+  crd:
+    spec:
+      names:
+        kind: EvergreenEIROnly
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            allowedRegistries:
+              type: array
+              items:
+                type: string
+            exemptNamespaces:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package evergreeneironly
+
+        violation[{"msg": msg}] {
+          input.review.object.metadata.namespace
+          ns := input.review.object.metadata.namespace
+          not is_exempt_namespace(ns)
+
+          img := input.review.object.spec.containers[_].image
+          not is_allowed_registry(img)
+          msg := sprintf("Image %v is not from an allowed registry", [img])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.metadata.namespace
+          ns := input.review.object.metadata.namespace
+          not is_exempt_namespace(ns)
+
+          img := input.review.object.spec.initContainers[_].image
+          not is_allowed_registry(img)
+          msg := sprintf("Init container image %v is not from an allowed registry", [img])
+        }
+
+        is_allowed_registry(img) {
+          allowed := input.parameters.allowedRegistries[_]
+          startswith(img, allowed)
+        }
+
+        is_exempt_namespace(ns) {
+          exempt := input.parameters.exemptNamespaces[_]
+          ns == exempt
+        }

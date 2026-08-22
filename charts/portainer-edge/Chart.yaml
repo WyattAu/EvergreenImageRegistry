@@ -1,0 +1,16 @@
+apiVersion: v2
+name: portainer-edge
+description: "Container image — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - portainer-edge
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/portainer-edge
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

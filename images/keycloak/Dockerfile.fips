@@ -1,95 +1,85 @@
-ARG VERSION=26.6.2
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-ARG SHIM_VERSION=v2.0.0
-ARG OPENSSL_VERSION=3.0.16
+# =============================================================================
+# Keycloak FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Keycloak (Quarkus/Java) with FIPS mode enabled.
+# Keycloak 26+ supports native FIPS mode via Quarkus.
+# Uses OpenSSL FIPS provider + Java security properties.
+#
+# FIPS Compliance:
+#   - OpenSSL 3.x FIPS provider (JNI bridge)
+#   - Java security properties for FIPS mode
+#   - quarkus.ssl.native-fips=true
+# =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base AS openssl-builder
-ARG OPENSSL_VERSION
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 
-RUN apk add --no-cache gcc make glibc-dev glibc-static linux-headers ca-certificates perl-core wget
+RUN apk add --no-cache \
+    java-21-openjdk \
+    java-21-openjdk-headless \
+    openssl \
+    openssl-provider-fips \
+    curl
 
-WORKDIR /src
-RUN wget -q "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" -O openssl.tar.gz && \
-    tar -xzf openssl.tar.gz
+ARG KEYCLOAK_VERSION=26.0.0
 
-WORKDIR /src/openssl-${OPENSSL_VERSION}
-RUN ./config \
-        --prefix=/usr/local/ssl-fips \
-        --openssldir=/etc/ssl/fips \
-        enable-fips && \
-    make -j$(nproc) && \
-    make install_sw && \
-    make install_fips && \
-    make install
+RUN mkdir -p /opt/keycloak && \
+    cd /opt/keycloak && \
+    curl -sL https://github.com/keycloak/keycloak/releases/download/${KEYCLOAK_VERSION}/keycloak-${KEYCLOAK_VERSION}.tar.gz | tar xz --strip-components=1
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 
-FROM cgr.dev/chainguard/wolfi-base
-COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
+RUN apk add --no-cache \
+    java-21-openjdk-headless \
+    openssl \
+    openssl-provider-fips \
+    bash
 
-COPY --from=openssl-builder /usr/local/ssl-fips /usr/local/ssl-fips
-COPY --from=openssl-builder /etc/ssl/fips /etc/ssl/fips
+# FIPS mode configuration for Java
+RUN cat > /etc/java/fips.security.properties << 'EOF'
+# FIPS 140-2/3 Security Properties
+security.provider.1=org.bouncycastle.jce.provider.BouncyCastleProvider
+security.provider.2=org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+EOF
 
-RUN apk add --no-cache wget ca-certificates openjdk-21 && \
-    ln -sf /usr/lib/jvm/java-21-openjdk/bin/java /usr/local/bin/java && \
-    ln -sf /usr/local/ssl-fips/lib64/libssl.so.3 /usr/lib/libssl.so.3 && \
-    ln -sf /usr/local/ssl-fips/lib64/libcrypto.so.3 /usr/lib/libcrypto.so.3 && \
-    echo "config_diagnostics = 1" >> /etc/ssl/fipsmodule.cnf && \
-    printf 'openssl_conf = openssl_init\n.include /etc/ssl/fipsmodule.cnf\n[openssl_init]\nproviders = provider_sect\n[provider_sect]\nfips = fips_sect\nbase = base_sect\n[base_sect]\nactivate = 1\n' > /etc/ssl/fips.cnf
+# FIPS OpenSSL configuration
+RUN echo "openssl_conf = openssl_init" > /etc/ssl/openssl.cnf && \
+    echo "[openssl_init]" >> /etc/ssl/openssl.cnf && \
+    echo "providers = provider_sect" >> /etc/ssl/openssl.cnf && \
+    echo "[provider_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "fips = fips_sect" >> /etc/ssl/openssl.cnf && \
+    echo "base = base_sect" >> /etc/ssl/openssl.cnf && \
+    echo "[fips_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "activate = 1" >> /etc/ssl/openssl.cnf && \
+    echo "[base_sect]" >> /etc/ssl/openssl.cnf && \
+    echo "activate = 1" >> /etc/ssl/openssl.cnf
 
-ARG VERSION=26.6.2
-RUN mkdir -p /opt/keycloak-${VERSION}/bin && \
-    wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
-    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
-    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
-      printf '#!/bin/sh\necho "ERROR: keycloak v%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
-      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
-    fi && \
-    ln -sf /opt/keycloak-${VERSION} /opt/keycloak && \
-    adduser -u 65532 -D -h /app -s /bin/false keycloak 2>/dev/null || true && \
-    chown -R 65532:65532 /app /opt/keycloak-${VERSION} 2>/dev/null || true
+ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
+ENV JAVA_OPTS="-Djava.security.properties=/etc/java/fips.security.properties -Dquarkus.ssl.native-fips=true"
+ENV KC_HOME=/opt/keycloak
+ENV KC_HTTP_PORT=8080
+ENV KC_HTTPS_PORT=8443
+ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
 
-USER ${APP_UID}:${APP_GID}
-ENV OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
-    SHIM_METRICS_ENABLED="true" \
-    KEYCLOAK_HOME=/opt/keycloak \
-    JAVA_HOME=/usr/lib/jvm/java-21-openjdk \
-    JAVA_OPTS="-Djava.security.properties=/etc/ssl/fips.java.security -Dorg.bouncycastle.fips.approved_only=true"
-WORKDIR /app
+COPY --from=builder /opt/keycloak /opt/keycloak
+
+RUN mkdir -p /opt/keycloak/data && \
+    chown -R 65532:65532 /opt/keycloak
+
+USER 65532:65532
+
 EXPOSE 8080 8443
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+CMD ["start"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/keycloak/bin/kc.sh"]
-CMD ["--", "start-dev"]
-LABEL org.opencontainers.image.title="keycloak" \
-      org.opencontainers.image.description="Keycloak - identity and access management (FIPS variant)" \
-      org.opencontainers.image.version="26.6.2" \
-      org.opencontainers.image.vendor="Keycloak" \
-      org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
-      evergreen.image.tier="critical" \
-      evergreen.image.category="identity" \
-      evergreen.image.status="functional" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="wolfi" \
-      evergreen.fips="true" \
-      evergreen.fips.module="openssl-3.0+bouncycastle" \
-      evergreen.fips.certificate="openssl-fips-3.0+bc-fips"
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.build.type="source-fips"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s --retries=10 \
+  CMD ["/opt/keycloak/bin/kc.sh", "health"] || exit 1
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
-STOPSIGNAL SIGTERM
+LABEL org.opencontainers.image.title="keycloak-fips" \
+      org.opencontainers.image.description="Keycloak with FIPS 140-2 Quarkus mode" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="openssl-fips+java"

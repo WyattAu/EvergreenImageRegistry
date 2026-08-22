@@ -1,0 +1,151 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY - IMAGE SIZE MONITOR
+# =============================================================================
+# Tracks Docker image sizes and alerts on regressions.
+# Compares against baselines stored in .reports/image_sizes/baselines.json.
+#
+# Schedule: Weekly on Thursday at 05:00 UTC
+# Manual:   workflow_dispatch with optional threshold
+# =============================================================================
+
+name: Image Size Monitor
+
+on:
+  schedule:
+    - cron: '0 5 * * 4'  # Weekly on Thursday at 05:00 UTC
+  workflow_dispatch:
+    inputs:
+      threshold:
+        description: 'Regression threshold percentage (default: 20)'
+        required: false
+        default: '20'
+        type: string
+      update_only:
+        description: 'Update baselines without alerting'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: image-size-monitor
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check-sizes:
+    name: Check Image Sizes
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.12'
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check image sizes
+        id: sizes
+        run: |
+          THRESHOLD="${{ inputs.threshold || '20' }}"
+          UPDATE_ONLY="${{ inputs.update_only || 'false' }}"
+
+          if [ "$UPDATE_ONLY" = "true" ]; then
+            python3 scripts/track_image_sizes.py --update
+          else
+            python3 scripts/track_image_sizes.py --check --threshold "$THRESHOLD" || true
+          fi
+
+      - name: Create issue for regressions
+        if: steps.sizes.outputs.regression_count != '0'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const count = parseInt(process.env.REGRESSION_COUNT || '0');
+            const regressions = JSON.parse(process.env.REGRESSIONS || '[]');
+            const date = new Date().toISOString().split('T')[0];
+            const threshold = '${{ inputs.threshold || '20' }}';
+
+            if (count === 0) return;
+
+            // Check for existing issue
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'size-regression,automated',
+              state: 'open',
+            });
+
+            const todayIssue = existing.data.find(i => i.title.includes(date));
+            if (todayIssue) {
+              console.log(`Issue already exists: #${todayIssue.number}`);
+              return;
+            }
+
+            const rows = regressions.map(r =>
+              `| ${r.image} | ${r.baseline_human} | ${r.current_human} | **+${r.change_pct}%** |`
+            ).join('\n');
+
+            const body = [
+              `## Image Size Regression Alert - ${date}`,
+              '',
+              `**${count}** images exceeded the ${threshold}% size increase threshold.`,
+              '',
+              '| Image | Baseline | Current | Change |',
+              '|-------|----------|---------|--------|',
+              rows,
+              '',
+              '### Investigation Steps',
+              '',
+              '1. Check if base image was updated',
+              '2. Review recent Dockerfile changes',
+              '3. Check for unnecessary dependencies',
+              '4. Update baseline if change is intentional',
+              '',
+              `### Details`,
+              '',
+              `- **Workflow Run**: [${context.runNumber}](${context.serverUrl}/${context.repository}/actions/runs/${context.runId})`,
+              `- **Threshold**: ${threshold}%`,
+              `- **Check Date**: ${date}`,
+              '',
+              '_This issue was automatically created by the Image Size Monitor workflow._'
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[SIZE-REGRESSION] ${count} images exceed ${threshold}% size threshold - ${date}`,
+              body: body,
+              labels: ['size-regression', 'automated'],
+            });
+
+      - name: Generate summary
+        if: always()
+        run: |
+          {
+            echo "## Image Size Check"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| Regressions | ${{ steps.sizes.outputs.regression_count }} |"
+            echo "| Threshold | ${{ inputs.threshold || '20' }}% |"
+            echo ""
+            if [ "${{ steps.sizes.outputs.regression_count }}" = "0" ]; then
+              echo "No size regressions detected."
+            else
+              echo "Size regressions detected and reported."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

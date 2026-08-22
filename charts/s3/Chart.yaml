@@ -1,0 +1,16 @@
+apiVersion: v2
+name: s3
+description: "Container image — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - s3
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/s3
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

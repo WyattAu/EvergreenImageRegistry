@@ -1,0 +1,44 @@
+# =============================================================================
+# step-ca FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG STEP_CA_VERSION=v0.27.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${STEP_CA_VERSION} https://github.com/smallstep/certificates.git /go/src/certificates
+
+WORKDIR /go/src/certificates
+
+# Build step-ca with BoringCrypto
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /step-ca ./cmd/step-ca
+
+# Build step CLI
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /step ./cmd/step
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /step-ca /bin/step-ca
+COPY --from=builder /step /bin/step
+
+RUN mkdir -p /etc/step-ca /var/lib/step-ca && chown 65532:65532 /etc/step-ca /var/lib/step-ca
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+EXPOSE 9000
+
+ENTRYPOINT ["/bin/step-ca"]
+CMD ["/etc/step-ca/config/ca.json"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/bin/step", "ca", "health", "--ca-url", "https://localhost:9000"] || exit 1
+
+LABEL org.opencontainers.image.title="step-ca-fips" \
+      org.opencontainers.image.description="step-ca with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

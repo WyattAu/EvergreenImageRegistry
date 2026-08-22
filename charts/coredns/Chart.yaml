@@ -1,0 +1,16 @@
+apiVersion: v2
+name: coredns
+description: "DNS server — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - coredns
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/coredns
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

@@ -1,0 +1,33 @@
+# =============================================================================
+# Trivy FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG TRIVY_VERSION=0.53.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v${TRIVY_VERSION} https://github.com/aquasecurity/trivy.git /go/src/trivy
+
+WORKDIR /go/src/trivy
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /trivy ./cmd/trivy
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /trivy /usr/local/bin/trivy
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+ENTRYPOINT ["/usr/local/bin/trivy"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/trivy", "version"] || exit 1
+
+LABEL org.opencontainers.image.title="trivy-fips" \
+      org.opencontainers.image.description="Trivy with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

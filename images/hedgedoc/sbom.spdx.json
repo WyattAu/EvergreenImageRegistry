@@ -1,0 +1,71 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-hedgedoc",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/hedgedoc",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.861355+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-hedgedoc",
+      "name": "hedgedoc",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/hedgedoc",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/hedgedoc@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-hedgedoc",
+      "name": "hedgedoc",
+      "versionInfo": "latest",
+      "supplier": "upstream: quay.io/hedgedoc/hedgedoc",
+      "downloadLocation": "https://hub.docker.com/r/quay.io/hedgedoc/hedgedoc",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/quay.io/hedgedoc/hedgedoc"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-hedgedoc",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-hedgedoc"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-hedgedoc",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

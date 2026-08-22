@@ -1,0 +1,133 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: evergreenpolicies.evergreenimageregistry.io
+spec:
+  group: evergreenimageregistry.io
+  names:
+    kind: EvergreenPolicy
+    listKind: EvergreenPolicyList
+    plural: evergreenpolicies
+    singular: evergreenpolicy
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.scope
+      name: Scope
+      type: string
+    - jsonPath: .spec.rules
+      name: Rules
+      type: integer
+    - jsonPath: .status.violations
+      name: Violations
+      type: integer
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: EvergreenPolicy is the Schema for the evergreenpolicies API
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: EvergreenPolicySpec defines the desired state of EvergreenPolicy
+            properties:
+              exemptions:
+                description: Exemptions
+                items:
+                  properties:
+                    expiresAt:
+                      description: Expiration date (optional)
+                      format: date-time
+                      type: string
+                    image:
+                      description: Image name to exempt
+                      type: string
+                    reason:
+                      description: Reason for exemption
+                      type: string
+                  required:
+                  - image
+                  - reason
+                  type: object
+                type: array
+              rules:
+                description: Policy rules to enforce
+                items:
+                  properties:
+                    config:
+                      description: Rule-specific configuration
+                      type: object
+                    enforce:
+                      default: true
+                      description: Whether to enforce (block) or just warn
+                      type: boolean
+                    id:
+                      description: Rule ID (e.g., FIPS-001, PCI-DSS-2.2.1)
+                      type: string
+                    severity:
+                      description: Rule severity
+                      enum:
+                      - critical
+                      - high
+                      - medium
+                      - low
+                      - info
+                      type: string
+                  required:
+                  - id
+                  - severity
+                  type: object
+                type: array
+              scope:
+                default: namespace
+                description: Policy scope: namespace or cluster
+                enum:
+                - namespace
+                - cluster
+                type: string
+            type: object
+          status:
+            description: EvergreenPolicyStatus defines the observed state of EvergreenPolicy
+            properties:
+              lastEvaluated:
+                description: Last evaluation timestamp
+                format: date-time
+                type: string
+              totalImages:
+                description: Total images evaluated
+                type: integer
+              violationDetails:
+                description: Violation details
+                items:
+                  properties:
+                    image:
+                      type: string
+                    message:
+                      type: string
+                    ruleId:
+                      type: string
+                    severity:
+                      type: string
+                  required:
+                  - image
+                  - message
+                  - ruleId
+                  - severity
+                  type: object
+                type: array
+              violations:
+                description: Total violations found
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

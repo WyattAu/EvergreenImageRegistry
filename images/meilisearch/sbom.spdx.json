@@ -1,0 +1,71 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-meilisearch",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/meilisearch",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.882317+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-meilisearch",
+      "name": "meilisearch",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/meilisearch",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/meilisearch@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-meilisearch",
+      "name": "meilisearch",
+      "versionInfo": "latest",
+      "supplier": "upstream: getmeili/meilisearch",
+      "downloadLocation": "https://hub.docker.com/r/getmeili/meilisearch",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/getmeili/meilisearch"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-meilisearch",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-meilisearch"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-meilisearch",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

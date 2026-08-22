@@ -1,0 +1,44 @@
+[Unit]
+Description=Evergreen Image Registry Prometheus Metrics Exporter
+Documentation=https://github.com/WyattAu/EvergreenImageRegistry
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=eir-metrics
+Group=eir-metrics
+WorkingDirectory=/opt/evergreen-image-registry
+ExecStart=/usr/bin/python3 /opt/evergreen-image-registry/scripts/export_metrics.py --serve --port 9120
+Restart=always
+RestartSec=10
+TimeoutStartSec=30
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/tmp
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+
+# Environment
+Environment=PYTHONUNBUFFERED=1
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=eir-metrics
+
+[Install]
+WantedBy=multi-user.target

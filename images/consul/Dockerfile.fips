@@ -1,57 +1,40 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-ARG SHIM_VERSION=v2.0.0
+# =============================================================================
+# Consul FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
 
-FROM cgr.dev/chainguard/wolfi-base AS builder
-ARG TARGETARCH
-ARG VERSION=1.18.1
+ARG CONSUL_VERSION=1.19.0
 
-RUN apk add --no-cache go git gcc glibc-dev linux-headers ca-certificates
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /src
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/hashicorp/consul.git . || \
-    git clone --depth 1 https://github.com/hashicorp/consul.git .
+RUN git clone --depth 1 --branch v${CONSUL_VERSION} https://github.com/hashicorp/consul.git /go/src/consul
 
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} \
-    GOEXPERIMENT=boringcrypto \
-    go build -ldflags='-s -w -X main.version=${VERSION}' \
-    -tags "boringcrypto" \
-    -o /binary
+WORKDIR /go/src/consul
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /bin/consul ./
 
-FROM cgr.dev/chainguard/wolfi-base
-COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /binary /consul
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER ${APP_UID}:${APP_GID}
-ENV GOLANG_FIPS=1 \
-    SHIM_METRICS_ENABLED="true"
-WORKDIR /
-EXPOSE 8500 9101
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8500"]
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "consul agent"]
-LABEL org.opencontainers.image.title="consul" \
-      org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration (FIPS variant)" \
-      org.opencontainers.image.version="1.18.1" \
-      org.opencontainers.image.vendor="HashiCorp" \
-      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      org.opencontainers.image.source="https://github.com/hashicorp/consul" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.fips="true" \
-      evergreen.fips.module="boringcrypto" \
-      evergreen.fips.certificate="go-boringcrypto"
-LABEL evergreen.base.image="wolfi" \
-      evergreen.build.type="source-fips" \
-      evergreen.metrics.native="ztunnel" \
-      evergreen.health.type="exec" \
-      evergreen.security.cap-drop="ALL" \
-      evergreen.security.no-new-privileges="true" \
-      evergreen.security.read-only-rootfs="true" \
-      evergreen.security.seccomp="runtime-default"
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
-STOPSIGNAL SIGTERM
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /bin/consul /usr/local/bin/consul
+
+RUN mkdir -p /consul/data /consul/config && chown 65532:65532 /consul
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+VOLUME ["/consul/data"]
+
+EXPOSE 8500 8600/udp 8301 8302
+
+ENTRYPOINT ["/usr/local/bin/consul"]
+CMD ["agent", "-dev", "-client=0.0.0.0"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/usr/local/bin/consul", "members"] || exit 1
+
+LABEL org.opencontainers.image.title="consul-fips" \
+      org.opencontainers.image.description="Consul with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

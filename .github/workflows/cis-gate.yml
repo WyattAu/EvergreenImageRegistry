@@ -1,0 +1,205 @@
+# =============================================================================
+# CIS DOCKER BENCHMARK GATE
+# =============================================================================
+# Runs on PRs that change image Dockerfiles. Validates that changed images
+# meet CIS Docker Benchmark requirements before merge.
+#
+# This is a lightweight static + runtime check that runs as a required
+# status check on PRs. It does NOT build images — it validates:
+#
+# 1. Non-root user (CIS 4.4.1)
+# 2. No shell in final stage (CIS 4.4.3)
+# 3. No package manager in final stage (CIS 4.4.3)
+# 4. HEALTHCHECK present (CIS 4.5.5)
+# 5. No :latest tag (supply chain)
+# 6. OCI labels present (provenance)
+# =============================================================================
+
+name: CIS Docker Benchmark Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'images/**/Dockerfile'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Discover changed image directories
+  # ---------------------------------------------------------------------------
+  discover:
+    name: Discover Changed Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      images: ${{ steps.list.outputs.images }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 2
+
+      - name: List changed images
+        id: list
+        run: |
+          IMAGES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | \
+            grep -oP '^images/\K[^/]+' | sort -u | tr '\n' ',' | sed 's/,$//')
+          COUNT=$(echo "$IMAGES" | tr ',' '\n' | grep -c . || echo "0")
+          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+          echo "Changed images: ${IMAGES} (${COUNT})"
+
+  # ---------------------------------------------------------------------------
+  # Run CIS checks on changed Dockerfiles (static analysis)
+  # ---------------------------------------------------------------------------
+  cis-check:
+    name: CIS Benchmark Check
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(format('["{0}"]', needs.discover.outputs.images)) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: CIS 4.4.1 — Non-root user
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+          if [ ! -f "$DOCKERFILE" ]; then
+            echo "::warning::No Dockerfile found for ${{ matrix.image }}"
+            exit 0
+          fi
+
+          # Check for USER instruction in the last stage
+          LAST_STAGE_LINE=$(grep -n '^FROM ' "$DOCKERFILE" | tail -1 | cut -d: -f1)
+          if [ -n "$LAST_STAGE_LINE" ]; then
+            HAS_USER=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | grep -c '^USER ' || true)
+            if [ "$HAS_USER" -gt 0 ]; then
+              USER_LINE=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | grep '^USER ' | tail -1 | awk '{print $2}')
+              if [ "$USER_LINE" != "root" ] && [ "$USER_LINE" != "0" ]; then
+                echo "✅ CIS 4.4.1: Non-root user configured (${USER_LINE})"
+              else
+                echo "::error::CIS 4.4.1 FAIL: Container runs as root"
+                exit 1
+              fi
+            else
+              # Check if base image is distroless/wolfi/scratch (default non-root)
+              if grep -qP '^FROM\s+(gcr\.io/distroless|cgr\.dev|scratch)' "$DOCKERFILE"; then
+                echo "✅ CIS 4.4.1: Base image defaults to non-root (distroless/wolfi/scratch)"
+              else
+                echo "::error::CIS 4.4.1 FAIL: No USER instruction and base may default to root"
+                exit 1
+              fi
+            fi
+          fi
+
+      - name: CIS 4.4.3 — No shell in final stage
+        continue-on-error: true
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+
+          # Skip for images that legitimately need a shell (repack, docker-image types)
+          if grep -qP 'org\.opencontainers\.image\.title.*repack' "$DOCKERFILE" 2>/dev/null; then
+            echo "⏭️  Skipping shell check for repack image"
+            exit 0
+          fi
+
+          LAST_STAGE_LINE=$(grep -n '^FROM ' "$DOCKERFILE" | tail -1 | cut -d: -f1)
+          if [ -n "$LAST_STAGE_LINE" ]; then
+            # Check for shell installation in final stage
+            HAS_SHELL_INSTALL=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | \
+              grep -cP '(apk add|apt-get install|dnf install|yum install).*(bash|sh|coreutils)' || true)
+            if [ "$HAS_SHELL_INSTALL" -gt 0 ]; then
+              echo "::warning::CIS 4.4.3 WARN: Shell installed in final stage"
+            else
+              echo "✅ CIS 4.4.3: No shell installation in final stage"
+            fi
+          fi
+
+      - name: CIS 4.4.3 — No package manager in final stage
+        continue-on-error: true
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+
+          LAST_STAGE_LINE=$(grep -n '^FROM ' "$DOCKERFILE" | tail -1 | cut -d: -f1)
+          if [ -n "$LAST_STAGE_LINE" ]; then
+            HAS_PKG_INSTALL=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | \
+              grep -cP '^\s*(RUN\s+)?(apk add|apt-get install|dnf install|yum install)' || true)
+            if [ "$HAS_PKG_INSTALL" -gt 0 ]; then
+              echo "::warning::CIS 4.4.3 WARN: Package manager used in final stage (${HAS_PKG_INSTALL} installs)"
+            else
+              echo "✅ CIS 4.4.3: No package manager usage in final stage"
+            fi
+          fi
+
+      - name: CIS 4.5.5 — HEALTHCHECK present
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+          HAS_HEALTHCHECK=$(grep -c '^HEALTHCHECK' "$DOCKERFILE" || true)
+          if [ "$HAS_HEALTHCHECK" -gt 0 ]; then
+            echo "✅ CIS 4.5.5: HEALTHCHECK instruction present"
+          else
+            echo "::error::CIS 4.5.5 FAIL: No HEALTHCHECK instruction"
+            exit 1
+          fi
+
+      - name: Supply chain — No :latest tag
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+          # Check FROM lines for :latest or implicit latest (no tag)
+          LATEST_REFS=$(grep -P '^FROM\s+' "$DOCKERFILE" | \
+            grep -vP '(scratch|cgr\.dev|gcr\.io/distroless|ubi-micro)' | \
+            grep -P '(^FROM\s+\S+\s*$|:latest)' || true)
+          if [ -n "$LATEST_REFS" ]; then
+            echo "::error::Supply chain FAIL: :latest or implicit-latest tag found:"
+            echo "$LATEST_REFS"
+            exit 1
+          else
+            echo "✅ Supply chain: All FROM directives have pinned versions"
+          fi
+
+      - name: Supply chain — OCI labels present
+        run: |
+          DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
+          HAS_LABELS=$(grep -c 'org.opencontainers.image' "$DOCKERFILE" || true)
+          if [ "$HAS_LABELS" -gt 0 ]; then
+            echo "✅ OCI labels: ${HAS_LABELS} label(s) present"
+          else
+            echo "::warning::OCI labels: No org.opencontainers.image labels found"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## CIS Benchmark Gate — ${{ matrix.image }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "All checks completed for \`images/${{ matrix.image }}/Dockerfile\`" >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # Aggregate results
+  # ---------------------------------------------------------------------------
+  report:
+    name: CIS Gate Report
+    needs: [discover, cis-check]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report
+        run: |
+          echo "## CIS Docker Benchmark Gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Job | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| CIS Check | ${{ needs.cis-check.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.cis-check.result }}" = "failure" ]; then
+            echo "::error::CIS Docker Benchmark gate failed — see details above"
+            exit 1
+          fi

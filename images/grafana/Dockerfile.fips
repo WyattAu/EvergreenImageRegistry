@@ -1,0 +1,48 @@
+# =============================================================================
+# Grafana FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG GRAFANA_VERSION=11.1.0
+
+RUN apt-get update && apt-get install -y git nodejs npm && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v${GRAFANA_VERSION} https://github.com/grafana/grafana.git /go/src/grafana
+
+WORKDIR /go/src/grafana
+
+# Build Go backend with BoringCrypto
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /grafana-server ./pkg/cmd/grafana-server
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
+
+RUN apk add --no-cache \
+    openssl \
+    openssl-provider-fips \
+    ca-certificates \
+    fontconfig \
+    freetype \
+    musl
+
+ENV GOLANG_FIPS=1
+
+COPY --from=builder /grafana-server /usr/sbin/grafana-server
+
+RUN mkdir -p /var/lib/grafana /var/log/grafana && \
+    chown -R 65532:65532 /var/lib/grafana /var/log/grafana
+
+USER 65532:65532
+
+EXPOSE 3000
+
+ENTRYPOINT ["/usr/sbin/grafana-server"]
+CMD ["--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/sbin/grafana-server", "-v"] || exit 1
+
+LABEL org.opencontainers.image.title="grafana-fips" \
+      org.opencontainers.image.description="Grafana with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

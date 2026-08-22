@@ -1,0 +1,90 @@
+name: SBOM Validation
+
+on:
+  pull_request:
+    paths:
+      - "images/**/Dockerfile"
+      - "images/**/manifest.toml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  discover-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.find.outputs.images }}
+    steps:
+      - uses: actions/checkout@de0fac2e7d77527bb7777412b8d711c9c0070744
+        with:
+          fetch-depth: 0
+      - id: find
+        run: |
+          IMAGES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+            | grep '^images/' \
+            | cut -d'/' -f2 \
+            | sort -u \
+            | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
+
+  validate-sbom:
+    needs: discover-changes
+    if: needs.discover-changes.outputs.images != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: ${{ fromJSON(needs.discover-changes.outputs.images) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@de0fac2e7d77527bb7777412b8d711c9c0070744
+      - name: Validate SBOM
+        run: |
+          IMAGE="${{ matrix.image }}"
+          SBOM_SPDX="images/$IMAGE/sbom.spdx.json"
+          SBOM_CDX="images/$IMAGE/sbom.cdx.json"
+          echo "## SBOM Validation: $IMAGE" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f "$SBOM_SPDX" ]; then
+            SBOM_FILE="$SBOM_SPDX"
+            FMT="SPDX-2.3"
+          elif [ -f "$SBOM_CDX" ]; then
+            SBOM_FILE="$SBOM_CDX"
+            FMT="CycloneDX"
+          else
+            echo "::error file=images/$IMAGE/Dockerfile::No SBOM found for $IMAGE"
+            echo "**FAILED** -- No SBOM file" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if ! python3 -c "import json; json.load(open('$SBOM_FILE'))" 2>/dev/null; then
+            echo "::error file=$SBOM_FILE::SBOM is not valid JSON"
+            echo "**FAILED** -- Not valid JSON" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          PKG_COUNT=$(python3 -c "import json; d=json.load(open('$SBOM_FILE')); print(len(d.get('packages',d.get('components',[]))))")
+          if [ "$PKG_COUNT" -lt 1 ]; then
+            echo "::error file=$SBOM_FILE::SBOM has 0 packages"
+            echo "**FAILED** -- 0 packages (stub/template)" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          FILE_SIZE=$(stat --format=%s "$SBOM_FILE" 2>/dev/null || stat -f%z "$SBOM_FILE" 2>/dev/null || echo 0)
+          echo "**PASSED** -- $PKG_COUNT packages ($FMT, ${FILE_SIZE}B)" >> "$GITHUB_STEP_SUMMARY"
+
+  aggregate:
+    needs: validate-sbom
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## SBOM Validation Summary" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.validate-sbom.result }}" = "success" ]; then
+            echo "All SBOMs validated successfully." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ needs.validate-sbom.result }}" = "skipped" ]; then
+            echo "No images changed in this PR." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Some SBOM validations failed." >> "$GITHUB_STEP_SUMMARY"
+          fi

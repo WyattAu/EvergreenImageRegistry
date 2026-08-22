@@ -1,12 +1,12 @@
 [metadata]
 name = "redis"
-version = "7.4.8"
+version = "8.0.2"
 description = "Redis - in-memory data structure store and cache"
 vendor = "Redis"
 source = "https://github.com/redis/redis"
 license = "BSD-3-Clause"
 tier = "critical"
-upstream_version = "7.4.8"
+upstream_version = "8.0.2"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

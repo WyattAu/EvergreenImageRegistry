@@ -1,0 +1,42 @@
+# =============================================================================
+# Kanidm FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM rust:1.80-bookworm AS builder
+
+ARG KANIDM_VERSION=1.3.0
+
+RUN apt-get update && apt-get install -y git libssl-dev pkg-config && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${KANIDM_VERSION} https://github.com/kanidm/kanidm.git /build/kanidm
+
+WORKDIR /build/kanidm
+
+# Build with system OpenSSL (FIPS provider)
+RUN OPENSSL_NO_VENDOR=1 cargo build --release --bin kanidm
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+RUN microdnf install -y openssl openssl-fips-provider ca-certificates && microdnf clean all
+
+ENV OPENSSL_CONF=/etc/ssl/fipsmodule.cnf
+
+COPY --from=builder /build/kanidm/target/release/kanidm /usr/local/bin/kanidm
+
+RUN mkdir -p /data && chown 65532:65532 /data
+
+USER 65532:65532
+
+VOLUME ["/data"]
+
+EXPOSE 8443 443
+
+ENTRYPOINT ["/usr/local/bin/kanidm"]
+CMD ["server", "--address", "0.0.0.0:8443"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/kanidm", "version"] || exit 1
+
+LABEL org.opencontainers.image.title="kanidm-fips" \
+      org.opencontainers.image.description="Kanidm with FIPS 140-2 OpenSSL provider" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="openssl-fips"

@@ -1,0 +1,5070 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-21T09:21:19Z",
+    "tools": {
+      "services": [
+        {
+          "name": "trivy",
+          "version": "0.58.0"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry"
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "DLA-3972-1",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/DLA-3972-1"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "2021a-1+deb11u10",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "tzdata",
+            "version": "2021a-1+deb11u10"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "DLA-4085-1",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/DLA-4085-1"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "2021a-1+deb11u10",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "tzdata",
+            "version": "2021a-1+deb11u10"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "DLA-4105-1",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/DLA-4105-1"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "2021a-1+deb11u10",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "tzdata",
+            "version": "2021a-1+deb11u10"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "DLA-4403-1",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/DLA-4403-1"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "2021a-1+deb11u10",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "tzdata",
+            "version": "2021a-1+deb11u10"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "DLA-4569-1",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/DLA-4569-1"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "2021a-1+deb11u10",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "tzdata",
+            "version": "2021a-1+deb11u10"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-30204",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-30204"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "golang-jwt is a Go implementation of JSON Web Tokens. Starting in version 3.2.0 and prior to versions 5.2.2 and 4.5.2, the function parse.ParseUnverified splits (via a call to strings.Split) its argument (which is untrusted data) on periods. As a result, in the face of a malicious request whose Authorization header consists of Bearer  followed by many period characters, a call to that function incurs allocations to the tune of O(n) bytes (where n stands for the length of the function's argument)",
+      "published": "2025-03-21T22:15:26.42Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v4.5.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/golang-jwt/jwt/v4",
+            "version": "v4.5.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-51744",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-51744"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "LOW"
+        }
+      ],
+      "description": "golang-jwt is a Go implementation of JSON Web Tokens. Unclear documentation of the error behavior in `ParseWithClaims` can lead to situation where users are potentially not checking errors in the way they should be. Especially, if a token is both expired and invalid, the errors returned by `ParseWithClaims` return both error codes. If users only check for the `jwt.ErrTokenExpired ` using `error.Is`, they will ignore the embedded `jwt.ErrTokenSignatureInvalid` and thus potentially accept invalid ",
+      "published": "2024-11-04T22:15:03.997Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v4.5.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/golang-jwt/jwt/v4",
+            "version": "v4.5.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-22189",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-22189"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol in Go. Prior to version 0.42.0, an attacker can cause its peer to run out of memory sending a large number of `NEW_CONNECTION_ID` frames that retire old connection IDs. The receiver is supposed to respond to each retirement frame with a `RETIRE_CONNECTION_ID` frame. The attacker can prevent the receiver from sending out (the vast majority of) these `RETIRE_CONNECTION_ID` frames by collapsing the peers congestion window (by selectively acknowledgi",
+      "published": "2024-04-04T15:15:37.99Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-59530",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-59530"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol in Go. In versions prior to 0.49.0, 0.54.1, and 0.55.0, a misbehaving or malicious server can cause a denial-of-service (DoS) attack on the quic-go client by triggering an assertion failure, leading to a process crash. This requires no authentication and can be exploited during the handshake phase. This was observed in the wild with certain server implementations. quic-go needs to be able to handle misbehaving server implementations, including th",
+      "published": "2025-10-10T16:15:52.387Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-49295",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-49295"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol (RFC 9000, RFC 9001, RFC 9002) in Go. An attacker can cause its peer to run out of memory sending a large number of PATH_CHALLENGE frames. The receiver is supposed to respond to each PATH_CHALLENGE frame with a PATH_RESPONSE frame. The attacker can prevent the receiver from sending out (the vast majority of) these PATH_RESPONSE frames by collapsing the peers congestion window (by selectively acknowledging received packets) and by manipulating the",
+      "published": "2024-01-10T22:15:50.61Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-53259",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-53259"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol in Go. An off-path attacker can inject an ICMP Packet Too Large packet. Since affected quic-go versions used IP_PMTUDISC_DO, the kernel would then return a \"message too large\" error on sendmsg, i.e. when quic-go attempts to send a packet that exceeds the MTU claimed in that ICMP packet. By setting this value to smaller than 1200 bytes (the minimum MTU for QUIC), the attacker can disrupt a QUIC connection. Crucially, this can be done after complet",
+      "published": "2024-12-02T17:15:12.767Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-64702",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-64702"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol in Go. Versions 0.56.0 and below are vulnerable to excessive memory allocation through quic-go's HTTP/3 client and server implementations by sending a QPACK-encoded HEADERS frame that decodes into a large header field section (many unique header names and/or large values). The implementation builds an http.Header (used on the http.Request and http.Response, respectively), while only enforcing limits on the size of the (QPACK-compressed) HEADERS f",
+      "published": "2025-12-11T21:15:54.707Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-40898",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40898"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "quic-go is an implementation of the QUIC protocol in Go. Prior to version 0.59.1, an attacker can cause excessive memory allocation in quic-go's HTTP/3 client and server implementations by sending a QPACK-encoded HEADERS frame that decodes into a large trailer field section with many unique field names and/or large values. The implementation builds an `http.Header` for the corresponding `http.Request` or `http.Response`, while only enforcing limits on the size of the QPACK-compressed HEADERS fra",
+      "published": "2026-06-04T19:16:28.713Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.37.4",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "github.com/quic-go/quic-go",
+            "version": "v0.37.4"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-45337",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45337"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass. The documentation for ServerConfig.PublicKeyCallback says that \"A call to this function does not guarantee that the key offered is in fact used to authenticate.\" Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallb",
+      "published": "2024-12-12T02:02:07.97Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22869",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22869"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.",
+      "published": "2025-02-26T08:14:24.997Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47913",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47913"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "SSH clients receiving SSH_AGENT_SUCCESS when expecting a typed response will panic and cause early termination of the client process.",
+      "published": "2025-11-13T22:15:51.28Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39828",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39828"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "When an SSH server authentication callback returned PartialSuccessError with non-nil Permissions, those permissions were silently discarded, potentially dropping certificate restrictions such as force-command after a second factor succeeded. Returning non-nil Permissions with PartialSuccessError now results in a connection error.",
+      "published": "2026-05-22T04:16:22.19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39829",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39829"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The RSA and DSA public key parsers did not enforce size limits on key parameters. A crafted public key with an excessively large modulus or DSA parameter could cause several minutes of CPU consumption during signature verification. This could be triggered by unauthenticated clients during public key authentication. RSA moduli are now limited to 8192 bits, and DSA parameters are validated per FIPS 186-2.",
+      "published": "2026-05-22T04:16:22.31Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39830",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39830"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "A malicious SSH peer could send unsolicited global request responses to fill an internal buffer, blocking the connection's read loop. The blocked goroutine could not be released by calling Close(), resulting in a resource leak per connection. Unsolicited global responses are now discarded.",
+      "published": "2026-05-22T04:16:22.44Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39831",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39831"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The Verify() method for FIDO/U2F security key types (sk-ecdsa-sha2-nistp256@openssh.com, sk-ssh-ed25519@openssh.com) did not check the User Presence flag. Signatures generated without physical touch were accepted, allowing unattended use of a hardware security key. To restore the previous behavior, return a \"no-touch-required\" extension in Permissions.Extensions from PublicKeyCallback.",
+      "published": "2026-05-22T04:16:22.553Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39832",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39832"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "When adding a key to a remote agent constraint extensions such as restrict-destination-v00@openssh.com were not serialized in the request. Destination restrictions were silently stripped when forwarding keys, allowing unrestricted use of the key on the remote host. The client now serializes all constraint extensions. Additionally, the in-memory keyring returned by NewKeyring() now rejects keys with unsupported constraint extensions instead of silently ignoring them.",
+      "published": "2026-05-22T04:16:22.663Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39835",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39835"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "SSH servers which use CertChecker as a public key callback without setting IsUserAuthority or IsHostAuthority could be caused to panic by a client presenting a certificate. CertChecker now returns an error instead of panicking when these callbacks are nil.",
+      "published": "2026-05-22T04:16:24.53Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42508",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42508"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Previously, a revoked 'SignatureKey' belonging to a CA was not correctly checked for revocation. Now, both the 'key' and 'key.SignatureKey' are checked for @revoked.",
+      "published": "2026-05-22T04:16:25.44Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-46595",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46595"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Previously, CVE-2024-45337 fixed an authorization bypass for misused ssh server configurations; if any other type of callback is passed other than public key, then the source-address validation would be skipped.",
+      "published": "2026-05-22T04:16:25.55Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-46597",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46597"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "An incorrectly placed cast from bytes to int allowed for server-side panic in the AES-GCM packet decoder for well-crafted inputs.",
+      "published": "2026-05-22T04:16:26.003Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-48795",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-48795"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The SSH transport protocol with certain OpenSSH extensions, found in OpenSSH before 9.6 and other products, allows remote attackers to bypass integrity checks such that some packets are omitted (from the extension negotiation message), and a client and server may consequently end up with a connection for which some security features have been downgraded or disabled, aka a Terrapin attack. This occurs because the SSH Binary Packet Protocol (BPP), implemented by these extensions, mishandles the ha",
+      "published": "2023-12-18T16:15:10.897Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47914",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47914"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "SSH Agent servers do not validate the size of messages when processing new identity requests, which may cause the program to panic if the message is malformed due to an out of bounds read.",
+      "published": "2025-11-19T21:15:50.517Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58181",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58181"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "SSH servers parsing GSSAPI authentication requests do not validate the number of mechanisms specified in the request, allowing an attacker to cause unbounded memory consumption.",
+      "published": "2025-11-19T21:15:50.85Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39827",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39827"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "An authenticated SSH client that repeatedly opened channels which were rejected by the server caused unbounded memory growth, eventually crashing the server process and affecting all connected users. Rejected channels are now properly removed from the connection's internal state and released for garbage collection.",
+      "published": "2026-05-22T04:16:21.497Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39833",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39833"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The in-memory keyring returned by NewKeyring() silently accepted keys with the ConfirmBeforeUse constraint but never enforced it. The key would sign without any confirmation prompt, with no indication to the caller that the constraint was not in effect. NewKeyring() now returns an error when unsupported constraints are requested.",
+      "published": "2026-05-22T04:16:22.773Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39834",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39834"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "When writing data larger than 4GB in a single Write call on an SSH channel, an integer overflow in the internal payload size calculation caused the write loop to spin indefinitely, sending empty packets without making progress. The size comparison now uses int64 to prevent truncation.",
+      "published": "2026-05-22T04:16:24.237Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-46598",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46598"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "For certain crafted inputs, a 'ed25519.PrivateKey' was created by casting malformed wire bytes, leading to a panic when used.",
+      "published": "2026-05-22T04:16:26.537Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "GO-2026-5932",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/GO-2026-5932"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "The golang.org/x/crypto/openpgp package is unsafe by design, has numerous known security issues, is not maintained, and should not be used.\n\nIf you are required to interoperate with OpenPGP systems and need a maintained package, consider github.com/ProtonMail/go-crypto/openpgp which is a maintained fork that aims to be a drop-in replacement for this package.",
+      "published": "2026-08-21T09:21:19Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/crypto",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-39325",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39325"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "A malicious HTTP/2 client which rapidly creates requests and immediately resets them can cause excessive server resource consumption. While the total number of requests is bounded by the http2.Server.MaxConcurrentStreams setting, resetting an in-progress request allows the attacker to create a new request while the existing one is still executing. With the fix applied, HTTP/2 servers now bound the number of simultaneously executing handler goroutines to the stream concurrency limit (MaxConcurren",
+      "published": "2023-10-11T22:15:09.88Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-45288",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-45288"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "An attacker may cause an HTTP/2 endpoint to read arbitrary amounts of header data by sending an excessive number of CONTINUATION frames. Maintaining HPACK state requires parsing and processing all HEADERS and CONTINUATION frames on a connection. When a request's headers exceed MaxHeaderBytes, no memory is allocated to store the excess headers, but they are still parsed. This permits an attacker to cause an HTTP/2 endpoint to read arbitrary amounts of header data, all associated with a request wh",
+      "published": "2024-04-04T21:15:16.113Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-45338",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45338"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.",
+      "published": "2024-12-18T21:15:08.173Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-25681",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25681"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering.",
+      "published": "2026-05-22T16:16:19.863Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-27136",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27136"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering.",
+      "published": "2026-05-22T16:16:20.087Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-33814",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33814"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "When processing HTTP/2 SETTINGS frames, transport will enter an infinite loop of writing CONTINUATION frames if it receives a SETTINGS_MAX_FRAME_SIZE with a value of 0.",
+      "published": "2026-05-07T20:16:42.88Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39821",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39821"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The ToASCII and ToUnicode functions incorrectly accept Punycode-encoded labels that decode to an ASCII-only label. For example, ToUnicode(\"xn--example-.com\") incorrectly returns the name \"example.com\" rather than an error. This behavior can lead to privilege escalation in programs using the idna package. For example, a program which performs privilege checks on the ASCII hostname may reject \"example.com\" but permit \"xn--example-.com\". If that program subsequently converts the ASCII hostname to U",
+      "published": "2026-05-22T16:16:20.41Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-46600",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46600"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Parsing an invalid SVCB or HTTPS RR can panic when the size of a parameter value overflows the message buffer.",
+      "published": "2026-07-21T20:17:01.213Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22870",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22870"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to \"*.example.com\", a request to \"[::1%25.example.com]:80` will incorrectly match and not be proxied.",
+      "published": "2025-03-12T19:15:38.31Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22872",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22872"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The tokenizer incorrectly interprets tags with unquoted attribute values that end with a solidus character (/) as self-closing. When directly using Tokenizer, this can result in such tags incorrectly being marked as self-closing, and when using the Parse functions, this can result in content following such tags as being placed in the wrong scope during DOM construction, but only when tags are in foreign content (e.g. <math>, <svg>, etc contexts).",
+      "published": "2025-04-16T18:16:04.183Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47911",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47911"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The html.Parse function in golang.org/x/net/html has quadratic parsing complexity when processing certain inputs, which can lead to denial of service (DoS) if an attacker provides specially crafted HTML content.",
+      "published": "2026-02-05T18:16:09.893Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58190",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58190"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The html.Parse function in golang.org/x/net/html has an infinite parsing loop when processing certain inputs, which can lead to denial of service (DoS) if an attacker provides specially crafted HTML content.",
+      "published": "2026-02-05T18:16:10.027Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-25680",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25680"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Parsing arbitrary HTML can consume excessive CPU time, possibly leading to denial of service.",
+      "published": "2026-05-22T16:16:19.753Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42502",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42502"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering.",
+      "published": "2026-05-22T16:16:20.587Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42506",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42506"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering.",
+      "published": "2026-05-22T16:16:20.803Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.14.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/net",
+            "version": "v0.14.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22868",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22868"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.",
+      "published": "2025-02-26T08:14:24.897Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.11.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/oauth2",
+            "version": "v0.11.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39824",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39824"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "UNKNOWN"
+        }
+      ],
+      "description": "NewNTUnicodeString does not check for string length overflow. When provided with a string that overflows the maximum size of a NTUnicodeString (a 16-bit number of bytes), it returns a truncated string rather than an error.",
+      "published": "2026-05-22T20:16:33.057Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.11.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/sys",
+            "version": "v0.11.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56852",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56852"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "A norm.Iter can enter an infinite loop when handling input containing invalid UTF-8 bytes.",
+      "published": "2026-07-21T20:17:02.867Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v0.12.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "golang.org/x/text",
+            "version": "v0.12.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-33186",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33186"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "CRITICAL"
+        }
+      ],
+      "description": "gRPC-Go is the Go language implementation of gRPC. Versions prior to 1.79.3 have an authorization bypass resulting from improper input validation of the HTTP/2 `:path` pseudo-header. The gRPC-Go server was too lenient in its routing logic, accepting requests where the `:path` omitted the mandatory leading slash (e.g., `Service/Method` instead of `/Service/Method`). While the server successfully routed these requests to the correct handler, authorization interceptors (including the official `grpc",
+      "published": "2026-03-20T23:16:45.18Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.57.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "google.golang.org/grpc",
+            "version": "v1.57.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "GHSA-hrxh-6v49-42gf",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/GHSA-hrxh-6v49-42gf"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Multiple security vulnerabilities have been identified and addressed in grpc-go affecting the xDS RBAC authorization engine (internal/xds/rbac) and the HTTP/2 transport server implementation (internal/transport). These vulnerabilities could result in:\n\n- Authorization Bypass (Fail-Open) when translating xDS RBAC policies containing `Metadata` or `RequestedServerName` fields.\n- Denial of Service (High CPU Consumption) due to an HTTP/2 Rapid Reset mitigation bypass during client-initiated stream r",
+      "published": "2026-07-21T22:03:55Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.57.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "google.golang.org/grpc",
+            "version": "v1.57.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "GHSA-m425-mq94-257g",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/GHSA-m425-mq94-257g"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "### Impact\nIn affected releases of gRPC-Go, it is possible for an attacker to send HTTP/2 requests, cancel them, and send subsequent requests, which is valid by the HTTP/2 protocol, but would cause the gRPC-Go server to launch more concurrent method handlers than the configured maximum stream limit.\n\n### Patches\nThis vulnerability was addressed by #6703 and has been included in patch releases: 1.56.3, 1.57.1, 1.58.3.  It is also included in the latest release, 1.59.0.\n\nAlong with applying the pa",
+      "published": "2023-10-25T21:17:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.57.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "google.golang.org/grpc",
+            "version": "v1.57.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24786",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24786"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The protojson.Unmarshal function can enter an infinite loop when unmarshaling certain forms of invalid JSON. This condition can occur when unmarshaling into a message which contains a google.protobuf.Any value, or when the UnmarshalOptions.DiscardUnknown option is set.",
+      "published": "2024-03-05T23:15:07.82Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.31.0",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "google.golang.org/protobuf",
+            "version": "v1.31.0"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24790",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24790"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "CRITICAL"
+        }
+      ],
+      "description": "The various Is methods (IsPrivate, IsLoopback, etc) did not work as expected for IPv4-mapped IPv6 addresses, returning false for addresses which would return true in their traditional IPv4 forms.",
+      "published": "2024-06-05T16:15:10.56Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-68121",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68121"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "CRITICAL"
+        }
+      ],
+      "description": "During session resumption in crypto/tls, if the underlying Config has its ClientCAs or RootCAs fields mutated between the initial handshake and the resumed handshake, the resumed handshake may succeed when it should have failed. This may happen when a user calls Config.Clone and mutates the returned Config, or uses Config.GetConfigForClient. This can cause a client to resume a session with a server that it would not have resumed with during the initial handshake, or cause a server to resume a se",
+      "published": "2026-02-05T18:16:10.857Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-45283",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-45283"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The filepath package does not recognize paths with a \\??\\ prefix as special. On Windows, a path beginning with \\??\\ is a Root Local Device path equivalent to a path beginning with \\\\?\\. Paths with a \\??\\ prefix may be used to access arbitrary locations on the system. For example, the path \\??\\c:\\x is equivalent to the more common path c:\\x. Before fix, Clean could convert a rooted path such as \\a\\..\\??\\b into the root local device path \\??\\b. Clean will now convert this to .\\??\\b. Similarly, Joi",
+      "published": "2023-11-09T17:15:08.757Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-34156",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-34156"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Calling Decoder.Decode on a message which contains deeply nested structures can cause a panic due to stack exhaustion. This is a follow-up to CVE-2022-30635.",
+      "published": "2024-09-06T21:15:12.02Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61726",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61726"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The net/url package does not set a limit on the number of query parameters in a query. While the maximum size of query parameters in URLs is generally limited by the maximum request header size, the net/http.Request.ParseForm method can parse large URL-encoded forms. Parsing a large form containing many unique query parameters can cause excessive memory consumption.",
+      "published": "2026-01-28T20:16:09.713Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61729",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61729"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Within HostnameError.Error(), when constructing an error string, there is no limit to the number of hosts that will be printed out. Furthermore, the error string is constructed by repeated string concatenation, leading to quadratic runtime. Therefore, a certificate provided by a malicious actor can result in excessive resource consumption.",
+      "published": "2025-12-02T19:15:51.447Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-25679",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25679"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "url.Parse insufficiently validated the host/authority component and accepted some invalid URLs.",
+      "published": "2026-03-06T22:16:00.72Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-27145",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27145"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "(*x509.Certificate).VerifyHostname previously called matchHostnames in a loop over all DNS Subject Alternative Name (SAN) entries. This caused strings.Split(host, \".\") to execute repeatedly on the same input hostname. With a large DNS SAN list, verification costs scaled quadratically based on the number of SAN entries multiplied by the hostname's label count. Because x509.Verify validates hostnames before building the certificate chain, this overhead occurred even for untrusted certificates.",
+      "published": "2026-06-02T23:16:35.57Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32280",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32280"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "During chain building, the amount of work that is done is not correctly limited when a large number of intermediate certificates are passed in VerifyOptions.Intermediates, which can lead to a denial of service. This affects both direct users of crypto/x509 and users of crypto/tls.",
+      "published": "2026-04-08T02:16:03.247Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32281",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32281"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Validating certificate chains which use policies is unexpectedly inefficient when certificates in the chain contain a very large number of policy mappings, possibly causing denial of service. This only affects validation of otherwise trusted certificate chains, issued by a root CA in the VerifyOptions.Roots CertPool, or in the system certificate pool.",
+      "published": "2026-04-08T02:16:03.35Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32283",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32283"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "If one side of the TLS connection sends multiple key update messages post-handshake in a single record, the connection can deadlock, causing uncontrolled consumption of resources. This can lead to a denial of service. This only affects TLS 1.3.",
+      "published": "2026-04-08T02:16:03.58Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-33811",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33811"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "When using LookupCNAME with the cgo DNS resolver, a very long CNAME response can trigger a double-free of C memory and a crash.",
+      "published": "2026-05-07T20:16:42.77Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-33818",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33818"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Enforce a recursion limit in Unmarshal to prevent stack exhaustion when parsing deeply-nested, recursive structures.",
+      "published": "2026-08-13T22:17:19.84Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39820",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39820"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Well-crafted inputs reaching ParseAddress, ParseAddressList, and ParseDate were able to trigger excessive CPU exhaustion and memory allocations.",
+      "published": "2026-05-07T20:16:43.187Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39822",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39822"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "On Unix systems, opening a file in an os.Root improperly follows symlinks to locations outside of the Root when the final path component of the a path is a symbolic link and the path ends in /. For example, 'root.Open(\"symlink/\")' will open \"symlink\" even when \"symlink\" is a symbolic link pointing outside of the root.",
+      "published": "2026-07-08T17:17:21.31Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39836",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39836"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "The Dial and LookupPort functions panic on Windows when provided with an input containing a NUL (0).",
+      "published": "2026-05-07T20:16:43.593Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42499",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42499"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Pathological inputs could cause DoS through consumePhrase when parsing an email address according to RFC 5322.",
+      "published": "2026-05-07T20:16:44.54Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42504",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42504"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Decoding a maliciously-crafted MIME header containing many invalid encoded-words can consume excessive CPU.",
+      "published": "2026-06-02T23:16:37.927Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56853",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56853"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "When a server is configured to support unencrypted HTTP/2, it reads a few bytes from each new connection to see if they contain the HTTP/2 client preface. ReadHeaderTimeout is unexpectedly not being applied when doing this.",
+      "published": "2026-08-13T22:17:22.093Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56858",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56858"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Previously, pathological inputs could close an unescaped '/' early, allowing for attack-controlled data to inject arbitrary content, potentially leading to XSS.",
+      "published": "2026-08-13T22:17:22.207Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56859",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56859"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Previously, DecodeElement would reset the depth counter causing it to never fire; this could lead to stack exhaustion.",
+      "published": "2026-08-13T22:17:22.32Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56860",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56860"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Previously, resolving relative paths containing parent directory ('..') segments performed string conversions and buffer rewrites on each step, resulting in quadratic time complexity and high memory allocation overhead. Now, path resolution operates on a byte buffer using index-based backtracking for '..' segments, eliminating the quadratic time complexity and significantly reducing memory allocations.",
+      "published": "2026-08-13T22:17:22.44Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-56862",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56862"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "HIGH"
+        }
+      ],
+      "description": "Handshake messages, such as KeyUpdate, are always considered as state-advancing, regardless of whether a handshake has been completed or not. As a result, a malicious client can keep sending KeyUpdate messages to force the server to keep performing key derivation operations indefinitely.",
+      "published": "2026-08-13T22:17:22.55Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-39318",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39318"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The html/template package does not properly handle HTML-like \"\" comment tokens, nor hashbang \"#!\" comment tokens, in <script> contexts. This may cause the template parser to improperly interpret the contents of <script> contexts, causing actions to be improperly escaped. This may be leveraged to perform an XSS attack.",
+      "published": "2023-09-08T17:15:27.823Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-39319",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39319"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The html/template package does not apply the proper rules for handling occurrences of \"<script\", \"<!--\", and \"</script\" within JS literals in <script> contexts. This may cause the template parser to improperly consider script contexts to be terminated early, causing actions to be improperly escaped. This could be leveraged to perform an XSS attack.",
+      "published": "2023-09-08T17:15:27.91Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-39326",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39326"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "A malicious HTTP sender can use chunk extensions to cause a receiver reading from a request or response body to read many more bytes from the network than are in the body. A malicious HTTP client can further exploit this to cause a server to automatically read a large amount of data (up to about 1GiB) when a handler fails to read the entire body of a request. Chunk extensions are a little-used HTTP feature which permit including additional metadata in a request or response body sent using the ch",
+      "published": "2023-12-06T17:15:07.147Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-45284",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-45284"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "On Windows, The IsLocal function does not correctly detect reserved device names in some cases. Reserved names followed by spaces, such as \"COM1 \", and reserved names \"COM\" and \"LPT\" followed by superscript 1, 2, or 3, are incorrectly reported as local. With fix, IsLocal now correctly reports these names as non-local.",
+      "published": "2023-11-09T17:15:08.813Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-45289",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-45289"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "When following an HTTP redirect to a domain which is not a subdomain match or exact match of the initial domain, an http.Client does not forward sensitive headers such as \"Authorization\" or \"Cookie\". For example, a redirect from foo.com to www.foo.com will forward the Authorization header, but a redirect to bar.com will not. A maliciously crafted HTTP redirect could cause sensitive headers to be unexpectedly forwarded.",
+      "published": "2024-03-05T23:15:07.137Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2023-45290",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-45290"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "When parsing a multipart form (either explicitly with Request.ParseMultipartForm or implicitly with Request.FormValue, Request.PostFormValue, or Request.FormFile), limits on the total size of the parsed form were not applied to the memory consumed while reading a single form line. This permits a maliciously crafted input containing very long lines to cause allocation of arbitrarily large amounts of memory, potentially leading to memory exhaustion. With fix, the ParseMultipartForm function now co",
+      "published": "2024-03-05T23:15:07.21Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24783",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24783"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Verifying a certificate chain which contains a certificate with an unknown public key algorithm will cause Certificate.Verify to panic. This affects all crypto/tls clients, and servers that set Config.ClientAuth to VerifyClientCertIfGiven or RequireAndVerifyClientCert. The default behavior is for TLS servers to not verify client certificates.",
+      "published": "2024-03-05T23:15:07.683Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24784",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24784"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The ParseAddressList function incorrectly handles comments (text within parentheses) within display names. Since this is a misalignment with conforming address parsers, it can result in different trust decisions being made by programs using different parsers.",
+      "published": "2024-03-05T23:15:07.733Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24785",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24785"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "If errors returned from MarshalJSON methods contain user controlled data, they may be used to break the contextual auto-escaping behavior of the html/template package, allowing for subsequent actions to inject unexpected content into templates.",
+      "published": "2024-03-05T23:15:07.777Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24789",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24789"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The archive/zip package's handling of certain types of invalid zip files differs from the behavior of most zip implementations. This misalignment could be exploited to create an zip file with contents that vary depending on the implementation reading the file. The archive/zip package now rejects files containing these errors.",
+      "published": "2024-06-05T16:15:10.47Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-24791",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24791"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The net/http HTTP/1.1 client mishandled the case where a server responds to a request with an \"Expect: 100-continue\" header with a non-informational (200 or higher) status. This mishandling could leave a client connection in an invalid state, where the next request sent on the connection will fail. An attacker sending a request to a net/http/httputil.ReverseProxy proxy can exploit this mishandling to cause a denial of service by sending \"Expect: 100-continue\" requests which elicit a non-informat",
+      "published": "2024-07-02T22:15:04.833Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-34155",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-34155"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Calling any of the Parse functions on Go source code which contains deeply nested literals can cause a panic due to stack exhaustion.",
+      "published": "2024-09-06T21:15:11.947Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-34158",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-34158"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Calling Parse on a \"// +build\" build tag line with deeply nested expressions can cause a panic due to stack exhaustion.",
+      "published": "2024-09-06T21:15:12.083Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-45336",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45336"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The HTTP client drops sensitive headers after following a cross-domain redirect. For example, a request to a.com/ containing an Authorization header which is redirected to b.com/ will not send that header to b.com. In the event that the client received a subsequent same-domain redirect, however, the sensitive headers would be restored. For example, a chain of redirects from a.com/, to b.com/1, and finally to b.com/2 would incorrectly send the Authorization header to b.com/2.",
+      "published": "2025-01-28T02:15:28.807Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-0913",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0913"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "os.OpenFile(path, os.O_CREATE|O_EXCL) behaved differently on Unix and Windows systems when the target path was a dangling symlink. On Unix systems, OpenFile with O_CREATE and O_EXCL flags never follows symlinks. On Windows, when the target path was a symlink to a nonexistent location, OpenFile would create a file in that location. OpenFile now always returns an error when the O_CREATE and O_EXCL flags are both set and the target path is a symlink.",
+      "published": "2025-06-11T18:15:24.627Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22866",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22866"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Due to the usage of a variable time instruction in the assembly implementation of an internal function, a small number of bits of secret scalars are leaked on the ppc64le architecture. Due to the way this function is used, we do not believe this leakage is enough to allow recovery of the private key when P-256 is used in any well known protocols.",
+      "published": "2025-02-06T17:15:21.41Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22871",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22871"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The net/http package improperly accepts a bare LF as a line terminator in chunked data chunk-size lines. This can permit request smuggling if a net/http server is used in conjunction with a server that incorrectly accepts a bare LF as part of a chunk-ext.",
+      "published": "2025-04-08T20:15:20.183Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-22873",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-22873"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "It was possible to improperly access the parent directory of an os.Root by opening a filename ending in \"../\". For example, Root.Open(\"../\") would open the parent directory of the Root. This escape only permits opening the parent directory itself, not ancestors of the parent or files contained within the parent.",
+      "published": "2026-02-04T23:15:54.22Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-4673",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-4673"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Proxy-Authorization and Proxy-Authenticate headers persisted on cross-origin redirects potentially leaking sensitive information.",
+      "published": "2025-06-11T17:15:42.993Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47906",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47906"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "If the PATH environment variable contains paths which are executables (rather than just directories), passing certain strings to LookPath (\"\", \".\", and \"..\"), can result in the binaries listed in the PATH being unexpectedly returned.",
+      "published": "2025-09-18T19:15:37.66Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47907",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47907"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Cancelling a query (e.g. by cancelling the context passed to one of the query methods) during a call to the Scan method of the returned Rows can result in unexpected results if other queries are being made in parallel. This can result in a race condition that may overwrite the expected results with those of another query, causing the call to Scan to return either unexpected results from the other query or an error.",
+      "published": "2025-08-07T16:15:30.357Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-47912",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-47912"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The Parse function permits values other than IPv6 addresses to be included in square brackets within the host component of a URL. RFC 3986 permits IPv6 addresses to be included within the host component, enclosed within square brackets. For example: \"http://[::1]/\". IPv4 addresses and hostnames must not appear within square brackets. Parse did not enforce this requirement.",
+      "published": "2025-10-29T23:16:18.187Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58183",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58183"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "tar.Reader does not set a maximum size on the number of sparse region data blocks in GNU tar pax 1.0 sparse files. A maliciously-crafted archive containing a large number of sparse regions can cause a Reader to read an unbounded amount of data from the archive into memory. When reading from a compressed source, a small compressed input can result in large allocations.",
+      "published": "2025-10-29T23:16:19.357Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58185",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58185"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Parsing a maliciously crafted DER payload could allocate large amounts of memory, causing memory exhaustion.",
+      "published": "2025-10-29T23:16:19.45Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58187",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58187"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Due to the design of the name constraint checking algorithm, the processing time of some inputs scale non-linearly with respect to the size of the certificate. This affects programs which validate arbitrary certificate chains.",
+      "published": "2025-10-29T23:16:19.643Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58188",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58188"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Validating certificate chains which contain DSA public keys can cause programs to panic, due to a interface cast that assumes they implement the Equal method. This affects programs which validate arbitrary certificate chains.",
+      "published": "2025-10-29T23:16:19.74Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58189",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58189"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "When Conn.Handshake fails during ALPN negotiation the error contains attacker controlled information (the ALPN protocols sent by the client) which is not escaped.",
+      "published": "2025-10-29T23:16:19.833Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61723",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61723"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The processing time for parsing some invalid inputs scales non-linearly with respect to the size of the input. This affects programs which parse untrusted PEM inputs.",
+      "published": "2025-10-29T23:16:19.927Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61724",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61724"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The Reader.ReadResponse function constructs a response string through repeated string concatenation of lines. When the number of lines in a response is large, this can cause excessive CPU consumption.",
+      "published": "2025-10-29T23:16:20.02Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61725",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61725"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "The ParseAddress function constructs domain-literal address components through repeated string concatenation. When parsing large domain-literal components, this can cause excessive CPU consumption.",
+      "published": "2025-10-29T23:16:20.113Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61727",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61727"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "An excluded subdomain constraint in a certificate chain does not restrict the usage of wildcard SANs in the leaf certificate. For example a constraint that excludes the subdomain test.example.com does not prevent a leaf certificate from claiming the SAN *.example.com.",
+      "published": "2025-12-03T20:16:25.607Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61728",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61728"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "archive/zip uses a super-linear file name indexing algorithm that is invoked the first time a file in an archive is opened. This can lead to a denial of service when consuming a maliciously constructed ZIP archive.",
+      "published": "2026-01-28T20:16:09.83Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-61730",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61730"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "During the TLS 1.3 handshake if multiple messages are sent in records that span encryption level boundaries (for instance the Client Hello and Encrypted Extensions messages), the subsequent messages may be processed before the encryption level changes. This can cause some minor information disclosure if a network-local attacker can inject messages during the handshake.",
+      "published": "2026-01-28T20:16:09.94Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-27142",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27142"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Actions which insert URLs into the content attribute of HTML meta tags are not escaped. This can allow XSS if the meta tag also has an http-equiv attribute with the value \"refresh\". A new GODEBUG setting has been added, htmlmetacontenturlescape, which can be used to disable escaping URLs in actions in the meta content attribute which follow \"url=\" by setting htmlmetacontenturlescape=0.",
+      "published": "2026-03-06T22:16:01.177Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32282",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32282"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "On Linux, if the target of Root.Chmod is replaced with a symlink while the chmod operation is in progress, Chmod can operate on the target of the symlink, even when the target lies outside the root. The Linux fchmodat syscall silently ignores the AT_SYMLINK_NOFOLLOW flag, which Root.Chmod uses to avoid symlink traversal. Root.Chmod checks its target before acting and returns an error if the target is a symlink lying outside the root, so the impact is limited to cases where the target is replaced",
+      "published": "2026-04-08T02:16:03.467Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32288",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32288"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "tar.Reader can allocate an unbounded amount of memory when reading a maliciously-crafted archive containing a large number of sparse regions encoded in the \"old GNU sparse map\" format.",
+      "published": "2026-04-08T02:16:03.707Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-32289",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32289"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Context was not properly tracked across template branches for JS template literals, leading to possibly incorrect escaping of content when branches were used. Additionally template actions within JS template literals did not properly track the brace depth, leading to incorrect escaping being applied. These issues could cause actions within JS template literals to be incorrectly or improperly escaped, leading to XSS vulnerabilities.",
+      "published": "2026-04-08T02:16:03.82Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39823",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39823"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "CVE-2026-27142 fixed a vulnerability in which URLs were not correctly escaped inside of a <meta> tag's <content> attribute. If the URL content were to insert ASCII whitespaces around the '=' rune inside of the <content> attribute, the escaper would fail to similarly escape it, leading to XSS.",
+      "published": "2026-05-07T20:16:43.29Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39825",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39825"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "ReverseProxy can forward queries containing parameters not visible to Rewrite functions. When used with a Rewrite function, or a Director function which parses query parameters, ReverseProxy sanitizes the forwarded request to remove query parameters which are not parsed by url.ParseQuery. ReverseProxy does not take ParseQuery's limit on the total number of query parameters (controlled by GODEBUG=urlmaxqueryparams=N) into account. This can permit ReverseProxy to forward a request containing a que",
+      "published": "2026-05-07T20:16:43.39Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-39826",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39826"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "If a trusted template author were to write a <script> tag containing an empty 'type' attribute or a 'type' attribute with an ASCII whitespace, the execution of the template would incorrectly escape any data passed into the <script> block.",
+      "published": "2026-05-07T20:16:43.49Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42505",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42505"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "Handshakes which used Encrypted Client Hello could be de-anonymized by a passive network observer due to a disclosure of pre-shared key identities in the unencrypted client hello.",
+      "published": "2026-07-08T17:17:21.497Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-42507",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42507"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "MEDIUM"
+        }
+      ],
+      "description": "When returning errors, functions in the net/textproto package would include its input as part of the error. This might allow an attacker to inject misleading content to errors that are printed or logged.",
+      "published": "2026-06-02T23:16:38.027Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2024-45341",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45341"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "LOW"
+        }
+      ],
+      "description": "A certificate with a URI which has a IPv6 address with a zone ID may incorrectly satisfy a URI name constraint that applies to the certificate chain. Certificates containing URIs are not permitted in the web PKI, so this only affects users of private PKIs which make use of URIs.",
+      "published": "2025-01-28T02:15:29.147Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2025-58186",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58186"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "LOW"
+        }
+      ],
+      "description": "Despite HTTP headers having a default limit of 1MB, the number of cookies that can be parsed does not have a limit. By sending a lot of very small cookies such as \"a=;\", an attacker can make an HTTP server allocate a large amount of structs, causing large memory consumption.",
+      "published": "2025-10-29T23:16:19.547Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    },
+    {
+      "id": "CVE-2026-27139",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27139"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": 0,
+          "severity": "LOW"
+        }
+      ],
+      "description": "On Unix platforms, when listing the contents of a directory using File.ReadDir or File.Readdir the returned FileInfo could reference a file outside of the Root in which the File was opened. The impact of this escape is limited to reading metadata provided by lstat from arbitrary locations on the filesystem without permitting reading or writing files outside the root.",
+      "published": "2026-03-06T22:16:01.07Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/coredns",
+          "versions": [
+            {
+              "version": "v1.20.7",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "stdlib",
+            "version": "v1.20.7"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "vulnerable_code_not_present_execute_path",
+        "response": [
+          "will_not_fix"
+        ],
+        "detail": "No fix available"
+      }
+    }
+  ],
+  "services": [
+    {
+      "bom-ref": "pkg:docker/coredns",
+      "name": "coredns"
+    }
+  ]
+}

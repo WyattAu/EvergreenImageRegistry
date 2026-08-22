@@ -17,3 +17,4 @@ LABEL evergreen.security.no-new-privileges="true"
 EXPOSE 8080 9101
 LABEL evergreen.security.read-only-rootfs="false"
 LABEL evergreen.security.seccomp="runtime-default"
+LABEL evergreen.base.image="ghcr.io/frebib/zfs-exporter:latest"

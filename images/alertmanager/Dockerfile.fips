@@ -1,0 +1,40 @@
+# =============================================================================
+# Alertmanager FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG AM_VERSION=0.27.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v${AM_VERSION} https://github.com/prometheus/alertmanager.git /go/src/alertmanager
+
+WORKDIR /go/src/alertmanager
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /alertmanager ./cmd/alertmanager
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /alertmanager /usr/local/bin/alertmanager
+
+RUN mkdir -p /alertmanager/data && chown 65532:65532 /alertmanager
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+VOLUME ["/alertmanager/data"]
+
+EXPOSE 9093
+
+ENTRYPOINT ["/usr/local/bin/alertmanager"]
+CMD ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager/data"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/usr/local/bin/alertmanager", "--version"] || exit 1
+
+LABEL org.opencontainers.image.title="alertmanager-fips" \
+      org.opencontainers.image.description="Alertmanager with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

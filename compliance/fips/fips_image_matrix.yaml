@@ -190,7 +190,7 @@ fips_image_matrix:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
             - 'Change build: CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build'
-            - 'Switch final image from scratch to debian:bookworm-slim (glibc needed)'
+            - 'Switch final image from scratch to ubi-micro (glibc needed, debian-slim is BANNED)'
             - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: dex-fips
@@ -251,7 +251,7 @@ fips_image_matrix:
             - smallstep/crypto
           required_changes:
             - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
-            - 'Switch final image from scratch to debian:bookworm-slim'
+            - 'Switch final image from scratch to ubi-micro (debian-slim is BANNED per ADR-007)'
             - 'Set GOLANG_FIPS=1 at runtime'
           priority: Critical
           variant: step-ca-fips
@@ -590,9 +590,9 @@ fips_image_matrix:
       requires_upstream_changes: 2
       not_in_registry: 2
     by_base_change:
-      scratch_to_glibc: 15
+      scratch_to_ubi_micro: 15
       wolfi_to_fips_wolfi: 6
-      scratch_to_debian: 4
+      wolfi_to_ubi_micro: 4
       unchanged: 3
       not_applicable: 2
 
@@ -601,7 +601,7 @@ fips_image_matrix:
     golang_boringcrypto: 'Go 1.24+ with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
     boringcrypto_note: 'BoringCrypto requires CGO_ENABLED=1; cannot produce static scratch binaries'
     boringcrypto_fips_cert: 'FIPS 140-2 Certificate #4140 (BoringCrypto module in BoringSSL)'
-    debian_fips_base: 'debian:bookworm-slim with libssl3 and openssl-fips-provider installed'
+    debian_fips_base: 'ubi-micro (registry.access.redhat.com/ubi9/ubi-micro) — debian-slim is BANNED per ADR-007'
     wolfi_fips_base: 'cgr.dev/chainguard/wolfi-base-fips:latest (if available)'
     fips_env_vars:
       openssl: 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
@@ -609,9 +609,9 @@ fips_image_matrix:
       java: '-Djava.security.properties=/etc/java/security.fips.properties'
       vault: 'VAULT_FIPS=1 (Enterprise only)'
     scratch_limitation: >
-      BoringCrypto requires dynamic linking with glibc. Images currently using FROM scratch must switch to a minimal
-      glibc-based image (debian:bookworm-slim or wolfi) for FIPS variants. This increases image size but is required for
-      FIPS compliance.
+      BoringCrypto requires dynamic linking with glibc. Images currently using FROM scratch must switch to
+      ubi-micro (registry.access.redhat.com/ubi9/ubi-micro, ~30MB) for FIPS variants. debian:bookworm-slim
+      is BANNED per ADR-007. This increases image size but is required for FIPS compliance.
 
   upstream_fips_status:
     envoy: 'Official FIPS build available via bazel --config=fips'

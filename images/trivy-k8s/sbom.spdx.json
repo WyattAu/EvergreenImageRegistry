@@ -1,0 +1,71 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-trivy-k8s",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/trivy-k8s",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.941161+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-trivy-k8s",
+      "name": "trivy-k8s",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/trivy-k8s",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/trivy-k8s@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-trivy",
+      "name": "trivy",
+      "versionInfo": "latest",
+      "supplier": "upstream: aquasec/trivy",
+      "downloadLocation": "https://hub.docker.com/r/aquasec/trivy",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/aquasec/trivy"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-trivy-k8s",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-trivy"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-trivy-k8s",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

@@ -75,6 +75,7 @@ LABEL org.opencontainers.image.description="Test image {name}"
 LABEL evergreen.image.tier="{tier}"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
 "#,
             base = base,
             version = version,
@@ -83,7 +84,7 @@ LABEL evergreen.security.no-new-privileges="true"
         )
     } else {
         format!(
-            r#"FROM {base}
+            r#"FROM {base}@sha256:cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999aaaa1111
 ARG VERSION={version}
 RUN apk add --no-cache {name}
 USER 65532:65532
@@ -96,6 +97,7 @@ LABEL org.opencontainers.image.description="Test image {name}"
 LABEL evergreen.image.tier="{tier}"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
 "#,
             base = base,
             version = version,
@@ -228,12 +230,12 @@ fn test_e2e_parallel_validation() {
     fs::create_dir_all(&good2_dir).unwrap();
     fs::write(
         good2_dir.join("Dockerfile"),
-        "FROM cgr.dev/chainguard/wolfi-base:latest@sha256:bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999aaaa\nARG VERSION=2.0.0\nRUN apk add --no-cache another-good\nUSER 65532:65532\nENTRYPOINT [\"/another-good\"]\nHEALTHCHECK CMD [\"/another-good\", \"health\"]\nSTOPSIGNAL SIGTERM\nLABEL org.opencontainers.image.title=\"another-good\"\nLABEL org.opencontainers.image.version=\"2.0.0\"\nLABEL evergreen.image.tier=\"2\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\n",
+        "FROM cgr.dev/chainguard/wolfi-base:20240301@sha256:bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999aaaa AS builder\nARG VERSION=2.0.0\nRUN apk add --no-cache another-good\n\nFROM cgr.dev/chainguard/wolfi-base:20240301@sha256:cccc4444dddd5555eeee6666ffff7777aaaa8888bbbb9999cccc0000aaaa1111\nCOPY --from=builder /usr/bin/another-good /usr/bin/another-good\nUSER 65532:65532\nENTRYPOINT [\"/usr/bin/another-good\"]\nHEALTHCHECK CMD [\"/usr/bin/another-good\", \"health\"]\nSTOPSIGNAL SIGTERM\nLABEL org.opencontainers.image.title=\"another-good\"\nLABEL org.opencontainers.image.version=\"2.0.0\"\nLABEL evergreen.image.tier=\"2\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nLABEL evergreen.security.read-only-rootfs=\"true\"\n",
     )
     .unwrap();
     fs::write(
         good2_dir.join("manifest.toml"),
-        "[metadata]\nname = \"another-good\"\nversion = \"2.0.0\"\ntier = \"2\"\n\n[build]\nbase = \"cgr.dev/chainguard/wolfi-base:latest\"\n\n[source]\ntype = \"pkg-install\"\nurl = \"https://example.com/test.tar.gz\"\n\n[runtime]\nentrypoint = [\"/another-good\"]\n",
+        "[metadata]\nname = \"another-good\"\nversion = \"2.0.0\"\ntier = \"2\"\n\n[build]\nbase = \"cgr.dev/chainguard/wolfi-base\"\n\n[source]\ntype = \"pkg-install\"\nurl = \"https://example.com/test.tar.gz\"\n\n[runtime]\nentrypoint = [\"/another-good\"]\n",
     )
     .unwrap();
     fs::write(

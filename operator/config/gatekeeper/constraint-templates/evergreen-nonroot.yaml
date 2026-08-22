@@ -1,0 +1,25 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: evergreennonroot
+spec:
+  crd:
+    spec:
+      names:
+        kind: EvergreenNonRoot
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package evergreennonroot
+
+        violation[{"msg": msg}] {
+          not input.review.object.spec.securityContext.runAsNonRoot
+          msg := "Pods must set securityContext.runAsNonRoot: true"
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not container.securityContext.runAsNonRoot
+          not input.review.object.spec.securityContext.runAsNonRoot
+          msg := sprintf("Container %v must set runAsNonRoot: true", [container.name])
+        }

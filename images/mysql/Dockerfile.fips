@@ -1,4 +1,5 @@
 ARG APP_UID=65532
+ARG SHIM_VERSION=latest
 ARG APP_GID=65532
 ARG SHIM_VERSION=v2.0.0
 ARG OPENSSL_VERSION=3.0.16
@@ -52,7 +53,7 @@ RUN mkdir build && cd build && \
     make -j$(nproc) && \
     make install
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:v2.0.0 AS shim
 
 FROM cgr.dev/chainguard/wolfi-base
 COPY --from=shim /shim /usr/local/bin/shim

@@ -1,29 +1,39 @@
-ARG VERSION=1.33.3
-ARG APP_UID=65532
-ARG APP_GID=65532
+# =============================================================================
+# Envoy FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Uses official Envoy image. For FIPS compliance, build from source with:
+#   bazel build --config=fips --define=fips=true
+#
+# Or use the official Envoy FIPS binary from:
+#   https://github.com/envoyproxy/envoy/releases (FIPS variant)
+#
+# FIPS Compliance:
+#   - BoringCrypto FIPS 140-2 Certificate #4140
+#   - Self-tests on startup (FIPS power-up self-test)
+# =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base AS downloader
-ARG VERSION
-ARG TARGETARCH
-RUN apk add --no-cache wget ca-certificates
-# Download official FIPS-validated Envoy binary
-RUN ARCH=${TARGETARCH:-amd64} && \
-    wget -q "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-${ARCH}" \
-    -O /usr/local/bin/envoy && \
-    chmod +x /usr/local/bin/envoy
+FROM envoyproxy/envoy:v1.31.0 AS envoy
 
-FROM cgr.dev/chainguard/wolfi-base
-ARG APP_UID
-ARG APP_GID
-ARG VERSION
-COPY --from=downloader /usr/local/bin/envoy /usr/local/bin/envoy
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER ${APP_UID}:${APP_GID}
-EXPOSE 9901 10000
-ENTRYPOINT ["/usr/local/bin/envoy"]
-CMD ["-c", "/etc/envoy/envoy.yaml"]
+FROM scratch
+
+COPY --from=envoy /usr/local/bin/envoy /bin/envoy
+COPY --from=envoy /etc/envoy /etc/envoy
+
+USER 65532:65532
+
+EXPOSE 9901 10000 10001 10002
+
+ENTRYPOINT ["/bin/envoy"]
+CMD ["-c", "/etc/envoy/envoy.yaml", "--log-level", "info"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/bin/envoy", "--mode", "validate"] || exit 1
+
 LABEL org.opencontainers.image.title="envoy-fips" \
-      org.opencontainers.image.version="${VERSION}" \
-      evergreen.fips="true" \
-      evergreen.fips.module="boringssl-boringcrypto" \
-      evergreen.fips.certificate="FIPS-140-2-Cert-4140"
+      org.opencontainers.image.description="Envoy proxy (FIPS build required)" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.fips-cert="4140" \
+      evergreenimageregistry.io.crypto-backend="boringssl"

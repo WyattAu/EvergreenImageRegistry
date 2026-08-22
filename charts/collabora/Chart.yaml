@@ -1,0 +1,16 @@
+apiVersion: v2
+name: collabora
+description: "Container image — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - collabora
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/collabora
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

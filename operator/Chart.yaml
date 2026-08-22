@@ -1,0 +1,18 @@
+apiVersion: v2
+name: evergreen-operator
+description: Kubernetes operator for Evergreen Image Registry — auto-updates, compliance enforcement, and drift detection
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: Wyatt Au
+    email: wyatt@example.com
+keywords:
+  - kubernetes
+  - operator
+  - security
+  - compliance
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

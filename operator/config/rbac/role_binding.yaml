@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: evergreen-operator
+subjects:
+  - kind: ServiceAccount
+    name: evergreen-operator
+    namespace: evergreen-system
+roleRef:
+  kind: ClusterRole
+  name: evergreen-operator
+  apiGroup: rbac.authorization.k8s.io

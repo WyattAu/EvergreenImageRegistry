@@ -1,0 +1,16 @@
+apiVersion: v2
+name: crowdsec
+description: "Collaborative security engine — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - crowdsec
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/crowdsec
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

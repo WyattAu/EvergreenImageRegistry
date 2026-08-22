@@ -1,0 +1,41 @@
+# =============================================================================
+# CockroachDB FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG COCKROACH_VERSION=24.2.0
+
+RUN apt-get update && apt-get install -y git autoconf gcc make && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v${COCKROACH_VERSION} https://github.com/cockroachdb/cockroach.git /go/src/cockroach
+
+WORKDIR /go/src/cockroach
+
+# Build with BoringCrypto FIPS support
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    make build BUILDTYPE=release BUILD_VARIANT=official
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /go/src/cockroach/bin/cockroach /usr/local/bin/cockroach
+
+RUN mkdir -p /cockroach/cockroach-data && chown -R 65532:65532 /cockroach
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+VOLUME ["/cockroach/cockroach-data"]
+
+EXPOSE 26257 8080
+
+ENTRYPOINT ["cockroach"]
+CMD ["start-single-node", "--insecure", "--accept-sql-without-tls"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+  CMD ["cockroach", "node", "status", "--insecure"] || exit 1
+
+LABEL org.opencontainers.image.title="cockroachdb-fips" \
+      org.opencontainers.image.description="CockroachDB with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

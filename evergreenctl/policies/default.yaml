@@ -1,0 +1,309 @@
+# =============================================================================
+# Evergreen Image Registry - Default Security Policy
+# =============================================================================
+# Defines all validation constraints for image compliance.
+# Loaded by evergreenctl validate-parallel and constraint checking.
+#
+# Policy Version: 1.0.0
+# =============================================================================
+
+policy:
+  name: "Evergreen Default Policy"
+  version: "1.0.0"
+  description: "Default security and compliance constraints for all images"
+
+# Global settings
+settings:
+  # Severity levels: block, warn, info
+  default_severity: "block"
+  # Skip constraints for scratch-based images
+  skip_for_scratch: true
+  # Required tiers that must pass all block constraints
+  critical_tier_required: true
+
+# Constraint definitions
+constraints:
+  # ===========================================================================
+  # Structural Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C001"
+    name: "manifest_exists"
+    description: "Image must have a valid manifest.toml"
+    severity: "block"
+    category: "structural"
+    check:
+      type: "file_exists"
+      file: "manifest.toml"
+
+  - code: "C002"
+    name: "dockerfile_exists"
+    description: "Image must have a Dockerfile"
+    severity: "block"
+    category: "structural"
+    check:
+      type: "file_exists"
+      file: "Dockerfile"
+
+  # ===========================================================================
+  # Security Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C003"
+    name: "non_root_user"
+    description: "Dockerfile must use non-root user (UID 65532/65534)"
+    severity: "block"
+    category: "security"
+    check:
+      type: "content_contains_any"
+      file: "Dockerfile"
+      patterns:
+        - "USER 65532"
+        - "USER 65534"
+        - "USER nobody"
+        - "FROM scratch"
+    skip_if:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "FROM scratch"
+
+  - code: "C004"
+    name: "no_alpine"
+    description: "Alpine base images are FORBIDDEN"
+    severity: "block"
+    category: "security"
+    check:
+      type: "content_not_contains"
+      file: "Dockerfile"
+      pattern: "FROM.*alpine"
+      regex: true
+      scope: "from_directives"
+
+  - code: "C010"
+    name: "security_labels"
+    description: "Dockerfile must have security labels"
+    severity: "block"
+    category: "security"
+    check:
+      type: "content_contains_all"
+      file: "Dockerfile"
+      patterns:
+        - "evergreen.security.cap-drop"
+        - "evergreen.security.no-new-privileges"
+
+  # ===========================================================================
+  # Reliability Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C005"
+    name: "healthcheck"
+    description: "Dockerfile must have HEALTHCHECK (except scratch)"
+    severity: "block"
+    category: "reliability"
+    check:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "HEALTHCHECK"
+    skip_if:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "FROM scratch"
+
+  - code: "C006"
+    name: "digest_pinning"
+    description: "FROM directives must use digest pinning"
+    severity: "block"
+    category: "supply_chain"
+    check:
+      type: "from_digest_pinned"
+      file: "Dockerfile"
+      min_pinned: 1
+
+  - code: "C008"
+    name: "stopsignal"
+    description: "Dockerfile should have STOPSIGNAL"
+    severity: "info"
+    category: "reliability"
+    check:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "STOPSIGNAL"
+    skip_if:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "FROM scratch"
+
+  # ===========================================================================
+  # Documentation Constraints (WARN)
+  # ===========================================================================
+
+  - code: "C007"
+    name: "oci_labels"
+    description: "Dockerfile must have OCI labels"
+    severity: "warn"
+    category: "documentation"
+    check:
+      type: "content_contains_all"
+      file: "Dockerfile"
+      patterns:
+        - "org.opencontainers.image.title"
+        - "org.opencontainers.image.version"
+
+  - code: "C009"
+    name: "entrypoint"
+    description: "Dockerfile should have ENTRYPOINT"
+    severity: "warn"
+    category: "documentation"
+    check:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "ENTRYPOINT"
+
+  # ===========================================================================
+  # Consistency Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C011"
+    name: "version_consistency"
+    description: "Dockerfile ARG VERSION must match manifest version"
+    severity: "block"
+    category: "consistency"
+    check:
+      type: "version_match"
+      manifest_field: "metadata.version"
+      dockerfile_pattern: "ARG VERSION=(.*)"
+
+  - code: "C012"
+    name: "base_image_match"
+    description: "Dockerfile FROM must match manifest base image"
+    severity: "warn"
+    category: "consistency"
+    check:
+      type: "base_image_match"
+      manifest_field: "build.base"
+      dockerfile_type: "final_from"
+
+  # ===========================================================================
+  # Supply Chain Constraints (WARN)
+  # ===========================================================================
+
+  - code: "C013"
+    name: "sbom_exists"
+    description: "Image should have an SBOM"
+    severity: "warn"
+    category: "supply_chain"
+    check:
+      type: "file_exists"
+      file: "sbom.spdx.json"
+
+  # ===========================================================================
+  # Supply Chain Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C015"
+    name: "no_latest_tag"
+    description: "FROM directives must not use :latest tag or implicit latest"
+    severity: "block"
+    tier_aware: true
+    tier_enforcement:
+      tier_1: "block"    # Enforce immediately for critical images
+      tier_2: "warn"     # 90-day migration deadline
+      tier_3: "warn"     # 90-day migration deadline
+    category: "supply_chain"
+    check:
+      type: "content_not_contains"
+      file: "Dockerfile"
+      pattern: ":latest|FROM\s+[a-z]+\s*$"
+      regex: true
+      scope: "from_directives"
+
+  # ===========================================================================
+  # Security Constraints (BLOCK)
+  # ===========================================================================
+
+  - code: "C016"
+    name: "no_shell"
+    description: "Final stage must not contain shell (scratch/wolfi exempt)"
+    severity: "block"
+    category: "security"
+    check:
+      type: "runtime_check"
+      description: "Verify no /bin/sh, /bin/bash, /usr/bin/sh in final image"
+
+  - code: "C017"
+    name: "no_package_manager"
+    description: "Final stage must not use package managers (apk, apt, dnf)"
+    severity: "block"
+    tier_aware: true
+    tier_enforcement:
+      tier_1: "block"    # Enforce immediately for critical images
+      tier_2: "warn"     # 90-day migration deadline
+      tier_3: "warn"     # 90-day migration deadline
+    category: "security"
+    check:
+      type: "content_not_contains_final_stage"
+      file: "Dockerfile"
+      patterns:
+        - "apk add"
+        - "apt-get install"
+        - "apt install"
+        - "dnf install"
+        - "yum install"
+
+  # ===========================================================================
+  # Supply Chain Constraints (WARN)
+  # ===========================================================================
+
+  - code: "C018"
+    name: "from_allowlist"
+    description: "FROM directives must use approved base image registries"
+    severity: "warn"
+    category: "supply_chain"
+    check:
+      type: "from_allowlist"
+      approved:
+        - "scratch"
+        - "cgr.dev/chainguard"
+        - "gcr.io/distroless"
+        - "ghcr.io/wyattau"
+        - "registry.access.redhat.com"
+
+  # ===========================================================================
+  # Security Constraints (WARN)
+  # ===========================================================================
+
+  - code: "C019"
+    name: "read_only_rootfs"
+    description: "Dockerfile should have read-only rootfs label"
+    severity: "warn"
+    category: "security"
+    check:
+      type: "content_contains"
+      file: "Dockerfile"
+      pattern: "evergreen.security.read-only-rootfs"
+
+  # ===========================================================================
+  # Tier Constraints (INFO)
+  # ===========================================================================
+
+  - code: "C014"
+    name: "tier_size_constraint"
+    description: "Tier 1 images have size constraints (build-time check)"
+    severity: "info"
+    category: "tier"
+    check:
+      type: "tier_check"
+      max_tier: 1
+
+  - code: "C020"
+    name: "static_binary_check"
+    description: "Scratch-based images should use statically linked binaries"
+    severity: "info"
+    category: "security"
+    check:
+      type: "static_binary_indicators"
+      file: "Dockerfile"
+      patterns:
+        - "CGO_ENABLED=0"
+        - "-static"
+        - "MALLOC=libc"

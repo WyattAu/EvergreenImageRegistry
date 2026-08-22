@@ -1,0 +1,249 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY — Full Registry SBOM Generation
+# =============================================================================
+# Generates SBOMs for ALL 798 images using parallel batches.
+# Tracks coverage metrics and blocks on coverage regression.
+#
+# Schedule: Weekly on Sunday at 02:00 UTC
+# Manual:   workflow_dispatch with optional --force flag
+# =============================================================================
+
+name: SBOM Full Registry
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Regenerate all SBOMs even if they exist'
+        required: false
+        default: 'false'
+        type: boolean
+      parallel:
+        description: 'Parallel batch count'
+        required: false
+        default: '4'
+        type: string
+
+concurrency:
+  group: sbom-full-registry
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  # ===========================================================================
+  # Stage 1: Coverage Report
+  # ===========================================================================
+  coverage-report:
+    name: SBOM Coverage Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      total: ${{ steps.report.outputs.total }}
+      with_sbom: ${{ steps.report.outputs.with_sbom }}
+      coverage: ${{ steps.report.outputs.coverage }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Generate coverage report
+        id: report
+        run: |
+          python3 scripts/sbom_coverage_report.py --json /tmp/coverage.json
+
+          TOTAL=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(d['total_images'])")
+          WITH_SBOM=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(d['with_sbom_valid'])")
+          COVERAGE=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(f\"{d['with_sbom_valid']/d['total_images']*100:.1f}\")")
+
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "with_sbom=$WITH_SBOM" >> "$GITHUB_OUTPUT"
+          echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
+
+          echo "=== SBOM Coverage ==="
+          echo "Total: $TOTAL"
+          echo "With SBOM: $WITH_SBOM"
+          echo "Coverage: ${COVERAGE}%"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: sbom-coverage
+          path: /tmp/coverage.json
+          retention-days: 30
+
+  # ===========================================================================
+  # Stage 2: Generate SBOMs in Parallel Batches
+  # ===========================================================================
+  generate:
+    name: 'Generate SBOMs Batch ${{ matrix.batch }}'
+    needs: coverage-report
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft version
+
+      - name: Generate SBOMs for batch
+        run: |
+          # Find images for this batch (round-robin across all manifests)
+          BATCH=${{ matrix.batch }}
+          TOTAL_BATCHES=4
+          GENERATED=0
+          SKIPPED=0
+          FAILED=0
+          INDEX=0
+
+          for manifest in images/*/manifest.toml; do
+            [ -f "$manifest" ] || continue
+            img=$(basename "$(dirname "$manifest")")
+
+            INDEX=$((INDEX + 1))
+            # Round-robin assignment
+            if [ $((INDEX % TOTAL_BATCHES)) -ne $((BATCH - 1)) ]; then
+              continue
+            fi
+
+            sbom="images/${img}/sbom.spdx.json"
+            dockerfile="images/${img}/Dockerfile"
+
+            # Skip if SBOM exists and not forced
+            if [ -f "$sbom" ] && [ "${{ inputs.force }}" != "true" ]; then
+              size=$(stat --format=%s "$sbom" 2>/dev/null || echo 0)
+              if [ "$size" -gt 1000 ]; then
+                SKIPPED=$((SKIPPED + 1))
+                continue
+              fi
+            fi
+
+            [ -f "$dockerfile" ] || { FAILED=$((FAILED + 1)); continue; }
+
+            echo "::group::SBOM ${img}"
+
+            # Try GHCR first
+            REF="ghcr.io/${{ github.repository_owner }}/${img}:latest"
+            if docker pull "$REF" > /dev/null 2>&1; then
+              if syft "$REF" -o spdx-json="$sbom" 2>/dev/null; then
+                GENERATED=$((GENERATED + 1))
+                echo "Generated (GHCR): $img"
+              else
+                FAILED=$((FAILED + 1))
+                echo "::warning::Syft failed: $img"
+              fi
+            else
+              # Local build fallback
+              if docker buildx build --platform linux/amd64 -t "sbom-temp:${img}" --load "images/${img}" > /dev/null 2>&1; then
+                if syft "sbom-temp:${img}" -o spdx-json="$sbom" 2>/dev/null; then
+                  GENERATED=$((GENERATED + 1))
+                  echo "Generated (local): $img"
+                else
+                  FAILED=$((FAILED + 1))
+                fi
+                docker rmi "sbom-temp:${img}" 2>/dev/null || true
+              else
+                FAILED=$((FAILED + 1))
+              fi
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "Batch ${{ matrix.batch }}: gen=$GENERATED skip=$SKIPPED fail=$FAILED"
+
+      - name: Upload generated SBOMs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: sboms-batch-${{ matrix.batch }}
+          path: images/*/sbom.spdx.json
+          retention-days: 1
+          if-no-files-found: ignore
+          overwrite: true
+
+  # ===========================================================================
+  # Stage 3: Merge and Verify
+  # ===========================================================================
+  verify:
+    name: Verify & Commit SBOMs
+    needs: [coverage-report, generate]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Download all SBOM artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          pattern: sboms-batch-*
+          path: /tmp/sbom-merge/
+          merge-multiple: true
+
+      - name: Merge SBOMs into repo
+        run: |
+          MERGED=0
+          for sbom in /tmp/sbom-merge/images/*/sbom.spdx.json; do
+            [ -f "$sbom" ] || continue
+            img=$(echo "$sbom" | grep -oP '/tmp/sbom-merge/images/\K[^/]+')
+            target="images/${img}/sbom.spdx.json"
+
+            # Validate format
+            if python3 -c "import json; d=json.load(open('$sbom')); assert 'spdxVersion' in d" 2>/dev/null; then
+              cp "$sbom" "$target"
+              MERGED=$((MERGED + 1))
+            fi
+          done
+          echo "Merged $MERGED SBOMs"
+
+      - name: Verify coverage improvement
+        run: |
+          python3 scripts/sbom_coverage_report.py --json /tmp/post-coverage.json
+
+          BEFORE=${{ needs.coverage-report.outputs.with_sbom }}
+          AFTER=$(python3 -c "import json; print(json.load(open('/tmp/post-coverage.json'))['with_sbom_valid'])")
+
+          echo "Before: $BEFORE, After: $AFTER"
+
+          if [ "$AFTER" -lt "$BEFORE" ]; then
+            echo "::error::SBOM coverage regressed: $BEFORE -> $AFTER"
+            exit 1
+          fi
+
+      - name: Commit SBOMs
+        if: inputs.force == 'true'
+        run: |
+          git add images/*/sbom.spdx.json
+          git diff --cached --quiet || git commit -m "$(cat <<'EOF'
+          chore: regenerate SBOMs for full registry
+
+          Full registry SBOM regeneration using Syft.
+          Coverage report attached as artifact.
+
+          🤖 Generated with Codebuff
+          Co-Authored-By: Codebuff <noreply@codebuff.com>
+          EOF
+          )"

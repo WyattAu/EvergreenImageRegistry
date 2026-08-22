@@ -2,9 +2,11 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM gcr.io/distroless/nodejs22-debian12:latest
+ARG NODEJS_VERSION=22
+FROM gcr.io/distroless/nodejs22-debian12:${NODEJS_VERSION}
 COPY --from=shim /shim /usr/local/bin/shim
 
+USER 65532:65532
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 

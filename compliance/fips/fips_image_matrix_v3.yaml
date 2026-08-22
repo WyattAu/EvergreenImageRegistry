@@ -1,0 +1,488 @@
+fips_image_matrix:
+  version: '3.0.0'
+  generated: '2026-08-22'
+  description: 'FIPS 140-2/140-3 image variant matrix — complete build instructions for all 30 FIPS variants'
+  fips_standard: 'FIPS 140-2'
+  target_fips_standard: 'FIPS 140-3'
+
+  build_instructions:
+    golang_boringcrypto: |
+      FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+      # BoringCrypto requires CGO_ENABLED=1 → glibc needed → ubi-micro
+      COPY --from=builder /app /app
+      ENV GOLANG_FIPS=1
+      USER 65532:65532
+      ENTRYPOINT ["/app"]
+
+    openssl_fips: |
+      FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
+      # wolfi supports OpenSSL 3.x FIPS provider natively
+      RUN apk add --no-cache openssl openssl-provider-fips
+      ENV OPENSSL_CONF=/etc/ssl/fipsmodule.cnf
+      USER 65532:65532
+
+  categories:
+    databases:
+      description: 'Database images — FIPS variants for regulated workloads'
+      images:
+        - name: postgresql
+          fips_variant: postgresql-fips
+          crypto_backend: openssl
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'apk add openssl openssl-provider-fips'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'ssl = on in postgresql.conf'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'openssl list -providers | grep fips'
+
+        - name: mysql
+          fips_variant: mysql-fips
+          crypto_backend: openssl
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'Build from source: cmake -DWITH_SSL=system -DFIPS_MODE=ON'
+            - 'Link against OpenSSL 3.x FIPS provider'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - '--fips-mode on mysqld startup'
+          effort: High
+          priority: Critical
+          status: planned
+          verification: 'mysql --ssl-fips-mode=ON --help'
+
+        - name: redis
+          fips_variant: redis-fips
+          crypto_backend: openssl
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'make BUILD_TLS=yes USE_OPENSSL=yes'
+            - 'Link against OpenSSL 3.x FIPS provider'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'tls-port in redis.conf'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'redis-cli --tls --cert /etc/ssl/redis.crt'
+
+        - name: mongodb
+          fips_variant: mongodb-fips
+          crypto_backend: openssl
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'MongoDB Enterprise binary with FIPS support'
+            - 'net.tls.mode=requireTLS in mongod.conf'
+            - 'openssl.fipsMode=true in mongod.conf'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+          effort: High
+          priority: Critical
+          status: planned
+          verification: 'mongod --setParameter enableFIPSMode=1'
+
+        - name: cockroachdb
+          fips_variant: cockroachdb-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+            - 'Lose scratch base — requires glibc'
+          effort: High
+          priority: High
+          status: planned
+          verification: 'cockroach version --build-type=fips'
+
+        - name: scylladb
+          fips_variant: null
+          crypto_backend: openssl
+          base_change: N/A
+          build_flags:
+            - 'Requires upstream to provide FIPS-enabled build'
+            - 'Track: github.com/scylladb/scylladb issues'
+          effort: Very High
+          priority: Medium
+          status: blocked_upstream
+          verification: N/A
+
+        - name: tidb
+          fips_variant: tidb-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+            - 'Requires glibc runtime'
+          effort: High
+          priority: High
+          status: planned
+          verification: 'tidb-server --version'
+
+        - name: valkey
+          fips_variant: valkey-fips
+          crypto_backend: openssl
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'make BUILD_TLS=yes with FIPS OpenSSL'
+            - 'Chainguard may offer FIPS valkey package'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'valkey --tls-port 6380'
+
+    auth:
+      description: 'Authentication and identity — FIPS for compliance'
+      images:
+        - name: keycloak
+          fips_variant: keycloak-fips
+          crypto_backend: openssl + java
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - '-Djava.security.properties=/etc/java/security.fips.properties'
+            - 'Install OpenSSL 3.x FIPS provider'
+            - 'quarkus.ssl.native-fips=true'
+            - 'Keycloak 26+ native FIPS support'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'keycloak --fips-mode=enabled'
+
+        - name: dex
+          fips_variant: dex-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'dex version'
+
+        - name: kanidm
+          fips_variant: kanidm-fips
+          crypto_backend: openssl
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'OPENSSL_NO_VENDOR=1 and FIPS OpenSSL'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+          effort: High
+          priority: High
+          status: planned
+          verification: 'kanidm --version'
+
+    crypto:
+      description: 'Cryptographic tools — FIPS mandatory for PKI'
+      images:
+        - name: vault
+          fips_variant: vault-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'Vault Enterprise: official FIPS build'
+            - 'Community: GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'VAULT_FIPS=1 (Enterprise only)'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'vault version -format=json | jq .fips'
+
+        - name: step-ca
+          fips_variant: step-ca-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'step-ca --version'
+
+        - name: cosign
+          fips_variant: cosign-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'cosign version'
+
+        - name: fulcio
+          fips_variant: fulcio-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'fulcio version'
+
+        - name: rekor
+          fips_variant: rekor-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'rekor-cli version'
+
+    monitoring:
+      description: 'Observability — FIPS for encrypted telemetry'
+      images:
+        - name: prometheus
+          fips_variant: prometheus-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'prometheus --version'
+
+        - name: grafana
+          fips_variant: grafana-fips
+          crypto_backend: golang_boringcrypto
+          base_change: wolfi-base → wolfi-base-fips
+          build_flags:
+            - 'go build -tags=boringcrypto CGO_ENABLED=1'
+            - 'GOLANG_FIPS=1 at runtime'
+            - 'GF_SECURITY_FIPS=true'
+          effort: Medium
+          priority: Medium
+          status: planned
+          verification: 'grafana-server --version'
+
+        - name: alertmanager
+          fips_variant: alertmanager-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Medium
+          status: planned
+          verification: 'alertmanager --version'
+
+        - name: loki
+          fips_variant: loki-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Medium
+          status: planned
+          verification: 'loki --version'
+
+        - name: tempo
+          fips_variant: tempo-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'Add to registry first'
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Medium
+          status: not_in_registry
+          verification: N/A
+
+    networking:
+      description: 'Networking — FIPS for TLS termination'
+      images:
+        - name: envoy
+          fips_variant: envoy-fips
+          crypto_backend: boringssl
+          base_change: scratch → scratch (no change)
+          build_flags:
+            - 'Download official FIPS-validated Envoy build'
+            - 'Or: bazel build --config=fips --define=fips=true'
+            - 'BoringCrypto FIPS 140-2 Certificate #4140'
+          effort: Low
+          priority: Critical
+          status: planned
+          verification: 'envoy --version | grep fips'
+
+        - name: consul
+          fips_variant: consul-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'Consul Enterprise: official FIPS binary'
+            - 'Community: GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'FIPS mode via configuration'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'consul version'
+
+        - name: traefik
+          fips_variant: traefik-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'traefik version'
+
+        - name: nginx
+          fips_variant: nginx-fips
+          crypto_backend: openssl
+          base_change: scratch → wolfi-base-fips
+          build_flags:
+            - 'Build from source: --with-openssl=/path/to/openssl-fips'
+            - 'Or NGINX Plus FIPS build (commercial)'
+            - 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'ssl_conf_command in nginx.conf'
+          effort: Medium
+          priority: Critical
+          status: planned
+          verification: 'nginx -V | grep -- --with-openssl'
+
+        - name: coredns
+          fips_variant: coredns-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'coredns --version'
+
+    security:
+      description: 'Security tools — FIPS for compliance scanning'
+      images:
+        - name: trivy
+          fips_variant: trivy-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: High
+          status: planned
+          verification: 'trivy --version'
+
+        - name: falco
+          fips_variant: null
+          crypto_backend: openssl
+          base_change: N/A
+          build_flags:
+            - 'Requires upstream to provide FIPS build'
+            - 'Track: github.com/falcosecurity/falco issues'
+          effort: Very High
+          priority: Medium
+          status: blocked_upstream
+          verification: N/A
+
+        - name: kubescape
+          fips_variant: kubescape-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Medium
+          status: planned
+          verification: 'kubescape version'
+
+        - name: opa
+          fips_variant: opa-fips
+          crypto_backend: golang_boringcrypto
+          base_change: scratch → ubi-micro
+          build_flags:
+            - 'Add to registry first'
+            - 'GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build'
+            - 'GOLANG_FIPS=1 at runtime'
+          effort: Medium
+          priority: Medium
+          status: not_in_registry
+          verification: N/A
+
+  summary:
+    total_images: 30
+    by_status:
+      planned: 26
+      blocked_upstream: 2
+      not_in_registry: 2
+    by_crypto_backend:
+      golang_boringcrypto: 18
+      openssl: 9
+      boringssl: 1
+      openssl_plus_java: 1
+      N/A: 1
+    by_efficulty:
+      Low: 1
+      Medium: 17
+      High: 9
+      Very High: 3
+    by_priority:
+      Critical: 9
+      High: 14
+      Medium: 7
+    estimated_total_effort_days: 45
+
+  implementation_order:
+    phase_1_easy_wins:
+      description: 'Low-effort FIPS variants using existing tooling'
+      images:
+        - envoy-fips (use official FIPS binary)
+        - vault-fips (Enterprise) or vault-fips (source rebuild)
+        - cosign-fips
+        - fulcio-fips
+        - rekor-fips
+      effort_days: 5
+    phase_2_openssl_fips:
+      description: 'Images using OpenSSL 3.x FIPS provider on wolfi'
+      images:
+        - postgresql-fips
+        - redis-fips
+        - valkey-fips
+        - nginx-fips
+        - keycloak-fips
+      effort_days: 10
+    phase_3_boringcrypto:
+      description: 'Go images requiring BoringCrypto rebuild'
+      images:
+        - cockroachdb-fips
+        - tidb-fips
+        - dex-fips
+        - kanidm-fips
+        - step-ca-fips
+        - consul-fips
+        - traefik-fips
+        - coredns-fips
+        - prometheus-fips
+        - grafana-fips
+        - alertmanager-fips
+        - loki-fips
+        - trivy-fips
+        - kubescape-fips
+      effort_days: 25
+    phase_4_enterprise_only:
+      description: 'FIPS requiring enterprise editions'
+      images:
+        - mongodb-fips (Enterprise)
+        - mysql-fips (source rebuild)
+      effort_days: 5

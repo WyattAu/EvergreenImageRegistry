@@ -1,0 +1,75 @@
+# =============================================================================
+# Evergreen Image Registry — Default Helm Values
+# =============================================================================
+
+# Image configuration
+image:
+  registry: ghcr.io/wyattau/evergreenimageregistry
+  name: ""  # Override per image (e.g., redis, postgresql)
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Tier: critical or standard (affects resource limits)
+tier: standard
+
+# Replicas
+replicas: 1
+
+# Security settings
+security:
+  readOnlyRootFs: true
+  runAsNonRoot: true
+  runAsUser: 65532
+
+# Health probes
+health:
+  enabled: true
+  livenessInitialDelay: 15
+  livenessPeriod: 20
+  readinessInitialDelay: 5
+
+# Service
+service:
+  type: ClusterIP
+  port: 8080
+
+# Persistence
+persistence:
+  enabled: false
+  mountPath: /data
+
+# Environment variables (key-value pairs)
+env: {}
+#  example: "value"
+#  redis: "yes"
+
+# Environment from secrets/configmaps
+envFrom: []
+#  - secretRef:
+#      name: redis-secret
+
+# Network policy
+networkPolicy:
+  enabled: false
+
+# Resource overrides (per-image)
+resources: {}
+
+# Pod scheduling
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Service account
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# Pod security context
+terminationGracePeriodSeconds: 30

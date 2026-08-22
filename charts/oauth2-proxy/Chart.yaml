@@ -1,0 +1,16 @@
+apiVersion: v2
+name: oauth2-proxy
+description: "Reverse proxy for OAuth2 — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - oauth2-proxy
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/oauth2-proxy
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

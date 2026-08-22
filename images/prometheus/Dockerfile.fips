@@ -1,0 +1,49 @@
+# =============================================================================
+# Prometheus FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Build Prometheus with GOEXPERIMENT=boringcrypto for FIPS compliance.
+# BoringCrypto requires CGO_ENABLED=1 → glibc → ubi-micro base.
+# =============================================================================
+
+FROM golang:1.23-bookworm AS builder
+
+ARG PROMETHEUS_VERSION=2.53.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v${PROMETHEUS_VERSION} https://github.com/prometheus/prometheus.git /go/src/prometheus
+
+WORKDIR /go/src/prometheus
+
+# Build with BoringCrypto FIPS support
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /prometheus ./cmd/prometheus
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /prometheus /bin/prometheus
+
+RUN mkdir -p /prometheus/data && chown 65532:65532 /prometheus
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+VOLUME ["/prometheus/data"]
+
+EXPOSE 9090
+
+ENTRYPOINT ["/bin/prometheus"]
+CMD ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus/data"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/bin/prometheus", "--version"] || exit 1
+
+LABEL org.opencontainers.image.title="prometheus-fips" \
+      org.opencontainers.image.description="Prometheus with FIPS 140-2 BoringCrypto" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.fips-cert="4140" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

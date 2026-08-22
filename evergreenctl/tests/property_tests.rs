@@ -348,7 +348,7 @@ proptest! {
     }
 
     #[test]
-    fn test_constraint_count_is_14(name in "[a-z][a-z0-9]{0,10}") {
+    fn test_constraint_count_is_20(name in "[a-z][a-z0-9]{0,10}") {
         use evergreenctl::validate_parallel::{check_constraints, ConstraintContext};
 
         let ctx = ConstraintContext {
@@ -361,13 +361,13 @@ proptest! {
             manifest_base: "scratch".into(),
             manifest_tier: "1".into(),
             dockerfile_exists: true,
-            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nARG VERSION=1.0.0\n".into(),
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nLABEL evergreen.security.read-only-rootfs=\"true\"\nARG VERSION=1.0.0\n".into(),
             sbom_exists: true,
             sbom_valid: true,
         };
 
         let results = check_constraints(&ctx);
-        prop_assert_eq!(results.len(), 14, "Should have exactly 14 constraints");
+        prop_assert_eq!(results.len(), 20, "Should have exactly 20 constraints");
     }
 
     #[test]
@@ -384,7 +384,7 @@ proptest! {
             manifest_base: "scratch".into(),
             manifest_tier: "1".into(),
             dockerfile_exists: true,
-            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nARG VERSION=1.0.0\n".into(),
+            dockerfile_content: "FROM scratch@sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb8888cccc9999\nUSER 65532:65532\nSTOPSIGNAL SIGTERM\nENTRYPOINT [\"/app\"]\nHEALTHCHECK CMD true\nLABEL org.opencontainers.image.title=\"test\"\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL evergreen.security.cap-drop=\"ALL\"\nLABEL evergreen.security.no-new-privileges=\"true\"\nLABEL evergreen.security.read-only-rootfs=\"true\"\nARG VERSION=1.0.0\n".into(),
             sbom_exists: true,
             sbom_valid: true,
         };
@@ -410,7 +410,7 @@ proptest! {
             manifest_base: "wolfi-base".into(),
             manifest_tier: "2".into(),
             dockerfile_exists: true,
-            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base\nUSER 65532:65532\n".into(),
+            dockerfile_content: "FROM cgr.dev/chainguard/wolfi-base@sha256:dddd5555eeee6666ffff7777aaaa8888bbbb9999cccc0000aaaa1111bbbb2222\nUSER 65532:65532\nLABEL evergreen.security.read-only-rootfs=\"true\"\n".into(),
             sbom_exists: false,
             sbom_valid: false,
         };

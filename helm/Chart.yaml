@@ -1,0 +1,29 @@
+# =============================================================================
+# Evergreen Image Registry — Helm Chart Library
+# =============================================================================
+# Reusable Helm chart templates for deploying EIR hardened images
+# to Kubernetes with security best practices baked in.
+#
+# Usage:
+#   helm install redis ./helm --set image.name=redis --set image.tag=latest
+#   helm install postgres ./helm --set image.name=postgresql --set tier=critical
+# =============================================================================
+
+apiVersion: v2
+name: evergreen-registry
+description: Helm chart library for Evergreen Image Registry hardened images
+type: library
+version: 1.0.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Wyatt Au
+    email: wyatt@example.com
+keywords:
+  - security
+  - hardened
+  - container
+  - evergreen
+  - distroless
+home: https://github.com/WyattAu/EvergreenImageRegistry
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

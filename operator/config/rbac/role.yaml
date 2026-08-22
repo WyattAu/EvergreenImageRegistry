@@ -1,0 +1,38 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: evergreen-operator
+rules:
+  # EvergreenImage CRD
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergreenimages"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergreenimages/status"]
+    verbs: ["get", "update", "patch"]
+  # EvergreenPolicy CRD
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergreenpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergreenpolicies/status"]
+    verbs: ["get", "update", "patch"]
+  # EvergreenDrift CRD
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergrendrifts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["evergreenimageregistry.io"]
+    resources: ["evergrendrifts/status"]
+    verbs: ["get", "update", "patch"]
+  # Deployments (for auto-update)
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  # Pods (for drift detection)
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  # Events (for recording)
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]

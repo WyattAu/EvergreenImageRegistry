@@ -1,12 +1,12 @@
 [metadata]
 name = "forgejo"
-version = "15.0.2"
+version = "v15.0.4"
 description = "Forgejo - community-owned lightweight software forge"
 vendor = "Forgejo"
 source = "https://codeberg.org/forgejo/forgejo"
 license = "MIT"
 tier = "critical"
-upstream_version = "15.0.2"
+upstream_version = "v15.0.4"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

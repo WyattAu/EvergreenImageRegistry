@@ -1,0 +1,153 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY — Multi-Architecture Build
+# =============================================================================
+# Builds and pushes multi-arch images for Tier 1 (critical) images.
+# Supports: amd64, arm64, s390x, ppc64le
+#
+# Trigger: On push to images/<tier1-image>/Dockerfile or manual dispatch
+# =============================================================================
+
+name: Multi-Arch Build
+
+on:
+  push:
+    paths:
+      - 'images/*/Dockerfile'
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image name to build'
+        required: true
+        type: string
+      platforms:
+        description: 'Target platforms (comma-separated)'
+        required: false
+        default: 'linux/amd64,linux/arm64,linux/s390x,linux/ppc64le'
+        type: string
+
+concurrency:
+  group: multi-arch-${{ github.event.inputs.image || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  # ===========================================================================
+  # Detect which images changed
+  # ===========================================================================
+  detect-changes:
+    name: Detect Changed Tier 1 Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      images: ${{ steps.changes.outputs.images }}
+      matrix: ${{ steps.changes.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Find changed Tier 1 images
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            IMAGES="${{ github.event.inputs.image }}"
+          else
+            IMAGES=""
+            for f in $(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep 'images/.*Dockerfile' || true); do
+              img=$(echo "$f" | grep -oP 'images/\K[^/]+')
+              tier=$(grep -oP 'tier\s*=\s*"\K[^"]+' "images/$img/manifest.toml" 2>/dev/null || echo "")
+              if [ "$tier" = "critical" ]; then
+                IMAGES="${IMAGES:+$IMAGES,}$img"
+              fi
+            done
+          fi
+
+          if [ -z "$IMAGES" ]; then
+            echo "images=" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"batch":[]}' >> "$GITHUB_OUTPUT"
+          else
+            # Build matrix JSON
+            MATRIX=$(python3 -c "
+          import json
+          images = [x.strip() for x in '$IMAGES'.split(',') if x.strip()]
+          print(json.dumps({'image': images}))
+          ")
+            echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
+            echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ===========================================================================
+  # Build multi-arch for each image
+  # ===========================================================================
+  build:
+    name: 'Build ${{ matrix.image }}'
+    needs: detect-changes
+    if: needs.detect-changes.outputs.images != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
+        with:
+          platforms: amd64,arm64,s390x,ppc64le
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@56af21c79c1470c045f1b83579577497d1d12e01
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=
+
+      - name: Build and push multi-arch
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1
+        with:
+          context: images/${{ matrix.image }}
+          platforms: linux/amd64,linux/arm64,linux/s390x,linux/ppc64le
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify multi-arch manifest
+        run: |
+          echo "=== Multi-Arch Verification ==="
+          manifest=$(docker manifest inspect ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}:latest 2>/dev/null || echo "{}")
+          architectures=$(echo "$manifest" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          manifests = data.get('manifests', [])
+          archs = [m.get('platform', {}).get('architecture', 'unknown') for m in manifests]
+          print(', '.join(archs))
+          " 2>/dev/null || echo "unknown")
+          echo "Architectures: $archs"
+
+          if echo "$archs" | grep -q "amd64" && echo "$archs" | grep -q "arm64"; then
+            echo "✅ Multi-arch build successful"
+          else
+            echo "⚠️ Missing expected architectures"
+          fi

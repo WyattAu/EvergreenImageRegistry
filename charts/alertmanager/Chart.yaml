@@ -1,0 +1,16 @@
+apiVersion: v2
+name: alertmanager
+description: "Alerting handler for Prometheus — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - alertmanager
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/alertmanager
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

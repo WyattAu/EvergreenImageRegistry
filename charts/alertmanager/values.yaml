@@ -1,0 +1,21 @@
+# Default values for alertmanager
+image:
+  name: alertmanager
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+tier: standard
+replicas: 1
+
+security:
+  readOnlyRootFs: true
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env: {}
+envFrom: []
+
+persistence:
+  enabled: false

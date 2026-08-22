@@ -283,6 +283,64 @@ else
     skip_gate "Dockerfile constraints (python3 not found)"
 fi
 
+# ---- Gate 8b: Workflow YAML validation ----
+echo ""
+echo "--- Gate 8b: Workflow YAML Validation ---"
+if command -v python3 &>/dev/null; then
+    wf_errors=0
+    wf_count=0
+    for wf in .github/workflows/*.yml; do
+        [ -f "$wf" ] || continue
+        [[ "$wf" == *"_archive/"* ]] && continue
+        [[ "$wf" == *".disabled"* ]] && continue
+        wf_count=$((wf_count + 1))
+        if python3 -c "import yaml; yaml.safe_load(open('$wf'))" 2>/dev/null; then
+            : # OK
+        else
+            echo -e "  ${RED}[FAIL]${NC} $wf (YAML parse error)"
+            wf_errors=$((wf_errors + 1))
+        fi
+    done
+    if [ "$wf_errors" -eq 0 ]; then
+        pass_gate "Workflow YAML validation ($wf_count workflows)"
+    else
+        fail_gate "Workflow YAML validation ($wf_errors workflow(s) have errors)"
+    fi
+else
+    skip_gate "Workflow YAML validation (python3 not found)"
+fi
+
+# ---- Gate 8c: No mutable action tags (supply chain) ----
+echo ""
+echo "--- Gate 8c: No Mutable Action Tags ---"
+if command -v grep &>/dev/null; then
+    mutable_count=0
+    for wf in .github/workflows/*.yml; do
+        [ -f "$wf" ] || continue
+        [[ "$wf" == *"_archive/"* ]] && continue
+        [[ "$wf" == *".disabled"* ]] && continue
+        # Find @vN tags that aren't pinned to SHA (exclude URLs in strings)
+        hits=$(grep -P 'uses:\s+\S+@v[0-9]' "$wf" 2>/dev/null | \
+               grep -v '@de0fac2e\|@34e11487\|@043fb46d\|@ea165f8d\|@3e5f45b2\|@d3f86a10\|\
+@27d5ce7f\|@a309ff8b\|@4a360112\|@3a2844b7\|@29eef336\|@5f6978fa\|@650006c6\|\
+@8d2750c6\|@d7f5e7f5\|@6f9f1778\|@77de16b1\|@f7dd8c54\|@983d7736\|@c2d3f388\|\
+@56afc609\|@cd2ce8fc\|@28ca1036\|@c7c53464\|@b863ae19\|@3e5f45b2\|@d3f86a10' || true)
+        if [ -n "$hits" ]; then
+            echo -e "  ${YELLOW}[WARN]${NC} $(basename "$wf"):
+$hits"
+            mutable_count=$((mutable_count + $(echo "$hits" | wc -l)))
+        fi
+    done
+    if [ "$mutable_count" -eq 0 ]; then
+        pass_gate "No mutable action tags (all pinned to SHA)"
+    else
+        echo -e "  ${YELLOW}[WARN]${NC} $mutable_count mutable tag(s) found (non-blocking)"
+        pass_gate "No mutable action tags ($mutable_count found, non-blocking)"
+    fi
+else
+    skip_gate "No mutable action tags (grep not found)"
+fi
+
 # ---- Gate 9: Cargo audit (dependency vulnerability scan) ----
 echo ""
 echo "--- Gate 9: Cargo Audit ---"

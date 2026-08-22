@@ -1,0 +1,16 @@
+apiVersion: v2
+name: drone
+description: "Container-native CI/CD — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - drone
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/drone
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

@@ -1,0 +1,76 @@
+{{/*
+Evergreen Image Registry — Deployment Template
+================================================
+Security-hardened deployment for EIR container images.
+*/}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "evergreen.fullname" . }}
+  labels:
+    {{- include "evergreen.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "evergreen.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "evergreen.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: {{ include "evergreen.fullname" . }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
+      securityContext:
+        {{- include "evergreen.securityContext" . | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "evergreen.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          {{- include "evergreen.containerSecurityContext" . | nindent 10 }}
+          {{- include "evergreen.livenessProbe" . | nindent 10 }}
+          {{- include "evergreen.readinessProbe" . | nindent 10 }}
+          resources:
+            {{- include "evergreen.resources" . | nindent 12 }}
+          {{- if .Values.env }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.envFrom }}
+          envFrom:
+            {{- toYaml .Values.envFrom | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.enabled }}
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath | default "/data" }}
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+        {{- if .Values.persistence.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "evergreen.fullname" . }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

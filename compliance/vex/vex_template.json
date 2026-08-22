@@ -1,0 +1,77 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "{{TIMESTAMP}}",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": ["https://github.com/WyattAu/EvergreenImageRegistry"]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "{{CVE_ID}}",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov/vuln/detail/{{CVE_ID}}"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "NVD"
+          },
+          "score": "{{CVSS_SCORE}}",
+          "severity": "{{SEVERITY}}",
+          "method": "CVSSv31"
+        }
+      ],
+      "description": "{{DESCRIPTION}}",
+      "published": "{{PUBLISHED}}",
+      "affected": [
+        {
+          "ref": "urn:cdx:{{IMAGE}}@{{DIGEST}}",
+          "versions": [
+            {
+              "version": "{{VERSION}}",
+              "status": "affected"
+            }
+          ],
+          "package": {
+            "name": "{{PACKAGE_NAME}}",
+            "version": "{{PACKAGE_VERSION}}",
+            "type": "{{PACKAGE_TYPE}}"
+          }
+        }
+      ],
+      "analysis": {
+        "state": "{{VEX_STATE}}",
+        "justification": "{{JUSTIFICATION}}",
+        "response": ["{{RESPONSE}}"],
+        "detail": "{{ANALYSIS_DETAIL}}"
+      }
+    }
+  ],
+  "services": [
+    {
+      "bom-ref": "urn:cdx:{{IMAGE}}@{{DIGEST}}",
+      "name": "{{IMAGE}}",
+      "version": "{{VERSION}}",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "value": "{{DIGEST}}"
+        }
+      ]
+    }
+  ]
+}

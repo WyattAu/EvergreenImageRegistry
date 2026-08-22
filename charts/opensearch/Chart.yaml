@@ -1,0 +1,16 @@
+apiVersion: v2
+name: opensearch
+description: "Open source search and analytics — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - opensearch
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/opensearch
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

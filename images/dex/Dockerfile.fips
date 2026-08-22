@@ -1,0 +1,34 @@
+# =============================================================================
+# Dex FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG DEX_VERSION=v2.40.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${DEX_VERSION} https://github.com/dexidp/dex.git /go/src/dex
+
+WORKDIR /go/src/dex
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /dex ./cmd/dex
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /dex /usr/local/bin/dex
+
+USER 65532:65532
+
+EXPOSE 5556 5557
+
+ENTRYPOINT ["/usr/local/bin/dex"]
+CMD ["serve", "/etc/dex/config.yaml"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["/usr/local/bin/dex", "version"] || exit 1
+
+LABEL org.opencontainers.image.title="dex-fips" \
+      org.opencontainers.image.description="Dex with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

@@ -1,6 +1,6 @@
 [metadata]
 name = "traefik"
-version = "v3.7.3"
+version = "3.1.2"
 upstream_version = "3.7.3"
 description = "Traefik - modern HTTP reverse proxy and load balancer"
 vendor = "Traefik Labs"

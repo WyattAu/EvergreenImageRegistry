@@ -3,49 +3,34 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+FROM gravitl/netmaker-ui:latest AS upstream
 
-
-FROM gravitl/netmaker-ui@sha256:e3cde240375ae137e037e8ec33d144441b70486f688c5a00cc2ab265812490e8 AS upstream
-
-
-
-FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
+FROM cgr.dev/chainguard/wolfi-base
 COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
-
+RUN apk add --no-cache nginx ca-certificates && \
+    mkdir -p /var/log/nginx /var/cache/nginx /var/run /etc/nginx/conf.d /www && \
+    chown -R 65532:65532 /var/log/nginx /var/cache/nginx /var/run /www
 COPY --from=upstream /usr/share/nginx/html /www
 
+# Minimal nginx config for serving static SPA
+RUN printf 'events {}\nhttp {\n  server {\n    listen 8080;\n    root /www;\n    index index.html;\n    location / {\n      try_files $uri $uri/ /index.html;\n    }\n  }\n}\n' > /etc/nginx/nginx.conf && \
+    chown -R 65532:65532 /etc/nginx/nginx.conf
+
 USER 65532:65532
-
 WORKDIR /www
-
-EXPOSE 8080
-
-
+EXPOSE 8080 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-
-ENTRYPOINT ["sleep", "infinity"]
-
-LABEL org.opencontainers.image.title="netmaker-ui"       org.opencontainers.image.version="v1.5.1"       org.opencontainers.image.vendor="Gravitl"       org.opencontainers.image.source="https://github.com/gravitl/netmaker-ui"       evergreen.image.tier="1"       evergreen.image.category="networking"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.distrole="distroless"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
-org.opencontainers.image.description="netmaker-ui container image" \
-evergreen.base.image="distroless"
-
-LABEL evergreen.metrics.native="ztunnel"
-
-LABEL evergreen.health.type="exec"
-
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]
+LABEL org.opencontainers.image.title="netmaker-ui" \
+      org.opencontainers.image.version="v1.5.1" \
+      org.opencontainers.image.source="https://github.com/gravitl/netmaker-ui" \
+      org.opencontainers.image.description="Netmaker UI - static web interface served by nginx" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.image.tier="standard"
 LABEL evergreen.security.cap-drop="ALL"
-
 LABEL evergreen.security.no-new-privileges="true"
-
 LABEL evergreen.security.read-only-rootfs="true"
-
 LABEL evergreen.security.seccomp="runtime-default"
-
-
-
-EXPOSE 9101
-
-LABEL evergreen.entrypoint.pattern="idle-container"
 STOPSIGNAL SIGTERM

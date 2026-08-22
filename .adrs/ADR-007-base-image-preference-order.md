@@ -118,6 +118,24 @@ Rationale:
   level
 - UBI micro's FIPS certification covers OS-level crypto modules, which is less relevant for application containers
 
+#### FIPS Variant Strategy
+
+FIPS-compliant images are built as **separate variants** (e.g., `postgres-fips`, `redis-fips`), not as modifications
+to the default images. The default images always use the standard preference order (scratch → wolfi).
+
+| Crypto Backend | Base Image for FIPS Variant | Why | Examples |
+| -------------- | --------------------------- | --- | -------- |
+| Go BoringCrypto | `ubi-micro` | BoringCrypto requires CGO_ENABLED=1 → glibc needed | vault, traefik, prometheus, dex, trivy |
+| OpenSSL 3.x FIPS provider | `wolfi-base` with FIPS provider | wolfi supports OpenSSL FIPS provider natively | postgresql, redis, nginx, mysql |
+| Java FIPS (BouncyCastle) | `wolfi-base` with FIPS OpenSSL | Quarkus FIPS mode works on wolfi | keycloak |
+| BoringSSL FIPS (Envoy) | Pre-built FIPS binary from upstream | Envoy official FIPS builds use BoringCrypto | envoy |
+
+**Critical rule:** FIPS variants that need glibc (Go BoringCrypto) use `ubi-micro`, **NOT** `debian:bookworm-slim`.
+This maintains the debian-slim ban even in FIPS contexts. `ubi-micro` is ~30MB and has FIPS 140-2/3 certification
+for its crypto modules.
+
+See `compliance/fips/fips_image_matrix.yaml` for the complete FIPS variant matrix (30 images).
+
 #### Relationship to Tier
 
 Tier determines **operational priority** (SLA, monitoring, update cadence). It does **not** determine base image.

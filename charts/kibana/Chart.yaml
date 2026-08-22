@@ -1,0 +1,16 @@
+apiVersion: v2
+name: kibana
+description: "Visualization for Elasticsearch — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - kibana
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/kibana
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

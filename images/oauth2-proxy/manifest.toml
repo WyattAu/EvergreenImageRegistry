@@ -1,6 +1,6 @@
 [metadata]
 name = "oauth2-proxy"
-version = "v7.15.2"
+version = "7.15.3"
 upstream_version = "7.12.0"
 description = "OAuth2 Proxy - reverse proxy with authentication provider"
 vendor = "OAuth2 Proxy"

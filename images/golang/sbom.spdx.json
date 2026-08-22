@@ -1,0 +1,162 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "evergreen-golang",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/golang",
+  "creationInfo": {
+    "created": "2026-08-21T08:50:15.856271+00:00",
+    "creators": [
+      "Tool: evergreenctl-fast-sbom",
+      "Organization: Evergreen Image Registry"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-golang",
+      "name": "golang",
+      "versionInfo": "unknown",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/golang",
+      "filesAnalyzed": false,
+      "checksums": [],
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/golang@unknown"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-wolfi-base",
+      "name": "wolfi-base",
+      "versionInfo": "latest",
+      "supplier": "upstream: cgr.dev/chainguard/wolfi-base",
+      "downloadLocation": "https://hub.docker.com/r/cgr.dev/chainguard/wolfi-base",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:docker/cgr.dev/chainguard/wolfi-base"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-go~${VERSION}",
+      "name": "go~${VERSION}",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-git",
+      "name": "git",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ca-certificates",
+      "name": "ca-certificates",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-git",
+      "name": "git",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ca-certificates",
+      "name": "ca-certificates",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-&&",
+      "name": "&&",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-\\",
+      "name": "\\",
+      "versionInfo": "installed",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-health-shim",
+      "name": "evergreen-health-shim",
+      "versionInfo": "v2.0.0",
+      "supplier": "Organization: Evergreen Image Registry",
+      "downloadLocation": "https://github.com/WyattAu/evergreenshim/releases/tag/v2.0.0",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-wolfi-base"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-go~${VERSION}"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-git"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-ca-certificates"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-git"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-ca-certificates"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-&&"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-\\"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-golang",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-health-shim"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: trivy
+description: "Vulnerability scanner — Evergreen Image Registry hardened image"
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Wyatt Au
+keywords:
+  - trivy
+  - security
+  - hardened
+  - evergreen
+home: https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/trivy
+sources:
+  - https://github.com/WyattAu/EvergreenImageRegistry

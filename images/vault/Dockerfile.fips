@@ -1,63 +1,56 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-ARG SHIM_VERSION=v2.0.0
+# =============================================================================
+# Vault FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+# Build Vault with GOEXPERIMENT=boringcrypto for FIPS compliance.
+# BoringCrypto requires CGO_ENABLED=1 → glibc → ubi-micro base.
+#
+# FIPS Compliance:
+#   - Go BoringCrypto FIPS 140-2 Certificate #4140
+#   - Set GOLANG_FIPS=1 at runtime
+#   - Enterprise: VAULT_FIPS=1 for official FIPS mode
+# =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base AS builder
-ARG TARGETARCH
-ARG VERSION=1.18.1
+FROM golang:1.23-bookworm AS builder
 
-RUN apk add --no-cache go git gcc glibc-dev linux-headers ca-certificates
+ARG VAULT_VERSION=1.17.0
 
-WORKDIR /src
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/hashicorp/vault.git . || \
-    git clone --depth 1 https://github.com/hashicorp/vault.git .
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} \
-    GOEXPERIMENT=boringcrypto \
-    go build -ldflags='-s -w -X main.version=${VERSION}' \
-    -tags "boringcrypto" \
-    -o /binary
+RUN git clone --depth 1 --branch v${VAULT_VERSION} https://github.com/hashicorp/vault.git /go/src/vault
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+WORKDIR /go/src/vault
 
-FROM cgr.dev/chainguard/wolfi-base
-COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /binary /vault
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY shim.toml /etc/evergreen/shim.toml
-USER ${APP_UID}:${APP_GID}
-ENV GOLANG_FIPS=1 \
-    SHIM_METRICS_ENABLED="true" \
-    SHIM_MANAGEMENT_ENABLED="true" \
-    SHIM_MANAGEMENT_HOST="0.0.0.0" \
-    SHIM_MANAGEMENT_PORT="9102"
-WORKDIR /
-EXPOSE 8200 8201 9101 9102
-HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "vault server"]
-LABEL org.opencontainers.image.title="vault" \
-      org.opencontainers.image.description="Vault - secrets management and data protection by HashiCorp (FIPS variant)" \
-      org.opencontainers.image.version="1.18.1" \
-      org.opencontainers.image.vendor="HashiCorp" \
-      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      org.opencontainers.image.source="https://github.com/hashicorp/vault" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.fips="true" \
-      evergreen.fips.module="boringcrypto" \
-      evergreen.fips.certificate="go-boringcrypto"
-LABEL evergreen.base.image="wolfi" \
-      evergreen.build.type="source-fips" \
-      evergreen.metrics.native="ztunnel" \
-      evergreen.health.type="http" \
-      evergreen.health.endpoint="/livez" \
-      evergreen.health.listen="0.0.0.0:9101" \
-      evergreen.security.cap-drop="ALL" \
-      evergreen.security.no-new-privileges="true" \
-      evergreen.security.read-only-rootfs="true" \
-      evergreen.security.seccomp="runtime-default"
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
-STOPSIGNAL SIGTERM
+# Build with BoringCrypto FIPS support
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto GOFLAGS="-modcacherw" \
+    go build -trimpath -ldflags="-s -w" -o /vault ./cmd/vault
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /vault /bin/vault
+
+RUN mkdir -p /vault/data /vault/config && \
+    chown -R 65532:65532 /vault
+
+ENV GOLANG_FIPS=1
+ENV VAULT_ADDR="https://127.0.0.1:8200"
+
+USER 65532:65532
+
+EXPOSE 8200 8201
+
+VOLUME ["/vault/data", "/vault/config"]
+
+ENTRYPOINT ["/bin/vault"]
+CMD ["server", "-dev"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/bin/vault", "status", "-address=https://127.0.0.1:8200"] || exit 1
+
+LABEL org.opencontainers.image.title="vault-fips" \
+      org.opencontainers.image.description="HashiCorp Vault with FIPS 140-2 BoringCrypto" \
+      org.opencontainers.image.vendor="Evergreen Image Registry" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.licenses="BUSL-1.1" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.fips-cert="4140" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

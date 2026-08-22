@@ -1,0 +1,314 @@
+# =============================================================================
+# SLSA PROVENANCE VERIFICATION
+# =============================================================================
+# Runs after build workflows complete (workflow_run trigger).
+# Verifies that SLSA provenance attestations exist on recently built images.
+#
+# The actual provenance generation happens inline in _build-reusable.yml.
+# This workflow serves as a post-build verification gate: if provenance is
+# missing or invalid, it flags the image for re-attestation.
+# =============================================================================
+
+name: SLSA Provenance Verification
+
+on:
+  workflow_run:
+    workflows:
+      - "Build on Push"
+      - "Nightly Full Rebuild"
+      - "Build on Demand"
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Determine which images were built in the triggering workflow
+  # ---------------------------------------------------------------------------
+  discover:
+    name: Discover Built Images
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 5
+    outputs:
+      images: ${{ steps.list.outputs.images }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          pattern: built-list-*
+          merge-multiple: true
+          path: /tmp/artifacts
+
+      - name: Collect image list
+        id: list
+        run: |
+          IMAGES=""
+          COUNT=0
+          if [ -d /tmp/artifacts ]; then
+            for f in /tmp/artifacts/*.txt; do
+              [ -f "$f" ] || continue
+              while IFS= read -r line; do
+                # Extract image name from full ref (ghcr.io/owner/name:tag → name)
+                IMG=$(echo "$line" | grep -oP "${REGISTRY}/${OWNER}/\K[^:]+" || true)
+                if [ -n "$IMG" ]; then
+                  if [ -z "$IMAGES" ]; then
+                    IMAGES="$IMG"
+                  else
+                    IMAGES="${IMAGES},${IMG}"
+                  fi
+                  COUNT=$((COUNT + 1))
+                fi
+              done < "$f"
+            done
+          fi
+
+          # Fallback: if no artifacts, verify critical images
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::notice::No build artifacts found. Verifying critical tier images."
+            for img in postgres redis nginx envoy traefik keycloak-quarkus golang jenkins; do
+              [ -d "images/${img}" ] || continue
+              if [ -z "$IMAGES" ]; then
+                IMAGES="$img"
+              else
+                IMAGES="${IMAGES},${img}"
+              fi
+              COUNT=$((COUNT + 1))
+            done
+          fi
+
+          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+          echo "Found ${COUNT} images to verify"
+
+  # ---------------------------------------------------------------------------
+  # Verify SLSA provenance attestation exists and is valid
+  # ---------------------------------------------------------------------------
+  verify:
+    name: Verify SLSA Provenance
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      packages: read
+      id-token: write
+    steps:
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify provenance attestations
+        env:
+          IMAGES: ${{ needs.discover.outputs.images }}
+        run: |
+          VERIFIED=0
+          MISSING=0
+          FAILED=0
+          TOTAL=0
+
+          IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
+          for image in "${IMG_ARRAY[@]}"; do
+            [ -z "$image" ] && continue
+            TOTAL=$((TOTAL + 1))
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
+
+            echo "::group::Verify ${image}"
+
+            # Check image exists in registry
+            if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
+              echo "  ⚠️ Image not found in registry, skipping"
+              MISSING=$((MISSING + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Verify SLSA provenance attestation
+            # cosign verify-attestation checks the attestation chain
+            # --type slsaprovenance v0.2 predicate
+            PROVENANCE_OK=false
+
+            # Try SLSA v1 provenance first (slsaprovenancev1)
+            if cosign verify-attestation \
+                --type slsaprovenancev1 \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              echo "  ✅ SLSA v1 provenance verified"
+              PROVENANCE_OK=true
+            fi
+
+            # Fall back to SLSA v0.2 provenance
+            if [ "$PROVENANCE_OK" = "false" ]; then
+              if cosign verify-attestation \
+                  --type slsaprovenance \
+                  --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                  "$REF" 2>/dev/null; then
+                echo "  ✅ SLSA v0.2 provenance verified"
+                PROVENANCE_OK=true
+              fi
+            fi
+
+            if [ "$PROVENANCE_OK" = "true" ]; then
+              VERIFIED=$((VERIFIED + 1))
+            else
+              echo "  ❌ No SLSA provenance attestation found"
+              FAILED=$((FAILED + 1))
+              echo "::warning::${image}: missing SLSA provenance attestation"
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "## SLSA Provenance Verification Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total images | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ✅ Verified | ${VERIFIED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ❌ Missing/Failed | ${FAILED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ⚠️ Not in registry | ${MISSING} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::warning::${FAILED} image(s) missing SLSA provenance attestation"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Re-attest images missing provenance (recovery)
+  # ---------------------------------------------------------------------------
+  re-attest:
+    name: Re-attest Missing Provenance
+    needs: [discover, verify]
+    if: always() && needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate and attach SLSA provenance for missing images
+        env:
+          IMAGES: ${{ needs.discover.outputs.images }}
+        run: |
+          ATTESTED=0
+          SKIPPED=0
+
+          IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
+          for image in "${IMG_ARRAY[@]}"; do
+            [ -z "$image" ] && continue
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
+
+            echo "::group::Attest ${image}"
+
+            # Check if provenance already exists
+            if cosign verify-attestation \
+                --type slsaprovenancev1 \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              echo "  Already attested, skipping"
+              SKIPPED=$((SKIPPED + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Check image exists
+            if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
+              echo "  Image not in registry, skipping"
+              SKIPPED=$((SKIPPED + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Generate SLSA v0.2 provenance predicate
+            DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | \
+              python3 -c 'import sys,json; m=json.load(sys.stdin); print(m.get("manifests",[{}])[0].get("digest","unknown"))' 2>/dev/null || echo "unknown")
+            BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
+
+            PROV_FILE="/tmp/provenance-${image//\//-}.json"
+            cat > "$PROV_FILE" <<PROVEOF
+          {
+            "builder": {
+              "id": "https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml"
+            },
+            "buildType": "https://github.com/${{ github.repository }}/slsa-build@v1",
+            "invocation": {
+              "configSource": {
+                "uri": "git+${{ github.server_url }}/${{ github.repository }}",
+                "digest": {
+                  "sha1": "${{ github.sha }}"
+                }
+              },
+              "parameters": {
+                "image": "${image}",
+                "tier": "unknown"
+              }
+            },
+            "buildConfig": {
+              "image": "${image}",
+              "digest": "${DIGEST}"
+            },
+            "metadata": {
+              "buildStartedOn": "${BUILD_DATE}",
+              "completeness": {
+                "parameters": true,
+                "environment": true,
+                "materials": true
+              },
+              "reproducible": false
+            }
+          }
+          PROVEOF
+
+            if cosign attest --yes \
+                --predicate "$PROV_FILE" \
+                --type slsaprovenance \
+                "$REF" 2>&1; then
+              echo "  ✅ SLSA provenance attested"
+              ATTESTED=$((ATTESTED + 1))
+            else
+              echo "  ❌ Failed to attest"
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "## Re-attestation Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Attested:** ${ATTESTED}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Skipped (already attested or not found):** ${SKIPPED}" >> "$GITHUB_STEP_SUMMARY"

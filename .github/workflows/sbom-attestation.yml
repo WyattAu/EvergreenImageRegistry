@@ -1,0 +1,319 @@
+# =============================================================================
+# SBOM ATTESTATION VERIFICATION
+# =============================================================================
+# Runs after build workflows complete (workflow_run trigger).
+# Verifies that SBOM attestations (SPDX + CycloneDX) exist on recently built
+# images. If missing, regenerates and attaches them.
+#
+# The actual SBOM generation happens inline in _build-reusable.yml.
+# This workflow serves as a post-build verification and gap-filling gate.
+# =============================================================================
+
+name: SBOM Attestation Verification
+
+on:
+  workflow_run:
+    workflows:
+      - "Build on Push"
+      - "Nightly Full Rebuild"
+      - "Build on Demand"
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Determine which images were built in the triggering workflow
+  # ---------------------------------------------------------------------------
+  discover:
+    name: Discover Built Images
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 5
+    outputs:
+      images: ${{ steps.list.outputs.images }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          pattern: built-list-*
+          merge-multiple: true
+          path: /tmp/artifacts
+
+      - name: Collect image list
+        id: list
+        run: |
+          IMAGES=""
+          COUNT=0
+          if [ -d /tmp/artifacts ]; then
+            for f in /tmp/artifacts/*.txt; do
+              [ -f "$f" ] || continue
+              while IFS= read -r line; do
+                IMG=$(echo "$line" | grep -oP "${REGISTRY}/${OWNER}/\K[^:]+" || true)
+                if [ -n "$IMG" ]; then
+                  if [ -z "$IMAGES" ]; then
+                    IMAGES="$IMG"
+                  else
+                    IMAGES="${IMAGES},${IMG}"
+                  fi
+                  COUNT=$((COUNT + 1))
+                fi
+              done < "$f"
+            done
+          fi
+
+          # Fallback: verify critical images if no artifacts
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::notice::No build artifacts found. Verifying critical tier images."
+            for img in postgres redis nginx envoy traefik keycloak-quarkus golang jenkins; do
+              [ -d "images/${img}" ] || continue
+              if [ -z "$IMAGES" ]; then
+                IMAGES="$img"
+              else
+                IMAGES="${IMAGES},${img}"
+              fi
+              COUNT=$((COUNT + 1))
+            done
+          fi
+
+          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+          echo "Found ${COUNT} images to verify"
+
+  # ---------------------------------------------------------------------------
+  # Verify SBOM attestations exist and are valid
+  # ---------------------------------------------------------------------------
+  verify:
+    name: Verify SBOM Attestations
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      packages: read
+      id-token: write
+    steps:
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify SBOM attestations
+        env:
+          IMAGES: ${{ needs.discover.outputs.images }}
+        run: |
+          SPDX_VERIFIED=0
+          CDX_VERIFIED=0
+          SPDX_MISSING=0
+          CDX_MISSING=0
+          NOT_IN_REGISTRY=0
+          TOTAL=0
+
+          IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
+          for image in "${IMG_ARRAY[@]}"; do
+            [ -z "$image" ] && continue
+            TOTAL=$((TOTAL + 1))
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
+
+            echo "::group::Verify ${image}"
+
+            # Check image exists in registry
+            if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
+              echo "  ⚠️ Image not found in registry, skipping"
+              NOT_IN_REGISTRY=$((NOT_IN_REGISTRY + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Verify SPDX SBOM attestation
+            if cosign verify-attestation \
+                --type spdxjson \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              echo "  ✅ SPDX SBOM attestation verified"
+              SPDX_VERIFIED=$((SPDX_VERIFIED + 1))
+            else
+              echo "  ❌ SPDX SBOM attestation missing"
+              SPDX_MISSING=$((SPDX_MISSING + 1))
+              echo "::warning::${image}: missing SPDX SBOM attestation"
+            fi
+
+            # Verify CycloneDX SBOM attestation
+            if cosign verify-attestation \
+                --type cyclonedx \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              echo "  ✅ CycloneDX SBOM attestation verified"
+              CDX_VERIFIED=$((CDX_VERIFIED + 1))
+            else
+              echo "  ❌ CycloneDX SBOM attestation missing"
+              CDX_MISSING=$((CDX_MISSING + 1))
+              echo "::warning::${image}: missing CycloneDX SBOM attestation"
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "## SBOM Attestation Verification Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | SPDX | CycloneDX |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|------|-----------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ✅ Verified | ${SPDX_VERIFIED} | ${CDX_VERIFIED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ❌ Missing | ${SPDX_MISSING} | ${CDX_MISSING} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total | ${TOTAL} | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ⚠️ Not in registry | ${NOT_IN_REGISTRY} | ${NOT_IN_REGISTRY} |" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$SPDX_MISSING" -gt 0 ] || [ "$CDX_MISSING" -gt 0 ]; then
+            echo "::warning::SBOM attestations missing for some images"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Generate and attach missing SBOM attestations
+  # ---------------------------------------------------------------------------
+  generate:
+    name: Generate Missing SBOMs
+    needs: [discover, verify]
+    if: always() && needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v1.16.0
+          syft version
+
+      - name: Login to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate and attach missing SBOM attestations
+        env:
+          IMAGES: ${{ needs.discover.outputs.images }}
+        run: |
+          SPDX_ATTESTED=0
+          CDX_ATTESTED=0
+          SKIPPED=0
+
+          IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
+          for image in "${IMG_ARRAY[@]}"; do
+            [ -z "$image" ] && continue
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
+
+            echo "::group::SBOM ${image}"
+
+            # Check image exists
+            if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
+              echo "  Image not in registry, skipping"
+              SKIPPED=$((SKIPPED + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Check if SPDX already exists
+            SPDX_EXISTS=false
+            if cosign verify-attestation \
+                --type spdxjson \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              SPDX_EXISTS=true
+            fi
+
+            # Check if CycloneDX already exists
+            CDX_EXISTS=false
+            if cosign verify-attestation \
+                --type cyclonedx \
+                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+                "$REF" 2>/dev/null; then
+              CDX_EXISTS=true
+            fi
+
+            if [ "$SPDX_EXISTS" = "true" ] && [ "$CDX_EXISTS" = "true" ]; then
+              echo "  Both attestations exist, skipping"
+              SKIPPED=$((SKIPPED + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Generate SBOM from the registry image
+            SBOM_SPDX="/tmp/sbom-${image//\//-}-spdx.json"
+            SBOM_CDX="/tmp/sbom-${image//\//-}-cdx.json"
+
+            if [ "$SPDX_EXISTS" = "false" ]; then
+              echo "  Generating SPDX SBOM..."
+              if syft scan "$REF" -o spdx-json > "$SBOM_SPDX" 2>/dev/null; then
+                if cosign attest --yes \
+                    --predicate "$SBOM_SPDX" \
+                    --type spdxjson \
+                    "$REF" 2>&1; then
+                  echo "  ✅ SPDX SBOM attested"
+                  SPDX_ATTESTED=$((SPDX_ATTESTED + 1))
+                else
+                  echo "  ❌ SPDX attestation failed"
+                fi
+              else
+                echo "  ❌ SPDX SBOM generation failed"
+              fi
+            fi
+
+            if [ "$CDX_EXISTS" = "false" ]; then
+              echo "  Generating CycloneDX SBOM..."
+              if syft scan "$REF" -o cyclonedx-json > "$SBOM_CDX" 2>/dev/null; then
+                if cosign attest --yes \
+                    --predicate "$SBOM_CDX" \
+                    --type cyclonedx \
+                    "$REF" 2>&1; then
+                  echo "  ✅ CycloneDX SBOM attested"
+                  CDX_ATTESTED=$((CDX_ATTESTED + 1))
+                else
+                  echo "  ❌ CycloneDX attestation failed"
+                fi
+              else
+                echo "  ❌ CycloneDX SBOM generation failed"
+              fi
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "## SBOM Generation Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| SPDX attested | ${SPDX_ATTESTED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| CycloneDX attested | ${CDX_ATTESTED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Skipped (already attested) | ${SKIPPED} |" >> "$GITHUB_STEP_SUMMARY"

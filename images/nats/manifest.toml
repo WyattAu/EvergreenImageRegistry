@@ -1,6 +1,6 @@
 [metadata]
 name = "nats"
-version = "2.12.7"
+version = "v2.14.3"
 description = "NATS - high-performance messaging system"
 vendor = "CNCF"
 source = "https://github.com/nats-io/nats-server"

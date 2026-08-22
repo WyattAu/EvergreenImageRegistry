@@ -1,0 +1,40 @@
+# =============================================================================
+# TiDB FIPS — FIPS 140-2/3 Compliant
+# =============================================================================
+FROM golang:1.23-bookworm AS builder
+
+ARG TIDB_VERSION=v7.5.0
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch ${TIDB_VERSION} https://github.com/pingcap/tidb.git /go/src/tidb
+
+WORKDIR /go/src/tidb
+
+RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto \
+    go build -trimpath -ldflags="-s -w" -o /tidb-server ./tidb-server
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest AS runtime
+
+COPY --from=builder /tidb-server /usr/local/bin/tidb-server
+
+RUN mkdir -p /tidb-data && chown 65532:65532 /tidb-data
+
+ENV GOLANG_FIPS=1
+
+USER 65532:65532
+
+VOLUME ["/tidb-data"]
+
+EXPOSE 4000 10080
+
+ENTRYPOINT ["tidb-server"]
+CMD ["--store=mocktikv", "--path=/tidb-data"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["tidb-server", "--version"] || exit 1
+
+LABEL org.opencontainers.image.title="tidb-fips" \
+      org.opencontainers.image.description="TiDB with FIPS 140-2 BoringCrypto" \
+      evergreenimageregistry.io.fips="true" \
+      evergreenimageregistry.io.crypto-backend="golang-boringcrypto"

@@ -1,6 +1,6 @@
 [metadata]
 name = "grafana"
-version = "12.2.9"
+version = "11.2.0"
 description = "Grafana - observability dashboard and visualization"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/grafana"

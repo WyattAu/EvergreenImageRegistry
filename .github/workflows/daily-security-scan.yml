@@ -640,15 +640,19 @@ jobs:
           PYEOF
           done > /tmp/report/all-cves.csv
 
-          CRITICAL=$(grep -c "^CRITICAL," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          HIGH=$(grep -c "^HIGH," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          MEDIUM=$(grep -c "^MEDIUM," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
+          CRITICAL=$(grep -c "^CRITICAL," /tmp/report/all-cves.csv 2>/dev/null)
+          [ $? -gt 1 ] && CRITICAL=0
+          HIGH=$(grep -c "^HIGH," /tmp/report/all-cves.csv 2>/dev/null)
+          [ $? -gt 1 ] && HIGH=0
+          MEDIUM=$(grep -c "^MEDIUM," /tmp/report/all-cves.csv 2>/dev/null)
+          [ $? -gt 1 ] && MEDIUM=0
+          LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null)
+          [ $? -gt 1 ] && LOW=0
 
-          echo "CRITICAL=${CRITICAL}" >> "$GITHUB_ENV"
-          echo "HIGH=${HIGH}" >> "$GITHUB_ENV"
-          echo "MEDIUM=${MEDIUM}" >> "$GITHUB_ENV"
-          echo "LOW=${LOW}" >> "$GITHUB_ENV"
+          echo "CRITICAL=${CRITICAL:-0}" >> "$GITHUB_ENV"
+          echo "HIGH=${HIGH:-0}" >> "$GITHUB_ENV"
+          echo "MEDIUM=${MEDIUM:-0}" >> "$GITHUB_ENV"
+          echo "LOW=${LOW:-0}" >> "$GITHUB_ENV"
 
           echo "has_critical_cves=false" >> "$GITHUB_OUTPUT"
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then

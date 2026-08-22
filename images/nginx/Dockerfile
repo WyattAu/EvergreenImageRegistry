@@ -8,11 +8,11 @@ COPY --from=shim /shim /usr/local/bin/shim
 
 # Install nginx via apk (more reliable than extraction)
 RUN apk add --no-cache nginx ca-certificates && \
-    mkdir -p /var/log/nginx /var/cache/nginx /var/run /etc/nginx/conf.d && \
-    chown -R 65532:65532 /var/log/nginx /var/cache/nginx /var/run /etc/nginx
+    mkdir -p /var/log/nginx /var/cache/nginx /var/run /etc/nginx/conf.d /var/lib/nginx/tmp && \
+    chown -R 65532:65532 /var/log/nginx /var/cache/nginx /var/run /var/lib/nginx /etc/nginx
 
 # Minimal nginx config
-RUN printf 'events {}\nhttp {\n  server {\n    listen 8080;\n    root /usr/share/nginx/html;\n    index index.html;\n  }\n}\n' > /etc/nginx/nginx.conf && \
+RUN printf 'daemon off;\npid /tmp/nginx.pid;\nevents {}\nhttp {\n  server {\n    listen 8080;\n    root /usr/share/nginx/html;\n    index index.html;\n  }\n}\n' > /etc/nginx/nginx.conf && \
     mkdir -p /usr/share/nginx/html && \
     echo "<h1>Evergreen Nginx</h1>" > /usr/share/nginx/html/index.html && \
     chown -R 65532:65532 /usr/share/nginx /etc/nginx/nginx.conf

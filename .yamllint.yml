@@ -32,3 +32,6 @@ ignore: |
   .prettierignore
   .yamllint.yml
   compliance/fips/fips_image_matrix.yaml
+  operator/
+  charts/
+  evergreenctl/policies/

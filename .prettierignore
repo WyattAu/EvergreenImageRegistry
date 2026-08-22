@@ -22,3 +22,5 @@ docs/sis-deployment-lessons.md
 _wip/
 .github/
 .adrs/
+charts/
+_archive/

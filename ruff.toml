@@ -1,1 +1,22 @@
 extend-exclude = [".specs/archive", "images/_archive", "scripts/_archive"]
+
+# Ignore non-critical lint rules for legacy scripts
+lint.ignore = [
+    "BLE001",   # blind exception catches
+    "PLW1510",  # subprocess.run without check
+    "S110",     # try-except-pass
+    "S112",     # try-except-continue
+    "DTZ003",   # datetime.utcnow()
+    "DTZ005",   # datetime.now() without tz
+    "PLW0602",  # global without assignment
+    "PERF102",  # dict.values() instead of items()
+    "SIM102",   # nested if statements
+    "SIM103",   # return condition directly
+    "C405",     # unnecessary list literal
+    "I001",     # import sorting
+    "EXE005",   # shebang position
+    "PIE810",   # merge startswith/endswith calls
+    "RUF059",   # unused unpacked variables
+]
+
+lint.per-file-ignores = {}

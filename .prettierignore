@@ -28,3 +28,8 @@ evergreenctl/policies/
 helm/
 operator/
 evergreenctl/
+compliance/
+monitoring/
+.reports/
+docs/
+CLAUDE.md

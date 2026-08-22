@@ -146,6 +146,118 @@
     "weaviate-python": {
       "build_time_ms": 646,
       "updated": "2026-08-22T20:00:58Z"
+    },
+    "busybox": {
+      "build_time_ms": 1059,
+      "updated": "2026-08-22T20:06:42Z"
+    },
+    "calibre-web": {
+      "build_time_ms": 1278,
+      "updated": "2026-08-22T20:06:44Z"
+    },
+    "cloudflare-ddns": {
+      "build_time_ms": 1129,
+      "updated": "2026-08-22T20:06:45Z"
+    },
+    "cockroachdb": {
+      "build_time_ms": 1037,
+      "updated": "2026-08-22T20:06:46Z"
+    },
+    "collabora": {
+      "build_time_ms": 1038,
+      "updated": "2026-08-22T20:06:47Z"
+    },
+    "dex": {
+      "build_time_ms": 1182,
+      "updated": "2026-08-22T20:06:48Z"
+    },
+    "drone": {
+      "build_time_ms": 1168,
+      "updated": "2026-08-22T20:06:51Z"
+    },
+    "element-web": {
+      "build_time_ms": 1032,
+      "updated": "2026-08-22T20:06:52Z"
+    },
+    "jaeger": {
+      "build_time_ms": 3815,
+      "updated": "2026-08-22T20:06:56Z"
+    },
+    "kanidm": {
+      "build_time_ms": 19954,
+      "updated": "2026-08-22T20:07:16Z"
+    },
+    "kanidm-client": {
+      "build_time_ms": 552,
+      "updated": "2026-08-22T20:07:17Z"
+    },
+    "kanidm-server": {
+      "build_time_ms": 587,
+      "updated": "2026-08-22T20:07:18Z"
+    },
+    "loki": {
+      "build_time_ms": 4571,
+      "updated": "2026-08-22T20:07:22Z"
+    },
+    "matrix-hookshot": {
+      "build_time_ms": 24859,
+      "updated": "2026-08-22T20:07:48Z"
+    },
+    "mysql": {
+      "build_time_ms": 10773,
+      "updated": "2026-08-22T20:08:00Z"
+    },
+    "opensearch": {
+      "build_time_ms": 24275,
+      "updated": "2026-08-22T20:08:25Z"
+    },
+    "portainer-agent": {
+      "build_time_ms": 6811,
+      "updated": "2026-08-22T20:08:32Z"
+    },
+    "portainer-edge": {
+      "build_time_ms": 653,
+      "updated": "2026-08-22T20:08:33Z"
+    },
+    "rabbitmq": {
+      "build_time_ms": 7381,
+      "updated": "2026-08-22T20:08:45Z"
+    },
+    "restic": {
+      "build_time_ms": 4071,
+      "updated": "2026-08-22T20:08:49Z"
+    },
+    "taiga": {
+      "build_time_ms": 18421,
+      "updated": "2026-08-22T20:09:09Z"
+    },
+    "taiga-backend": {
+      "build_time_ms": 613,
+      "updated": "2026-08-22T20:09:10Z"
+    },
+    "taiga-protected": {
+      "build_time_ms": 8011,
+      "updated": "2026-08-22T20:09:18Z"
+    },
+    "tempo": {
+      "build_time_ms": 5341,
+      "updated": "2026-08-22T20:09:24Z"
+    },
+    "trivy": {
+      "build_time_ms": 5297,
+      "updated": "2026-08-22T20:09:29Z"
+    },
+    "vaultwarden": {
+      "build_time_ms": 5880,
+      "updated": "2026-08-22T20:09:37Z"
+    },
+    "watchtower": {
+      "build_time_ms": 3654,
+      "updated": "2026-08-22T20:09:41Z"
+    },
+    "zipkin": {
+      "build_time_ms": 6609,
+      "updated": "2026-08-22T20:09:48Z"
     }
   }
 }

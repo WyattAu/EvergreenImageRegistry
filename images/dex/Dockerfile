@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM ghcr.io/dexidp/dex:latest
+FROM ghcr.io/dexidp/dex:v2.45.1
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 USER 1001

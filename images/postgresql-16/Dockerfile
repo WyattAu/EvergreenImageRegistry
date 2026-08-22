@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/postgres:latest
+FROM cgr.dev/chainguard/postgres:16.4
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 # Ensure /var/lib/postgresql is owned by postgres (UID 70 in wolfi)

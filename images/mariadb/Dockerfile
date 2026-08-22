@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/mariadb:latest
+FROM cgr.dev/chainguard/mariadb:11.8
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chown -R 65532:65532 /var/lib/mysql /var/run/mysqld 2>/dev/null || true

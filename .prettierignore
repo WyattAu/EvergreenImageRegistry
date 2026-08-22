@@ -25,3 +25,6 @@ _wip/
 charts/
 _archive/
 evergreenctl/policies/
+helm/
+operator/
+evergreenctl/

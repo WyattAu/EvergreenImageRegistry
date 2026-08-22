@@ -1,9 +1,20 @@
 ARG SHIM_VERSION=v2.0.0
+ARG VECTOR_VERSION=0.40.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM timberio/vector:0.40.0-debian
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+ARG VECTOR_VERSION
+RUN apk add --no-cache curl unzip && \
+    curl -fsSL "https://github.com/vectordotdev/vector/releases/download/v${VECTOR_VERSION}/vector-${VECTOR_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | \
+    tar xz -C /tmp && \
+    mv /tmp/vector-${VECTOR_VERSION}-x86_64-unknown-linux-gnu/bin/vector /usr/local/bin/vector
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
 COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=builder /usr/local/bin/vector /usr/local/bin/vector
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9001"]

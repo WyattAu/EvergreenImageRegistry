@@ -2,5 +2,150 @@
   "version": 1,
   "description": "Build time baselines for performance regression detection",
   "threshold_percent": 50,
-  "images": {}
+  "images": {
+    "beancount": {
+      "build_time_ms": 5267,
+      "updated": "2026-08-22T19:27:17Z"
+    },
+    "betteruptime": {
+      "build_time_ms": 596,
+      "updated": "2026-08-22T19:27:17Z"
+    },
+    "chat-relay": {
+      "build_time_ms": 625,
+      "updated": "2026-08-22T19:27:18Z"
+    },
+    "conan-audit": {
+      "build_time_ms": 591,
+      "updated": "2026-08-22T19:27:19Z"
+    },
+    "detect-secrets": {
+      "build_time_ms": 586,
+      "updated": "2026-08-22T19:27:19Z"
+    },
+    "lancedb": {
+      "build_time_ms": 601,
+      "updated": "2026-08-22T19:27:20Z"
+    },
+    "langchain": {
+      "build_time_ms": 602,
+      "updated": "2026-08-22T19:27:21Z"
+    },
+    "langserve": {
+      "build_time_ms": 599,
+      "updated": "2026-08-22T19:27:22Z"
+    },
+    "maxbot": {
+      "build_time_ms": 609,
+      "updated": "2026-08-22T19:27:22Z"
+    },
+    "meilisearch-python": {
+      "build_time_ms": 983,
+      "updated": "2026-08-22T19:27:24Z"
+    },
+    "minisearch": {
+      "build_time_ms": 588,
+      "updated": "2026-08-22T19:27:24Z"
+    },
+    "mlflow": {
+      "build_time_ms": 594,
+      "updated": "2026-08-22T19:27:25Z"
+    },
+    "mlflow-server": {
+      "build_time_ms": 589,
+      "updated": "2026-08-22T19:27:26Z"
+    },
+    "mlflow-tracking": {
+      "build_time_ms": 586,
+      "updated": "2026-08-22T19:27:26Z"
+    },
+    "mysql-anonymizer": {
+      "build_time_ms": 591,
+      "updated": "2026-08-22T19:27:27Z"
+    },
+    "opengpts": {
+      "build_time_ms": 591,
+      "updated": "2026-08-22T19:27:28Z"
+    },
+    "perscache": {
+      "build_time_ms": 598,
+      "updated": "2026-08-22T19:27:28Z"
+    },
+    "pinecone": {
+      "build_time_ms": 640,
+      "updated": "2026-08-22T19:27:29Z"
+    },
+    "pinned-search": {
+      "build_time_ms": 588,
+      "updated": "2026-08-22T19:27:30Z"
+    },
+    "pip-audit": {
+      "build_time_ms": 599,
+      "updated": "2026-08-22T19:27:30Z"
+    },
+    "qbitmanage": {
+      "build_time_ms": 589,
+      "updated": "2026-08-22T19:27:31Z"
+    },
+    "questdb-python": {
+      "build_time_ms": 586,
+      "updated": "2026-08-22T19:27:32Z"
+    },
+    "rate-limiter": {
+      "build_time_ms": 614,
+      "updated": "2026-08-22T19:27:32Z"
+    },
+    "rdns-server": {
+      "build_time_ms": 591,
+      "updated": "2026-08-22T19:27:33Z"
+    },
+    "rss2": {
+      "build_time_ms": 583,
+      "updated": "2026-08-22T19:27:34Z"
+    },
+    "rss2email": {
+      "build_time_ms": 875,
+      "updated": "2026-08-22T19:27:35Z"
+    },
+    "sigal": {
+      "build_time_ms": 584,
+      "updated": "2026-08-22T19:27:35Z"
+    },
+    "singer": {
+      "build_time_ms": 579,
+      "updated": "2026-08-22T19:27:36Z"
+    },
+    "source-control": {
+      "build_time_ms": 594,
+      "updated": "2026-08-22T19:27:37Z"
+    },
+    "sqlcipher": {
+      "build_time_ms": 687,
+      "updated": "2026-08-22T19:27:37Z"
+    },
+    "sqlite-utils": {
+      "build_time_ms": 581,
+      "updated": "2026-08-22T19:27:38Z"
+    },
+    "surrealdb-python": {
+      "build_time_ms": 583,
+      "updated": "2026-08-22T19:27:39Z"
+    },
+    "ulogger": {
+      "build_time_ms": 589,
+      "updated": "2026-08-22T19:27:39Z"
+    },
+    "vecs-db": {
+      "build_time_ms": 592,
+      "updated": "2026-08-22T19:27:40Z"
+    },
+    "vpn-controller": {
+      "build_time_ms": 612,
+      "updated": "2026-08-22T19:28:02Z"
+    },
+    "weaviate-python": {
+      "build_time_ms": 574,
+      "updated": "2026-08-22T19:28:03Z"
+    }
+  }
 }

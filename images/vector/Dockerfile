@@ -16,6 +16,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b1
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /usr/local/bin/vector /usr/local/bin/vector
 
+ENTRYPOINT ["/usr/local/bin/vector"]
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9001"]
 

@@ -3,7 +3,7 @@ ARG VECTOR_VERSION=0.40.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72 AS builder
 
 ARG VECTOR_VERSION
 RUN apk add --no-cache curl unzip && \
@@ -11,7 +11,7 @@ RUN apk add --no-cache curl unzip && \
     tar xz -C /tmp && \
     mv /tmp/vector-${VECTOR_VERSION}-x86_64-unknown-linux-gnu/bin/vector /usr/local/bin/vector
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72
 
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /usr/local/bin/vector /usr/local/bin/vector

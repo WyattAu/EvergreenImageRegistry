@@ -218,9 +218,18 @@ jobs:
 
       - name: Commit dashboard
         uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
+        continue-on-error: true
         with:
           commit_message: 'chore: update compliance dashboard'
           file_pattern: 'docs/compliance/dashboard.md compliance/evidence/*.json'
+
+      - name: Upload dashboard as artifact (fallback)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: compliance-dashboard
+          path: docs/compliance/dashboard.md
+          retention-days: 90
 
       - name: Upload aggregated evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

@@ -34,4 +34,5 @@ ignore: |
   compliance/fips/fips_image_matrix.yaml
   operator/
   charts/
+  helm/
   evergreenctl/policies/

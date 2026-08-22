@@ -21,6 +21,7 @@ All 723 images are **Tier 3 (Community)**. Tier 1 (87 critical) and Tier 2 (711 
 **Target:** Images that compile Go binaries with `CGO_ENABLED=0`
 
 **Pattern:**
+
 ```dockerfile
 # BEFORE (upstream repack)
 FROM golang:1.23-bookworm AS builder
@@ -45,6 +46,7 @@ ENTRYPOINT ["/usr/local/bin/app"]
 **Target:** Images with statically compiled C/C++/Rust binaries
 
 **Pattern:**
+
 ```dockerfile
 # BEFORE
 FROM debian:bookworm-slim AS builder
@@ -84,6 +86,7 @@ ENTRYPOINT ["/usr/local/bin/app"]
 **Strategy:** Binary extraction from upstream image → wolfi-base
 
 **Pattern:**
+
 ```dockerfile
 # BEFORE
 FROM upstream/app:latest

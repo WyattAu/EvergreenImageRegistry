@@ -1,1 +1,1 @@
-extend-exclude = [".specs/archive", "images/_archive"]
+extend-exclude = [".specs/archive", "images/_archive", "scripts/_archive"]

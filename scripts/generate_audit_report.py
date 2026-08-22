@@ -9,12 +9,12 @@ Usage:
     python3 scripts/generate_audit_report.py
 """
 
-import json
 import os
-import tomllib
-from pathlib import Path
-from datetime import datetime, timezone
 from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
+
+import tomllib
 
 
 def scan_images(images_dir: Path, exclude_dirs: set[str]) -> dict:

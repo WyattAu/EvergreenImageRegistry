@@ -20,12 +20,11 @@ Usage:
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -205,7 +204,7 @@ def main():
 
     # Summary
     print(f"\n{'='*50}")
-    print(f"Performance Baselines Updated")
+    print("Performance Baselines Updated")
     print(f"  Total: {len(images)}")
     print(f"  Success: {len([r for r in results.values() if 'error' not in r])}")
     print(f"  Regressions: {len(regressions)}")

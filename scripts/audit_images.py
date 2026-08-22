@@ -17,8 +17,8 @@ Outputs detailed report with pass/fail per check per image.
 """
 
 import re
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
 

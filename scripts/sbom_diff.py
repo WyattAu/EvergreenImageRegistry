@@ -25,9 +25,7 @@ Features:
 import argparse
 import json
 import sys
-from collections import defaultdict
 from pathlib import Path
-
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"

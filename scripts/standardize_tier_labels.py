@@ -10,9 +10,10 @@ Usage:
     python3 scripts/standardize_tier_labels.py [--dry-run]
 """
 
-import tomllib
 import sys
 from pathlib import Path
+
+import tomllib
 
 
 def main():
@@ -51,7 +52,7 @@ def main():
 
         # Check if labels section has evergreen.image.tier
         labels = data.get("labels", {})
-        expected_label = f'"evergreen.image.tier" = "{tier}"'
+        _expected_label = f'"evergreen.image.tier" = "{tier}"'
 
         if labels.get("evergreen.image.tier") == tier:
             already_ok += 1

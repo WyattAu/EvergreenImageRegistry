@@ -25,7 +25,6 @@ import re
 import sys
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
 POLICIES_DIR = REPO_ROOT / "compliance" / "runtime-policies"
@@ -146,7 +145,7 @@ def generate_seccomp_profile(image: str) -> dict:
 
 def generate_apparmor_profile(image: str) -> str:
     """Generate AppArmor profile from SBOM analysis."""
-    metadata = parse_dockerfile(image)
+    _metadata = parse_dockerfile(image)
 
     # All EIR images are distroless/non-root — base profile is very restrictive
     profile = f"""# =============================================================================
@@ -210,7 +209,7 @@ profile {image}-evergreen flags=(attach_disconnected,mediate_deleted) {{
 
 def generate_network_policy(image: str) -> dict:
     """Generate Kubernetes NetworkPolicy from image analysis."""
-    metadata = parse_dockerfile(image)
+    _metadata = parse_dockerfile(image)
 
     policy = {
         "apiVersion": "networking.k8s.io/v1",
@@ -257,7 +256,7 @@ def generate_network_policy(image: str) -> dict:
 
 def generate_pod_security_standards(image: str) -> dict:
     """Generate Pod Security Standards restricted profile."""
-    metadata = parse_dockerfile(image)
+    _metadata = parse_dockerfile(image)
 
     return {
         "apiVersion": "v1",

@@ -19,13 +19,12 @@ Usage:
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -161,7 +160,7 @@ def generate_slack_message(breaches: list) -> str:
     critical = [b for b in breaches if b["severity"] == "CRITICAL"]
     high = [b for b in breaches if b["severity"] == "HIGH"]
 
-    msg = f"🚨 *CVE SLA Breach Alert*\n"
+    msg = "🚨 *CVE SLA Breach Alert*\n"
     msg += f"Found {len(breaches)} SLA breach(es):\n"
     msg += f"  • Critical: {len(critical)}\n"
     msg += f"  • High: {len(high)}\n\n"
@@ -281,7 +280,7 @@ def main():
 
     # Generate outputs
     print(f"\n{'='*50}")
-    print(f"SLA Check Complete")
+    print("SLA Check Complete")
     print(f"  Images checked: {len(images)}")
     print(f"  Total breaches: {len(all_breaches)}")
     print(f"  Critical breaches: {len([b for b in all_breaches if b['severity'] == 'CRITICAL'])}")
@@ -323,7 +322,7 @@ def main():
                 headers={"Content-Type": "application/json"},
             )
             urllib.request.urlopen(req, timeout=10)
-            print(f"\nSlack alert sent")
+            print("\nSlack alert sent")
         except Exception as e:
             print(f"\nSlack alert failed: {e}")
 

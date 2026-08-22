@@ -635,7 +635,7 @@ def parse_dockerfile(path):
         version_match = re.search(r"ARG\s+VERSION[=\s]([^\s]+)", content)
         version = version_match.group(1) if version_match else ""
 
-        if not version or version.startswith("$") or version.startswith("${"):
+        if not version or version.startswith(("$", "${")):
             version = ""
 
         if not version:

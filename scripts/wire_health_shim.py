@@ -339,7 +339,7 @@ def build_wired_dockerfile(
     return "\n".join(final_result)
 
 
-import json  # noqa: E402
+import json
 
 
 def process_image(

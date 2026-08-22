@@ -15,10 +15,9 @@ Usage:
 import argparse
 import json
 import re
-import sys
 from collections import Counter, defaultdict
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -109,7 +108,7 @@ def generate_prometheus(data: dict) -> str:
     """Generate Prometheus exposition format."""
     lines = []
     total = data["total_images"]
-    now = datetime.utcnow().isoformat() + "Z"
+    _now = datetime.utcnow().isoformat() + "Z"
 
     # Coverage metrics
     lines.append("# HELP eir_sbom_coverage_total Total images in registry")
@@ -172,8 +171,8 @@ def generate_prometheus(data: dict) -> str:
         lines.append(f'eir_sbom_licenses{{license="{safe_id}"}} {count}')
 
     lines.append("")
-    lines.append(f"# HELP eir_sbom_report_timestamp Timestamp of report generation")
-    lines.append(f"# TYPE eir_sbom_report_timestamp gauge")
+    lines.append("# HELP eir_sbom_report_timestamp Timestamp of report generation")
+    lines.append("# TYPE eir_sbom_report_timestamp gauge")
     lines.append(f"eir_sbom_report_timestamp {datetime.utcnow().timestamp():.0f}")
     lines.append("")
 

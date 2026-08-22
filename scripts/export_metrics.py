@@ -18,15 +18,10 @@ Usage:
 
 import argparse
 import json
-import os
 import re
-import subprocess
-import sys
 import time
-from datetime import datetime
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"

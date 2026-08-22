@@ -21,10 +21,9 @@ Usage:
 
 import argparse
 import json
-import sys
 from collections import defaultdict
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -48,7 +47,7 @@ class DependencyGraph:
             try:
                 with open(sbom_path) as f:
                     data = json.load(f)
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 continue
 
             pkgs = data.get("packages", [])
@@ -230,7 +229,7 @@ def main():
 
     if args.build:
         print(f"Loaded {len(graph.images)} images, {len(graph.packages)} packages")
-        print(f"Most shared packages:")
+        print("Most shared packages:")
         for pkg in graph.get_most_shared_packages(10):
             print(f"  {pkg['package']}@{pkg['version']}: {pkg['image_count']} images")
 
@@ -265,8 +264,8 @@ def main():
         md.append("# Dependency Graph Report\n")
         md.append(f"Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}\n")
         md.append("## Summary\n")
-        md.append(f"| Metric | Value |")
-        md.append(f"|--------|-------|")
+        md.append("| Metric | Value |")
+        md.append("|--------|-------|")
         md.append(f"| Images | {report['summary']['total_images']} |")
         md.append(f"| Unique packages | {report['summary']['total_packages']} |")
         md.append(f"| Shared packages | {report['summary']['shared_packages']} |")

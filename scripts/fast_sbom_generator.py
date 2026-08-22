@@ -9,11 +9,7 @@ Usage:
 
 import argparse
 import json
-import os
 import re
-import subprocess
-import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -95,8 +91,8 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
     base_image = extract_base_image(content)
     packages = extract_packages(content)
     labels = extract_labels(content)
-    ports = extract_exposed_ports(content)
-    envs = extract_env_vars(content)
+    _ports = extract_exposed_ports(content)
+    _envs = extract_env_vars(content)
     timestamp = datetime.now(timezone.utc).isoformat()
 
     # Build SPDX document
@@ -124,7 +120,7 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
         "SPDXID": f"SPDXRef-Package-{image_name}",
         "name": image_name,
         "versionInfo": version,
-        "supplier": f"Organization: Evergreen Image Registry",
+        "supplier": "Organization: Evergreen Image Registry",
         "downloadLocation": f"https://github.com/WyattAu/EvergreenImageRegistry/tree/main/images/{image_name}",
         "filesAnalyzed": False,
         "checksums": [],

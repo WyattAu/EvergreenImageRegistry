@@ -4,8 +4,8 @@ Handles errors gracefully, skips already-mirrored, rate-limited pulling."""
 
 import re
 import subprocess
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
 REGISTRY = "ghcr.io/wyattau/evergreenimageregistry"

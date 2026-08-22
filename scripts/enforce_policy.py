@@ -5,10 +5,10 @@ import json
 import logging
 import re
 import sys
-import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
 
+import tomllib
 import yaml
 
 logger = logging.getLogger(__name__)

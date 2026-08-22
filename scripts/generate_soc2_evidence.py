@@ -18,12 +18,10 @@ Usage:
 
 import argparse
 import json
-import os
 import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from collections import defaultdict
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -278,7 +276,7 @@ def main():
         print(f"  {filename}: {evidence['name']}")
 
     # Summary
-    effective = sum(1 for e in evidence_items if e["status"] == "effective")
+    _effective = sum(1 for e in evidence_items if e["status"] == "effective")
     total_evidence = sum(len(e["evidence"]) for e in evidence_items)
     passed = sum(
         1 for e in evidence_items

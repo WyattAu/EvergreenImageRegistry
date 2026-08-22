@@ -165,7 +165,7 @@ PHP_MAP = {
 PACKAGE_MAP.update(PHP_MAP)
 
 # Remove UBI-only packages from UBI_ONLY if they have wolfi equivalents
-for pkg in list(UBI_ONLY_PACKAGES):
+for pkg in UBI_ONLY_PACKAGES:
     if pkg in PHP_MAP:
         UBI_ONLY_PACKAGES.discard(pkg)
 

@@ -13,8 +13,9 @@ Outputs YAML entries for images that have enough information.
 
 import logging
 import re
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 logger = logging.getLogger(__name__)
 

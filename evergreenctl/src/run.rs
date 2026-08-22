@@ -35,9 +35,10 @@ pub async fn execute(command: Commands) -> anyhow::Result<()> {
             Ok(())
         }
 
-        Commands::Diff { image_dir, generated } => {
-            handle_diff(&image_dir, generated)
-        }
+        Commands::Diff {
+            image_dir,
+            generated,
+        } => handle_diff(&image_dir, generated),
 
         Commands::Sign { image_dir } => {
             crate::sign::cmd_sign(&image_dir)?;

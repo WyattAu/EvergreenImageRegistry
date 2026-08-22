@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Evergreen Image Registry - Image Size Tracker
@@ -12,8 +13,8 @@ Usage:
 import json
 import subprocess
 import sys
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 
 BASELINE_FILE = Path(".reports/image_sizes/baselines.json")
 DEFAULT_THRESHOLD = 20  # Alert if size increases by > 20%
@@ -148,7 +149,6 @@ def main():
 
         # Output for GitHub Actions
         if "GITHUB_OUTPUT" in os.environ:
-            import os
             with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                 f.write(f"regression_count={len(regressions)}\n")
                 if regressions:

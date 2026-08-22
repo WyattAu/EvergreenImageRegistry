@@ -3,8 +3,9 @@
 
 import logging
 import re
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 logger = logging.getLogger(__name__)
 

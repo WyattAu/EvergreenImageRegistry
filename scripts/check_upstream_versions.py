@@ -7,10 +7,11 @@ import os
 import re
 import sys
 import time
-import tomllib
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+import tomllib
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -69,8 +70,7 @@ def extract_github_repo(source_url: str) -> str | None:
     match = re.search(r"github\.com/([^/]+/[^/\s]+)", source_url)
     if match:
         repo = match.group(1).rstrip("/")
-        if repo.endswith(".git"):
-            repo = repo[:-4]
+        repo = repo.removesuffix(".git")
         return repo
     return None
 

@@ -39,12 +39,14 @@ def extract_packages(dockerfile_content: str) -> list:
     for line in dockerfile_content.split("\n"):
         line = line.strip()
         # apk add
-        apk_match = re.search(r'apk\s+add\s+(?:--no-cache\s+)?(.+)', line)
+        apk_match = re.search(r"apk\s+add\s+(?:--no-cache\s+)?(.+)", line)
         if apk_match:
             pkgs = apk_match.group(1).split()
             packages.extend([p for p in pkgs if not p.startswith("-")])
         # apt-get install
-        apt_match = re.search(r'apt-get\s+install\s+(?:-y\s+)?(?:--no-install-recommends\s+)?(.+)', line)
+        apt_match = re.search(
+            r"apt-get\s+install\s+(?:-y\s+)?(?:--no-install-recommends\s+)?(.+)", line
+        )
         if apt_match:
             pkgs = apt_match.group(1).split()
             packages.extend([p for p in pkgs if not p.startswith("-")])
@@ -79,7 +81,7 @@ def extract_env_vars(dockerfile_content: str) -> dict:
     for line in dockerfile_content.split("\n"):
         line = line.strip()
         if line.upper().startswith("ENV "):
-            match = re.match(r'ENV\s+(\S+?)=(.+)', line)
+            match = re.match(r"ENV\s+(\S+?)=(.+)", line)
             if match:
                 envs[match.group(1)] = match.group(2).strip('"').strip("'")
     return envs
@@ -106,12 +108,12 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
             "created": timestamp,
             "creators": [
                 "Tool: evergreenctl-fast-sbom",
-                "Organization: Evergreen Image Registry"
+                "Organization: Evergreen Image Registry",
             ],
-            "licenseListVersion": "3.21"
+            "licenseListVersion": "3.21",
         },
         "packages": [],
-        "relationships": []
+        "relationships": [],
     }
 
     # Add the image package
@@ -125,11 +127,13 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
         "filesAnalyzed": False,
         "checksums": [],
         "primaryPackagePurpose": "CONTAINER",
-        "externalRefs": [{
-            "referenceCategory": "PACKAGE-MANAGER",
-            "referenceType": "purl",
-            "referenceLocator": f"pkg:docker/{image_name}@{version}"
-        }]
+        "externalRefs": [
+            {
+                "referenceCategory": "PACKAGE-MANAGER",
+                "referenceType": "purl",
+                "referenceLocator": f"pkg:docker/{image_name}@{version}",
+            }
+        ],
     }
     spdx["packages"].append(image_pkg)
 
@@ -144,54 +148,66 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
         "downloadLocation": f"https://hub.docker.com/r/{base_image.split(':')[0]}",
         "filesAnalyzed": False,
         "primaryPackagePurpose": "CONTAINER",
-        "externalRefs": [{
-            "referenceCategory": "PACKAGE-MANAGER",
-            "referenceType": "purl",
-            "referenceLocator": f"pkg:docker/{base_image.replace(':', '@')}"
-        }]
+        "externalRefs": [
+            {
+                "referenceCategory": "PACKAGE-MANAGER",
+                "referenceType": "purl",
+                "referenceLocator": f"pkg:docker/{base_image.replace(':', '@')}",
+            }
+        ],
     }
     spdx["packages"].append(base_pkg)
-    spdx["relationships"].append({
-        "spdxElementId": f"SPDXRef-Package-{image_name}",
-        "relationshipType": "VARIANT_OF",
-        "relatedSpdxElement": f"SPDXRef-Package-{base_name}"
-    })
+    spdx["relationships"].append(
+        {
+            "spdxElementId": f"SPDXRef-Package-{image_name}",
+            "relationshipType": "VARIANT_OF",
+            "relatedSpdxElement": f"SPDXRef-Package-{base_name}",
+        }
+    )
 
     # Add installed packages
     for pkg in packages:
         pkg_id = pkg.replace("/", "-").replace(".", "-")
-        spdx["packages"].append({
-            "SPDXID": f"SPDXRef-Package-{pkg_id}",
-            "name": pkg,
-            "versionInfo": "installed",
-            "downloadLocation": "NOASSERTION",
-            "filesAnalyzed": False,
-            "primaryPackagePurpose": "APPLICATION"
-        })
-        spdx["relationships"].append({
-            "spdxElementId": f"SPDXRef-Package-{image_name}",
-            "relationshipType": "DEPENDS_ON",
-            "relatedSpdxElement": f"SPDXRef-Package-{pkg_id}"
-        })
+        spdx["packages"].append(
+            {
+                "SPDXID": f"SPDXRef-Package-{pkg_id}",
+                "name": pkg,
+                "versionInfo": "installed",
+                "downloadLocation": "NOASSERTION",
+                "filesAnalyzed": False,
+                "primaryPackagePurpose": "APPLICATION",
+            }
+        )
+        spdx["relationships"].append(
+            {
+                "spdxElementId": f"SPDXRef-Package-{image_name}",
+                "relationshipType": "DEPENDS_ON",
+                "relatedSpdxElement": f"SPDXRef-Package-{pkg_id}",
+            }
+        )
 
     # Add health-shim if present
     if "shim" in content.lower() and "health-shim" in content.lower():
-        shim_match = re.search(r'SHIM_VERSION=(\S+)', content)
+        shim_match = re.search(r"SHIM_VERSION=(\S+)", content)
         shim_version = shim_match.group(1) if shim_match else "v2.0.0"
-        spdx["packages"].append({
-            "SPDXID": "SPDXRef-Package-health-shim",
-            "name": "evergreen-health-shim",
-            "versionInfo": shim_version,
-            "supplier": "Organization: Evergreen Image Registry",
-            "downloadLocation": f"https://github.com/WyattAu/evergreenshim/releases/tag/{shim_version}",
-            "filesAnalyzed": False,
-            "primaryPackagePurpose": "APPLICATION"
-        })
-        spdx["relationships"].append({
-            "spdxElementId": f"SPDXRef-Package-{image_name}",
-            "relationshipType": "DEPENDS_ON",
-            "relatedSpdxElement": "SPDXRef-Package-health-shim"
-        })
+        spdx["packages"].append(
+            {
+                "SPDXID": "SPDXRef-Package-health-shim",
+                "name": "evergreen-health-shim",
+                "versionInfo": shim_version,
+                "supplier": "Organization: Evergreen Image Registry",
+                "downloadLocation": f"https://github.com/WyattAu/evergreenshim/releases/tag/{shim_version}",
+                "filesAnalyzed": False,
+                "primaryPackagePurpose": "APPLICATION",
+            }
+        )
+        spdx["relationships"].append(
+            {
+                "spdxElementId": f"SPDXRef-Package-{image_name}",
+                "relationshipType": "DEPENDS_ON",
+                "relatedSpdxElement": "SPDXRef-Package-health-shim",
+            }
+        )
 
     return spdx
 
@@ -199,8 +215,12 @@ def generate_sbom_from_dockerfile(image_name: str, dockerfile_path: Path) -> dic
 def main():
     parser = argparse.ArgumentParser(description="Fast SBOM generator from Dockerfiles")
     parser.add_argument("--image", help="Generate SBOM for a specific image")
-    parser.add_argument("--all", action="store_true", help="Generate for all images without SBOMs")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be generated")
+    parser.add_argument(
+        "--all", action="store_true", help="Generate for all images without SBOMs"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be generated"
+    )
     parser.add_argument("--tier1", action="store_true", help="Only Tier 1 images")
     args = parser.parse_args()
 
@@ -257,9 +277,9 @@ def main():
             print(f"  ❌ {img}: {e}")
             failed += 1
 
-    print(f"\n{'='*40}")
+    print(f"\n{'=' * 40}")
     print(f"Generated: {generated} | Skipped: {skipped} | Failed: {failed}")
-    print(f"{'='*40}")
+    print(f"{'=' * 40}")
 
 
 if __name__ == "__main__":

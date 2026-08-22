@@ -46,7 +46,9 @@ def build_image(image_name: str, timeout: int = 300) -> dict:
     try:
         result = subprocess.run(
             ["docker", "build", "-t", tag, "-f", str(dockerfile), context],
-            capture_output=True, text=True, timeout=timeout
+            capture_output=True,
+            text=True,
+            timeout=timeout,
         )
         build_success = result.returncode == 0
     except subprocess.TimeoutExpired:
@@ -60,7 +62,9 @@ def build_image(image_name: str, timeout: int = 300) -> dict:
     try:
         inspect = subprocess.run(
             ["docker", "inspect", "--format", "{{.Size}}", tag],
-            capture_output=True, text=True, timeout=30
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         size_bytes = int(inspect.stdout.strip()) if inspect.returncode == 0 else 0
         size_mb = size_bytes / (1024 * 1024)
@@ -71,7 +75,9 @@ def build_image(image_name: str, timeout: int = 300) -> dict:
     try:
         inspect = subprocess.run(
             ["docker", "inspect", "--format", "{{len .RootFS.Layers}}", tag],
-            capture_output=True, text=True, timeout=30
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         layers = int(inspect.stdout.strip()) if inspect.returncode == 0 else 0
     except Exception:
@@ -123,10 +129,14 @@ def main():
     parser.add_argument("--all", action="store_true", help="Build all images")
     parser.add_argument("--image", type=str, help="Build specific image")
     parser.add_argument("--tier1", action="store_true", help="Build Tier 1 images only")
-    parser.add_argument("--timeout", type=int, default=300, help="Build timeout per image")
+    parser.add_argument(
+        "--timeout", type=int, default=300, help="Build timeout per image"
+    )
     parser.add_argument("--report", type=Path, help="Write JSON report")
     parser.add_argument("--prometheus", type=Path, help="Write Prometheus metrics")
-    parser.add_argument("--compare", action="store_true", help="Compare against baselines")
+    parser.add_argument(
+        "--compare", action="store_true", help="Compare against baselines"
+    )
     args = parser.parse_args()
 
     baselines = load_baselines()
@@ -141,6 +151,7 @@ def main():
             if args.tier1:
                 content = manifest.read_text()
                 import re
+
                 tier = re.search(r'tier\s*=\s*"(\w+)"', content)
                 if tier and tier.group(1) == "critical":
                     images.append(img)
@@ -156,7 +167,7 @@ def main():
     regressions = []
 
     for i, img in enumerate(images):
-        print(f"  [{i+1}/{len(images)}] {img}... ", end="", flush=True)
+        print(f"  [{i + 1}/{len(images)}] {img}... ", end="", flush=True)
 
         metrics = build_image(img, args.timeout)
 
@@ -175,12 +186,14 @@ def main():
         if old_time > 0 and args.compare:
             increase = ((metrics["build_time_ms"] - old_time) * 100) // old_time
             if increase > THRESHOLD_PERCENT:
-                regressions.append({
-                    "image": img,
-                    "old_ms": old_time,
-                    "new_ms": metrics["build_time_ms"],
-                    "increase_percent": increase,
-                })
+                regressions.append(
+                    {
+                        "image": img,
+                        "old_ms": old_time,
+                        "new_ms": metrics["build_time_ms"],
+                        "increase_percent": increase,
+                    }
+                )
                 print(f"REGRESSION +{increase}%")
             else:
                 print(f"OK ({metrics['build_time_ms']}ms, {metrics['size_mb']}MB)")
@@ -203,18 +216,20 @@ def main():
     save_baselines(baselines)
 
     # Summary
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("Performance Baselines Updated")
     print(f"  Total: {len(images)}")
     print(f"  Success: {len([r for r in results.values() if 'error' not in r])}")
     print(f"  Regressions: {len(regressions)}")
     print(f"  Output: {BASELINE_FILE}")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
 
     if regressions:
         print("\nRegressions detected:")
         for r in regressions:
-            print(f"  {r['image']}: {r['old_ms']}ms → {r['new_ms']}ms (+{r['increase_percent']}%)")
+            print(
+                f"  {r['image']}: {r['old_ms']}ms → {r['new_ms']}ms (+{r['increase_percent']}%)"
+            )
 
     # Prometheus metrics
     if args.prometheus:
@@ -223,7 +238,9 @@ def main():
         lines.append("# TYPE eir_perf_build_time_ms gauge")
         for img, data in results.items():
             if "build_time_ms" in data:
-                lines.append(f'eir_perf_build_time_ms{{image="{img}"}} {data["build_time_ms"]}')
+                lines.append(
+                    f'eir_perf_build_time_ms{{image="{img}"}} {data["build_time_ms"]}'
+                )
         lines.append("")
 
         lines.append("# HELP eir_perf_size_mb Image size in MB")

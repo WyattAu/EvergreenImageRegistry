@@ -92,7 +92,9 @@ def scan_registry() -> dict:
                             results["licenses"][license_id] += 1
 
                     if pkg_count > 10000:
-                        results["large_sboms"].append({"image": img_name, "packages": pkg_count})
+                        results["large_sboms"].append(
+                            {"image": img_name, "packages": pkg_count}
+                        )
                 else:
                     results["empty_sboms"].append(img_name)
             except Exception:
@@ -159,7 +161,11 @@ def generate_prometheus(data: dict) -> str:
     lines.append(f"eir_sbom_packages_total {data['packages_total']}")
     lines.append("")
 
-    avg = data["packages_total"] / data["with_sbom_valid"] if data["with_sbom_valid"] > 0 else 0
+    avg = (
+        data["packages_total"] / data["with_sbom_valid"]
+        if data["with_sbom_valid"] > 0
+        else 0
+    )
     lines.append("# HELP eir_sbom_packages_avg Average packages per image")
     lines.append("# TYPE eir_sbom_packages_avg gauge")
     lines.append(f"eir_sbom_packages_avg {avg:.1f}")

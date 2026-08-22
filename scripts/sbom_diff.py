@@ -58,11 +58,13 @@ def parse_spdx_packages(sbom_path: Path) -> dict:
         }
 
     for rel in data.get("relationships", []):
-        relationships.append({
-            "source": rel.get("spdxElementId", ""),
-            "target": rel.get("relatedSpdxElement", ""),
-            "type": rel.get("relationshipType", ""),
-        })
+        relationships.append(
+            {
+                "source": rel.get("spdxElementId", ""),
+                "target": rel.get("relatedSpdxElement", ""),
+                "type": rel.get("relationshipType", ""),
+            }
+        )
 
     return {"packages": packages, "relationships": relationships}
 
@@ -85,12 +87,14 @@ def diff_sboms(old_data: dict, new_data: dict) -> dict:
         old_ver = old_pkgs[name]["version"]
         new_ver = new_pkgs[name]["version"]
         if old_ver != new_ver:
-            version_changes.append({
-                "package": name,
-                "old_version": old_ver,
-                "new_version": new_ver,
-                "upgrade": _is_upgrade(old_ver, new_ver),
-            })
+            version_changes.append(
+                {
+                    "package": name,
+                    "old_version": old_ver,
+                    "new_version": new_ver,
+                    "upgrade": _is_upgrade(old_ver, new_ver),
+                }
+            )
 
     # License changes
     license_changes = []
@@ -98,15 +102,21 @@ def diff_sboms(old_data: dict, new_data: dict) -> dict:
         old_license = old_pkgs[name].get("license", "")
         new_license = new_pkgs[name].get("license", "")
         if old_license != new_license:
-            license_changes.append({
-                "package": name,
-                "old_license": old_license,
-                "new_license": new_license,
-            })
+            license_changes.append(
+                {
+                    "package": name,
+                    "old_license": old_license,
+                    "new_license": new_license,
+                }
+            )
 
     # Dependency relationship changes
-    old_rels = {(r["source"], r["target"]): r["type"] for r in old_data["relationships"]}
-    new_rels = {(r["source"], r["target"]): r["type"] for r in new_data["relationships"]}
+    old_rels = {
+        (r["source"], r["target"]): r["type"] for r in old_data["relationships"]
+    }
+    new_rels = {
+        (r["source"], r["target"]): r["type"] for r in new_data["relationships"]
+    }
 
     rel_added = set(new_rels.keys()) - set(old_rels.keys())
     rel_removed = set(old_rels.keys()) - set(new_rels.keys())
@@ -121,9 +131,7 @@ def diff_sboms(old_data: dict, new_data: dict) -> dict:
             "license_changes": len(license_changes),
             "dependency_changes": len(rel_added) + len(rel_removed),
         },
-        "added_packages": [
-            {"name": name, **new_pkgs[name]} for name in sorted(added)
-        ],
+        "added_packages": [{"name": name, **new_pkgs[name]} for name in sorted(added)],
         "removed_packages": [
             {"name": name, **old_pkgs[name]} for name in sorted(removed)
         ],
@@ -154,17 +162,24 @@ def generate_prometheus_metrics(diff: dict, image: str) -> str:
 
     lines.append(f'eir_sbom_diff_added{{image="{image}"}} {s["added"]}')
     lines.append(f'eir_sbom_diff_removed{{image="{image}"}} {s["removed"]}')
-    lines.append(f'eir_sbom_diff_version_changes{{image="{image}"}} {s["version_changes"]}')
-    lines.append(f'eir_sbom_diff_license_changes{{image="{image}"}} {s["license_changes"]}')
-    lines.append(f'eir_sbom_diff_dependency_changes{{image="{image}"}} {s["dependency_changes"]}')
+    lines.append(
+        f'eir_sbom_diff_version_changes{{image="{image}"}} {s["version_changes"]}'
+    )
+    lines.append(
+        f'eir_sbom_diff_license_changes{{image="{image}"}} {s["license_changes"]}'
+    )
+    lines.append(
+        f'eir_sbom_diff_dependency_changes{{image="{image}"}} {s["dependency_changes"]}'
+    )
 
     # Track if critical packages changed
     critical_pkgs = {"openssl", "glibc", "libssl", "libc"}
     critical_changes = sum(
-        1 for vc in diff["version_changes"]
-        if vc["package"].lower() in critical_pkgs
+        1 for vc in diff["version_changes"] if vc["package"].lower() in critical_pkgs
     )
-    lines.append(f'eir_sbom_diff_critical_changes{{image="{image}"}} {critical_changes}')
+    lines.append(
+        f'eir_sbom_diff_critical_changes{{image="{image}"}} {critical_changes}'
+    )
 
     return "\n".join(lines)
 
@@ -174,11 +189,16 @@ def main():
     parser.add_argument("--old", type=Path, help="Old SBOM file")
     parser.add_argument("--new", type=Path, help="New SBOM file")
     parser.add_argument("--image", type=str, help="Image name (for --compare mode)")
-    parser.add_argument("--compare", nargs=2, metavar=("OLD_TAG", "NEW_TAG"),
-                       help="Compare two tagged versions")
+    parser.add_argument(
+        "--compare",
+        nargs=2,
+        metavar=("OLD_TAG", "NEW_TAG"),
+        help="Compare two tagged versions",
+    )
     parser.add_argument("--report", type=Path, help="Output diff report")
-    parser.add_argument("--metrics", action="store_true",
-                       help="Output Prometheus metrics")
+    parser.add_argument(
+        "--metrics", action="store_true", help="Output Prometheus metrics"
+    )
     parser.add_argument("--output", type=Path, help="Write output to file")
     args = parser.parse_args()
 
@@ -190,7 +210,10 @@ def main():
         old_sbom = IMAGES_DIR / args.image / f"sbom.{args.compare[0]}.spdx.json"
         new_sbom = IMAGES_DIR / args.image / f"sbom.{args.compare[1]}.spdx.json"
         if not old_sbom.exists() or not new_sbom.exists():
-            print(f"Error: SBOM files not found for {args.image} {args.compare}", file=sys.stderr)
+            print(
+                f"Error: SBOM files not found for {args.image} {args.compare}",
+                file=sys.stderr,
+            )
             sys.exit(1)
         old_data = parse_spdx_packages(old_sbom)
         new_data = parse_spdx_packages(new_sbom)

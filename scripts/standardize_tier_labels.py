@@ -21,10 +21,9 @@ def main():
     images_dir = Path("images")
     exclude_dirs = {"_wip", "_archive", "tests"}
 
-    image_dirs = sorted([
-        d for d in images_dir.iterdir()
-        if d.is_dir() and d.name not in exclude_dirs
-    ])
+    image_dirs = sorted(
+        [d for d in images_dir.iterdir() if d.is_dir() and d.name not in exclude_dirs]
+    )
 
     fixed = 0
     already_ok = 0
@@ -60,7 +59,7 @@ def main():
 
         # Need to add or fix the label
         if dry_run:
-            print(f"DRY-RUN: {d.name}: would add/fix evergreen.image.tier = \"{tier}\"")
+            print(f'DRY-RUN: {d.name}: would add/fix evergreen.image.tier = "{tier}"')
             fixed += 1
             continue
 
@@ -76,7 +75,11 @@ def main():
                 new_lines.append(line)
                 if line.strip() == "[labels]":
                     labels_section_found = True
-                elif labels_section_found and not tier_label_added and line.strip().startswith("["):
+                elif (
+                    labels_section_found
+                    and not tier_label_added
+                    and line.strip().startswith("[")
+                ):
                     # Next section, insert before it
                     new_lines.pop()  # Remove the section header
                     new_lines.append(f'"evergreen.image.tier" = "{tier}"')
@@ -95,7 +98,7 @@ def main():
             mf_path.write_text(content)
 
         fixed += 1
-        print(f"FIXED: {d.name}: added evergreen.image.tier = \"{tier}\"")
+        print(f'FIXED: {d.name}: added evergreen.image.tier = "{tier}"')
 
     print(f"\nSummary: {already_ok} OK, {fixed} fixed, {errors} errors")
 

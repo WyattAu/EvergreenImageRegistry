@@ -138,45 +138,61 @@ def collect_metrics(images_dir: Path) -> str:
             sev = data.get("violations_by_severity", {})
             by_code = data.get("violations_by_code", {})
 
-            lines.append("# HELP eir_validation_images_passed Images passing all BLOCK constraints")
+            lines.append(
+                "# HELP eir_validation_images_passed Images passing all BLOCK constraints"
+            )
             lines.append("# TYPE eir_validation_images_passed gauge")
             lines.append(f"eir_validation_images_passed {images_passed}")
             lines.append("")
 
-            lines.append("# HELP eir_validation_images_failed Images with BLOCK violations")
+            lines.append(
+                "# HELP eir_validation_images_failed Images with BLOCK violations"
+            )
             lines.append("# TYPE eir_validation_images_failed gauge")
             lines.append(f"eir_validation_images_failed {images_failed}")
             lines.append("")
 
-            lines.append("# HELP eir_validation_pass_rate Fraction of images passing validation")
+            lines.append(
+                "# HELP eir_validation_pass_rate Fraction of images passing validation"
+            )
             lines.append("# TYPE eir_validation_pass_rate gauge")
             total = images_passed + images_failed
             rate = images_passed / total if total > 0 else 0
             lines.append(f"eir_validation_pass_rate {rate:.4f}")
             lines.append("")
 
-            lines.append("# HELP eir_validation_violations_total Total constraint violations")
+            lines.append(
+                "# HELP eir_validation_violations_total Total constraint violations"
+            )
             lines.append("# TYPE eir_validation_violations_total gauge")
             lines.append(f"eir_validation_violations_total {total_violations}")
             lines.append("")
 
             for severity, count in sev.items():
-                lines.append(f'eir_validation_violations_by_severity{{severity="{severity}"}} {count}')
+                lines.append(
+                    f'eir_validation_violations_by_severity{{severity="{severity}"}} {count}'
+                )
 
             lines.append("")
 
             for code, count in by_code.items():
-                lines.append(f'eir_validation_violations_by_constraint{{constraint="{code}"}} {count}')
+                lines.append(
+                    f'eir_validation_violations_by_constraint{{constraint="{code}"}} {count}'
+                )
 
             lines.append("")
 
             # Pass rate metric
-            lines.append("# HELP eir_validation_block_violations BLOCK-severity violations (CI-blocking)")
+            lines.append(
+                "# HELP eir_validation_block_violations BLOCK-severity violations (CI-blocking)"
+            )
             lines.append("# TYPE eir_validation_block_violations gauge")
             lines.append(f"eir_validation_block_violations {sev.get('BLOCK', 0)}")
             lines.append("")
 
-            lines.append("# HELP eir_validation_warn_violations WARN-severity violations (non-blocking)")
+            lines.append(
+                "# HELP eir_validation_warn_violations WARN-severity violations (non-blocking)"
+            )
             lines.append("# TYPE eir_validation_warn_violations gauge")
             lines.append(f"eir_validation_warn_violations {sev.get('WARN', 0)}")
             lines.append("")
@@ -187,7 +203,9 @@ def collect_metrics(images_dir: Path) -> str:
 
     # --- Workflow count ---
     workflows_dir = REPO_ROOT / ".github" / "workflows"
-    workflow_count = len(list(workflows_dir.glob("*.yml"))) if workflows_dir.exists() else 0
+    workflow_count = (
+        len(list(workflows_dir.glob("*.yml"))) if workflows_dir.exists() else 0
+    )
     lines.append("# HELP eir_workflows_total Total CI/CD workflows")
     lines.append("# TYPE eir_workflows_total gauge")
     lines.append(f"eir_workflows_total {workflow_count}")
@@ -241,7 +259,9 @@ def collect_metrics(images_dir: Path) -> str:
     # --- CIS compliance ratio ---
     lines.append("# HELP eir_cis_healthcheck_ratio Fraction of images with HEALTHCHECK")
     lines.append("# TYPE eir_cis_healthcheck_ratio gauge")
-    lines.append(f"eir_cis_healthcheck_ratio {dockerfiles_with_healthcheck / total_dfs:.4f}")
+    lines.append(
+        f"eir_cis_healthcheck_ratio {dockerfiles_with_healthcheck / total_dfs:.4f}"
+    )
     lines.append("")
 
     lines.append("# HELP eir_cis_nonroot_ratio Fraction of images with USER directive")
@@ -284,8 +304,12 @@ class MetricsHandler(BaseHTTPRequestHandler):
 def main():
     global IMAGES_DIR
     parser = argparse.ArgumentParser(description="Export EIR compliance metrics")
-    parser.add_argument("--images-dir", type=Path, default=IMAGES_DIR, help="Images directory")
-    parser.add_argument("--output", type=Path, help="Write metrics to file (one-shot mode)")
+    parser.add_argument(
+        "--images-dir", type=Path, default=IMAGES_DIR, help="Images directory"
+    )
+    parser.add_argument(
+        "--output", type=Path, help="Write metrics to file (one-shot mode)"
+    )
     parser.add_argument("--serve", action="store_true", help="Run as HTTP server")
     parser.add_argument("--port", type=int, default=9120, help="Port for HTTP server")
     args = parser.parse_args()

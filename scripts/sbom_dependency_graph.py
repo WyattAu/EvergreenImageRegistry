@@ -91,13 +91,15 @@ class DependencyGraph:
         results = []
         for pkg_key, pkg_data in self.packages.items():
             if pkg_data["name"].lower() == package_name.lower():
-                results.append({
-                    "package": pkg_key,
-                    "version": pkg_data["version"],
-                    "images": pkg_data["images"],
-                    "license": pkg_data["license"],
-                    "image_count": len(pkg_data["images"]),
-                })
+                results.append(
+                    {
+                        "package": pkg_key,
+                        "version": pkg_data["version"],
+                        "images": pkg_data["images"],
+                        "license": pkg_data["license"],
+                        "image_count": len(pkg_data["images"]),
+                    }
+                )
 
         # Sort by image count (most shared first)
         results.sort(key=lambda x: x["image_count"], reverse=True)
@@ -120,13 +122,15 @@ class DependencyGraph:
         shared = []
         for pkg_key, pkg_data in self.packages.items():
             if len(pkg_data["images"]) > 1:
-                shared.append({
-                    "package": pkg_data["name"],
-                    "version": pkg_data["version"],
-                    "image_count": len(pkg_data["images"]),
-                    "images": pkg_data["images"],
-                    "license": pkg_data["license"],
-                })
+                shared.append(
+                    {
+                        "package": pkg_data["name"],
+                        "version": pkg_data["version"],
+                        "image_count": len(pkg_data["images"]),
+                        "images": pkg_data["images"],
+                        "license": pkg_data["license"],
+                    }
+                )
 
         shared.sort(key=lambda x: x["image_count"], reverse=True)
         return shared[:top_n]
@@ -144,10 +148,12 @@ class DependencyGraph:
         """Get package count per image."""
         counts = []
         for img, pkgs in self.images.items():
-            counts.append({
-                "image": img,
-                "packages": len(pkgs),
-            })
+            counts.append(
+                {
+                    "image": img,
+                    "packages": len(pkgs),
+                }
+            )
         counts.sort(key=lambda x: x["packages"], reverse=True)
         return counts
 
@@ -159,12 +165,15 @@ class DependencyGraph:
                 "total_images": len(self.images),
                 "total_packages": len(self.packages),
                 "total_edges": len(self.edges),
-                "shared_packages": len([p for p in self.packages.values() if len(p["images"]) > 1]),
+                "shared_packages": len(
+                    [p for p in self.packages.values() if len(p["images"]) > 1]
+                ),
             },
             "most_shared_packages": self.get_most_shared_packages(30),
             "license_distribution": self.get_license_distribution(),
             "image_package_counts": self.get_image_package_counts(),
-            "packages_per_image_avg": sum(len(pkgs) for pkgs in self.images.values()) / max(len(self.images), 1),
+            "packages_per_image_avg": sum(len(pkgs) for pkgs in self.images.values())
+            / max(len(self.images), 1),
         }
 
 
@@ -196,7 +205,9 @@ def generate_prometheus(graph: DependencyGraph) -> str:
     # Most shared packages
     for pkg in graph.get_most_shared_packages(10):
         safe_name = pkg["package"].replace('"', '\\"')
-        lines.append(f'eir_dep_graph_pkg_images{{package="{safe_name}"}} {pkg["image_count"]}')
+        lines.append(
+            f'eir_dep_graph_pkg_images{{package="{safe_name}"}} {pkg["image_count"]}'
+        )
 
     lines.append("")
 
@@ -221,7 +232,16 @@ def main():
     parser.add_argument("--dashboard", type=Path, help="Write Markdown dashboard")
     args = parser.parse_args()
 
-    if not any([args.build, args.trace, args.shared, args.report, args.prometheus, args.dashboard]):
+    if not any(
+        [
+            args.build,
+            args.trace,
+            args.shared,
+            args.report,
+            args.prometheus,
+            args.dashboard,
+        ]
+    ):
         args.build = True
 
     graph = DependencyGraph()
@@ -269,12 +289,16 @@ def main():
         md.append(f"| Images | {report['summary']['total_images']} |")
         md.append(f"| Unique packages | {report['summary']['total_packages']} |")
         md.append(f"| Shared packages | {report['summary']['shared_packages']} |")
-        md.append(f"| Avg packages/image | {report['summary']['packages_per_image_avg']:.0f} |\n")
+        md.append(
+            f"| Avg packages/image | {report['summary']['packages_per_image_avg']:.0f} |\n"
+        )
         md.append("## Top 20 Most Shared Packages\n")
         md.append("| Package | Version | Images | License |")
         md.append("|---------|---------|--------|---------|")
         for pkg in report["most_shared_packages"][:20]:
-            md.append(f"| {pkg['package']} | {pkg['version']} | {pkg['image_count']} | {pkg['license']} |")
+            md.append(
+                f"| {pkg['package']} | {pkg['version']} | {pkg['image_count']} | {pkg['license']} |"
+            )
         args.dashboard.parent.mkdir(parents=True, exist_ok=True)
         args.dashboard.write_text("\n".join(md))
         print(f"Dashboard: {args.dashboard}")

@@ -55,7 +55,8 @@ def parse_dockerfile(image: str) -> dict:
         "has_stopsignal": "STOPSIGNAL" in content,
         "has_entrypoint": "ENTRYPOINT" in content,
         "has_user": bool(re.search(r"^\s*USER\s+", content, re.MULTILINE)),
-        "is_distroless": "distroless" in content.lower() or "scratch" in content.lower(),
+        "is_distroless": "distroless" in content.lower()
+        or "scratch" in content.lower(),
         "is_static_binary": "scratch" in content and "COPY" in content,
     }
 
@@ -65,7 +66,9 @@ def parse_dockerfile(image: str) -> dict:
         metadata["user"] = user_match.group(1)
 
     # Extract ENTRYPOINT
-    entrypoint_match = re.search(r"^\s*ENTRYPOINT\s+\[([^\]]+)\]", content, re.MULTILINE)
+    entrypoint_match = re.search(
+        r"^\s*ENTRYPOINT\s+\[([^\]]+)\]", content, re.MULTILINE
+    )
     if entrypoint_match:
         metadata["entrypoint"] = entrypoint_match.group(1)
 
@@ -79,18 +82,58 @@ def generate_seccomp_profile(image: str) -> dict:
 
     # Default syscalls for distroless/static images
     default_syscalls = [
-        "accept", "access", "arch_prctl", "bind", "brk",
-        "clone", "close", "connect", "epoll_create1", "epoll_ctl",
-        "epoll_wait", "execve", "exit", "exit_group",
-        "faccessat", "fchmod", "fchown", "fcntl", "fstat",
-        "futex", "getdents64", "getpid", "getppid", "getrandom",
-        "getsockname", "gettid", "ioctl", "listen", "lseek",
-        "madvise", "mmap", "mprotect", "munmap", "nanosleep",
-        "newfstatat", "openat", "pipe2", "prlimit64",
-        "read", "recvfrom", "rt_sigaction", "rt_sigprocmask",
-        "sched_yield", "sendto", "set_robust_list", "set_tid_address",
-        "setsockopt", "sigaltstack", "socket", "stat",
-        "write", "writev",
+        "accept",
+        "access",
+        "arch_prctl",
+        "bind",
+        "brk",
+        "clone",
+        "close",
+        "connect",
+        "epoll_create1",
+        "epoll_ctl",
+        "epoll_wait",
+        "execve",
+        "exit",
+        "exit_group",
+        "faccessat",
+        "fchmod",
+        "fchown",
+        "fcntl",
+        "fstat",
+        "futex",
+        "getdents64",
+        "getpid",
+        "getppid",
+        "getrandom",
+        "getsockname",
+        "gettid",
+        "ioctl",
+        "listen",
+        "lseek",
+        "madvise",
+        "mmap",
+        "mprotect",
+        "munmap",
+        "nanosleep",
+        "newfstatat",
+        "openat",
+        "pipe2",
+        "prlimit64",
+        "read",
+        "recvfrom",
+        "rt_sigaction",
+        "rt_sigprocmask",
+        "sched_yield",
+        "sendto",
+        "set_robust_list",
+        "set_tid_address",
+        "setsockopt",
+        "sigaltstack",
+        "socket",
+        "stat",
+        "write",
+        "writev",
     ]
 
     # Additional syscalls based on package type
@@ -100,26 +143,46 @@ def generate_seccomp_profile(image: str) -> dict:
     db_indicators = {"postgresql", "mysql", "redis", "mongodb", "cockroachdb", "valkey"}
     pkg_names = {p.get("name", "").lower() for p in packages}
     if pkg_names & db_indicators:
-        extra_syscalls.extend([
-            "fsync", "fdatasync", "msync", "sync", "syncfs",
-            "fallocate", "fadvise64", "posix_fadvise",
-        ])
+        extra_syscalls.extend(
+            [
+                "fsync",
+                "fdatasync",
+                "msync",
+                "sync",
+                "syncfs",
+                "fallocate",
+                "fadvise64",
+                "posix_fadvise",
+            ]
+        )
 
     # Network images need socket operations
     net_indicators = {"nginx", "traefik", "envoy", "haproxy", "coredns", "consul"}
     if pkg_names & net_indicators:
-        extra_syscalls.extend([
-            "accept4", "getpeername", "getsockopt", "recvmsg",
-            "sendmsg", "shutdown", "sock_sendmsg",
-        ])
+        extra_syscalls.extend(
+            [
+                "accept4",
+                "getpeername",
+                "getsockopt",
+                "recvmsg",
+                "sendmsg",
+                "shutdown",
+                "sock_sendmsg",
+            ]
+        )
 
     # Java images need additional syscalls
     java_indicators = {"keycloak", "jenkins", "sonarqube", "nexus"}
     if pkg_names & java_indicators:
-        extra_syscalls.extend([
-            "clone3", "epoll_pwait", "io_uring_enter",
-            "pidfd_open", "waitid",
-        ])
+        extra_syscalls.extend(
+            [
+                "clone3",
+                "epoll_pwait",
+                "io_uring_enter",
+                "pidfd_open",
+                "waitid",
+            ]
+        )
 
     all_syscalls = sorted(set(default_syscalls + extra_syscalls))
 
@@ -230,9 +293,7 @@ def generate_network_policy(image: str) -> dict:
             "policyTypes": ["Ingress", "Egress"],
             "ingress": [
                 {
-                    "ports": [
-                        {"port": 8080, "protocol": "TCP"}
-                    ],
+                    "ports": [{"port": 8080, "protocol": "TCP"}],
                 }
             ],
             "egress": [
@@ -276,10 +337,15 @@ def generate_pod_security_standards(image: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Runtime policy generator from SBOM")
     parser.add_argument("--image", type=str, help="Image name")
-    parser.add_argument("--type", choices=["seccomp", "apparmor", "network", "pss", "all"],
-                       default="all", help="Policy type")
-    parser.add_argument("--scan-all", action="store_true",
-                       help="Generate policies for all images")
+    parser.add_argument(
+        "--type",
+        choices=["seccomp", "apparmor", "network", "pss", "all"],
+        default="all",
+        help="Policy type",
+    )
+    parser.add_argument(
+        "--scan-all", action="store_true", help="Generate policies for all images"
+    )
     parser.add_argument("--output", type=Path, help="Output directory")
     args = parser.parse_args()
 

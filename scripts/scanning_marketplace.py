@@ -35,6 +35,7 @@ RESULTS_DIR = REPO_ROOT / "compliance" / "scan-results"
 
 class Scanner:
     """Base scanner interface."""
+
     name: str = "base"
 
     def scan(self, image_ref: str) -> dict:
@@ -43,60 +44,88 @@ class Scanner:
 
 class TrivyScanner(Scanner):
     """Trivy vulnerability scanner."""
+
     name = "trivy"
 
     def scan(self, image_ref: str) -> dict:
         try:
             result = subprocess.run(
                 ["trivy", "image", "--format", "json", "--quiet", image_ref],
-                capture_output=True, text=True, timeout=300
+                capture_output=True,
+                text=True,
+                timeout=300,
             )
             if result.returncode == 0:
                 data = json.loads(result.stdout)
                 vulns = []
                 for r in data.get("Results", []):
                     for v in r.get("Vulnerabilities", []):
-                        vulns.append({
-                            "id": v.get("VulnerabilityID", ""),
-                            "severity": v.get("Severity", "UNKNOWN"),
-                            "pkg": v.get("PkgName", ""),
-                            "installed": v.get("InstalledVersion", ""),
-                            "fixed": v.get("Fix", {}).get("Versions", []),
-                            "title": v.get("Title", ""),
-                        })
-                return {"scanner": self.name, "vulnerabilities": vulns, "total": len(vulns)}
+                        vulns.append(
+                            {
+                                "id": v.get("VulnerabilityID", ""),
+                                "severity": v.get("Severity", "UNKNOWN"),
+                                "pkg": v.get("PkgName", ""),
+                                "installed": v.get("InstalledVersion", ""),
+                                "fixed": v.get("Fix", {}).get("Versions", []),
+                                "title": v.get("Title", ""),
+                            }
+                        )
+                return {
+                    "scanner": self.name,
+                    "vulnerabilities": vulns,
+                    "total": len(vulns),
+                }
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pass
-        return {"scanner": self.name, "vulnerabilities": [], "total": 0, "error": "scanner not available"}
+        return {
+            "scanner": self.name,
+            "vulnerabilities": [],
+            "total": 0,
+            "error": "scanner not available",
+        }
 
 
 class GrypeScanner(Scanner):
     """Grype vulnerability scanner."""
+
     name = "grype"
 
     def scan(self, image_ref: str) -> dict:
         try:
             result = subprocess.run(
                 ["grype", image_ref, "-o", "json"],
-                capture_output=True, text=True, timeout=300
+                capture_output=True,
+                text=True,
+                timeout=300,
             )
             if result.returncode == 0:
                 data = json.loads(result.stdout)
                 vulns = []
                 for match in data.get("matches", []):
                     vuln = match.get("vulnerability", {})
-                    vulns.append({
-                        "id": vuln.get("id", ""),
-                        "severity": vuln.get("severity", "unknown"),
-                        "pkg": match.get("artifact", {}).get("name", ""),
-                        "installed": match.get("artifact", {}).get("version", ""),
-                        "fixed": vuln.get("fix", {}).get("versions", []),
-                        "title": vuln.get("description", "")[:200],
-                    })
-                return {"scanner": self.name, "vulnerabilities": vulns, "total": len(vulns)}
+                    vulns.append(
+                        {
+                            "id": vuln.get("id", ""),
+                            "severity": vuln.get("severity", "unknown"),
+                            "pkg": match.get("artifact", {}).get("name", ""),
+                            "installed": match.get("artifact", {}).get("version", ""),
+                            "fixed": vuln.get("fix", {}).get("versions", []),
+                            "title": vuln.get("description", "")[:200],
+                        }
+                    )
+                return {
+                    "scanner": self.name,
+                    "vulnerabilities": vulns,
+                    "total": len(vulns),
+                }
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pass
-        return {"scanner": self.name, "vulnerabilities": [], "total": 0, "error": "scanner not available"}
+        return {
+            "scanner": self.name,
+            "vulnerabilities": [],
+            "total": 0,
+            "error": "scanner not available",
+        }
 
 
 def consensus_scan(image_ref: str) -> dict:
@@ -114,30 +143,36 @@ def consensus_scan(image_ref: str) -> dict:
     vuln_reports = defaultdict(list)
     for result in results:
         for v in result.get("vulnerabilities", []):
-            vuln_reports[v["id"]].append({
-                "scanner": result["scanner"],
-                "severity": v["severity"],
-                "pkg": v["pkg"],
-            })
+            vuln_reports[v["id"]].append(
+                {
+                    "scanner": result["scanner"],
+                    "severity": v["severity"],
+                    "pkg": v["pkg"],
+                }
+            )
 
     confirmed = []
     for vuln_id, reports in vuln_reports.items():
         if len(reports) >= 2:  # Confirmed by 2+ scanners
-            confirmed.append({
-                "id": vuln_id,
-                "severity": reports[0]["severity"],
-                "pkg": reports[0]["pkg"],
-                "confirmed_by": [r["scanner"] for r in reports],
-                "confidence": "high",
-            })
+            confirmed.append(
+                {
+                    "id": vuln_id,
+                    "severity": reports[0]["severity"],
+                    "pkg": reports[0]["pkg"],
+                    "confirmed_by": [r["scanner"] for r in reports],
+                    "confidence": "high",
+                }
+            )
         elif len(reports) == 1:
-            confirmed.append({
-                "id": vuln_id,
-                "severity": reports[0]["severity"],
-                "pkg": reports[0]["pkg"],
-                "confirmed_by": [reports[0]["scanner"]],
-                "confidence": "low",
-            })
+            confirmed.append(
+                {
+                    "id": vuln_id,
+                    "severity": reports[0]["severity"],
+                    "pkg": reports[0]["pkg"],
+                    "confirmed_by": [reports[0]["scanner"]],
+                    "confidence": "low",
+                }
+            )
 
     # Sort by severity
     severity_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3, "UNKNOWN": 4}
@@ -162,7 +197,9 @@ def main():
     parser = argparse.ArgumentParser(description="Scanning marketplace")
     parser.add_argument("--image", type=str, help="Image to scan")
     parser.add_argument("--scanner", choices=["trivy", "grype", "all"], default="trivy")
-    parser.add_argument("--consensus", action="store_true", help="Multi-scanner consensus")
+    parser.add_argument(
+        "--consensus", action="store_true", help="Multi-scanner consensus"
+    )
     parser.add_argument("--images", nargs="+", help="Multiple images for consensus")
     parser.add_argument("--report", type=Path, help="Write JSON report")
     args = parser.parse_args()

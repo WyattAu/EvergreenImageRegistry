@@ -452,12 +452,10 @@ case "$MODE" in
         failed=0
         for img_dir in images/*/; do
             [ -f "${img_dir}/Dockerfile" ] || continue
-            local img_name
             img_name=$(basename "$img_dir")
-            local df="${img_dir}/Dockerfile"
+            df="${img_dir}/Dockerfile"
 
             # Check if final stage uses debian
-            local last_from_line
             last_from_line=$(grep -n '^FROM ' "$df" | tail -1 | cut -d: -f1)
             [ -z "$last_from_line" ] && continue
 

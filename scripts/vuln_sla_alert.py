@@ -65,22 +65,26 @@ def scan_vulnerabilities(image_name: str) -> list:
     try:
         result = subprocess.run(
             ["trivy", "image", "--format", "json", "--quiet", ref],
-            capture_output=True, text=True, timeout=300
+            capture_output=True,
+            text=True,
+            timeout=300,
         )
         if result.returncode == 0:
             data = json.loads(result.stdout)
             vulns = []
             for result_entry in data.get("Results", []):
                 for v in result_entry.get("Vulnerabilities", []):
-                    vulns.append({
-                        "id": v.get("VulnerabilityID", ""),
-                        "severity": v.get("Severity", "UNKNOWN").upper(),
-                        "pkg_name": v.get("PkgName", ""),
-                        "installed_version": v.get("InstalledVersion", ""),
-                        "fixed_version": v.get("Fix", {}).get("Versions", []),
-                        "published": v.get("PublishedDate", ""),
-                        "title": v.get("Title", ""),
-                    })
+                    vulns.append(
+                        {
+                            "id": v.get("VulnerabilityID", ""),
+                            "severity": v.get("Severity", "UNKNOWN").upper(),
+                            "pkg_name": v.get("PkgName", ""),
+                            "installed_version": v.get("InstalledVersion", ""),
+                            "fixed_version": v.get("Fix", {}).get("Versions", []),
+                            "published": v.get("PublishedDate", ""),
+                            "title": v.get("Title", ""),
+                        }
+                    )
             return vulns
     except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
         pass
@@ -119,35 +123,39 @@ def check_sla_breaches(image_name: str, tier: str) -> list:
         if has_fix:
             fix_threshold = thresholds["fix"]
             if age_hours > fix_threshold:
-                breaches.append({
-                    "image": image_name,
-                    "tier": tier,
-                    "cve": vuln["id"],
-                    "severity": vuln["severity"],
-                    "age_hours": round(age_hours, 1),
-                    "threshold_hours": fix_threshold,
-                    "breach_type": "fix_overdue",
-                    "pkg": vuln["pkg_name"],
-                    "installed": vuln["installed_version"],
-                    "fixed": vuln["fixed_version"],
-                    "title": vuln.get("title", ""),
-                })
+                breaches.append(
+                    {
+                        "image": image_name,
+                        "tier": tier,
+                        "cve": vuln["id"],
+                        "severity": vuln["severity"],
+                        "age_hours": round(age_hours, 1),
+                        "threshold_hours": fix_threshold,
+                        "breach_type": "fix_overdue",
+                        "pkg": vuln["pkg_name"],
+                        "installed": vuln["installed_version"],
+                        "fixed": vuln["fixed_version"],
+                        "title": vuln.get("title", ""),
+                    }
+                )
         else:
             ack_threshold = thresholds["acknowledge"]
             if age_hours > ack_threshold:
-                breaches.append({
-                    "image": image_name,
-                    "tier": tier,
-                    "cve": vuln["id"],
-                    "severity": vuln["severity"],
-                    "age_hours": round(age_hours, 1),
-                    "threshold_hours": ack_threshold,
-                    "breach_type": "no_fix_available",
-                    "pkg": vuln["pkg_name"],
-                    "installed": vuln["installed_version"],
-                    "fixed": [],
-                    "title": vuln.get("title", ""),
-                })
+                breaches.append(
+                    {
+                        "image": image_name,
+                        "tier": tier,
+                        "cve": vuln["id"],
+                        "severity": vuln["severity"],
+                        "age_hours": round(age_hours, 1),
+                        "threshold_hours": ack_threshold,
+                        "breach_type": "no_fix_available",
+                        "pkg": vuln["pkg_name"],
+                        "installed": vuln["installed_version"],
+                        "fixed": [],
+                        "title": vuln.get("title", ""),
+                    }
+                )
 
     return breaches
 
@@ -235,7 +243,9 @@ def generate_prometheus(breaches: list, all_vulns: dict) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="CVE SLA alerting")
-    parser.add_argument("--check", action="store_true", help="Check all images for SLA breaches")
+    parser.add_argument(
+        "--check", action="store_true", help="Check all images for SLA breaches"
+    )
     parser.add_argument("--image", type=str, help="Check specific image")
     parser.add_argument("--report", type=Path, help="Write JSON report")
     parser.add_argument("--slack", type=str, help="Slack webhook URL")
@@ -261,7 +271,7 @@ def main():
 
     for i, img in enumerate(images):
         tier = get_image_tier(img)
-        print(f"  [{i+1}/{len(images)}] {img} (tier={tier})... ", end="", flush=True)
+        print(f"  [{i + 1}/{len(images)}] {img} (tier={tier})... ", end="", flush=True)
 
         if args.dry_run:
             print("skipped (dry-run)")
@@ -279,12 +289,14 @@ def main():
             print(f"✅ ({len(vulns)} vulns, within SLA)")
 
     # Generate outputs
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("SLA Check Complete")
     print(f"  Images checked: {len(images)}")
     print(f"  Total breaches: {len(all_breaches)}")
-    print(f"  Critical breaches: {len([b for b in all_breaches if b['severity'] == 'CRITICAL'])}")
-    print(f"{'='*50}")
+    print(
+        f"  Critical breaches: {len([b for b in all_breaches if b['severity'] == 'CRITICAL'])}"
+    )
+    print(f"{'=' * 50}")
 
     if args.report:
         report = {
@@ -315,6 +327,7 @@ def main():
         msg = generate_slack_message(all_breaches)
         try:
             import urllib.request
+
             payload = json.dumps({"text": msg}).encode()
             req = urllib.request.Request(
                 args.slack,

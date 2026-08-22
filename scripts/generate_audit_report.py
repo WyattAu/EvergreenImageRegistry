@@ -19,10 +19,9 @@ import tomllib
 
 def scan_images(images_dir: Path, exclude_dirs: set[str]) -> dict:
     """Scan all active image directories and collect statistics."""
-    image_dirs = sorted([
-        d for d in images_dir.iterdir()
-        if d.is_dir() and d.name not in exclude_dirs
-    ])
+    image_dirs = sorted(
+        [d for d in images_dir.iterdir() if d.is_dir() and d.name not in exclude_dirs]
+    )
     total = len(image_dirs)
 
     stats = {
@@ -89,8 +88,7 @@ def scan_images(images_dir: Path, exclude_dirs: set[str]) -> dict:
 
         # Multi-stage
         from_count = sum(
-            1 for line in content.splitlines()
-            if line.strip().startswith("FROM ")
+            1 for line in content.splitlines() if line.strip().startswith("FROM ")
         )
         if from_count > 1:
             stats["multi_stage"] += 1
@@ -220,7 +218,7 @@ This audit verifies compliance across all {total} active image directories by in
 | Total Dockerfiles       | {df:>5} | {total - df} images have manifest but no Dockerfile             |
 | Total SBOMs (active)    | {stats["sboms"]:>5} | SBOMs present in active images                                  |
 | FIPS variants           | {stats["fips_variants"]:>5} | `Dockerfile.fips` present                                       |
-| Multi-stage builds      | {stats["multi_stage"]:>5} | Two or more `FROM` instructions ({stats["multi_stage"]/df*100:.1f}% of Dockerfiles) |
+| Multi-stage builds      | {stats["multi_stage"]:>5} | Two or more `FROM` instructions ({stats["multi_stage"] / df * 100:.1f}% of Dockerfiles) |
 
 ### FIPS-Enabled Images ({len(stats["fips_images"])})
 
@@ -251,12 +249,12 @@ All percentages calculated against {df} Dockerfiles.
 
 | Directive / Feature         | Count |   Pct | Notes                        |
 | --------------------------- | ----: | ----: | ---------------------------- |
-| USER directive (non-root)   | {stats["has_user"]:>5} | {stats["has_user"]/df*100:>5.1f}% | Most use scratch (implicit)  |
-| STOPSIGNAL                  | {stats["has_stopsignal"]:>5} | {stats["has_stopsignal"]/df*100:>5.1f}% | Graceful shutdown configured |
-| EXPOSE (application ports)  | {stats["has_expose"]:>5} | {stats["has_expose"]/df*100:>5.1f}% | Application port declarations |
-| ENTRYPOINT                  | {stats["has_entrypoint"]:>5} | {stats["has_entrypoint"]/df*100:>5.1f}% | Entrypoint configured        |
-| HEALTHCHECK (any)           | {stats["has_healthcheck"]:>5} | {stats["has_healthcheck"]/df*100:>5.1f}% | Health probe present         |
-| HEALTHCHECK NONE            | {stats["healthcheck_none"]:>5} | {stats["healthcheck_none"]/df*100:.1f}% | Scratch-based (expected)     |
+| USER directive (non-root)   | {stats["has_user"]:>5} | {stats["has_user"] / df * 100:>5.1f}% | Most use scratch (implicit)  |
+| STOPSIGNAL                  | {stats["has_stopsignal"]:>5} | {stats["has_stopsignal"] / df * 100:>5.1f}% | Graceful shutdown configured |
+| EXPOSE (application ports)  | {stats["has_expose"]:>5} | {stats["has_expose"] / df * 100:>5.1f}% | Application port declarations |
+| ENTRYPOINT                  | {stats["has_entrypoint"]:>5} | {stats["has_entrypoint"] / df * 100:>5.1f}% | Entrypoint configured        |
+| HEALTHCHECK (any)           | {stats["has_healthcheck"]:>5} | {stats["has_healthcheck"] / df * 100:>5.1f}% | Health probe present         |
+| HEALTHCHECK NONE            | {stats["healthcheck_none"]:>5} | {stats["healthcheck_none"] / df * 100:.1f}% | Scratch-based (expected)     |
 
 ---
 

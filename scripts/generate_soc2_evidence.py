@@ -41,7 +41,10 @@ def collect_constraint_evidence() -> dict:
     # Run constraint validation
     try:
         result = subprocess.run(
-            ["python3", "-c", """
+            [
+                "python3",
+                "-c",
+                """
 import sys
 sys.path.insert(0, '.')
 from pathlib import Path
@@ -57,43 +60,60 @@ for m in Path('images').rglob('manifest.toml'):
     except Exception:
         errors += 1
 print(f'{total - errors}/{total}')
-"""],
-            capture_output=True, text=True, timeout=60, cwd=REPO_ROOT
+""",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=60,
+            cwd=REPO_ROOT,
         )
         if result.returncode == 0:
             valid, total = result.stdout.strip().split("/")
-            evidence["evidence"].append({
-                "type": "automated_check",
-                "check": "manifest_validation",
-                "result": f"{valid}/{total} manifests valid",
-                "passed": int(valid) == int(total),
-            })
+            evidence["evidence"].append(
+                {
+                    "type": "automated_check",
+                    "check": "manifest_validation",
+                    "result": f"{valid}/{total} manifests valid",
+                    "passed": int(valid) == int(total),
+                }
+            )
     except Exception as e:
-        evidence["evidence"].append({
-            "type": "error",
-            "check": "manifest_validation",
-            "error": str(e),
-        })
+        evidence["evidence"].append(
+            {
+                "type": "error",
+                "check": "manifest_validation",
+                "error": str(e),
+            }
+        )
 
     # Check SBOM coverage
     try:
         result = subprocess.run(
-            ["python3", "-c", """
+            [
+                "python3",
+                "-c",
+                """
 from pathlib import Path
 total = len(list(Path('images').glob('*/manifest.toml')))
 sboms = sum(1 for s in Path('images').glob('*/sbom.spdx.json') if s.stat().st_size > 1000)
 print(f'{sboms}/{total}')
-"""],
-            capture_output=True, text=True, timeout=30, cwd=REPO_ROOT
+""",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=REPO_ROOT,
         )
         if result.returncode == 0:
             with_sbom, total = result.stdout.strip().split("/")
-            evidence["evidence"].append({
-                "type": "automated_check",
-                "check": "sbom_coverage",
-                "result": f"{with_sbom}/{total} images have SBOMs",
-                "passed": int(with_sbom) > 0,
-            })
+            evidence["evidence"].append(
+                {
+                    "type": "automated_check",
+                    "check": "sbom_coverage",
+                    "result": f"{with_sbom}/{total} images have SBOMs",
+                    "passed": int(with_sbom) > 0,
+                }
+            )
     except Exception:
         pass
 
@@ -113,30 +133,34 @@ def collect_ci_evidence() -> dict:
     workflows_dir = REPO_ROOT / ".github" / "workflows"
     if workflows_dir.exists():
         workflow_count = len(list(workflows_dir.glob("*.yml")))
-        evidence["evidence"].append({
-            "type": "automated_check",
-            "check": "workflow_count",
-            "result": f"{workflow_count} CI/CD workflows active",
-            "passed": workflow_count > 20,
-        })
+        evidence["evidence"].append(
+            {
+                "type": "automated_check",
+                "check": "workflow_count",
+                "result": f"{workflow_count} CI/CD workflows active",
+                "passed": workflow_count > 20,
+            }
+        )
 
         # Check SHA pinning
         pinned = 0
         total_actions = 0
         for wf in workflows_dir.glob("*.yml"):
             content = wf.read_text()
-            for match in re.finditer(r'uses:\s+(\S+)@(\w+)', content):
+            for match in re.finditer(r"uses:\s+(\S+)@(\w+)", content):
                 total_actions += 1
                 if len(match.group(2)) == 40:  # SHA is 40 chars
                     pinned += 1
 
         if total_actions > 0:
-            evidence["evidence"].append({
-                "type": "automated_check",
-                "check": "action_sha_pinning",
-                "result": f"{pinned}/{total_actions} actions pinned to SHA",
-                "passed": pinned == total_actions,
-            })
+            evidence["evidence"].append(
+                {
+                    "type": "automated_check",
+                    "check": "action_sha_pinning",
+                    "result": f"{pinned}/{total_actions} actions pinned to SHA",
+                    "passed": pinned == total_actions,
+                }
+            )
 
     return evidence
 
@@ -161,12 +185,14 @@ def collect_security_evidence() -> dict:
 
     for wf in security_workflows:
         wf_path = REPO_ROOT / ".github" / "workflows" / wf
-        evidence["evidence"].append({
-            "type": "automated_check",
-            "check": f"security_workflow_{wf}",
-            "result": "exists" if wf_path.exists() else "missing",
-            "passed": wf_path.exists(),
-        })
+        evidence["evidence"].append(
+            {
+                "type": "automated_check",
+                "check": f"security_workflow_{wf}",
+                "result": "exists" if wf_path.exists() else "missing",
+                "passed": wf_path.exists(),
+            }
+        )
 
     return evidence
 
@@ -191,12 +217,14 @@ def collect_access_evidence() -> dict:
             nonroot_count += 1
 
     if total_df > 0:
-        evidence["evidence"].append({
-            "type": "automated_check",
-            "check": "non_root_user",
-            "result": f"{nonroot_count}/{total_df} images run as non-root",
-            "passed": nonroot_count > total_df * 0.9,  # 90% threshold
-        })
+        evidence["evidence"].append(
+            {
+                "type": "automated_check",
+                "check": "non_root_user",
+                "result": f"{nonroot_count}/{total_df} images run as non-root",
+                "passed": nonroot_count > total_df * 0.9,  # 90% threshold
+            }
+        )
 
     return evidence
 
@@ -207,33 +235,41 @@ def generate_gap_analysis() -> dict:
 
     # Check SBOM coverage
     total = len(list(IMAGES_DIR.glob("*/manifest.toml")))
-    sboms = sum(1 for s in IMAGES_DIR.glob("*/sbom.spdx.json") if s.stat().st_size > 1000)
+    sboms = sum(
+        1 for s in IMAGES_DIR.glob("*/sbom.spdx.json") if s.stat().st_size > 1000
+    )
     if sboms < total * 0.95:
-        gaps.append({
-            "control": "CM-8",
-            "gap": f"SBOM coverage at {sboms}/{total} ({sboms*100//total}%)",
-            "remediation": "Run batch_generate_all_sboms.sh to achieve 100% coverage",
-            "severity": "medium",
-        })
+        gaps.append(
+            {
+                "control": "CM-8",
+                "gap": f"SBOM coverage at {sboms}/{total} ({sboms * 100 // total}%)",
+                "remediation": "Run batch_generate_all_sboms.sh to achieve 100% coverage",
+                "severity": "medium",
+            }
+        )
 
     # Check FIPS variants
     fips_count = len(list(IMAGES_DIR.glob("*/Dockerfile.fips")))
     if fips_count < 30:
-        gaps.append({
-            "control": "SC-13",
-            "gap": f"FIPS variants: {fips_count}/30 images",
-            "remediation": "Build remaining FIPS variants per fips_image_matrix_v3.yaml",
-            "severity": "medium",
-        })
+        gaps.append(
+            {
+                "control": "SC-13",
+                "gap": f"FIPS variants: {fips_count}/30 images",
+                "remediation": "Build remaining FIPS variants per fips_image_matrix_v3.yaml",
+                "severity": "medium",
+            }
+        )
 
     # Check operator
     if not (REPO_ROOT / "operator" / "main.go").exists():
-        gaps.append({
-            "control": "CC7.2",
-            "gap": "K8s operator not deployed",
-            "remediation": "Deploy evergreen-operator for runtime drift detection",
-            "severity": "low",
-        })
+        gaps.append(
+            {
+                "control": "CC7.2",
+                "gap": "K8s operator not deployed",
+                "remediation": "Deploy evergreen-operator for runtime drift detection",
+                "severity": "low",
+            }
+        )
 
     return {
         "generated_at": datetime.utcnow().isoformat() + "Z",
@@ -279,12 +315,12 @@ def main():
     _effective = sum(1 for e in evidence_items if e["status"] == "effective")
     total_evidence = sum(len(e["evidence"]) for e in evidence_items)
     passed = sum(
-        1 for e in evidence_items
-        for ev in e["evidence"]
-        if ev.get("passed", False)
+        1 for e in evidence_items for ev in e["evidence"] if ev.get("passed", False)
     )
 
-    print(f"\nEvidence collected: {len(evidence_items)} controls, {total_evidence} checks")
+    print(
+        f"\nEvidence collected: {len(evidence_items)} controls, {total_evidence} checks"
+    )
     print(f"Passed: {passed}/{total_evidence}")
 
     if args.gap_analysis:

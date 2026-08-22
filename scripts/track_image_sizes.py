@@ -1,4 +1,5 @@
 import os
+
 #!/usr/bin/env python3
 """
 Evergreen Image Registry - Image Size Tracker
@@ -24,8 +25,16 @@ def get_image_size(image_name: str) -> dict | None:
     """Get the size of a Docker image."""
     try:
         result = subprocess.run(
-            ["docker", "images", "--format", "{{.Size}}", f"ghcr.io/wyattau/evergreenimageregistry/{image_name}:latest"],
-            capture_output=True, text=True, timeout=30
+            [
+                "docker",
+                "images",
+                "--format",
+                "{{.Size}}",
+                f"ghcr.io/wyattau/evergreenimageregistry/{image_name}:latest",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         if result.returncode != 0 or not result.stdout.strip():
             return None
@@ -35,7 +44,9 @@ def get_image_size(image_name: str) -> dict | None:
         # Parse size string (e.g., "12.3MB", "1.2GB", "456kB")
         size_bytes = 0
         if "GB" in size_str:
-            size_bytes = int(float(size_str.replace("GB", "").strip()) * 1024 * 1024 * 1024)
+            size_bytes = int(
+                float(size_str.replace("GB", "").strip()) * 1024 * 1024 * 1024
+            )
         elif "MB" in size_str:
             size_bytes = int(float(size_str.replace("MB", "").strip()) * 1024 * 1024)
         elif "kB" in size_str:
@@ -72,10 +83,9 @@ def check_regressions(threshold: int):
     images_dir = Path("images")
     exclude_dirs = {"_wip", "_archive", "tests"}
 
-    image_dirs = sorted([
-        d for d in images_dir.iterdir()
-        if d.is_dir() and d.name not in exclude_dirs
-    ])
+    image_dirs = sorted(
+        [d for d in images_dir.iterdir() if d.is_dir() and d.name not in exclude_dirs]
+    )
 
     total = len(image_dirs)
     checked = 0
@@ -103,14 +113,16 @@ def check_regressions(threshold: int):
             if baseline_size > 0:
                 change_pct = ((current_size - baseline_size) / baseline_size) * 100
                 if change_pct > threshold:
-                    regressions.append({
-                        "image": img_name,
-                        "baseline_bytes": baseline_size,
-                        "current_bytes": current_size,
-                        "change_pct": round(change_pct, 1),
-                        "baseline_human": baseline.get("size_human", "?"),
-                        "current_human": size_info["size_human"],
-                    })
+                    regressions.append(
+                        {
+                            "image": img_name,
+                            "baseline_bytes": baseline_size,
+                            "current_bytes": current_size,
+                            "change_pct": round(change_pct, 1),
+                            "baseline_human": baseline.get("size_human", "?"),
+                            "current_human": size_info["size_human"],
+                        }
+                    )
 
         # Update baseline
         baselines["images"][img_name] = size_info
@@ -128,9 +140,13 @@ def check_regressions(threshold: int):
     print(f"Updated {len(new_baselines)} baselines")
 
     if regressions:
-        print(f"\n⚠️  {len(regressions)} size regressions detected (>{threshold}% increase):")
+        print(
+            f"\n⚠️  {len(regressions)} size regressions detected (>{threshold}% increase):"
+        )
         for r in sorted(regressions, key=lambda x: x["change_pct"], reverse=True):
-            print(f"  {r['image']}: {r['baseline_human']} → {r['current_human']} (+{r['change_pct']}%)")
+            print(
+                f"  {r['image']}: {r['baseline_human']} → {r['current_human']} (+{r['change_pct']}%)"
+            )
         return regressions
     else:
         print("\n✅ No size regressions detected")

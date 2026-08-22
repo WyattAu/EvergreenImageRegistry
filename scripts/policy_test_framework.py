@@ -26,6 +26,7 @@ TESTS_DIR = REPO_ROOT / "evergreenctl" / "policies" / "tests"
 # Test case definitions
 # ---------------------------------------------------------------------------
 
+
 def get_test_cases() -> list:
     """Define test cases for all policies."""
     return [
@@ -39,7 +40,9 @@ def get_test_cases() -> list:
         {
             "policy": "DOCKER-SEC-001",
             "name": "Wolfi passes",
-            "input": {"dockerfile": "FROM cgr.dev/chainguard/wolfi-base:latest\nUSER 65532"},
+            "input": {
+                "dockerfile": "FROM cgr.dev/chainguard/wolfi-base:latest\nUSER 65532"
+            },
             "expected": "pass",
         },
         {
@@ -60,7 +63,6 @@ def get_test_cases() -> list:
             "input": {"dockerfile": "FROM scratch\nCOPY app /app\nUSER 65532"},
             "expected": "pass",
         },
-
         # Supply Chain
         {
             "policy": "SC-001",
@@ -80,7 +82,6 @@ def get_test_cases() -> list:
             "input": {"dockerfile": "FROM scratch\nENV MYSQL_ROOT_PASSWORD=secret123"},
             "expected": "fail",
         },
-
         # Base Image
         {
             "policy": "BASE-001",
@@ -94,12 +95,14 @@ def get_test_cases() -> list:
             "input": {"dockerfile": "FROM ubuntu:22.04\nRUN apt-get update"},
             "expected": "fail",
         },
-
         # FIPS
         {
             "policy": "FIPS-001",
             "name": "FIPS claim without matrix entry",
-            "input": {"labels": {"compliance.fips": "true"}, "fips_matrix_entry": False},
+            "input": {
+                "labels": {"compliance.fips": "true"},
+                "fips_matrix_entry": False,
+            },
             "expected": "fail",
         },
         {
@@ -108,7 +111,6 @@ def get_test_cases() -> list:
             "input": {"labels": {"compliance.fips": "true"}, "fips_matrix_entry": True},
             "expected": "pass",
         },
-
         # License
         {
             "policy": "LIC-001",
@@ -128,7 +130,6 @@ def get_test_cases() -> list:
             },
             "expected": "pass",
         },
-
         # Size
         {
             "policy": "SIZE-001",
@@ -142,7 +143,6 @@ def get_test_cases() -> list:
             "input": {"image_size_mb": 200},
             "expected": "pass",
         },
-
         # Labels
         {
             "policy": "LABEL-001",
@@ -153,7 +153,9 @@ def get_test_cases() -> list:
         {
             "policy": "LABEL-001",
             "name": "OCI labels present",
-            "input": {"dockerfile": "FROM scratch\nLABEL org.opencontainers.image.title=test"},
+            "input": {
+                "dockerfile": "FROM scratch\nLABEL org.opencontainers.image.title=test"
+            },
             "expected": "pass",
         },
     ]
@@ -176,7 +178,9 @@ def evaluate_policy(policy_id: str, input_data: dict) -> str:
 
     elif policy_id == "DOCKER-SEC-003":
         dockerfile = input_data.get("dockerfile", "")
-        if "USER root" in dockerfile or ("USER" not in dockerfile and "65532" not in dockerfile):
+        if "USER root" in dockerfile or (
+            "USER" not in dockerfile and "65532" not in dockerfile
+        ):
             return "fail"
         return "pass"
 
@@ -195,7 +199,10 @@ def evaluate_policy(policy_id: str, input_data: dict) -> str:
 
     elif policy_id == "BASE-001":
         dockerfile = input_data.get("dockerfile", "")
-        if re.search(r"(?i)FROM\s+(?!scratch|cgr\.dev|gcr\.io/distroless|registry\.access\.redhat\.com)", dockerfile):
+        if re.search(
+            r"(?i)FROM\s+(?!scratch|cgr\.dev|gcr\.io/distroless|registry\.access\.redhat\.com)",
+            dockerfile,
+        ):
             return "fail"
         return "pass"
 
@@ -241,13 +248,15 @@ def run_tests() -> dict:
         actual = evaluate_policy(tc["policy"], tc["input"])
         success = actual == tc["expected"]
 
-        results.append({
-            "policy": tc["policy"],
-            "name": tc["name"],
-            "expected": tc["expected"],
-            "actual": actual,
-            "passed": success,
-        })
+        results.append(
+            {
+                "policy": tc["policy"],
+                "name": tc["name"],
+                "expected": tc["expected"],
+                "actual": actual,
+                "passed": success,
+            }
+        )
 
         if success:
             passed += 1
@@ -266,7 +275,9 @@ def run_tests() -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Policy test framework")
     parser.add_argument("--test", action="store_true", help="Run all tests")
-    parser.add_argument("--validate-all", action="store_true", help="Validate all policies")
+    parser.add_argument(
+        "--validate-all", action="store_true", help="Validate all policies"
+    )
     parser.add_argument("--report", type=Path, help="Write JSON report")
     args = parser.parse_args()
 
@@ -281,7 +292,9 @@ def main():
         print("\nFailed tests:")
         for r in results["results"]:
             if not r["passed"]:
-                print(f"  {r['policy']} - {r['name']}: expected {r['expected']}, got {r['actual']}")
+                print(
+                    f"  {r['policy']} - {r['name']}: expected {r['expected']}, got {r['actual']}"
+                )
 
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

@@ -27,3 +27,8 @@ ignore: |
   deploy/
   images/*/docker-compose.yml
   compliance/
+  .markdownlint.yml
+  .prettierrc
+  .prettierignore
+  .yamllint.yml
+  compliance/fips/fips_image_matrix.yaml

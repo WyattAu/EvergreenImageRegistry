@@ -258,6 +258,194 @@
     "zipkin": {
       "build_time_ms": 6609,
       "updated": "2026-08-22T20:09:48Z"
+    },
+    "adguard-dns": {
+      "build_time_ms": 1320,
+      "updated": "2026-08-22T20:27:46Z"
+    },
+    "adguardhome": {
+      "build_time_ms": 558,
+      "updated": "2026-08-22T20:27:46Z"
+    },
+    "adguardhome-lite": {
+      "build_time_ms": 585,
+      "updated": "2026-08-22T20:27:47Z"
+    },
+    "bazarr": {
+      "build_time_ms": 1302,
+      "updated": "2026-08-22T20:28:07Z"
+    },
+    "bazarr-subliminal": {
+      "build_time_ms": 562,
+      "updated": "2026-08-22T20:28:08Z"
+    },
+    "blocky": {
+      "build_time_ms": 1369,
+      "updated": "2026-08-22T20:28:09Z"
+    },
+    "buildkit": {
+      "build_time_ms": 1334,
+      "updated": "2026-08-22T20:28:14Z"
+    },
+    "calibre": {
+      "build_time_ms": 1513,
+      "updated": "2026-08-22T20:28:16Z"
+    },
+    "calibre-eb": {
+      "build_time_ms": 655,
+      "updated": "2026-08-22T20:28:17Z"
+    },
+    "calibre-server": {
+      "build_time_ms": 651,
+      "updated": "2026-08-22T20:28:18Z"
+    },
+    "cassandra-operator": {
+      "build_time_ms": 1421,
+      "updated": "2026-08-22T20:28:22Z"
+    },
+    "conduit": {
+      "build_time_ms": 1304,
+      "updated": "2026-08-22T20:28:34Z"
+    },
+    "conduit-admin": {
+      "build_time_ms": 578,
+      "updated": "2026-08-22T20:28:34Z"
+    },
+    "coqui-tts": {
+      "build_time_ms": 48296,
+      "updated": "2026-08-22T20:29:25Z"
+    },
+    "cosign": {
+      "build_time_ms": 12217,
+      "updated": "2026-08-22T20:29:40Z"
+    },
+    "cosign-verify": {
+      "build_time_ms": 765,
+      "updated": "2026-08-22T20:29:41Z"
+    },
+    "crane": {
+      "build_time_ms": 6501,
+      "updated": "2026-08-22T20:29:50Z"
+    },
+    "ct-log": {
+      "build_time_ms": 7597,
+      "updated": "2026-08-22T20:30:02Z"
+    },
+    "dragonfly": {
+      "build_time_ms": 8542,
+      "updated": "2026-08-22T20:30:35Z"
+    },
+    "dragonfly-client": {
+      "build_time_ms": 600,
+      "updated": "2026-08-22T20:30:35Z"
+    },
+    "dragonflydb": {
+      "build_time_ms": 5991,
+      "updated": "2026-08-22T20:30:41Z"
+    },
+    "erpnext": {
+      "build_time_ms": 32572,
+      "updated": "2026-08-22T20:31:31Z"
+    },
+    "filebrowser": {
+      "build_time_ms": 4178,
+      "updated": "2026-08-22T20:31:44Z"
+    },
+    "filebrowser-alpine": {
+      "build_time_ms": 586,
+      "updated": "2026-08-22T20:31:45Z"
+    },
+    "fulcio": {
+      "build_time_ms": 7235,
+      "updated": "2026-08-22T20:32:03Z"
+    },
+    "gitlab-runner": {
+      "build_time_ms": 15090,
+      "updated": "2026-08-22T20:32:28Z"
+    },
+    "gitlab-runner-alpine": {
+      "build_time_ms": 929,
+      "updated": "2026-08-22T20:32:29Z"
+    },
+    "gitleaks": {
+      "build_time_ms": 3930,
+      "updated": "2026-08-22T20:32:33Z"
+    },
+    "golang-alpine": {
+      "build_time_ms": 15195,
+      "updated": "2026-08-22T20:32:53Z"
+    },
+    "go-static": {
+      "build_time_ms": 673,
+      "updated": "2026-08-22T20:32:54Z"
+    },
+    "grafana-image-renderer": {
+      "build_time_ms": 37737,
+      "updated": "2026-08-22T20:33:34Z"
+    },
+    "grype": {
+      "build_time_ms": 7618,
+      "updated": "2026-08-22T20:33:46Z"
+    },
+    "grype-alpine": {
+      "build_time_ms": 598,
+      "updated": "2026-08-22T20:33:47Z"
+    },
+    "hadolint": {
+      "build_time_ms": 3382,
+      "updated": "2026-08-22T20:33:50Z"
+    },
+    "heimdall": {
+      "build_time_ms": 8961,
+      "updated": "2026-08-22T20:34:03Z"
+    },
+    "helmfile": {
+      "build_time_ms": 10735,
+      "updated": "2026-08-22T20:34:14Z"
+    },
+    "homepage-config": {
+      "build_time_ms": 9221,
+      "updated": "2026-08-22T20:34:25Z"
+    },
+    "homepage-sync": {
+      "build_time_ms": 589,
+      "updated": "2026-08-22T20:34:26Z"
+    },
+    "kaniko": {
+      "build_time_ms": 8092,
+      "updated": "2026-08-22T20:35:06Z"
+    },
+    "knot-resolver": {
+      "build_time_ms": 7358,
+      "updated": "2026-08-22T20:35:15Z"
+    },
+    "kube-bench": {
+      "build_time_ms": 10730,
+      "updated": "2026-08-22T20:35:27Z"
+    },
+    "libsql": {
+      "build_time_ms": 9301,
+      "updated": "2026-08-22T20:35:42Z"
+    },
+    "localai": {
+      "build_time_ms": 56415,
+      "updated": "2026-08-22T20:36:45Z"
+    },
+    "localai-loadbalancer": {
+      "build_time_ms": 1054,
+      "updated": "2026-08-22T20:36:46Z"
+    },
+    "mailhog": {
+      "build_time_ms": 7436,
+      "updated": "2026-08-22T20:37:00Z"
+    },
+    "mattermost-operator": {
+      "build_time_ms": 10162,
+      "updated": "2026-08-22T20:37:13Z"
+    },
+    "maven": {
+      "build_time_ms": 8481,
+      "updated": "2026-08-22T20:37:23Z"
     }
   }
 }

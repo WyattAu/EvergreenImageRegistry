@@ -3,7 +3,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base
+FROM cgr.dev/chainguard/wolfi-base:1.27.1
 COPY --from=shim /shim /usr/local/bin/shim
 
 # Install nginx via apk (more reliable than extraction)

@@ -20,3 +20,5 @@ package-lock.json
 docs/common-problems.md
 docs/sis-deployment-lessons.md
 _wip/
+.github/
+.adrs/

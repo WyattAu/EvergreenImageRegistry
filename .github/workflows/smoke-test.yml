@@ -1,0 +1,163 @@
+# Smoke Test — Nightly Tier 1 Image Verification
+#
+# Builds and runs Tier 1 critical images to verify they start correctly.
+# Runs nightly at 03:00 UTC and on manual dispatch.
+
+name: Smoke Test (Tier 1)
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      images:
+        description: "Comma-separated image names (empty = all Tier 1)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  discover:
+    name: Discover Tier 1 Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.find.outputs.matrix }}
+      total: ${{ steps.find.outputs.total }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Find Tier 1 images with Dockerfiles
+        id: find
+        run: |
+          python3 << 'PYEOF'
+          import os, json, tomllib
+
+          images_dir = "images"
+          input_images = "${{ inputs.images }}".strip()
+
+          if input_images:
+              # Use manually specified images
+              target_images = [i.strip() for i in input_images.split(",") if i.strip()]
+          else:
+              # Find all Tier 1 images with Dockerfiles
+              target_images = []
+              for d in sorted(os.listdir(images_dir)):
+                  manifest_path = os.path.join(images_dir, d, "manifest.toml")
+                  dockerfile_path = os.path.join(images_dir, d, "Dockerfile")
+                  if not os.path.isfile(manifest_path) or not os.path.isfile(dockerfile_path):
+                      continue
+                  if "_wip" in d or "_archive" in d:
+                      continue
+                  try:
+                      with open(manifest_path, "rb") as f:
+                          data = tomllib.load(f)
+                      tier = data.get("metadata", {}).get("tier", "standard")
+                      if tier == "critical":
+                          target_images.append(d)
+                  except:
+                      continue
+
+          # Create batches of 5
+          batch_size = 5
+          batches = []
+          for i in range(0, len(target_images), batch_size):
+              batch = target_images[i:i + batch_size]
+              batches.append({"batch": len(batches), "images": ",".join(batch)})
+
+          matrix = {"include": batches}
+          print(f"::set-output name=matrix::{json.dumps(matrix)}")
+          print(f"::set-output name=total::{len(target_images)}")
+          print(f"Found {len(target_images)} Tier 1 images in {len(batches)} batches")
+          PYEOF
+
+  smoke-test:
+    name: "Smoke Test Batch ${{ matrix.batch }}"
+    needs: [discover]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+
+      - name: Smoke test images
+        run: |
+          PASS=0
+          FAIL=0
+          RESULTS=""
+
+          IFS=',' read -ra IMAGES <<< "${{ matrix.images }}"
+          for img in "${IMAGES[@]}"; do
+            [ -z "$img" ] && continue
+            echo "::group::$img"
+
+            # Build
+            if ! docker build -t "smoke-$img:test" "images/$img/" > /dev/null 2>&1; then
+              echo "FAIL: $img (build failed)"
+              FAIL=$((FAIL + 1))
+              RESULTS="${RESULTS}| $img | ❌ | Build failed |\n"
+              echo "::endgroup::"
+              continue
+            fi
+
+            # Run with 10s timeout
+            if ! docker run -d --name "smoke-$img" "smoke-$img:test" > /dev/null 2>&1; then
+              echo "FAIL: $img (run failed)"
+              FAIL=$((FAIL + 1))
+              RESULTS="${RESULTS}| $img | ❌ | Run failed |\n"
+              docker rm -f "smoke-$img" > /dev/null 2>&1
+              docker rmi "smoke-$img:test" > /dev/null 2>&1
+              echo "::endgroup::"
+              continue
+            fi
+
+            sleep 5
+
+            # Check status
+            running=$(docker inspect "smoke-$img" --format='{{.State.Running}}' 2>/dev/null)
+            user=$(docker inspect "smoke-$img" --format='{{.Config.User}}' 2>/dev/null)
+
+            if [ "$running" = "true" ]; then
+              echo "PASS: $img (user=$user)"
+              PASS=$((PASS + 1))
+              RESULTS="${RESULTS}| $img | ✅ | Running (user=$user) |\n"
+            else
+              exit_code=$(docker inspect "smoke-$img" --format='{{.State.ExitCode}}' 2>/dev/null)
+              echo "FAIL: $img (exit=$exit_code)"
+              FAIL=$((FAIL + 1))
+              RESULTS="${RESULTS}| $img | ⚠️ | Exited (code=$exit_code, may need config) |\n"
+            fi
+
+            docker rm -f "smoke-$img" > /dev/null 2>&1
+            docker rmi "smoke-$img:test" > /dev/null 2>&1
+            echo "::endgroup::"
+          done
+
+          echo ""
+          echo "=== RESULTS ==="
+          echo "PASS: $PASS"
+          echo "FAIL: $FAIL"
+
+          # Write summary
+          echo "## Smoke Test Results — Batch ${{ matrix.batch }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | Status | Details |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo -e "$RESULTS" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PASS: $PASS / $((PASS + FAIL))**" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$FAIL" -gt 0 ]; then
+            exit 1
+          fi

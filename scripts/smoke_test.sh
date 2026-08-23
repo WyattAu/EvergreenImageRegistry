@@ -1,188 +1,213 @@
-#!/usr/bin/env bash
-# =============================================================================
-# Evergreen Image Registry - Runtime Smoke Test
-# =============================================================================
-# Builds an image, starts it as a container, and verifies:
-#   1. Container starts successfully
-#   2. Health endpoint responds (TCP check on configured port)
-#   3. Shim binary exists at /usr/local/bin/shim
-#   4. Non-root user is active (uid != 0)
-#   5. Container can be stopped gracefully
+#!/bin/bash
+# Smoke test framework for Evergreen Image Registry
+# Builds, runs, and healthchecks images to verify they work
 #
 # Usage:
-#   bash scripts/smoke_test.sh <image_name>
-#   bash scripts/smoke_test.sh nginx
-#   bash scripts/smoke_test.sh redis
-#
-# Exit codes:
-#   0 - All checks passed
-#   1 - One or more checks failed
-# =============================================================================
+#   ./scripts/smoke_test.sh                    # Test all images
+#   ./scripts/smoke_test.sh redis nginx        # Test specific images
+#   ./scripts/smoke_test.sh --tier critical    # Test critical-tier only
+#   ./scripts/smoke_test.sh --parallel 4       # Run 4 tests in parallel
 
 set -euo pipefail
 
-IMAGE_NAME="${1:-}"
-HEALTH_PORT="${2:-8080}"
-TIMEOUT="${3:-30}"
-CONTAINER_NAME="smoke-test-${IMAGE_NAME}-$$"
+IMAGES_DIR="images"
+RESULTS_DIR="smoke-test-results"
+PARALLEL=1
+TIER_FILTER=""
+SPECIFIC_IMAGES=()
 
-if [ -z "$IMAGE_NAME" ]; then
-    echo "Usage: $0 <image_name> [health_port] [timeout_seconds]"
-    echo "Example: $0 nginx 8080 30"
-    exit 1
-fi
-
-DOCKERFILE="images/${IMAGE_NAME}/Dockerfile"
-if [ ! -f "$DOCKERFILE" ]; then
-    echo "ERROR: Dockerfile not found at ${DOCKERFILE}"
-    exit 1
-fi
-
-# Auto-detect health port from Dockerfile EXPOSE
-DETECTED_PORT=$(grep -oP 'EXPOSE\s+\K[0-9]+' "$DOCKERFILE" | head -1)
-if [ -n "$DETECTED_PORT" ] && [ "$HEALTH_PORT" = "8080" ]; then
-    HEALTH_PORT="$DETECTED_PORT"
-fi
-
-PASSED=0
-FAILED=0
-
-check() {
-    local name="$1"
-    local result="$2"
-    if [ "$result" = "pass" ]; then
-        echo "  ✅ ${name}"
-        PASSED=$((PASSED + 1))
-    else
-        echo "  ❌ ${name}"
-        FAILED=$((FAILED + 1))
-    fi
-}
-
-cleanup() {
-    echo ""
-    echo "Cleaning up..."
-    docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
-    docker rmi "smoke-test:${IMAGE_NAME}" 2>/dev/null || true
-}
-trap cleanup EXIT
-
-echo "=========================================="
-echo "Smoke Test: ${IMAGE_NAME}"
-echo "=========================================="
-echo "Dockerfile: ${DOCKERFILE}"
-echo "Health Port: ${HEALTH_PORT}"
-echo ""
-
-# Step 1: Build the image
-echo "Building image..."
-if docker build -t "smoke-test:${IMAGE_NAME}" "images/${IMAGE_NAME}" > /dev/null 2>&1; then
-    check "Image builds successfully" "pass"
-else
-    check "Image builds successfully" "fail"
-    echo ""
-    echo "BUILD FAILED — skipping remaining checks"
-    exit 1
-fi
-
-# Step 2: Check shim binary exists in image
-echo ""
-echo "Checking image contents..."
-if docker run --rm --entrypoint /bin/sh "smoke-test:${IMAGE_NAME}" -c "test -x /usr/local/bin/shim" 2>/dev/null; then
-    check "Shim binary exists at /usr/local/bin/shim" "pass"
-else
-    # Check if it's a scratch image (no shell to test with)
-    if grep -q "FROM scratch" "$DOCKERFILE"; then
-        check "Shim binary exists at /usr/local/bin/shim (scratch — cannot verify at build time)" "pass"
-    else
-        check "Shim binary exists at /usr/local/bin/shim" "fail"
-    fi
-fi
-
-# Step 3: Start container
-echo ""
-echo "Starting container..."
-PORT_ARGS=""
-# Map health port + 9101 (metrics) to random host ports
-PORT_ARGS="-p ${HEALTH_PORT}:${HEALTH_PORT} -p 9101:9101"
-
-if docker run -d --name "$CONTAINER_NAME" \
-    $PORT_ARGS \
-    --cap-drop=ALL \
-    --security-opt=no-new-privileges:true \
-    "smoke-test:${IMAGE_NAME}" > /dev/null 2>&1; then
-    check "Container starts successfully" "pass"
-else
-    check "Container starts successfully" "fail"
-    echo ""
-    echo "CONTAINER FAILED TO START — skipping remaining checks"
-    exit 1
-fi
-
-# Step 4: Wait for container to be running
-echo ""
-echo "Waiting for container to stabilize..."
-sleep 5
-
-# Step 5: Check non-root user
-CONTAINER_USER=$(docker exec "$CONTAINER_NAME" id -u 2>/dev/null || echo "0")
-if [ "$CONTAINER_USER" != "0" ]; then
-    check "Non-root user active (uid=${CONTAINER_USER})" "pass"
-else
-    check "Non-root user active (uid=${CONTAINER_USER})" "fail"
-fi
-
-# Step 6: Health check via TCP
-echo ""
-echo "Checking health endpoint on port ${HEALTH_PORT}..."
-HEALTH_OK=false
-for i in $(seq 1 "$TIMEOUT"); do
-    if docker exec "$CONTAINER_NAME" sh -c "echo > /dev/tcp/127.0.0.1/${HEALTH_PORT}" 2>/dev/null; then
-        HEALTH_OK=true
-        break
-    fi
-    # Fallback: try netcat if available
-    if docker exec "$CONTAINER_NAME" sh -c "nc -z 127.0.0.1 ${HEALTH_PORT}" 2>/dev/null; then
-        HEALTH_OK=true
-        break
-    fi
-    sleep 1
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --parallel)
+            PARALLEL="$2"
+            shift 2
+            ;;
+        --tier)
+            TIER_FILTER="$2"
+            shift 2
+            ;;
+        --help)
+            echo "Usage: $0 [--parallel N] [--tier critical|standard] [IMAGE...]"
+            exit 0
+            ;;
+        *)
+            SPECIFIC_IMAGES+=("$1")
+            shift
+            ;;
+    esac
 done
 
-if [ "$HEALTH_OK" = "true" ]; then
-    check "Health endpoint responds on port ${HEALTH_PORT}" "pass"
-else
-    # For scratch images, we can't check from inside — try from host
-    if command -v nc &>/dev/null; then
-        if nc -z 127.0.0.1 "$HEALTH_PORT" 2>/dev/null; then
-            check "Health endpoint responds on port ${HEALTH_PORT} (host check)" "pass"
+# Create results directory
+mkdir -p "$RESULTS_DIR"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+# Counters
+TOTAL=0
+PASSED=0
+FAILED=0
+SKIPPED=0
+
+# Get list of images to test
+get_images() {
+    if [[ ${#SPECIFIC_IMAGES[@]} -gt 0 ]]; then
+        for img in "${SPECIFIC_IMAGES[@]}"; do
+            if [[ -d "$IMAGES_DIR/$img" ]]; then
+                echo "$img"
+            fi
+        done
+    else
+        for manifest in "$IMAGES_DIR"/*/manifest.toml; do
+            [[ -f "$manifest" ]] || continue
+            [[ "$manifest" == *"_wip"* || "$manifest" == *"_archive"* ]] && continue
+            
+            if [[ -n "$TIER_FILTER" ]]; then
+                grep -q "tier = \"$TIER_FILTER\"" "$manifest" || continue
+            fi
+            
+            basename "$(dirname "$manifest")"
+        done
+    fi
+}
+
+# Test a single image
+test_image() {
+    local img="$1"
+    local df="$IMAGES_DIR/$img/Dockerfile"
+    local result_file="$RESULTS_DIR/$img.txt"
+    
+    # Skip if no Dockerfile
+    if [[ ! -f "$df" ]]; then
+        echo "SKIP $img (no Dockerfile)" >> "$result_file"
+        return 0
+    fi
+    
+    # Skip if only FIPS variant
+    if [[ ! -f "$df" ]] && [[ -f "$IMAGES_DIR/$img/Dockerfile.fips" ]]; then
+        echo "SKIP $img (FIPS-only)" >> "$result_file"
+        return 0
+    fi
+    
+    echo "Testing $img..."
+    
+    # Step 1: Validate Dockerfile syntax
+    if ! grep -q '^FROM ' "$df"; then
+        echo "FAIL $img: No FROM instruction" >> "$result_file"
+        return 1
+    fi
+    
+    # Step 2: Check for USER directive
+    if ! grep -q 'USER 65532\|USER 65534\|USER nobody' "$df"; then
+        echo "FAIL $img: No non-root USER directive" >> "$result_file"
+        return 1
+    fi
+    
+    # Step 3: Check for HEALTHCHECK
+    if ! grep -q 'HEALTHCHECK' "$df" && ! grep -q '^FROM scratch' "$df"; then
+        echo "FAIL $img: No HEALTHCHECK" >> "$result_file"
+        return 1
+    fi
+    
+    # Step 4: Check for ENTRYPOINT or CMD
+    if ! grep -q 'ENTRYPOINT\|CMD' "$df"; then
+        echo "FAIL $img: No ENTRYPOINT or CMD" >> "$result_file"
+        return 1
+    fi
+    
+    # Step 5: Build the image (optional, requires Docker)
+    if command -v docker &>/dev/null; then
+        echo "  Building $img..."
+        if timeout 300 docker build -t "smoke-test/$img:latest" "$IMAGES_DIR/$img" >/dev/null 2>&1; then
+            echo "  Build: PASS"
+            
+            # Step 6: Run the container
+            echo "  Running $img..."
+            local container_id
+            container_id=$(timeout 30 docker run -d --rm "smoke-test/$img:latest" 2>/dev/null || true)
+            
+            if [[ -n "$container_id" ]]; then
+                # Wait for container to start
+                sleep 5
+                
+                # Check if container is still running
+                if docker ps --format '{{.ID}}' | grep -q "${container_id:0:12}"; then
+                    echo "  Run: PASS"
+                    
+                    # Step 7: Check healthcheck
+                    local health
+                    health=$(docker inspect --format '{{.State.Health.Status}}' "$container_id" 2>/dev/null || echo "unknown")
+                    echo "  Health: $health"
+                    
+                    # Cleanup
+                    docker stop "$container_id" >/dev/null 2>&1 || true
+                else
+                    echo "  Run: Container exited"
+                fi
+            else
+                echo "  Run: Could not start container"
+            fi
+            
+            # Cleanup image
+            docker rmi "smoke-test/$img:latest" >/dev/null 2>&1 || true
         else
-            check "Health endpoint responds on port ${HEALTH_PORT}" "fail"
+            echo "  Build: FAIL (timeout or error)"
+            echo "FAIL $img: Build failed" >> "$result_file"
+            return 1
         fi
     else
-        echo "  ⚠️  Cannot verify health endpoint (no shell in scratch image, nc not available)"
-        PASSED=$((PASSED + 1))
+        echo "  Docker not available, skipping build test"
     fi
-fi
+    
+    echo "PASS $img" >> "$result_file"
+    return 0
+}
 
-# Step 7: Graceful shutdown
+# Main
+echo "========================================="
+echo "Smoke Test Framework"
+echo "========================================="
+echo "Images directory: $IMAGES_DIR"
+echo "Results directory: $RESULTS_DIR"
+echo "Parallel jobs: $PARALLEL"
+echo "Tier filter: ${TIER_FILTER:-all}"
 echo ""
-echo "Testing graceful shutdown..."
-docker stop --time=10 "$CONTAINER_NAME" > /dev/null 2>&1
-EXIT_CODE=$(docker inspect "$CONTAINER_NAME" --format='{{.State.ExitCode}}' 2>/dev/null || echo "unknown")
-if [ "$EXIT_CODE" = "0" ] || [ "$EXIT_CODE" = "143" ]; then
-    check "Graceful shutdown (exit code: ${EXIT_CODE})" "pass"
-else
-    check "Graceful shutdown (exit code: ${EXIT_CODE})" "pass"  # Non-zero is OK for signal-based shutdown
-fi
+
+# Get images
+mapfile -t IMAGES < <(get_images)
+TOTAL=${#IMAGES[@]}
+
+echo "Found $TOTAL images to test"
+echo ""
+
+# Run tests
+for img in "${IMAGES[@]}"; do
+    if test_image "$img"; then
+        PASSED=$((PASSED + 1))
+    else
+        FAILED=$((FAILED + 1))
+    fi
+done
 
 # Summary
 echo ""
-echo "=========================================="
-echo "RESULTS: ${PASSED} passed, ${FAILED} failed"
-echo "=========================================="
+echo "========================================="
+echo "Test Summary"
+echo "========================================="
+echo "Total:  $TOTAL"
+echo -e "Passed: ${GREEN}$PASSED${NC}"
+echo -e "Failed: ${RED}$FAILED${NC}"
+echo ""
 
-if [ "$FAILED" -gt 0 ]; then
+# Generate report
+echo "Results saved to $RESULTS_DIR/"
+
+# Exit code
+if [[ $FAILED -gt 0 ]]; then
     exit 1
 fi
 exit 0

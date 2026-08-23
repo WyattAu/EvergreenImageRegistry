@@ -211,6 +211,18 @@ python3 scripts/scanning_marketplace.py --image redis --scanner all
 # Edge
 ./scripts/generate_arm_variants.sh --tier1 --arch arm64 --edge-profile
 ./scripts/generate_offline_sboms.sh --tier1 --output /opt/offline-sboms/
+
+# Smoke testing
+./scripts/smoke_test.sh                          # Test all images
+./scripts/smoke_test.sh redis nginx grafana      # Test specific images
+./scripts/smoke_test.sh --tier critical           # Test critical-tier only
+
+# VEX generation
+python3 scripts/generate_missing_vex.py           # Generate VEX for images without it
+
+# Non-root enforcement
+python3 scripts/enforce_nonroot.py                # Add USER 65532 to all repack images
+python3 scripts/enforce_nonroot.py --dry-run      # Preview changes
 ```
 
 ## Validation Status (Phase 142)

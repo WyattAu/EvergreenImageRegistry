@@ -88,7 +88,7 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 
 ## CI/CD
 
-39 active GitHub Actions workflows (all valid YAML, all SHA-pinned, 2 disabled):
+40 active GitHub Actions workflows (all valid YAML, all SHA-pinned, 2 disabled):
 
 - **Build:** `build-on-push.yml` / `build-nightly.yml` / `build-on-demand.yml` / `_build-reusable.yml` (core build+push+sign)
 - **Supply chain:** `slsa-provenance.yml` (L2), `slsa-provenance-l3.yml` (L3 with hermetic builds), `sbom-attestation.yml`, `sbom-validation.yml`
@@ -127,7 +127,7 @@ All GitHub Actions pinned to commit SHA (supply chain security).
 
 31 modules with trait-based constraint system + policy engine:
 - `validate_parallel.rs` — 20-constraint engine (C001-C020), no repack exemptions
-- `policy.rs` — OPA/Rego policy-as-code engine (10 built-in policies + 3 compliance bundles)
+- `policy.rs` — OPA/Rego policy-as-code engine (13 built-in policies + 3 compliance bundles)
 
 ### Kubernetes Operator
 
@@ -172,7 +172,7 @@ Library chart + 87 per-image charts published to GHCR OCI registry.
 
 ### Test Suites
 
-255 tests across 3 suites (all passing) + policy test framework.
+261 tests across 3 suites (all passing) + policy test framework.
 
 ## Common Commands
 
@@ -230,19 +230,21 @@ python3 scripts/enforce_nonroot.py --dry-run      # Preview changes
 | Metric | Value |
 |--------|-------|
 | Total images | 778 |
-| Non-root compliance | 776/778 (99.7%) — 2 FIPS-only stubs excluded |
-| BLOCK violations | **0** (post non-root enforcement) |
+| Non-root compliance | **100%** (778/778 enforced) |
+| BLOCK violations | **0** (C003 no repack exemption) |
 | WARN violations | 835 |
 | INFO violations | 35 |
-| SBOM coverage | 778/778 (100%) |
-| VEX documents | 87 (all critical-tier) |
-| CI workflows | 38 (all valid, all SHA-pinned) |
-| Tests | 255/255 passing |
+| SBOM coverage | **100%** (778/778) |
+| VEX documents | **87** (all critical-tier) |
+| Digest-pinned FROM lines | **126** (critical-tier) |
+| CI workflows | **40** (all valid, all SHA-pinned) |
+| Tests | **261/261 passing** |
 | FIPS variants | 26 implemented, 30 planned |
 | Helm charts | 87 per-image + library chart |
+| Wolfi-base variants | **14** (all build+run verified) |
 | K8s CRDs | 3 + admission webhook |
-| Rego policies | 13 (10 built-in + 3 compliance bundles) |
-| Scripts | 78 automation scripts |
+| Rego policies | **16** (13 built-in + 3 compliance bundles) |
+| Scripts | **82** automation scripts |
 
 ### Competitive Scorecard
 
@@ -276,10 +278,12 @@ python3 scripts/enforce_nonroot.py --dry-run      # Preview changes
 - 2 images have FIPS-only Dockerfile.fips (no regular Dockerfile): postgresql, kubescape
 - Tier labels standardized but some legacy schemas exist
 - All 778 images have real SBOMs with package data
-- - 4 FIPS variants remaining (ScyllaDB, Falco blocked upstream; tempo, OPA not in registry)
-- Digest pinning pending for 85 critical-tier images (requires registry access)
+- 4 FIPS variants remaining (ScyllaDB, Falco blocked upstream; tempo, OPA not in registry)
+- Digest pinning: 126/778 (16%) — critical tier partially complete
+- 5 images with ARG-based FROM lines (envoy, freshrss, jenkins, paperless-ngx, postgres)
 - K8s operator needs kubebuilder code generation (`make generate manifests`)
-- 709 repack images now have USER 65532:65532 (enforced by C003 without repack exemption)
+- 778/778 images have USER 65532:65532 (enforced by C003 without repack exemption)
+- 14 wolfi-base variants verified: build ✅, run ✅, non-root ✅
 
 ## Monitoring & Metrics
 

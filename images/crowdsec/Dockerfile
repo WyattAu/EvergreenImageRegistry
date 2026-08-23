@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM crowdsecurity/crowdsec:v1.6.3
+FROM crowdsecurity/crowdsec:v1.6.3@sha256:a835cdb09ac2e0a06c03c6806da1c273008261fffb46696312777846d43a08ae
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM docker.elastic.co/kibana/kibana:8.14.0
+FROM docker.elastic.co/kibana/kibana:8.14.0@sha256:7664e34907484444e417bdb91cb2b1b0b9e3868eda0cbd7713e7e711d9764f15
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

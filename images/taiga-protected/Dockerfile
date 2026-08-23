@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM taigaio/taiga-protected:6.9.0
+FROM taigaio/taiga-protected:6.9.0@sha256:5f31fdb311431df45ceca4497abae05a312be9ca657564f20e164f825e9f1d5e
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

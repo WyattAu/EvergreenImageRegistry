@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM openzipkin/zipkin:3.4.2
+FROM openzipkin/zipkin:3.4.2@sha256:32599e9a997272a15a57f1775709ad86f973de98b407b9a1cbcfcb0d9b60d23b
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -1,0 +1,43 @@
+ARG VERSION=0.18.1
+ARG SHIM_VERSION=v2.0.0
+ARG TARGETARCH=amd64
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+ARG VERSION
+ARG TARGETARCH
+RUN apk add --no-cache curl && \
+    mkdir -p /usr/local/bin && \
+    curl -fsSL "https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_${TARGETARCH}.bz2" | bunzip2 > /usr/local/bin/restic && \
+    chmod +x /usr/local/bin/restic
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=builder /usr/local/bin/restic /usr/local/bin/restic
+
+USER 65532:65532
+
+ENV SHIM_METRICS_ENABLED="true"
+
+EXPOSE 8000 9101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
+
+ENTRYPOINT ["/usr/local/bin/restic"]
+
+LABEL org.opencontainers.image.title="restic" \
+      org.opencontainers.image.description="Restic backup server - wolfi-base, non-root, with health-shim" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.source="https://github.com/restic/restic" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
+STOPSIGNAL SIGTERM

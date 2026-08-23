@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM sqlpad/sqlpad:6.11.0
+FROM sqlpad/sqlpad:6.11.0@sha256:73c2a6b8a55aefd5edf5bd92bd100941962d0cf18d2a95d68c109ad9741c770b
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -1,0 +1,49 @@
+ARG VERSION=1.18.1
+ARG SHIM_VERSION=v2.0.0
+ARG TARGETARCH=amd64
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+ARG VERSION
+ARG TARGETARCH
+RUN apk add --no-cache curl unzip && \
+    mkdir -p /usr/local/bin && \
+    curl -fsSL "https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_${TARGETARCH}.zip" -o /tmp/vault.zip && \
+    unzip /tmp/vault.zip -d /usr/local/bin && \
+    rm /tmp/vault.zip
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=builder /usr/local/bin/vault /usr/local/bin/vault
+
+RUN mkdir -p /vault/file /vault/config && chown -R 65532:65532 /vault
+
+USER 65532:65532
+
+ENV SHIM_METRICS_ENABLED="true" \
+    VAULT_ADDR="http://127.0.0.1:8200"
+
+EXPOSE 8200 9101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "vault"]
+CMD ["server", "-dev"]
+
+LABEL org.opencontainers.image.title="vault" \
+      org.opencontainers.image.description="HashiCorp Vault - wolfi-base, non-root, with health-shim" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.source="https://github.com/hashicorp/vault" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
+STOPSIGNAL SIGTERM

@@ -130,3 +130,41 @@ jobs:
           if failed > 0:
               exit(1)
           "
+      
+      - name: Validate wolfi variants
+        run: |
+          echo "Validating all wolfi variants..."
+          PASS=0
+          FAIL=0
+          
+          for df in images/*/Dockerfile.wolfi; do
+            [[ -f "$df" ]] || continue
+            name=$(basename $(dirname "$df"))
+            content=$(cat "$df")
+            errors=""
+            
+            if ! echo "$content" | grep -q "^FROM "; then
+              errors="$errors No FROM"
+            fi
+            if ! echo "$content" | grep -q "USER 65532\|USER 65534\|USER nobody"; then
+              errors="$errors No USER"
+            fi
+            if ! echo "$content" | grep -q "HEALTHCHECK"; then
+              errors="$errors No HEALTHCHECK"
+            fi
+            if ! echo "$content" | grep -q "ENTRYPOINT\|CMD "; then
+              errors="$errors No ENTRYPOINT/CMD"
+            fi
+            
+            if [[ -n "$errors" ]]; then
+              echo "FAIL: $name -$errors"
+              FAIL=$((FAIL + 1))
+            else
+              PASS=$((PASS + 1))
+            fi
+          done
+          
+          echo "Wolfi variants: $PASS passed, $FAIL failed"
+          if [[ $FAIL -gt 0 ]]; then
+            exit 1
+          fi

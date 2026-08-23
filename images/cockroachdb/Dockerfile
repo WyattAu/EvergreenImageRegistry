@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cockroachdb/cockroach:v24.3.0
+FROM cockroachdb/cockroach:v24.3.0@sha256:736a42385c600673d034e0be6c4475d55975eaa6a7b5a57114b0dadbe2fac511
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

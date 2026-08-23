@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM favonia/cloudflare-ddns:1.16.2
+FROM favonia/cloudflare-ddns:1.16.2@sha256:bc53b40b13c8b2a84e9b93c21f65fcd7d574b741014fb93912eb9efd93015aa2
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

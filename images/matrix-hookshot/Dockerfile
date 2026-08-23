@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM halfshot/matrix-hookshot:7.3.2
+FROM halfshot/matrix-hookshot:7.3.2@sha256:44283e5131a1a5818bbbf6d9d1e07dccdc29ac5bb6002fcf159af6ac09cf8085
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

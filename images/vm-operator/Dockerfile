@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM victoriametrics/operator:v0.49.0
+FROM victoriametrics/operator:v0.49.0@sha256:7f4d8e31f02247cfe385804b92204c9e0218999b67045d0ae371640334a7c9de
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

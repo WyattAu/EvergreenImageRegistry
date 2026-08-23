@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM drone/drone:1.9.0
+FROM drone/drone:1.9.0@sha256:157fe72a6b6c427877c30719985b3766bafb150f2260e2d76773fe4f37538770
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

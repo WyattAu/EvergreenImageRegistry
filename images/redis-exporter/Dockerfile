@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM oliver006/redis_exporter:v1.83.0
+FROM oliver006/redis_exporter:v1.83.0@sha256:e8c209894d4c0cc55b1259ddd47e0b769ad1ff864b356736ee885462a3b0e48c
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

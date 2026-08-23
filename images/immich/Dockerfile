@@ -59,6 +59,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
 
 # Keep upstream entrypoint (tini must be PID 1 for signal handling)
 # Shim is only used for HEALTHCHECK
+USER 65532:65532
 CMD ["start.sh"]
 
 LABEL org.opencontainers.image.title="immich" \

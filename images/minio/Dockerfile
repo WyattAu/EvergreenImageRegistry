@@ -11,6 +11,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
 
 ENV SHIM_METRICS_ENABLED="true"
 
+RUN mkdir -p /data && chown -R 65532:65532 /data
+USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "minio server /data"]
 
 LABEL evergreen.entrypoint.pattern="repack-upstream-init"

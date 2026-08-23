@@ -6,6 +6,8 @@ FROM opensearchproject/opensearch:2.12.0
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+RUN mkdir -p /usr/share/opensearch/data && chown -R 65532:65532 /usr/share/opensearch/data
+USER 65532:65532
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9200"]
 
 

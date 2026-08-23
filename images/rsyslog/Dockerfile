@@ -6,6 +6,7 @@ FROM mbentley/rsyslog:v8.2312.0
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+USER 65532:65532
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:514"]
 
 

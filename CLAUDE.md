@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hardened container images for production: 778 active images built non-root, distroless, and fully auditable (22 stubs moved to _wip/). Registries:
+Hardened container images for production: 778 active images built non-root and fully auditable (20 stubs in _wip/). Registries:
 
 - GHCR: `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` (primary)
 - Docker Hub: `docker.io/wyattau/<image>:latest` (org mirror)
@@ -22,11 +22,11 @@ images/<name>/
   .dockerignore       # Build context exclusions
 ```
 
-~798 active image directories under `images/`, excluding `_wip/` and `_archive/`.
+~778 active image directories under `images/` (780 total dirs, 20 in `_wip/`, 0 in `_archive/`).
 
 ## Image Standards (5 Pillars)
 
-1. **Security & Minimalism**: Distroless/wolfi-base final stages, non-root (UID 65532), no shells/package managers
+1. **Security & Minimalism**: Non-root (UID 65532) enforced on all images, distroless/wolfi-base preferred for final stages, no shells/package managers
 2. **Reliability**: HEALTHCHECK mandatory, semver versioning, graceful shutdown
 3. **Configuration**: Env vars for all settings, secure defaults, stateless
 4. **Documentation**: Per-image README with usage, security, SBOM link
@@ -36,12 +36,12 @@ images/<name>/
 
 | Type            | Count | Description                             |
 | --------------- | ----- | --------------------------------------- |
-| package-manager |   660 | Install via apk/apt packages            |
+| package-manager |   643 | Install via apk/apt packages            |
 | docker-image    |    90 | Repackage upstream image with hardening |
 | upstream-repack |    14 | Repackage upstream with shim            |
 | binary-release  |    10 | Download pre-built binary from upstream |
 | source-build    |     8 | Build from source                       |
-| Other           |    16 | github-release, proprietary, etc.       |
+| Other           |     7 | github-release, go-source, etc.         |
 
 ## Base Image Hierarchy
 
@@ -56,10 +56,10 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 ## Key Tools
 
 ### Core Tooling
-- **evergreenctl** (Rust): Image verification, drift detection, Dockerfile generation (20+ subcommands, 20 constraints with repack-aware exemptions)
+- **evergreenctl** (Rust): Image verification, drift detection, Dockerfile generation (20+ subcommands, 20 constraints)
 - **health-shim** (Go): TCP/HTTP health probes for distroless images
-- **pre-commit hooks**: 9 hooks (hadolint, constraints, no-alpine, trailing-whitespace)
-- **pre-push gate**: 17 quality checks (Rust tests, clippy, fmt, Python, shell, manifests, SBOMs, drift, constraints, workflow YAML, action SHA pinning, cargo audit, release build, Go vet/test, FIPS, performance regression)
+- **pre-commit hooks**: 13 hooks (hadolint, constraints, no-alpine, trailing-whitespace, prettier, markdownlint, yamllint, etc.)
+- **pre-push gate**: 17+ quality checks (Rust tests, clippy, fmt, Python, shell, manifests, SBOMs, drift, constraints, workflow YAML, action SHA pinning, cargo audit, release build, Go vet/test, FIPS, performance regression)
 
 ### SBOM & Supply Chain
 - **batch_generate_all_sboms.sh**: Full registry SBOM generator (all 798 images, parallel, retry)
@@ -88,7 +88,7 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 
 ## CI/CD
 
-38 GitHub Actions workflows (all valid YAML, all SHA-pinned):
+39 active GitHub Actions workflows (all valid YAML, all SHA-pinned, 2 disabled):
 
 - **Build:** `build-on-push.yml` / `build-nightly.yml` / `build-on-demand.yml` / `_build-reusable.yml` (core build+push+sign)
 - **Supply chain:** `slsa-provenance.yml` (L2), `slsa-provenance-l3.yml` (L3 with hermetic builds), `sbom-attestation.yml`, `sbom-validation.yml`
@@ -110,7 +110,7 @@ All GitHub Actions pinned to commit SHA (supply chain security).
 | Tier     | Count | Description                                       |
 | -------- | ----- | ------------------------------------------------- |
 | critical |    87 | Essential infrastructure (databases, proxies)     |
-| standard |   711 | Useful but replaceable                            |
+| standard |   691 | Useful but replaceable                            |
 
 ## Compliance
 
@@ -125,9 +125,9 @@ All GitHub Actions pinned to commit SHA (supply chain security).
 
 ### Rust (evergreenctl)
 
-29 modules with trait-based constraint system + policy engine:
-- `validate_parallel.rs` — 20-constraint engine (C001-C020) with repack-aware exemptions
-- `policy.rs` — OPA/Rego policy-as-code engine (13 built-in policies)
+31 modules with trait-based constraint system + policy engine:
+- `validate_parallel.rs` — 20-constraint engine (C001-C020), no repack exemptions
+- `policy.rs` — OPA/Rego policy-as-code engine (10 built-in policies + 3 compliance bundles)
 
 ### Kubernetes Operator
 
@@ -172,7 +172,7 @@ Library chart + 87 per-image charts published to GHCR OCI registry.
 
 ### Test Suites
 
-260 tests across 4 suites (all passing) + policy test framework.
+255 tests across 3 suites (all passing) + policy test framework.
 
 ## Common Commands
 
@@ -217,20 +217,20 @@ python3 scripts/scanning_marketplace.py --image redis --scanner all
 
 | Metric | Value |
 |--------|-------|
-| Total images | 798 |
-| Pass rate | **100.0%** (798/798) |
-| BLOCK violations | **0** |
+| Total images | 778 |
+| Non-root compliance | 776/778 (99.7%) — 2 FIPS-only stubs excluded |
+| BLOCK violations | **0** (post non-root enforcement) |
 | WARN violations | 835 |
 | INFO violations | 35 |
-| SBOM coverage | 40/798 (5.0%) — full-registry generator ready |
+| SBOM coverage | 739/778 (95.0%) — 39 stubs remaining |
 | VEX documents | 39 |
 | CI workflows | 38 (all valid, all SHA-pinned) |
-| Tests | 260/260 passing |
+| Tests | 255/255 passing |
 | FIPS variants | 26 implemented, 30 planned |
 | Helm charts | 87 per-image + library chart |
 | K8s CRDs | 3 + admission webhook |
 | Rego policies | 13 (10 built-in + 3 compliance bundles) |
-| Scripts | 77 automation scripts |
+| Scripts | 78 automation scripts |
 
 ### Competitive Scorecard
 
@@ -261,11 +261,12 @@ python3 scripts/scanning_marketplace.py --image redis --scanner all
 
 ## Known Issues
 
-- 13 images have manifest but no Dockerfile
+- 2 images have FIPS-only Dockerfile.fips (no regular Dockerfile): postgresql, kubescape
 - Tier labels standardized but some legacy schemas exist
-- 758 images still need SBOMs (generator ready, execution pending)
+- 39 images have stub SBOMs (1-line placeholders) that need real content
 - 4 FIPS variants remaining (ScyllaDB, Falco blocked upstream; tempo, OPA not in registry)
 - K8s operator needs kubebuilder code generation (`make generate manifests`)
+- 709 repack images now have USER 65532:65532 (enforced by C003 without repack exemption)
 
 ## Monitoring & Metrics
 

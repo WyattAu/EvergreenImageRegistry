@@ -11,6 +11,7 @@ ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 5556 9101
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+USER 65532:65532
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5556"]
 
 LABEL org.opencontainers.image.title="dex" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"

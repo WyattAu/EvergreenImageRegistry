@@ -275,26 +275,13 @@ impl Constraint for C003NonRootUser {
         let has_user = content.contains("USER 65532")
             || content.contains("USER 65534")
             || content.contains("USER nobody");
-        // Repack images inherit USER from upstream — exempt from this check
-        // A repack is a single-FROM image that repackages an upstream with a shim
-        let is_repack = content.contains("evergreen.entrypoint.pattern")
-            || content.contains("evergreen.image.repack")
-            || content.contains("evergreen.base.image")
-            || (content.contains("FROM ")
-                && !content.contains("FROM scratch")
-                && !content.contains("FROM wolfi")
-                && !content.contains("FROM cgr.dev")
-                && !content.contains("FROM gcr.io")
-                && !content.contains("FROM ghcr.io")
-                && content.lines().filter(|l| l.starts_with("FROM ")).count() == 1);
-        let (status, message) = if has_user || is_repack {
+        // All images must have an explicit non-root USER directive.
+        // Repack images are no longer exempt — they must set USER 65532:65532
+        // explicitly rather than inheriting root from upstream.
+        let (status, message) = if has_user {
             (
                 ConstraintStatus::Pass,
-                if is_repack {
-                    "Repack image (inherits upstream USER)".to_string()
-                } else {
-                    "Non-root user configured".to_string()
-                },
+                "Non-root user configured".to_string(),
             )
         } else {
             (
@@ -1862,9 +1849,8 @@ LABEL evergreen.security.read-only-rootfs="true"
         );
     }
 
-    #[test]
-    fn test_c003_repack_exemption() {
-        // Repack images inherit USER from upstream — should PASS C003
+    #[test]     fn test_c003_repack_no_longer_exempt() {
+        // Repack images MUST have explicit USER 65532 — no more exemptions
         let ctx = ConstraintContext {
             name: "test-repack",
             tier: 3,
@@ -1884,8 +1870,8 @@ LABEL evergreen.security.read-only-rootfs="true"
         assert!(c003.is_some());
         assert_eq!(
             c003.unwrap().status,
-            ConstraintStatus::Pass,
-            "Repack should be exempt from C003"
+            ConstraintStatus::Fail,
+            "Repack without USER 65532 should FAIL C003"
         );
     }
 

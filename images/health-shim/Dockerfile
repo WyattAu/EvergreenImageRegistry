@@ -23,6 +23,7 @@ LABEL org.opencontainers.image.title="health-shim" \
 COPY --from=builder /shim /shim
 USER ${APP_UID}:${APP_GID}
 EXPOSE 9101
+USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/shim"]
 LABEL evergreen.entrypoint.pattern="base-image"
 LABEL evergreen.image.tier="standard"

@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM prom/cloudwatch-exporter:0.16.0
+FROM prom/cloudwatch-exporter:v0.18@sha256:da88be5880dc8413639b67904bf98525552c84282eff74e54556e00956520512
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

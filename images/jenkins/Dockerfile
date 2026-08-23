@@ -4,7 +4,7 @@ ARG SHIM_VERSION=v2.0.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 # Use pinned Jenkins LTS version
-FROM jenkins/jenkins:${VERSION}
+FROM jenkins/jenkins:2.462.1@sha256:2bafb1fb2d6489bccadc1b7c172937e9b56a888ed77e625a4ebe59a6b038221e
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -3,7 +3,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM freshrss/freshrss:${VERSION}
+FROM freshrss/freshrss:1.29.0@sha256:cca8988d05cd449e1c6c69405971b1e6fc2c2116ceeb45c9fa3fc33837997a75
 COPY --from=shim /shim /usr/local/bin/shim
 USER root
 

@@ -1,188 +1,132 @@
-# Smoke Test — Nightly Tier 1 + Tier 2 Image Verification
-#
-# Builds and runs critical images to verify they start correctly.
-# Runs nightly at 03:00 UTC and on manual dispatch.
-
 name: Smoke Test
 
 on:
-  schedule:
-    - cron: "0 3 * * *"
+  push:
+    branches: [main]
+    paths:
+      - 'images/**'
+      - 'scripts/smoke_test.sh'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'images/**'
+      - 'scripts/smoke_test.sh'
   workflow_dispatch:
-    inputs:
-      tier:
-        description: "Which tier to test (1, 2, or all)"
-        required: false
-        default: "1"
-      images:
-        description: "Comma-separated image names (empty = all in tier)"
-        required: false
-        default: ""
-
-permissions:
-  contents: read
-  packages: read
-
-env:
-  REGISTRY: ghcr.io
 
 jobs:
-  # ===========================================================================
-  # STAGE 1: DISCOVER — Find images needing smoke tests
-  # ===========================================================================
-  discover:
-    name: Discover Images
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      matrix: ${{ steps.find.outputs.matrix }}
-      total: ${{ steps.find.outputs.total }}
-      tier: ${{ steps.find.outputs.tier }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - name: Find images with Dockerfiles
-        id: find
-        run: |
-          python3 << 'PYEOF'
-          import os, json, tomllib
-
-          images_dir = "images"
-          input_images = "${{ inputs.images }}".strip()
-          input_tier = "${{ inputs.tier }}".strip() or "1"
-
-          if input_images:
-              target_images = [i.strip() for i in input_images.split(",") if i.strip()]
-          else:
-              target_images = []
-              for d in sorted(os.listdir(images_dir)):
-                  manifest_path = os.path.join(images_dir, d, "manifest.toml")
-                  dockerfile_path = os.path.join(images_dir, d, "Dockerfile")
-                  if not os.path.isfile(manifest_path) or not os.path.isfile(dockerfile_path):
-                      continue
-                  if "_wip" in d or "_archive" in d:
-                      continue
-                  try:
-                      with open(manifest_path, "rb") as f:
-                          data = tomllib.load(f)
-                      tier = data.get("metadata", {}).get("tier", "standard")
-                      if input_tier == "all" or tier == f"{'critical' if input_tier == '1' else 'standard'}":
-                          target_images.append(d)
-                  except:
-                      continue
-
-          # Create batches of 8
-          batch_size = 8
-          batches = []
-          for i in range(0, len(target_images), batch_size):
-              batch = target_images[i:i + batch_size]
-              batches.append({"batch": len(batches), "images": ",".join(batch)})
-
-          matrix = {"include": batches}
-          print(f"::set-output name=matrix::{json.dumps(matrix)}")
-          print(f"::set-output name=total::{len(target_images)}")
-          print(f"::set-output name=tier::{input_tier}")
-          print(f"Found {len(target_images)} images (tier={input_tier}) in {len(batches)} batches")
-          PYEOF
-
-  # ===========================================================================
-  # STAGE 2: SMOKE TEST — Build and run each image
-  # ===========================================================================
   smoke-test:
-    name: "Smoke Test Batch ${{ matrix.batch }}"
-    needs: [discover]
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     strategy:
+      matrix:
+        tier: [critical]
       fail-fast: false
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
-
-      - name: Smoke test images
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+      
+      - name: Run smoke tests
         run: |
+          chmod +x scripts/smoke_test.sh
+          ./scripts/smoke_test.sh --tier ${{ matrix.tier }}
+      
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: smoke-test-results-${{ matrix.tier }}
+          path: smoke-test-results/
+          retention-days: 7
+
+  static-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
+      - name: Validate all Dockerfiles
+        run: |
+          echo "Validating all Dockerfiles..."
           PASS=0
           FAIL=0
-          WARN=0
-          RESULTS=""
-
-          IFS=',' read -ra IMAGES <<< "${{ matrix.images }}"
-          for img in "${IMAGES[@]}"; do
-            [ -z "$img" ] && continue
-            echo "::group::$img"
-
-            # Build
-            if ! docker build -t "smoke-$img:test" "images/$img/" > /dev/null 2>&1; then
-              echo "FAIL: $img (build failed)"
-              FAIL=$((FAIL + 1))
-              RESULTS="${RESULTS}| $img | ❌ | - | - | Build failed |\n"
-              echo "::endgroup::"
-              continue
+          
+          for df in images/*/Dockerfile; do
+            [[ -f "$df" ]] || continue
+            [[ "$df" == *"_wip"* || "$df" == *"_archive"* ]] && continue
+            
+            name=$(basename $(dirname "$df"))
+            content=$(cat "$df")
+            errors=""
+            
+            # Check FROM
+            if ! echo "$content" | grep -q "^FROM "; then
+              errors="$errors No FROM"
             fi
-
-            # Get size
-            SIZE=$(docker inspect "smoke-$img:test" --format='{{.Size}}' 2>/dev/null)
-            SIZE_MB=$((SIZE / 1048576))
-
-            # Add env vars for databases
-            EXTRA_ARGS=""
-            case "$img" in
-              postgres|postgresql*) EXTRA_ARGS="-e POSTGRES_PASSWORD=test" ;;
-              mysql|mysql-*) EXTRA_ARGS="-e MYSQL_ROOT_PASSWORD=test" ;;
-              mariadb*) EXTRA_ARGS="-e MYSQL_ROOT_PASSWORD=test" ;;
-            esac
-
-            # Run with 10s grace
-            if ! docker run -d --name "smoke-$img" $EXTRA_ARGS "smoke-$img:test" > /dev/null 2>&1; then
-              echo "FAIL: $img (run failed)"
-              FAIL=$((FAIL + 1))
-              RESULTS="${RESULTS}| $img | ❌ | - | ${SIZE_MB}MB | Run failed |\n"
-              docker rmi "smoke-$img:test" > /dev/null 2>&1
-              echo "::endgroup::"
-              continue
+            
+            # Check USER
+            if ! echo "$content" | grep -q "USER 65532\|USER 65534\|USER nobody"; then
+              errors="$errors No USER"
             fi
-
-            sleep 5
-
-            # Check status
-            running=$(docker inspect "smoke-$img" --format='{{.State.Running}}' 2>/dev/null)
-            user=$(docker inspect "smoke-$img" --format='{{.Config.User}}' 2>/dev/null)
-            [ -z "$user" ] && user="(upstream)"
-
-            if [ "$running" = "true" ]; then
-              echo "PASS: $img (user=$user, ${SIZE_MB}MB)"
-              PASS=$((PASS + 1))
-              RESULTS="${RESULTS}| $img | ✅ | $user | ${SIZE_MB}MB | Running |\n"
+            
+            # Check HEALTHCHECK (skip scratch)
+            if ! echo "$content" | grep -q "FROM scratch" && ! echo "$content" | grep -q "HEALTHCHECK"; then
+              errors="$errors No HEALTHCHECK"
+            fi
+            
+            # Check ENTRYPOINT/CMD
+            if ! echo "$content" | grep -q "ENTRYPOINT\|CMD "; then
+              errors="$errors No ENTRYPOINT/CMD"
+            fi
+            
+            if [[ -n "$errors" ]]; then
+              echo "FAIL: $name -$errors"
+              FAIL=$((FAIL + 1))
             else
-              exit_code=$(docker inspect "smoke-$img" --format='{{.State.ExitCode}}' 2>/dev/null)
-              echo "WARN: $img (exit=$exit_code, ${SIZE_MB}MB, needs config)"
-              WARN=$((WARN + 1))
-              RESULTS="${RESULTS}| $img | ⚠️ | $user | ${SIZE_MB}MB | Exit $exit_code |\n"
+              PASS=$((PASS + 1))
             fi
-
-            docker rm -f "smoke-$img" > /dev/null 2>&1
-            docker rmi "smoke-$img:test" > /dev/null 2>&1
-            echo "::endgroup::"
           done
-
+          
           echo ""
-          echo "=== RESULTS ==="
-          echo "PASS: $PASS"
-          echo "WARN: $WARN (needs config)"
-          echo "FAIL: $FAIL"
-
-          # Write summary
-          echo "## Smoke Test Results — Batch ${{ matrix.batch }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Image | Status | User | Size | Notes |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|------|------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo -e "$RESULTS" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**PASS: $PASS | WARN: $WARN | FAIL: $FAIL**" >> $GITHUB_STEP_SUMMARY
-
-          if [ "$FAIL" -gt 0 ]; then
+          echo "Results: $PASS passed, $FAIL failed"
+          
+          if [[ $FAIL -gt 0 ]]; then
             exit 1
           fi
+
+  constraint-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1577f2c246c8c957c4802f8026c1f8fc47a7b73e # stable
+      
+      - name: Run constraint validation
+        run: |
+          cargo run --manifest-path evergreenctl/Cargo.toml -- validate images
+      
+      - name: Verify C003 compliance
+        run: |
+          python3 -c "
+          from pathlib import Path
+          passed = 0
+          failed = 0
+          for df in Path('images').glob('*/Dockerfile'):
+              if '_wip' in str(df) or '_archive' in str(df):
+                  continue
+              content = df.read_text()
+              if any(u in content for u in ['USER 65532', 'USER 65534', 'USER nobody']):
+                  passed += 1
+              else:
+                  failed += 1
+                  print(f'FAIL: {df.parent.name}')
+          print(f'C003: {passed}/{passed+failed} PASS')
+          if failed > 0:
+              exit(1)
+          "

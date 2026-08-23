@@ -1,0 +1,1 @@
+FAIL apache-nifi: Build failed

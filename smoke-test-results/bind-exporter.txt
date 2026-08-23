@@ -1,0 +1,1 @@
+FAIL bind-exporter: Build failed

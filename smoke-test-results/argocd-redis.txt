@@ -1,0 +1,1 @@
+FAIL argocd-redis: Build failed

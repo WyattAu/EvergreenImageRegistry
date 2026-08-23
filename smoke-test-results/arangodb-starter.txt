@@ -1,0 +1,1 @@
+FAIL arangodb-starter: Build failed

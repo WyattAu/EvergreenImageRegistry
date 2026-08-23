@@ -1,0 +1,1 @@
+FAIL adguardhome-lite: Build failed

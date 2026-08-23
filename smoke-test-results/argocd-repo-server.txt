@@ -1,0 +1,1 @@
+FAIL argocd-repo-server: Build failed

@@ -1,0 +1,1 @@
+FAIL couchdb-sync: Build failed

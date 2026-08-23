@@ -1,0 +1,1 @@
+FAIL coredns-alpine: Build failed

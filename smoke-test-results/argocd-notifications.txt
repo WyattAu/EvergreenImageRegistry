@@ -1,0 +1,1 @@
+FAIL argocd-notifications: Build failed

@@ -1,0 +1,1 @@
+FAIL consul-exporter: Build failed

@@ -1,6 +1,6 @@
 [metadata]
 name = "envoy"
-version = "1.38.0"
+version = "v1.38.0"
 description = "Envoy - high-performance edge and service proxy"
 vendor = "Envoy Proxy"
 source = "https://github.com/envoyproxy/envoy"

@@ -222,8 +222,8 @@ python3 scripts/scanning_marketplace.py --image redis --scanner all
 | BLOCK violations | **0** (post non-root enforcement) |
 | WARN violations | 835 |
 | INFO violations | 35 |
-| SBOM coverage | 739/778 (95.0%) — 39 stubs remaining |
-| VEX documents | 39 |
+| SBOM coverage | 778/778 (100%) |
+| VEX documents | 87 (all critical-tier) |
 | CI workflows | 38 (all valid, all SHA-pinned) |
 | Tests | 255/255 passing |
 | FIPS variants | 26 implemented, 30 planned |
@@ -263,8 +263,9 @@ python3 scripts/scanning_marketplace.py --image redis --scanner all
 
 - 2 images have FIPS-only Dockerfile.fips (no regular Dockerfile): postgresql, kubescape
 - Tier labels standardized but some legacy schemas exist
-- 39 images have stub SBOMs (1-line placeholders) that need real content
-- 4 FIPS variants remaining (ScyllaDB, Falco blocked upstream; tempo, OPA not in registry)
+- All 778 images have real SBOMs with package data
+- - 4 FIPS variants remaining (ScyllaDB, Falco blocked upstream; tempo, OPA not in registry)
+- Digest pinning pending for 85 critical-tier images (requires registry access)
 - K8s operator needs kubebuilder code generation (`make generate manifests`)
 - 709 repack images now have USER 65532:65532 (enforced by C003 without repack exemption)
 

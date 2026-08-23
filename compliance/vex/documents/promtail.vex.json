@@ -1,0 +1,59 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T11:06:37Z",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": [
+        "https://github.com/WyattAu/EvergreenImageRegistry"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "EVERGREEN-PROMTAIL-001",
+      "source": {
+        "name": "Evergreen Image Registry",
+        "url": "https://github.com/WyattAu/EvergreenImageRegistry/images/promtail"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "Evergreen Image Registry"
+          },
+          "score": 0,
+          "severity": "NONE"
+        }
+      ],
+      "description": "No known vulnerabilities in promtail 3.6.11",
+      "published": "2026-08-23T11:06:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/evergreenimageregistry/promtail",
+          "versions": [
+            {
+              "version": "3.6.11",
+              "status": "unaffected"
+            }
+          ],
+          "package": {
+            "name": "promtail",
+            "version": "3.6.11"
+          }
+        }
+      ],
+      "status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T11:06:37Z",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": [
+        "https://github.com/WyattAu/EvergreenImageRegistry"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "EVERGREEN-PAPERLESS-NGX-001",
+      "source": {
+        "name": "Evergreen Image Registry",
+        "url": "https://github.com/WyattAu/EvergreenImageRegistry/images/paperless-ngx"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "Evergreen Image Registry"
+          },
+          "score": 0,
+          "severity": "NONE"
+        }
+      ],
+      "description": "No known vulnerabilities in paperless-ngx 2.20.15",
+      "published": "2026-08-23T11:06:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/evergreenimageregistry/paperless-ngx",
+          "versions": [
+            {
+              "version": "2.20.15",
+              "status": "unaffected"
+            }
+          ],
+          "package": {
+            "name": "paperless-ngx",
+            "version": "2.20.15"
+          }
+        }
+      ],
+      "status": "resolved"
+    }
+  ]
+}

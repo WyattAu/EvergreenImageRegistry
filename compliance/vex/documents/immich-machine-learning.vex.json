@@ -1,0 +1,59 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T11:06:37Z",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": [
+        "https://github.com/WyattAu/EvergreenImageRegistry"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "EVERGREEN-IMMICH-MACHINE-LEARNING-001",
+      "source": {
+        "name": "Evergreen Image Registry",
+        "url": "https://github.com/WyattAu/EvergreenImageRegistry/images/immich-machine-learning"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "Evergreen Image Registry"
+          },
+          "score": 0,
+          "severity": "NONE"
+        }
+      ],
+      "description": "No known vulnerabilities in immich-machine-learning 2.7.5",
+      "published": "2026-08-23T11:06:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/evergreenimageregistry/immich-machine-learning",
+          "versions": [
+            {
+              "version": "2.7.5",
+              "status": "unaffected"
+            }
+          ],
+          "package": {
+            "name": "immich-machine-learning",
+            "version": "2.7.5"
+          }
+        }
+      ],
+      "status": "resolved"
+    }
+  ]
+}

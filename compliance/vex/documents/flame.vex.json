@@ -1,0 +1,59 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T11:06:37Z",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": [
+        "https://github.com/WyattAu/EvergreenImageRegistry"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "EVERGREEN-FLAME-001",
+      "source": {
+        "name": "Evergreen Image Registry",
+        "url": "https://github.com/WyattAu/EvergreenImageRegistry/images/flame"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "Evergreen Image Registry"
+          },
+          "score": 0,
+          "severity": "NONE"
+        }
+      ],
+      "description": "No known vulnerabilities in flame latest",
+      "published": "2026-08-23T11:06:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/evergreenimageregistry/flame",
+          "versions": [
+            {
+              "version": "latest",
+              "status": "unaffected"
+            }
+          ],
+          "package": {
+            "name": "flame",
+            "version": "latest"
+          }
+        }
+      ],
+      "status": "resolved"
+    }
+  ]
+}

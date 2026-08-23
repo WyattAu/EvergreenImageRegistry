@@ -1,0 +1,59 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T11:06:37Z",
+    "tools": {
+      "services": [
+        {
+          "name": "evergreenctl",
+          "version": "1.0.0",
+          "vendor": "Evergreen Image Registry"
+        }
+      ]
+    },
+    "supplier": {
+      "name": "Evergreen Image Registry",
+      "url": [
+        "https://github.com/WyattAu/EvergreenImageRegistry"
+      ]
+    }
+  },
+  "vulnerabilities": [
+    {
+      "id": "EVERGREEN-TYPESENSE-001",
+      "source": {
+        "name": "Evergreen Image Registry",
+        "url": "https://github.com/WyattAu/EvergreenImageRegistry/images/typesense"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "Evergreen Image Registry"
+          },
+          "score": 0,
+          "severity": "NONE"
+        }
+      ],
+      "description": "No known vulnerabilities in typesense 30.2",
+      "published": "2026-08-23T11:06:37Z",
+      "affected": [
+        {
+          "ref": "pkg:docker/evergreenimageregistry/typesense",
+          "versions": [
+            {
+              "version": "30.2",
+              "status": "unaffected"
+            }
+          ],
+          "package": {
+            "name": "typesense",
+            "version": "30.2"
+          }
+        }
+      ],
+      "status": "resolved"
+    }
+  ]
+}

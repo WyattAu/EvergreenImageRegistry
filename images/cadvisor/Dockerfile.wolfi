@@ -1,0 +1,30 @@
+ARG SHIM_VERSION=v2.0.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM gcr.io/cadvisor/cadvisor:v0.52.1@sha256:f40e65878e25c2e78ea037f73a449527a0fb994e303dc3e34cb6b187b4b91435 AS upstream
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=upstream / /upstream
+
+USER 65532:65532
+
+ENV SHIM_METRICS_ENABLED="true"
+
+EXPOSE 9101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
+
+LABEL org.opencontainers.image.title="cadvisor" \
+      org.opencontainers.image.description="cadvisor - wolfi-base, non-root, with health-shim" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"
+STOPSIGNAL SIGTERM

@@ -9,6 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 ARG VERSION
 ARG TARGETARCH
 RUN apk add --no-cache curl && \
+    mkdir -p /usr/local/bin && \
     curl -fsSL "https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_${TARGETARCH}.tgz" | tar xz -C /usr/local/bin
 
 FROM cgr.dev/chainguard/wolfi-base:latest

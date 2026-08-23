@@ -9,6 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 ARG VERSION
 ARG TARGETARCH
 RUN apk add --no-cache curl && \
+    mkdir -p /usr/local/bin && \
     curl -fsSL "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" | tar xz --strip-components=1 -C /usr/local/bin
 
 FROM cgr.dev/chainguard/wolfi-base:latest

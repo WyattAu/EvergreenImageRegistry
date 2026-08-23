@@ -9,6 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 ARG VERSION
 ARG TARGETARCH
 RUN apk add --no-cache curl unzip && \
+    mkdir -p /usr/local/bin && \
     curl -fsSL "https://releases.hashicorp.com/consul/${VERSION}/consul_${VERSION}_linux_${TARGETARCH}.zip" -o /tmp/consul.zip && \
     unzip /tmp/consul.zip -d /usr/local/bin && \
     rm /tmp/consul.zip

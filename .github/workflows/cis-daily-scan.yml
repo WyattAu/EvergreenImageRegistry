@@ -1,0 +1,58 @@
+name: CIS/STIG Daily Scan
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  cis-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tier: [critical]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+
+      - name: Run CIS scan
+        run: |
+          chmod +x compliance/cis/run_cis_scan.sh
+          ./compliance/cis/run_cis_scan.sh --tier ${{ matrix.tier }} --output cis-results-${{ matrix.tier }}.json
+
+      - name: Generate XCCDF report
+        run: |
+          chmod +x compliance/cis/generate_xccdf.sh
+          ./compliance/cis/generate_xccdf.sh --all --output xccdf-report.xml
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cis-scan-results-${{ matrix.tier }}
+          path: |
+            cis-results-*.json
+            xccdf-report.xml
+          retention-days: 30
+
+      - name: Check compliance threshold
+        run: |
+          if [ -f cis-results-${{ matrix.tier }}.json ]; then
+            python3 -c "
+          import json
+          with open('cis-results-${{ matrix.tier }}.json') as f:
+              results = json.load(f)
+          total = results.get('total', 0)
+          passed = results.get('passed', 0)
+          rate = (passed / total * 100) if total > 0 else 0
+          print(f'CIS Compliance: {passed}/{total} ({rate:.1f}%)')
+          if rate < 90:
+              print(f'ERROR: Compliance rate {rate:.1f}% is below 90% threshold')
+              exit(1)
+          "
+          fi

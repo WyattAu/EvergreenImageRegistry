@@ -1,0 +1,30 @@
+ARG SHIM_VERSION=v2.0.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM taigaio/taiga-back:6.9.0@sha256:70ee08e4416c282437f55b5a5f48e8c3c10390022eac275999366728e227e961 AS upstream
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=upstream / /upstream
+
+USER 65532:65532
+
+ENV SHIM_METRICS_ENABLED="true"
+
+EXPOSE 9101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
+
+LABEL org.opencontainers.image.title="taiga-backend" \
+      org.opencontainers.image.description="taiga-backend - wolfi-base, non-root, with health-shim" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"
+STOPSIGNAL SIGTERM

@@ -1,0 +1,30 @@
+ARG SHIM_VERSION=v2.0.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM docker.elastic.co/kibana/kibana:8.14.0@sha256:7664e34907484444e417bdb91cb2b1b0b9e3868eda0cbd7713e7e711d9764f15 AS upstream
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=upstream / /upstream
+
+USER 65532:65532
+
+ENV SHIM_METRICS_ENABLED="true"
+
+EXPOSE 9101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
+
+LABEL org.opencontainers.image.title="kibana" \
+      org.opencontainers.image.description="kibana - wolfi-base, non-root, with health-shim" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="false"
+LABEL evergreen.security.seccomp="runtime-default"
+STOPSIGNAL SIGTERM

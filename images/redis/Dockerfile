@@ -22,11 +22,12 @@ COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 # Non-root execution
+RUN mkdir -p /data && chown -R 65532:65532 /data
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 
-EXPOSE 6379 9101
+EXPOSE 6380 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]

@@ -12,7 +12,7 @@ USER 70
 ENV SHIM_METRICS_ENABLED="true" \
     PGDATA=/var/lib/postgresql/data
 
-EXPOSE 5432 9101
+EXPOSE 54332 9101
 VOLUME /var/lib/postgresql/data
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -12,6 +12,7 @@ FROM zookeeper
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chown -R 65532:65532 /var/lib/zookeeper 2>/dev/null || true
+RUN mkdir -p /var/lib/zookeeper && chown -R 65532:65532 /var/lib/zookeeper
 USER 65532:65532
 
 ENV SHIM_METRICS_ENABLED="true"

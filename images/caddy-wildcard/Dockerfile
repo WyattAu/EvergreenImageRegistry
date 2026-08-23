@@ -29,7 +29,7 @@ COPY --from=builder /var/cache/caddy /var/cache/caddy
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
-EXPOSE 80 443
+EXPOSE 8080 443
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]

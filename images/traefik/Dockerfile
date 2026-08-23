@@ -23,7 +23,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 
-EXPOSE 80 443 8080 9101
+EXPOSE 8080 443 8080 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]

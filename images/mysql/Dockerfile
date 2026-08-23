@@ -7,6 +7,7 @@ COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
 RUN mkdir -p /var/lib/mysql && chown -R 65532:65532 /var/lib/mysql
+RUN mkdir -p /var/lib/mysql && chown -R 65532:65532 /var/lib/mysql
 USER 65532:65532
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
 
@@ -19,7 +20,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 3306 9101
+EXPOSE 33060 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 LABEL evergreen.image.tier="critical"
 STOPSIGNAL SIGTERM

@@ -17,7 +17,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 22 9101
+EXPOSE 2222 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 LABEL evergreen.image.tier="standard"
 STOPSIGNAL SIGTERM

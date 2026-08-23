@@ -1,21 +1,14 @@
 ARG VERSION=1.36.0
 ARG SHIM_VERSION=v2.0.0
-ARG TARGETARCH=amd64
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-
-ARG VERSION
-ARG TARGETARCH
-RUN apk add --no-cache curl && \
-    mkdir -p /usr/local/bin && \
-    curl -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-${TARGETARCH}.tar.gz" | tar xz -C /usr/local/bin
+FROM vaultwarden/server:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /usr/local/bin/vaultwarden /usr/local/bin/vaultwarden
+COPY --from=upstream /vaultwarden /usr/local/bin/vaultwarden
 
 RUN mkdir -p /data && chown -R 65532:65532 /data
 

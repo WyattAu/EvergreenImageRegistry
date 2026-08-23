@@ -1,21 +1,14 @@
 ARG VERSION=v2.45.1
 ARG SHIM_VERSION=v2.0.0
-ARG TARGETARCH=amd64
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-
-ARG VERSION
-ARG TARGETARCH
-RUN apk add --no-cache curl && \
-    mkdir -p /usr/local/bin && \
-    curl -fsSL "https://github.com/dexidp/dex/releases/download/${VERSION}/dex_${VERSION#v}_linux_${TARGETARCH}.tar.gz" | tar xz --strip-components=1 -C /usr/local/bin
+FROM ghcr.io/dexidp/dex:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /usr/local/bin/dex /usr/local/bin/dex
+COPY --from=upstream /usr/local/bin/dex /usr/local/bin/dex
 
 USER 65532:65532
 

@@ -1,21 +1,14 @@
 ARG VERSION=1.9.0
 ARG SHIM_VERSION=v2.0.0
-ARG TARGETARCH=amd64
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-
-ARG VERSION
-ARG TARGETARCH
-RUN apk add --no-cache curl && \
-    mkdir -p /usr/local/bin && \
-    curl -fsSL "https://github.com/harness/drone/releases/download/${VERSION}/drone_linux_${TARGETARCH}.tar.gz" | tar xz -C /usr/local/bin
+FROM drone/drone:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /usr/local/bin/drone /usr/local/bin/drone
+COPY --from=upstream /bin/drone-server /usr/local/bin/drone-server
 
 USER 65532:65532
 
@@ -26,8 +19,8 @@ EXPOSE 80 9101
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "drone"]
-CMD ["server"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/drone-server"]
+CMD []
 
 LABEL org.opencontainers.image.title="drone" \
       org.opencontainers.image.description="Drone CI - wolfi-base, non-root, with health-shim" \

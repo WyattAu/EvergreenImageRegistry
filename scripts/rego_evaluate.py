@@ -153,6 +153,11 @@ def eval_condition(condition: str, input_data: dict[str, Any]) -> bool:
     # Normalize condition
     cond = condition.strip()
 
+    # Handle compound conditions with AND first, before individual checks
+    if " AND " in cond:
+        parts = cond.split(" AND ")
+        return all(eval_condition(part.strip(), input_data) for part in parts)
+
     # Handle bare truthiness: "input.dockerfile" (just checks it exists/truthy)
     if cond in ("input.dockerfile",):
         return bool(dockerfile)
@@ -161,16 +166,11 @@ def eval_condition(condition: str, input_data: dict[str, Any]) -> bool:
     if cond == "not input.sbom":
         return not sbom
 
-    # Handle input.manifest.tier == "xxx"
-    tier_match = re.match(r'input\.manifest\.tier\s*==\s*"([^"]*)"', cond)
+    # Handle input.manifest.tier == "xxx" (anchored to full condition)
+    tier_match = re.fullmatch(r'input\.manifest\.tier\s*==\s*"([^"]*)"', cond)
     if tier_match:
         expected = tier_match.group(1)
         return tier == expected
-
-    # Handle compound conditions with AND
-    if " AND " in cond:
-        parts = cond.split(" AND ")
-        return all(eval_condition(part.strip(), input_data) for part in parts)
 
     # Handle not contains()
     not_contains_match = re.match(r'not\s+contains\(([^,]+),\s*"([^"]*)"\)', cond)

@@ -151,7 +151,17 @@ jobs:
             echo "::group::Build ${image}"
             local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
             local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
-            
+            # Extract upstream version: Dockerfile ARG VERSION → manifest.toml metadata.version
+            local VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
+            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image}/manifest.toml" ]; then
+              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image}/manifest.toml" 2>/dev/null | head -1)
+            fi
+            if [ -n "$VERSION_TAG" ]; then
+              local VERSIONED_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
+              TAG_FLAGS="${TAG_FLAGS} -t ${VERSIONED_REF}"
+              echo "  Version tag: ${VERSION_TAG}"
+            fi
+
             if [ "${{ inputs.multiarch }}" = "true" ]; then
               # Multi-arch: buildx with QEMU emulation, push directly (no local tarball)
               if timeout 1200 docker buildx build \
@@ -315,9 +325,19 @@ jobs:
               echo "::endgroup::"
               continue
             fi
-            # Push :latest only (reduce GHCR rate limit issues)
+            # Push :latest and versioned tag
             LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
             docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
+            # Extract upstream version: Dockerfile ARG VERSION → manifest.toml metadata.version
+            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
+            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image}/manifest.toml" ]; then
+              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image}/manifest.toml" 2>/dev/null | head -1)
+            fi
+            VERSIONED_REF=""
+            if [ -n "$VERSION_TAG" ]; then
+              VERSIONED_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
+              docker tag "${REF}" "${VERSIONED_REF}" 2>/dev/null || true
+            fi
             PUSH_OK=0
             for attempt in 1 2 3; do
               PUSH_OUTPUT=$(timeout 300 docker push "${LATEST_REF}" 2>&1) && {
@@ -327,18 +347,30 @@ jobs:
               echo "$PUSH_OUTPUT" | tail -5
               sleep 10
             done
+            # Push versioned tag
+            if [ -n "$VERSIONED_REF" ] && [ "$PUSH_OK" = "1" ]; then
+              for attempt in 1 2 3; do
+                timeout 300 docker push "${VERSIONED_REF}" 2>&1 && break
+                sleep 10
+              done
+            fi
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))
               # Set visibility public on GHCR
               GHCR_PKG="evergreenimageregistry%2F${image}"
               gh api -X PATCH "/user/packages/container/${GHCR_PKG}/visibility" \
                 -f visibility=public 2>/dev/null || true
-              # Push to Docker Hub (:latest only)
+              # Push to Docker Hub (:latest + versioned)
               DH_USER="${{ secrets.DOCKERHUB_USERNAME }}"
               if [ -n "$DH_USER" ]; then
                 DH_LATEST="docker.io/${DH_USER}/${image}:latest"
                 docker tag "${REF}" "$DH_LATEST" 2>/dev/null || true
                 timeout 300 docker push "$DH_LATEST" 2>&1 || echo "::warning::${image}: Docker Hub push failed"
+                if [ -n "$VERSION_TAG" ]; then
+                  DH_VERSIONED="docker.io/${DH_USER}/${image}:${VERSION_TAG}"
+                  docker tag "${REF}" "$DH_VERSIONED" 2>/dev/null || true
+                  timeout 300 docker push "$DH_VERSIONED" 2>&1 || echo "::warning::${image}: Docker Hub versioned push failed"
+                fi
               fi
               # Throttle between images
               sleep 2

@@ -1,8 +1,10 @@
-FROM quay.io/keycloak/keycloak:26.0@sha256:09a381c715ab0b111835b70f2905955274843a219c6f27efb348e4d9f4086858
+ARG VERSION=26.6.2
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v1.3.0@sha256:65dca504da1c450fb65423c00afb9cfe4df5949434afaeb392834f9de14ac34a AS shim
+FROM quay.io/keycloak/keycloak:${VERSION}
 
-FROM quay.io/keycloak/keycloak:26.0@sha256:09a381c715ab0b111835b70f2905955274843a219c6f27efb348e4d9f4086858
+FROM ghcr.io/wyattau/evergreenshim/health-shim:v1.3.0 AS shim
+
+FROM quay.io/keycloak/keycloak:${VERSION}
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
 USER 1000

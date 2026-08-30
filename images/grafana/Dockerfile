@@ -30,7 +30,7 @@ ENV SHIM_METRICS_ENABLED="true" \
     GF_PATHS_DATA=/var/lib/grafana \
     GF_PATHS_LOGS=/var/log/grafana \
     GF_PATHS_HOME=/usr/share/grafana \
-    GF_SECURITY_ADMIN_PASSWORD=admin \
+    GF_SECURITY_ADMIN_PASSWORD= \
     PATH="/usr/share/grafana/bin:${PATH}"
 
 EXPOSE 3000 9101

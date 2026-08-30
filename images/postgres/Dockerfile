@@ -27,6 +27,6 @@ STOPSIGNAL SIGTERM
 
 LABEL org.opencontainers.image.title="postgres" \
       org.opencontainers.image.version="${VERSION}" \
-      evergreen.image.tier="standard"
+      evergreen.image.tier="critical"
 
 

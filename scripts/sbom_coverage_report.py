@@ -2,7 +2,7 @@
 """
 Evergreen Image Registry — SBOM Coverage Report
 ================================================
-Generates comprehensive SBOM coverage metrics across all 798 images.
+Generates comprehensive SBOM coverage metrics across active image manifests discovered in the repository.
 Tracks per-tier coverage, package counts, license distribution, and
 produces Prometheus-compatible metrics.
 
@@ -142,7 +142,7 @@ def generate_prometheus(data: dict) -> str:
     # Per-tier coverage
     for tier, counts in sorted(data["by_tier"].items()):
         t = counts["total"]
-        s = counts["valid_sboms"]
+        s = counts["valid_sbom"]
         ratio = s / t if t > 0 else 0
         lines.append(f'eir_sbom_tier_coverage{{tier="{tier}"}} {ratio:.4f}')
     lines.append("")
@@ -216,7 +216,7 @@ def generate_dashboard(data: dict) -> str:
     for tier in ["critical", "standard"]:
         counts = data["by_tier"][tier]
         t = counts["total"]
-        s = counts["valid_sboms"]
+        s = counts["valid_sbom"]
         r = s / t if t > 0 else 0
         md.append(f"| {tier} | {t} | {s} | {r:.1%} |")
     md.append("")

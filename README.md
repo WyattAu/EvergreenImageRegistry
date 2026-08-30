@@ -1,17 +1,17 @@
 # Evergreen Image Registry
 
-Hardened container images for production: 986 images built non-root, distroless, and fully auditable.
+Hardened container images for production, with inventory and coverage metrics generated from the active image tree.
 
 [![Build](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/build.yml?branch=main&style=flat-square&label=CI)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/build.yml)
 [![Nightly Scan](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/nightly-scan.yml?branch=main&style=flat-square&label=Nightly%20Scan)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/nightly-scan.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
-[![Images: 986](https://img.shields.io/badge/images-986-green.svg?style=flat-square)](docs/catalog/index.html)
-[![SBOM Coverage](https://img.shields.io/badge/SBOM-970%2F986%20SPDX%202.3-brightgreen.svg?style=flat-square)](docs/standards.md)
+[![Image catalog](https://img.shields.io/badge/image%20catalog-generated-green.svg?style=flat-square)](docs/catalog/index.html)
+[![SBOM coverage](https://img.shields.io/badge/SBOM%20coverage-generated-brightgreen.svg?style=flat-square)](docs/standards.md)
 
 Evergreen provides a long-term home for open-source container images that vendors have abandoned or moved behind
-paywalls. Every image adheres to a strict set of [Image Standards](docs/standards.md) -- non-root execution, distroless
-bases, mandatory healthchecks, and reproducible builds. Images are built for environments where failure is not an
-option: trading floors, air-gapped networks, and regulated infrastructure.
+paywalls. Images target a strict set of [Image Standards](docs/standards.md), including non-root execution, minimal runtime
+bases, healthchecks where supported, and reproducible-build controls. Coverage is measured by generated reports; these
+artifacts are not a substitute for deployment-specific verification.
 
 ## Quick Start
 
@@ -38,23 +38,25 @@ docker pull ghcr.io/wyattau/evergreenimageregistry/redis@sha256:<digest>
 
 | Hardening Control             | Coverage          | Standard Reference       |
 | ----------------------------- | ----------------- | ------------------------ |
-| Non-root execution            | 98.9% (975/986)   | CIS 4.5.1                |
-| HEALTHCHECK instruction       | 99.8% (984/986)   | Docker best practice     |
-| SBOM (SPDX 2.3)               | 98.4% (970/986)   | NIST SP 800-218          |
-| Digest-pinned final stages    | 76.4% (1512/1979) | Supply chain integrity   |
-| All-stage FROM digest pinning | 76.4% (1512/1979) | Supply chain integrity   |
-| CAP_DROP ALL documented       | 100%              | CIS 4.5.3                |
-| no-new-privileges documented  | 100%              | CIS 4.5.1                |
-| Multi-stage builds            | 100%              | Attack surface reduction |
-| SOURCE_DATE_EPOCH             | 100%              | Reproducible builds      |
-| No hardcoded secrets          | 100%              | NIST SP 800-53 SC-12     |
+| Non-root execution            | Generated         | CIS 4.5.1                |
+| HEALTHCHECK instruction       | Generated         | Docker best practice     |
+| SBOM (SPDX 2.3)               | Generated         | NIST SP 800-218          |
+| Digest-pinned final stages    | Generated         | Supply chain integrity   |
+| Critical-tier FROM pinning    | Blocking in CI    | Supply chain integrity   |
+| Standard-tier FROM pinning    | Tracked debt      | Supply chain integrity   |
+| CAP_DROP ALL documented       | Policy target     | CIS 4.5.3                |
+| no-new-privileges documented  | Policy target     | CIS 4.5.1                |
+| Multi-stage builds            | Generated         | Attack surface reduction |
+| SOURCE_DATE_EPOCH             | Build control     | Reproducible builds      |
+| No hardcoded secrets          | Generated         | NIST SP 800-53 SC-12     |
 
-All images use distroless or wolfi-base final stages. Build tools, compilers, and package managers are never present in
-the runtime image.
+Images are intended to use approved minimal final stages. Build tools, compilers, and package managers should be
+excluded from runtime images; the validation pipeline remains the authoritative source for coverage.
 
 ## Image Catalog
 
-Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) -- 986 images across 16 categories:
+Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html). The catalog generator derives the
+current image count and categories from active image directories:
 
 | Category   | Count | Category          | Count |
 | ---------- | ----- | ----------------- | ----- |

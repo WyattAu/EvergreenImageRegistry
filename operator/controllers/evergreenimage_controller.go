@@ -14,12 +14,12 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
-	"k8s.io/client-go/tools/record"
 
 	evergreenv1 "github.com/WyattAu/EvergreenImageRegistry/operator/api/v1"
 )
@@ -54,7 +54,7 @@ func (r *EvergreenImageReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	latestTag, latestDigest, err := r.Registry.GetLatestTag(image.Spec.Image, image.Spec.Tag)
 	if err != nil {
 		r.Recorder.Event(&image, corev1.EventTypeWarning, "RegistryError", err.Error())
-		return ctrl.Result{RequeueAfter: 5 * time.Minute}, nil
+		return ctrl.Result{RequeueAfter: 5 * time.Minute}, err
 	}
 
 	if image.Status.CurrentDigest == latestDigest {
@@ -62,8 +62,15 @@ func (r *EvergreenImageReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	// Validate
-	if r.Policy != nil {
-		pass, violations, _ := r.Policy.Validate(image.Spec.Image, latestTag)
+	if r.Policy == nil {
+		return ctrl.Result{RequeueAfter: 5 * time.Minute}, fmt.Errorf("policy engine is not configured")
+	}
+	{
+		pass, violations, err := r.Policy.Validate(image.Spec.Image, latestTag)
+		if err != nil {
+			logger.Error(err, "policy validation failed")
+			return ctrl.Result{RequeueAfter: 5 * time.Minute}, err
+		}
 		if !pass {
 			msg := fmt.Sprintf("violations: %d", len(violations))
 			r.Recorder.Event(&image, corev1.EventTypeWarning, "PolicyViolation", msg)
@@ -73,15 +80,17 @@ func (r *EvergreenImageReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	// Update deployments if auto-update enabled
 	if image.Spec.AutoUpdate {
-		r.updateDeployments(ctx, &image, image.Spec.Image, latestTag)
+		if err := r.updateDeployments(ctx, &image, image.Spec.Image, latestTag); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	// Update status
 	image.Status.CurrentTag = latestTag
 	image.Status.CurrentDigest = latestDigest
 	image.Status.LastUpdated = &metav1.Time{Time: time.Now()}
-	image.Status.SBOMStatus = "valid"
-	image.Status.ComplianceStatus = "passing"
+	image.Status.SBOMStatus = "unknown"
+	image.Status.ComplianceStatus = "unknown"
 
 	if err := r.Status().Update(ctx, &image); err != nil {
 		return ctrl.Result{}, err
@@ -90,11 +99,11 @@ func (r *EvergreenImageReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	return ctrl.Result{RequeueAfter: 15 * time.Minute}, nil
 }
 
-func (r *EvergreenImageReconciler) updateDeployments(ctx context.Context, image *evergreenv1.EvergreenImage, imgName, tag string) {
+func (r *EvergreenImageReconciler) updateDeployments(ctx context.Context, image *evergreenv1.EvergreenImage, imgName, tag string) error {
 	logger := log.FromContext(ctx)
 	var deployments appsv1.DeploymentList
 	if err := r.List(ctx, &deployments, client.InNamespace(image.Namespace)); err != nil {
-		return
+		return err
 	}
 	for i := range deployments.Items {
 		dep := &deployments.Items[i]
@@ -103,10 +112,12 @@ func (r *EvergreenImageReconciler) updateDeployments(ctx context.Context, image 
 				dep.Spec.Template.Spec.Containers[j].Image = imgName + ":" + tag
 				if err := r.Update(ctx, dep); err != nil {
 					logger.Error(err, "update failed", "name", dep.Name)
+					return err
 				}
 			}
 		}
 	}
+	return nil
 }
 
 func (r *EvergreenImageReconciler) SetupWithManager(mgr ctrl.Manager) error {

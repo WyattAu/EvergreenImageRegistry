@@ -425,6 +425,9 @@ images/forgejo/forgejo/
 *.tar
 .pytest_cache/
 
+# Local Python environment
+.venv/
+
 # Generated artifacts
 .registry.db
 dashboard.html

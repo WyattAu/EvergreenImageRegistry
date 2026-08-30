@@ -7,6 +7,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"sort"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -15,11 +16,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"k8s.io/client-go/tools/record"
 
 	evergreenv1 "github.com/WyattAu/EvergreenImageRegistry/operator/api/v1"
 )
@@ -54,6 +55,10 @@ func (r *ComplianceReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		images = r.getAllImages(ctx)
 	}
 
+	if r.Policy == nil {
+		return ctrl.Result{RequeueAfter: 5 * time.Minute}, fmt.Errorf("policy engine is not configured")
+	}
+
 	var violations []PolicyViolation
 	ruleIDs := make([]string, 0, len(policy.Spec.Rules))
 	for _, rule := range policy.Spec.Rules {
@@ -64,7 +69,7 @@ func (r *ComplianceReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		results, err := r.Policy.Evaluate(img, ruleIDs)
 		if err != nil {
 			logger.Error(err, "evaluation failed", "image", img)
-			continue
+			return ctrl.Result{RequeueAfter: 5 * time.Minute}, err
 		}
 		for _, result := range results {
 			if result.Status == "fail" {
@@ -117,6 +122,7 @@ func (r *ComplianceReconciler) getNamespaceImages(ctx context.Context, namespace
 	for img := range images {
 		result = append(result, img)
 	}
+	sort.Strings(result)
 	return result
 }
 
@@ -135,6 +141,7 @@ func (r *ComplianceReconciler) getAllImages(ctx context.Context) []string {
 	for img := range images {
 		result = append(result, img)
 	}
+	sort.Strings(result)
 	return result
 }
 

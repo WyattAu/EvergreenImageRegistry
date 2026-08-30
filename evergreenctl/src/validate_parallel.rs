@@ -404,16 +404,25 @@ impl Constraint for C006DigestPinning {
             .filter(|l| l.trim().starts_with("FROM "))
             .collect();
         let pinned = from_lines.iter().filter(|l| l.contains("@sha256:")).count();
-        let total = from_lines.len();
-        let (status, message) = if total == 0 || pinned > 0 {
+        let applicable_total = from_lines
+            .iter()
+            .filter(|line| !line.to_lowercase().contains("from scratch"))
+            .count();
+        let (status, message) = if applicable_total == 0 || pinned == applicable_total {
             (
                 ConstraintStatus::Pass,
-                format!("{}/{} FROM lines pinned", pinned, total),
+                format!(
+                    "{}/{} applicable FROM lines pinned",
+                    pinned, applicable_total
+                ),
             )
         } else {
             (
                 ConstraintStatus::Fail,
-                format!("0/{} FROM lines digest-pinned", total),
+                format!(
+                    "{}/{} applicable FROM lines digest-pinned",
+                    pinned, applicable_total
+                ),
             )
         };
         ConstraintResult {
@@ -1849,7 +1858,8 @@ LABEL evergreen.security.read-only-rootfs="true"
         );
     }
 
-    #[test]     fn test_c003_repack_no_longer_exempt() {
+    #[test]
+    fn test_c003_repack_no_longer_exempt() {
         // Repack images MUST have explicit USER 65532 — no more exemptions
         let ctx = ConstraintContext {
             name: "test-repack",

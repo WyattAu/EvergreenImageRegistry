@@ -89,6 +89,8 @@ pub enum PolicyDomain {
     SupplyChain,
     #[serde(rename = "runtime")]
     Runtime,
+    #[serde(rename = "security")]
+    Security,
     #[serde(rename = "compliance")]
     Compliance,
     #[serde(rename = "custom")]
@@ -121,7 +123,10 @@ pub struct PolicyInput {
 // Built-in policy bundles
 // ---------------------------------------------------------------------------
 
-/// Returns the 10 built-in Rego policy bundles
+/// Returns the 10 built-in policy bundles.
+///
+/// The rules are exported as Rego source, but evaluation is intentionally not
+/// performed in this crate until an OPA/Wasm backend is configured.
 pub fn built_in_policies() -> Vec<PolicyBundle> {
     vec![
         dockerfile_security_policy(),
@@ -570,7 +575,11 @@ impl PolicyEngine {
         Ok(engine)
     }
 
-    /// Evaluate all policies against an input
+    /// Evaluate all policies against an input.
+    ///
+    /// This compatibility evaluator is intentionally conservative and is not a
+    /// Rego interpreter. It emits `Error` for rules it cannot evaluate rather
+    /// than incorrectly reporting them as passing.
     pub fn evaluate(&self, input: &PolicyInput) -> Vec<PolicyResult> {
         let mut results = Vec::new();
 
@@ -586,7 +595,6 @@ impl PolicyEngine {
 
     /// Evaluate a single rule
     fn evaluate_rule(&self, rule: &PolicyRule, input: &PolicyInput) -> PolicyResult {
-        // Simplified evaluation — in production, use OPA via REST API
         let status = self.rego_evaluate(&rule.rego_code, input);
 
         PolicyResult {
@@ -594,25 +602,38 @@ impl PolicyEngine {
             rule: rule.name.clone(),
             severity: rule.severity,
             status,
-            message: rule.description.clone(),
+            message: match status {
+                PolicyStatus::Error => "Policy evaluator unavailable for this rule".to_string(),
+                _ => rule.description.clone(),
+            },
             image: input.image.clone(),
             remediation: Some(rule.remediation.clone()),
         }
     }
 
-    /// Simplified Rego evaluation (stub — in production, call OPA REST API)
-    fn rego_evaluate(&self, _rego_code: &str, input: &PolicyInput) -> PolicyStatus {
-        // In production: POST to OPA at localhost:8181/v1/data/evergreen/deny
-        // For now: basic string matching against Dockerfile content
-        if let Some(ref dockerfile) = input.dockerfile {
-            if dockerfile.contains("alpine") {
-                return PolicyStatus::Fail;
-            }
-            if !dockerfile.contains("USER 65532") {
-                return PolicyStatus::Fail;
-            }
-        }
+    /// Conservative compatibility evaluation for the two legacy checks.
+    ///
+    /// Rules outside this explicitly supported subset return `Error`. This
+    /// prevents an unavailable Rego runtime from creating false passes.
+    fn rego_evaluate(&self, rego_code: &str, input: &PolicyInput) -> PolicyStatus {
+        let dockerfile = match input.dockerfile.as_deref() {
+            Some(value) => value,
+            None => return PolicyStatus::Error,
+        };
 
+        let is_alpine_rule = rego_code.contains("Alpine base images are BANNED");
+        let is_non_root_rule = rego_code.contains("USER 65532")
+            && rego_code.contains("non-root");
+
+        if !is_alpine_rule && !is_non_root_rule {
+            return PolicyStatus::Error;
+        }
+        if is_alpine_rule && dockerfile.to_ascii_lowercase().contains("alpine") {
+            return PolicyStatus::Fail;
+        }
+        if is_non_root_rule && !dockerfile.contains("USER 65532") {
+            return PolicyStatus::Fail;
+        }
         PolicyStatus::Pass
     }
 
@@ -663,9 +684,12 @@ mod tests {
         let results = engine.evaluate(&input);
         assert!(!results.is_empty());
 
-        // Should pass for clean Dockerfile
-        let fails: Vec<_> = results.iter().filter(|r| r.status == PolicyStatus::Fail).collect();
-        assert!(fails.is_empty(), "Clean Dockerfile should pass all policies");
+        let fails: Vec<_> = results
+            .iter()
+            .filter(|r| r.status == PolicyStatus::Fail)
+            .collect();
+        assert!(fails.is_empty(), "Clean Dockerfile should pass supported policies");
+        assert!(results.iter().any(|r| r.status == PolicyStatus::Error));
     }
 
     #[test]
@@ -680,7 +704,10 @@ mod tests {
         };
 
         let results = engine.evaluate(&input);
-        let fails: Vec<_> = results.iter().filter(|r| r.status == PolicyStatus::Fail).collect();
+        let fails: Vec<_> = results
+            .iter()
+            .filter(|r| r.status == PolicyStatus::Fail)
+            .collect();
         assert!(!fails.is_empty(), "Alpine Dockerfile should fail");
     }
 }

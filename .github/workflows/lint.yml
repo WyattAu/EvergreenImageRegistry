@@ -35,11 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install hadolint
-        run: |
-          curl -sSfL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
-            -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
+        uses: hadolint/hadolint-action@3fcf8f2c5a5b5f6f8e8e4e3c6b4e6d8a7b6c5d4e
       - name: Run hadolint
-        continue-on-error: true
         run: |
           find images/ -name 'Dockerfile' -not -path 'images/_wip/*' -not -path 'images/_archive/*' -print0 | \
             xargs -0 hadolint --failure-threshold error
@@ -94,7 +91,7 @@ jobs:
         run: cargo clippy --manifest-path evergreenctl/Cargo.toml -- -D warnings
       - name: Run cargo audit
         run: |
-          cargo install cargo-audit --locked 2>/dev/null || true
+          cargo install cargo-audit --locked
           cd evergreenctl && cargo audit
       - name: Run cargo test
         run: cargo test --manifest-path evergreenctl/Cargo.toml
@@ -152,14 +149,88 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Check for unpinned FROM lines
         run: |
-          UNPINNED=$(grep -rn '^FROM ' images/*/Dockerfile 2>/dev/null | grep -v '@sha256:' | grep -v 'FROM scratch' | grep -v 'FROM SCRATCH' || true)
-          if [ -n "$UNPINNED" ]; then
-            COUNT=$(echo "$UNPINNED" | wc -l)
-            echo "::warning::$COUNT unpinned FROM lines found (supply chain integrity)"
-            echo "$UNPINNED"
-          else
-            echo "All FROM lines are pinned or scratch"
-          fi
+          python3 - <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          unpinned = []
+          for manifest in sorted(Path('images').glob('*/manifest.toml')):
+              directory = manifest.parent
+              dockerfile = directory / 'Dockerfile'
+              if not dockerfile.exists():
+                  continue
+              tier_match = re.search(r'^tier\\s*=\\s*["\\']([^"\\']+)', manifest.read_text(), re.M)
+              raw_tier = tier_match.group(1) if tier_match else 'standard'
+              tier = {'1': 'critical', '2': 'standard', '3': 'standard'}.get(raw_tier.lower(), raw_tier.lower())
+              dockerfile_text = dockerfile.read_text(errors='replace')
+              label_tiers = re.findall(r'evergreen\\.image\\.tier\\s*=\\s*["\\']([^"\\']+)', dockerfile_text, re.I)
+              if label_tiers and {'1': 'critical', '2': 'standard', '3': 'standard'}.get(label_tiers[-1].lower(), label_tiers[-1].lower()) != tier:
+                  print(f'::error::Tier metadata conflict in {directory}')
+                  sys.exit(1)
+              for number, line in enumerate(dockerfile.read_text(errors='replace').splitlines(), 1):
+                  if line.strip().upper().startswith('FROM ') and '@sha256:' not in line and line.strip().lower() != 'from scratch':
+                      unpinned.append((tier, f'{dockerfile}:{number}: {line}'))
+          critical = [entry for tier, entry in unpinned if tier == 'critical']
+          standard = [entry for tier, entry in unpinned if tier != 'critical']
+          if critical:
+              print('::error::Unpinned FROM lines in critical-tier images:')
+              print('\\n'.join(critical))
+              sys.exit(1)
+          if standard:
+              print(f'::warning::{len(standard)} unpinned FROM lines remain in standard-tier images')
+              print('\\n'.join(standard))
+          else:
+              print('All FROM lines are pinned or scratch')
+          PY
+
+  # Canonical repository inventory
+  inventory-validation:
+    name: Canonical Inventory Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.12'
+      - name: Generate canonical inventory
+        run: python3 scripts/inventory_report.py --json /tmp/inventory.json
+      - name: Generate critical pinning worklist
+        run: python3 scripts/critical_pinning_worklist.py --json /tmp/critical-pinning-worklist.json
+      - name: Upload critical pinning worklist
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: critical-pinning-worklist
+          path: /tmp/critical-pinning-worklist.json
+          retention-days: 30
+      - name: Resolve eligible critical references (read-only)
+        run: python3 scripts/resolve_critical_digests.py /tmp/critical-pinning-worklist.json --json /tmp/critical-digest-resolutions.json
+      - name: Upload digest resolution report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: critical-digest-resolutions
+          path: /tmp/critical-digest-resolutions.json
+          retention-days: 30
+      - name: Validate inventory invariants
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('/tmp/inventory.json').read_text())
+          total = report['total_images']
+          assert total == len(report['images'])
+          assert report['with_valid_sbom'] <= report['with_sbom'] <= total
+          for key in ('with_user', 'with_healthcheck', 'all_from_pinned', 'critical_total', 'critical_from_pinned', 'standard_unpinned'):
+              assert 0 <= report[key] <= total
+          assert report['critical_from_pinned'] <= report['critical_total']
+          assert report['critical_unpinned'] == report['critical_total'] - report['critical_from_pinned']
+          assert report['tier_conflicts'] == 0
+          assert report['invalid_tiers'] == 0
+          print(f"Critical pinning: {report['critical_from_pinned']}/{report['critical_total']} fully pinned")
+          print(f"Canonical inventory: {total} active images")
+          print(f"SBOM: {report['with_valid_sbom']}/{total} valid")
+          PY
 
   # Go code quality
   go-quality:
@@ -190,7 +261,6 @@ jobs:
         run: |
           curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash -s -- latest /usr/local/bin
       - name: Run actionlint
-        continue-on-error: true
         run: actionlint .github/workflows/*.yml
 
   # Validate all manifest.toml files
@@ -283,7 +353,6 @@ jobs:
     name: Version Drift Detection
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install Rust toolchain
@@ -292,7 +361,6 @@ jobs:
         run: cargo build --release
         working-directory: evergreenctl
       - name: Check version mismatches
-        continue-on-error: true
         run: |
           # Use 'drift' command per-image (validate-strict doesn't exist)
           MISMATCHES=0
@@ -308,9 +376,6 @@ jobs:
           done
           if [ "$MISMATCHES" -gt 0 ]; then
             echo "::warning::${MISMATCHES} version mismatches detected (non-blocking)"
-          else
-            echo "No version drift detected"
-          fi
           else
             echo "No version drift detected"
           fi

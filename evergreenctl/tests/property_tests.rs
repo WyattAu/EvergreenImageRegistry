@@ -11,6 +11,7 @@
 // =============================================================================
 
 use proptest::prelude::*;
+use std::io::Write;
 
 // ---------------------------------------------------------------------------
 // Helpers: generate valid semver strings
@@ -184,7 +185,6 @@ proptest! {
         tier in "[123]"
     ) {
         use evergreenctl::manifest::Manifest;
-        use std::io::Write;
 
         let content = format!(
             r#"
@@ -432,7 +432,6 @@ proptest! {
     #[test]
     fn test_sha256_deterministic(data in prop::collection::vec(any::<u8>(), 0..10000)) {
         use evergreenctl::verify::sha256_file;
-        use std::io::Write;
 
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("test.bin");

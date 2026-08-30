@@ -136,7 +136,7 @@ mod tests {
             count: 1,
         };
         // Unknown format defaults to text
-        let result = format_result(&data, "xml", |d| format!("{}", d.name)).unwrap();
+        let result = format_result(&data, "xml", |d| d.name.to_string()).unwrap();
         assert_eq!(result, "test");
     }
 }

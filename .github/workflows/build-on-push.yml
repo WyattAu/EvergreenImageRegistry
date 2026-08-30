@@ -78,20 +78,11 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install hadolint
-        run: |
-          curl -sSfL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
-            -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
+        uses: hadolint/hadolint-action@3fcf8f2c5a5b5f6f8e8e4e3c6b4e6d8a7b6c5d4e
       - name: Install shimctl
-        run: |
-          cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked 2>&1 || \
-            echo "::warning::shimctl install failed (non-blocking)"
+        run: cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked
       - name: Verify shimctl version
-        run: |
-          if command -v shimctl &>/dev/null; then
-            shimctl --version 2>&1 || echo "shimctl installed but version check failed"
-          else
-            echo "::warning::shimctl not available"
-          fi
+        run: shimctl --version
       - name: Get changed image list
         id: images
         run: |
@@ -99,20 +90,32 @@ jobs:
           IMAGES=$(echo "$MATRIX" | python3 -c "import json,sys; d=json.load(sys.stdin); print(','.join(b['images'] for b in d['include']))" 2>/dev/null)
           echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
       - name: Run hadolint
-        continue-on-error: true
         run: |
           IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images }}"
+          FAILURES=0
           for img in "${IMAGE_LIST[@]}"; do
             [ -z "$img" ] && continue
             DF="images/${img}/Dockerfile"
-            [ ! -f "$DF" ] && continue
-            hadolint --failure-threshold error "$DF" \
+            if [ ! -f "$DF" ]; then
+              echo "::error::Missing Dockerfile for ${img}"
+              FAILURES=$((FAILURES+1))
+              continue
+            fi
+            if hadolint --failure-threshold error "$DF" \
               --ignore DL3018 --ignore DL3008 --ignore DL3016 --ignore DL3059 \
               --ignore DL3048 --ignore DL3021 --ignore DL3045 --ignore DL3007 \
               --ignore DL1000 --ignore DL4006 --ignore DL4005 --ignore DL4004 \
-              --ignore DL4001 --ignore DL3003 --ignore DL3025 --ignore DL3023 \
-              2>&1 && echo "PASS: ${img}" || echo "WARN: ${img} has lint issues"
+              --ignore DL4001 --ignore DL3003 --ignore DL3025 --ignore DL3023; then
+              echo "PASS: ${img}"
+            else
+              echo "::error::${img} has lint issues"
+              FAILURES=$((FAILURES+1))
+            fi
           done
+          if [ "$FAILURES" -gt 0 ]; then
+            echo "::error::${FAILURES} changed image(s) failed hadolint"
+            exit 1
+          fi
 
       - name: Validate entrypoint patterns (BLOCKING)
         run: |

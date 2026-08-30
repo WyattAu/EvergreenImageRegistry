@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a static HTML catalog of all Docker images in the repository."""
+"""Generate a static HTML catalog of active Docker images in the repository."""
 
 import json
 import logging
@@ -1483,7 +1483,7 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     images = scan_images()
     html_content = generate_html(images)
-    OUTPUT_FILE.write_text(html_content, encoding="utf-8")
+    OUTPUT_FILE.write_text(html_content.rstrip() + "\n", encoding="utf-8")
     logger.info("Generated catalog with %d images -> %s", len(images), OUTPUT_FILE)
     categories = defaultdict(int)
     for img in images:

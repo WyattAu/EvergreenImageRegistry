@@ -101,7 +101,6 @@ jobs:
           fi
 
       - name: CIS 4.4.3 — No shell in final stage
-        continue-on-error: true
         run: |
           DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
 
@@ -117,14 +116,14 @@ jobs:
             HAS_SHELL_INSTALL=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | \
               grep -cP '(apk add|apt-get install|dnf install|yum install).*(bash|sh|coreutils)' || true)
             if [ "$HAS_SHELL_INSTALL" -gt 0 ]; then
-              echo "::warning::CIS 4.4.3 WARN: Shell installed in final stage"
+              echo "::error::CIS 4.4.3 FAIL: Shell installed in final stage"
+              exit 1
             else
               echo "✅ CIS 4.4.3: No shell installation in final stage"
             fi
           fi
 
       - name: CIS 4.4.3 — No package manager in final stage
-        continue-on-error: true
         run: |
           DOCKERFILE="images/${{ matrix.image }}/Dockerfile"
 
@@ -133,7 +132,8 @@ jobs:
             HAS_PKG_INSTALL=$(tail -n +"$LAST_STAGE_LINE" "$DOCKERFILE" | \
               grep -cP '^\s*(RUN\s+)?(apk add|apt-get install|dnf install|yum install)' || true)
             if [ "$HAS_PKG_INSTALL" -gt 0 ]; then
-              echo "::warning::CIS 4.4.3 WARN: Package manager used in final stage (${HAS_PKG_INSTALL} installs)"
+              echo "::error::CIS 4.4.3 FAIL: Package manager used in final stage (${HAS_PKG_INSTALL} installs)"
+              exit 1
             else
               echo "✅ CIS 4.4.3: No package manager usage in final stage"
             fi

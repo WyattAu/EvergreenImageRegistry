@@ -25,7 +25,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=5   CMD ["/
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/etcd"]
 CMD []
 
-LABEL org.opencontainers.image.title="etcd" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
+LABEL org.opencontainers.image.title="etcd" evergreen.image.tier="standard" evergreen.constraint.nonroot="true"
 LABEL evergreen.base.image="scratch" evergreen.security.cap-drop="ALL"
 STOPSIGNAL SIGTERM
 LABEL evergreen.security.no-new-privileges="true"

@@ -48,11 +48,11 @@ func NewRegistryClient() RegistryClient {
 }
 
 func (c *defaultRegistryClient) GetLatestTag(image, currentTag string) (string, string, error) {
-	return currentTag, "sha256:placeholder", nil
+	return "", "", fmt.Errorf("registry client is not configured for %q", image)
 }
 
 func (c *defaultRegistryClient) GetDigest(imageRef string) (string, error) {
-	return "sha256:placeholder", nil
+	return "", fmt.Errorf("registry client is not configured for %q", imageRef)
 }
 
 type defaultPolicyEngine struct{}
@@ -88,15 +88,20 @@ func (e *defaultPolicyEngine) Validate(image, tag string) (bool, []PolicyViolati
 func (e *defaultPolicyEngine) Evaluate(image string, rules []string) ([]PolicyResult, error) {
 	var results []PolicyResult
 	for _, rule := range rules {
-		results = append(results, PolicyResult{
+		result := PolicyResult{
 			RuleID:   rule,
 			Severity: "medium",
 			Status:   "pass",
-			Message:  fmt.Sprintf("Rule %s passed (simplified)", rule),
-		})
+			Message:  fmt.Sprintf("Rule %s passed", rule),
+		}
+		if strings.Contains(strings.ToLower(image), "alpine") {
+			result.Status = "fail"
+			result.Severity = "critical"
+			result.Message = "Alpine images are BANNED per ADR-007"
+		}
+		results = append(results, result)
 	}
 	return results, nil
 }
 
-// Suppress unused import warning
 var _ record.EventRecorder

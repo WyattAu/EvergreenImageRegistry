@@ -23,5 +23,5 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 8080 50000 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
-LABEL evergreen.image.tier="standard"
+LABEL evergreen.image.tier="critical"
 STOPSIGNAL SIGTERM

@@ -64,7 +64,7 @@ class TestValidateDockerfileHealthcheck:
 
 class TestValidateDockerfileFileNotFound:
     def test_missing_file_fails(self, tmp_path):
-        _ = validate_dockerfile(str(tmp_path / "nonexistent"))
+        result = validate_dockerfile(str(tmp_path / "nonexistent"))
         assert result is False
 
 

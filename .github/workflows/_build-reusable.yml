@@ -67,7 +67,9 @@ jobs:
           fetch-depth: 0
 
       - name: Set SOURCE_DATE_EPOCH
-        run: echo "SOURCE_DATE_EPOCH=$(date -u +%s)" >> "$GITHUB_ENV"
+        run: |
+          SOURCE_DATE_EPOCH=$(git show -s --format=%ct "${{ github.sha }}")
+          echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}" >> "$GITHUB_ENV"
 
       - name: Resolve tag
         id: resolve-tag
@@ -154,7 +156,7 @@ jobs:
               # Multi-arch: buildx with QEMU emulation, push directly (no local tarball)
               if timeout 1200 docker buildx build \
                   ${TAG_FLAGS} \
-                  --platform linux/amd64,linux/arm64 \
+                  --platform linux/amd64,linux/arm64,linux/s390x,linux/ppc64le \
                   --build-arg "BUILD_DATE=${TAG}" \
                   --build-arg "VCS_REF=${TAG}" \
                   --build-arg "SHIM_VERSION=v1.3.0" \
@@ -197,7 +199,7 @@ jobs:
               TAR="/tmp/images/${SAFE}.tar"
               if [ "${{ inputs.multiarch }}" != "true" ] && [ -f "$TAR" ]; then
                 echo "::group::Smoke test ${image}"
-                docker load -i "$TAR" 2>/dev/null || true
+                docker load -i "$TAR" 2>/dev/null || { echo "::error::${image}: failed to load built image"; exit 1; }
                 CONTAINER_ID=$(docker create "${REGISTRY}/${OWNER}/${image}:${TAG}" 2>/dev/null || echo "")
                 if [ -n "$CONTAINER_ID" ]; then
                   if docker cp "${CONTAINER_ID}:/usr/local/bin/shim" /dev/null 2>/dev/null; then
@@ -226,11 +228,11 @@ jobs:
           echo "Batch ${{ matrix.batch }}: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
           echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
           if [ "${FAILED}" -gt 0 ]; then
-            echo "::warning::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
+            echo "::error::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
+            exit 1
           fi
-          # Fail the step if NO images were built (all failed)
-          if [ "${BUILT}" -eq 0 ] && [ "${FAILED}" -gt 0 ]; then
-            echo "::error::All ${FAILED} images failed to build in batch ${{ matrix.batch }}"
+          if [ "${BUILT}" -eq 0 ]; then
+            echo "::error::No images were built in batch ${{ matrix.batch }}"
             exit 1
           fi
 
@@ -248,7 +250,6 @@ jobs:
 
       - name: Enforce image size limit
         if: always() && !inputs.multiarch
-        continue-on-error: true
         run: |
           LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048}
           EXCEEDED=0
@@ -376,29 +377,40 @@ jobs:
               SIGNED=$((SIGNED+1))
               echo "  ✅ Signed ${image}"
             else
-              echo "  ⚠️ Sign failed for ${image} (non-blocking)"
+              echo "  ❌ Sign failed for ${image}"
+              FAILED=$((FAILED+1))
+              echo "::endgroup::"
+              continue
             fi
 
             # 2. Generate SPDX SBOM from the built image (not the Dockerfile context)
             SBOM_SPDX="./images/${image}/sbom.spdx.json"
             if syft scan "$REF" -o spdx-json > "$SBOM_SPDX" 2>/dev/null; then
               echo "  ✅ SPDX SBOM generated for ${image}"
-              # Attest SPDX SBOM
-              cosign attest --yes --predicate "$SBOM_SPDX" --type spdxjson "$REF" 2>&1 && \
-                echo "  ✅ SPDX attested" || echo "  ⚠️ SPDX attest failed"
+              if cosign attest --yes --predicate "$SBOM_SPDX" --type spdxjson "$REF" 2>&1; then
+                echo "  ✅ SPDX attested"
+              else
+                echo "  ❌ SPDX attest failed"
+                FAILED=$((FAILED+1))
+              fi
             else
-              echo "  ⚠️ SPDX generation failed for ${image}"
+              echo "  ❌ SPDX generation failed for ${image}"
+              FAILED=$((FAILED+1))
             fi
 
             # 3. Generate CycloneDX SBOM
             SBOM_CDX="./images/${image}/sbom.cyclonedx.json"
             if syft scan "$REF" -o cyclone-dx-json > "$SBOM_CDX" 2>/dev/null; then
               echo "  ✅ CycloneDX SBOM generated for ${image}"
-              # Attest CycloneDX SBOM
-              cosign attest --yes --predicate "$SBOM_CDX" --type cyclonedx "$REF" 2>&1 && \
-                echo "  ✅ CycloneDX attested" || echo "  ⚠️ CycloneDX attest failed"
+              if cosign attest --yes --predicate "$SBOM_CDX" --type cyclonedx "$REF" 2>&1; then
+                echo "  ✅ CycloneDX attested"
+              else
+                echo "  ❌ CycloneDX attest failed"
+                FAILED=$((FAILED+1))
+              fi
             else
-              echo "  ⚠️ CycloneDX generation failed for ${image}"
+              echo "  ❌ CycloneDX generation failed for ${image}"
+              FAILED=$((FAILED+1))
             fi
 
             # 4. Generate SLSA provenance attestation
@@ -409,13 +421,21 @@ jobs:
             RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
             BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "{\"builder\":{\"id\":\"github-actions:${RUN_ID}\"},\"buildType\":\"https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml\",\"invocation\":{\"configSource\":{\"uri\":\"git+${{ github.server_url }}/${{ github.repository }}\",\"digest\":{\"sha1\":\"${{ github.sha }}\"}},\"parameters\":{\"image\":\"${image}\",\"tag\":\"${TAG}\",\"tier\":\"${{ inputs.tier }}\"}},\"buildConfig\":{\"image\":\"${image}\",\"sha\":\"${{ github.sha }}\"},\"metadata\":{\"buildStartedOn\":\"${BUILD_DATE}\",\"completeness\":{\"parameters\":true,\"environment\":true,\"materials\":true},\"reproducible\":false}}" > "$PROV_FILE"
-            cosign attest --yes --predicate "$PROV_FILE" --type slsaprovenance "$REF" 2>&1 && \
-              ATTESTED=$((ATTESTED+1)) && echo "  ✅ SLSA provenance attested" || \
-              echo "  ⚠️ SLSA attest failed"
+            if cosign attest --yes --predicate "$PROV_FILE" --type slsaprovenance "$REF" 2>&1; then
+              ATTESTED=$((ATTESTED+1))
+              echo "  ✅ SLSA provenance attested"
+            else
+              echo "  ❌ SLSA attest failed"
+              FAILED=$((FAILED+1))
+            fi
 
             echo "::endgroup::"
           done
-          echo "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} skipped"
+          echo "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} failed"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::error::${FAILED} image attestation operation(s) failed in batch ${{ matrix.batch }}"
+            exit 1
+          fi
 
   report:
     name: Build Report (${{ inputs.tier }})

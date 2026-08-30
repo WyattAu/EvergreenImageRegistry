@@ -182,6 +182,10 @@ jobs:
             echo "::endgroup::"
           done
           echo "Batch ${{ matrix.batch }}: ${PULLED} pulled, ${BUILT} built, ${FAILED} failed"
+          if [ "$FAILED" -gt 0 ] || [ $((PULLED + BUILT)) -ne "${{ matrix.count }}" ]; then
+            echo "::error::Batch ${{ matrix.batch }} did not prepare every expected image"
+            exit 1
+          fi
 
       - name: Run Trivy scan
         run: |
@@ -199,12 +203,12 @@ jobs:
               --ignore-unfixed=false \
               --format json \
               --output "/tmp/trivy-results/${SAFE}.json" \
-              "$ref" 2>/dev/null || true
+              "$ref" 2>/dev/null
             trivy image \
               --severity CRITICAL,HIGH,MEDIUM,LOW \
               --ignore-unfixed=false \
               --format table \
-              "$ref" 2>/dev/null || true
+              "$ref" 2>/dev/null
             echo "::endgroup::"
           done < /tmp/scanned-images.txt
 
@@ -222,10 +226,10 @@ jobs:
             grype "$ref" \
               --fail-on none \
               --output json \
-              --file "/tmp/grype-results/${SAFE}.json" 2>/dev/null || true
+              --file "/tmp/grype-results/${SAFE}.json" 2>/dev/null
             grype "$ref" \
               --fail-on none \
-              --output table 2>/dev/null || true
+              --output table 2>/dev/null
             echo "::endgroup::"
           done < /tmp/scanned-images.txt
 
@@ -282,8 +286,8 @@ jobs:
             SAFE="${image//\//-}"
 
             if ! docker pull "$REF" > /dev/null 2>&1; then
-              echo "::warning::${image}: could not pull, skipping SBOM"
-              continue
+              echo "::error::${image}: could not pull for SBOM generation"
+              exit 1
             fi
 
             echo "::group::SBOM ${image}"
@@ -291,7 +295,8 @@ jobs:
             if syft "${REF}" -o "spdx-json=${SBOM_FILE}" 2>/dev/null; then
               echo "Generated SBOM for ${image}"
             else
-              echo "::warning::Failed to generate SBOM for ${image}"
+              echo "::error::Failed to generate SBOM for ${image}"
+              exit 1
             fi
             echo "::endgroup::"
           done

@@ -1,6 +1,6 @@
 # Evergreen Image Registry Roadmap
 
-## Current: v31.0.0 (Phase 113)
+## Current: v35.0.0 (Phase 142)
 
 661 active images, all building via CI, all on GHCR.
 

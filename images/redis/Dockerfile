@@ -1,4 +1,4 @@
-ARG VERSION=8.0.2
+ARG VERSION=7.4.9
 ARG SHIM_VERSION=v2.0.0
 
 # Build stage: compile Redis from source as static binary

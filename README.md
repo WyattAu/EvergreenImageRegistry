@@ -74,7 +74,7 @@ current image count and categories from active image directories:
 
 ## Multi-Arch Support
 
-849 images declare multi-architecture support via `ARG TARGETARCH` (`linux/amd64`, `linux/arm64`). To pull the correct
+31 images declare multi-architecture support via `ARG TARGETARCH` (`linux/amd64`, `linux/arm64`). To pull the correct
 image for your platform:
 
 ```bash

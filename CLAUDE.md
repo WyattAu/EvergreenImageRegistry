@@ -22,7 +22,7 @@ images/<name>/
   .dockerignore       # Build context exclusions
 ```
 
-~778 active image directories under `images/` (780 total dirs, 20 in `_wip/`, 0 in `_archive/`).
+~778 active image directories under `images/` (780 total dirs, 20 in `_wip/`, 231 in `_archive/`).
 
 ## Image Standards (5 Pillars)
 

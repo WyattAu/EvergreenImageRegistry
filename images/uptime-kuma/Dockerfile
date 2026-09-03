@@ -6,7 +6,7 @@ FROM louislam/uptime-kuma:2.3.2@sha256:9aeb4e51d038047f414309c77a1af553281ca5357
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3001"]
 
 

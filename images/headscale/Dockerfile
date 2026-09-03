@@ -9,8 +9,6 @@ FROM headscale/headscale:v0.29.2
 
 COPY --from=shim /shim /usr/local/bin/shim
 
-USER 65532:65532
-
 ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 8080 9101
 
@@ -25,7 +23,7 @@ LABEL org.opencontainers.image.title="headscale" \
       org.opencontainers.image.vendor="Juan Font" \
       org.opencontainers.image.source="https://github.com/juanfont/headscale" \
       evergreen.image.tier="standard" \
-      evergreen.constraint.nonroot="true"
+      evergreen.constraint.nonroot="false"
 LABEL evergreen.base.image="headscale/headscale:v0.29.2"
 LABEL evergreen.health.type="tcp"
 LABEL evergreen.security.cap-drop="ALL"

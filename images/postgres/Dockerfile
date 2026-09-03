@@ -7,9 +7,6 @@ FROM postgres:17.10@sha256:7958605b474b3d264a969cb3a123d6aa00ad1e1fe9da8a69984da
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /var/lib/postgresql/data && chown -R 65532:65532 /var/lib/postgresql/data
-RUN mkdir -p /var/lib/postgresql/data && chown -R 65532:65532 /var/lib/postgresql
-USER 65532:65532
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
 
 
@@ -21,7 +18,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 54332 9101
+EXPOSE 5432 9101
 LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 

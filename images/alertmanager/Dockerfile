@@ -18,9 +18,7 @@ FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=downloader /data /data
 
-USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9093 9101

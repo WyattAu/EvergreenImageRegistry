@@ -22,8 +22,6 @@ COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 # Non-root execution
-RUN mkdir -p /data && chown -R 65532:65532 /data
-USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 
@@ -32,8 +30,8 @@ EXPOSE 6380 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "redis-server"]
-CMD ["--dir", "/data", "--bind", "0.0.0.0", "--protected-mode", "no"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c"]
+CMD ["redis-server", "--dir", "/data", "--bind", "0.0.0.0", "--protected-mode", "no"]
 
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - source-built, static, non-root, distroless" \

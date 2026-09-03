@@ -48,7 +48,7 @@ jobs:
       total: ${{ steps.discover.outputs.total }}
       mode: ${{ steps.discover.outputs.mode }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 2
 
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install hadolint
         uses: hadolint/hadolint-action@3fcf8f2c5a5b5f6f8e8e4e3c6b4e6d8a7b6c5d4e
       - name: Install shimctl

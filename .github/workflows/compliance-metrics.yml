@@ -18,7 +18,7 @@ jobs:
   collect-metrics:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e7d77527bb7777412b8d711c9c0070744
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Run validation baseline
         run: |
@@ -119,7 +119,7 @@ jobs:
             }
 
       - name: Upload metrics artifact
-        uses: actions/upload-artifact@043fb46d27f0d68c20c1e9e7f49eb5b2c7a49204
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: compliance-metrics-${{ github.run_id }}
           path: |

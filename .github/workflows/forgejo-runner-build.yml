@@ -81,7 +81,7 @@ jobs:
 
   provenance:
     needs: build
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@bb91a05077afa6601a3d7538c4cbbdbf0abe7ed9
     with:
       image: ghcr.io/${{ github.repository_owner }}/forgejo-runner-image
       digest: ${{ needs.build.outputs.digest }}

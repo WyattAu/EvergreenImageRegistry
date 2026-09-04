@@ -100,7 +100,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@56af21c79c1470c045f1b83579577497d1d12e01
+        uses: docker/metadata-action@703896b4f30f62d53f5530a80bcdc589a3f702bc
         with:
           images: ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips
           tags: |

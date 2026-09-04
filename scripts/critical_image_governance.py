@@ -114,7 +114,7 @@ def check_dockerfile(image_dir: Path, manifest: dict[str, Any] | None) -> list[s
         violations.append("CC004: No HEALTHCHECK in non-scratch image")
 
     # CC006: Banned base images in final stage
-    from_lines = [l.strip() for l in content.splitlines() if l.strip().upper().startswith("FROM ")]
+    from_lines = [line.strip() for line in content.splitlines() if line.strip().upper().startswith("FROM ")]
     for fl in from_lines:
         base = fl.split()[1].split("@")[0].split(":")[0].lower()
         # Remove registry prefixes
@@ -166,7 +166,6 @@ def check_manifest_contract(manifest: dict[str, Any]) -> list[str]:
     metadata = manifest.get("metadata", {})
     build = manifest.get("build", {})
     source = manifest.get("source", {})
-    runtime = manifest.get("runtime", {})
 
     # CC002: Tier
     tier = str(metadata.get("tier", "")).strip().lower()
@@ -278,7 +277,7 @@ def main() -> int:
     output_path = Path("/tmp/critical_image_governance.json")
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"\nCritical image governance:")
+    print("\nCritical image governance:")
     print(f"  Total:       {len(critical)}")
     print(f"  Compliant:   {compliant_count}")
     print(f"  Non-compliant: {len(critical) - compliant_count}")

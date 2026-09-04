@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -487,7 +487,7 @@ def main() -> int:
     output_path = Path("/tmp/rego_evaluation.json")
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"Rego policy evaluation:")
+    print("Rego policy evaluation:")
     print(f"  Images:  {len(results)}")
     print(f"  Policies: {len(POLICY_SOURCES)}")
     print(f"  Pass: {total_pass}  Fail: {total_fail}  Error: {total_error}")

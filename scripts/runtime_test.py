@@ -63,7 +63,7 @@ def run_container(image_name: str, container_name: str, timeout: int = 30) -> st
 
 def check_non_root(container_id: str) -> bool:
     """Verify container is running as non-root (UID 65532)."""
-    print(f"  Checking non-root...", end=" ", flush=True)
+    print("  Checking non-root...", end=" ", flush=True)
     rc, stdout, _ = run_cmd(
         ["docker", "exec", container_id, "cat", "/proc/1/status"]
     )
@@ -90,7 +90,7 @@ def check_non_root(container_id: str) -> bool:
 
 def check_process_running(container_id: str) -> bool:
     """Check if the main process is running."""
-    print(f"  Checking process...", end=" ", flush=True)
+    print("  Checking process...", end=" ", flush=True)
     rc, _, _ = run_cmd(
         ["docker", "exec", container_id, "kill", "-0", "1"]
     )

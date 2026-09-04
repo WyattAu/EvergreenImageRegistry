@@ -20,7 +20,6 @@ This is static analysis — no containers are run.
 from __future__ import annotations
 
 import json
-import re
 import sys
 import tomllib
 from pathlib import Path
@@ -329,7 +328,7 @@ def main() -> int:
     output_path = Path("/tmp/runtime_verification.json")
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"\nRuntime verification:")
+    print("\nRuntime verification:")
     print(f"  Total:             {len(critical)}")
     print(f"  Fully compliant:   {fully_compliant}")
     print(f"  Non-compliant:     {len(critical) - fully_compliant}")

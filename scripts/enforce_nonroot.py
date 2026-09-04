@@ -10,7 +10,6 @@ For images that need writable directories (databases, queues, etc.),
 adds chown commands before the USER directive.
 """
 
-import re
 import sys
 from pathlib import Path
 
@@ -58,7 +57,6 @@ DATA_DIR_IMAGES = {
     "scylladb": [("/var/lib/scylla", "65532:65532")],
     "sonarqube": [("/opt/sonarqube/data", "65532:65532")],
     "spark": [("/opt/spark", "65532:65532")],
-    "mssql": [("/var/opt/mssql", "65532:65532")],
     "vault": [("/vault/file", "65532:65532"), ("/vault/config", "65532:65532")],
     "zookeeper": [("/var/lib/zookeeper", "65532:65532")],
 }
@@ -208,7 +206,7 @@ def main():
             if is_repack(content) and has_user(content):
                 skipped += 1
 
-    print(f"\n=== Summary ===")
+    print("\n=== Summary ===")
     print(f"Total Dockerfiles scanned: {total}")
     print(f"Fixed (added USER 65532:65532): {fixed}")
     print(f"Already had USER: {skipped}")

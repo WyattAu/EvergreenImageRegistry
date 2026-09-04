@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Pin FROM digests for critical-tier images using crane."""
 
-import os
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -101,13 +99,13 @@ def main():
                         print(f"✅ {pinned_ref}")
                         success_pins += 1
                     else:
-                        print(f"❌ failed to replace")
+                        print("❌ failed to replace")
                         failed_pins += 1
             else:
-                print(f"⚠️  could not resolve digest")
+                print("⚠️  could not resolve digest")
                 failed_pins += 1
 
-    print(f"\n=== Summary ===")
+    print("\n=== Summary ===")
     print(f"Total FROM lines: {total_pins}")
     print(f"Pinned: {success_pins}")
     print(f"Failed: {failed_pins}")

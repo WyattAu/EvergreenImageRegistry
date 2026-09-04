@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 import sys
 import tomllib
 from pathlib import Path
@@ -126,8 +125,8 @@ def check_digest_pinning(image_dir: Path) -> list[dict[str, str]]:
 
     content = dockerfile.read_text()
     from_lines = [
-        l.strip() for l in content.splitlines()
-        if l.strip().upper().startswith("FROM ")
+        line.strip() for line in content.splitlines()
+        if line.strip().upper().startswith("FROM ")
     ]
 
     for line in from_lines:
@@ -165,7 +164,6 @@ def check_build_reproducibility(image_dir: Path) -> list[dict[str, str]]:
     except Exception:
         return violations
 
-    metadata = data.get("metadata", {})
     labels = data.get("labels", {})
 
     # Check for build provenance labels
@@ -304,7 +302,7 @@ def main() -> int:
     output_path = Path("/tmp/supply_chain_verification.json")
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"\nSupply-chain verification:")
+    print("\nSupply-chain verification:")
     print(f"  Total:             {len(critical)}")
     print(f"  Fully compliant:   {fully_compliant}")
     print(f"  Non-compliant:     {len(critical) - fully_compliant}")

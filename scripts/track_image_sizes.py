@@ -1,5 +1,3 @@
-import os
-
 #!/usr/bin/env python3
 """
 Evergreen Image Registry - Image Size Tracker
@@ -12,6 +10,7 @@ Usage:
 """
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone

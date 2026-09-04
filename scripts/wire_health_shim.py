@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -337,9 +338,6 @@ def build_wired_dockerfile(
         final_result.append(healthcheck_line)
 
     return "\n".join(final_result)
-
-
-import json
 
 
 def process_image(

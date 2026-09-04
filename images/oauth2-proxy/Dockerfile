@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4180"]
 
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/oauth2-proxy"]
-CMD ["--help"]
+CMD []
 
 LABEL org.opencontainers.image.title="oauth2-proxy" \
       org.opencontainers.image.description="OAuth2 Proxy - Go binary, scratch, non-root" \

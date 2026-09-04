@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install hadolint
-        uses: hadolint/hadolint-action@3fcf8f2c5a5b5f6f8e8e4e3c6b4e6d8a7b6c5d4e
+        uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387
       - name: Run hadolint
         run: |
           find images/ -name 'Dockerfile' -not -path 'images/_wip/*' -not -path 'images/_archive/*' -print0 | \

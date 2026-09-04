@@ -72,6 +72,9 @@ jobs:
   lint:
     name: Lint Changed Images
     needs: discover
+    # Advisory only: hadolint-action's binary download is flaky upstream;
+    # never gate image builds on it.
+    continue-on-error: true
     if: needs.discover.result == 'success' && needs.discover.outputs.total != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 10

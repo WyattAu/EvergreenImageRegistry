@@ -81,7 +81,12 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install hadolint
-        uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387
+        run: |
+          # hadolint-action's binary download is unreliable; install directly
+          curl -fsSL -o /usr/local/bin/hadolint \
+            https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+          hadolint --version
       - name: Install shimctl
         run: cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked
       - name: Verify shimctl version

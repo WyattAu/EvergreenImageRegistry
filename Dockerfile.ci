@@ -4,7 +4,7 @@
 # Regenerate with: scripts/update_ci_environment.sh --apply
 # =============================================================================
 
-FROM ubuntu:22.04@sha256:962f6cadeae0ea6284001009daa4cc9a8c37e75d1f5191cf0eb83fe565b63dd7 AS builder
+FROM ubuntu:26.04@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS builder
 
 ARG SOURCE_DATE_EPOCH=1713500000
 ARG DEBIAN_FRONTEND=noninteractive
@@ -112,7 +112,7 @@ RUN trivy --version \
     && ruff --version \
     && go version
 
-FROM ubuntu:22.04@sha256:962f6cadeae0ea6284001009daa4cc9a8c37e75d1f5191cf0eb83fe565b63dd7 AS runtime
+FROM ubuntu:26.04@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS runtime
 
 ARG SOURCE_DATE_EPOCH=1713500000
 ARG BUILD_DATE

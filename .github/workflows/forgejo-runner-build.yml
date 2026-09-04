@@ -6,7 +6,7 @@ on:
     paths: ['images/forgejo-runner-image/**']
 
 concurrency:
-  group: forgejo-runner-${{ github.ref 
+  group: forgejo-runner-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -17,38 +17,38 @@ permissions:
 
 env:
   IMAGE_NAME: forgejo-runner-image
-  IMAGE: ghcr.io/${{ github.repository_owner /forgejo-runner-image
+  IMAGE: ghcr.io/${{ github.repository_owner }}/forgejo-runner-image
 
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      digest: ${{ steps.push.outputs.digest 
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Build OCI image with apko
         run: |
           docker run --rm \
-            -v "${{ github.workspace :/work" \
+            -v "${{ github.workspace }}:/work" \
             -w /work \
             cgr.dev/chainguard/apko build \
             images/forgejo-runner-image/apko.yaml \
-            "${{ env.IMAGE :latest" \
+            "${{ env.IMAGE }}:latest" \
             forgejo-runner-image.tar \
             --sbom-path /work/sbom
 
       - name: Log in to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN " | docker login ghcr.io -u "${{ github.actor " --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Load and push image
         id: push
         run: |
           docker load -i forgejo-runner-image.tar
-          FULL_TAG="${{ env.IMAGE :latest"
+          FULL_TAG="${{ env.IMAGE }}:latest"
           docker push "$FULL_TAG"
-          DIGEST=$(docker inspect --format '{{index .RepoDigests 0' "$FULL_TAG")
-          echo "digest=${DIGEST" >> "$GITHUB_OUTPUT"
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
           echo "Pushed: $FULL_TAG ($DIGEST)"
 
       - name: Verify tools in image
@@ -57,7 +57,7 @@ jobs:
           for cmd in git git-lfs node npm python3 docker jq yq \
             curl wget ssh ssh-keygen zip unzip zstd make gcc \
             openssl gpg su-exec file tree patch diff find bash tar; do
-            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE :latest" \
+            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE }}:latest" \
               -c "which $cmd > /dev/null 2>&1"; then
               echo "[PASS] $cmd"
             else
@@ -70,7 +70,7 @@ jobs:
       - name: Install cosign
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
       - name: Sign image with cosign
-        run: cosign sign --yes "${{ env.IMAGE :latest"
+        run: cosign sign --yes "${{ env.IMAGE }}:latest"
 
       - name: Upload SBOM
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -81,10 +81,10 @@ jobs:
 
   provenance:
     needs: build
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@bb91a05077afa6601a3d7538c4cbbdbf0abe7ed9
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a
     with:
-      image: ghcr.io/${{ github.repository_owner /forgejo-runner-image
-      digest: ${{ needs.build.outputs.digest 
+      image: ghcr.io/${{ github.repository_owner }}/forgejo-runner-image
+      digest: ${{ needs.build.outputs.digest }}
     permissions:
       id-token: write
       contents: read

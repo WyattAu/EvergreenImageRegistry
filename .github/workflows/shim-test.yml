@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: shim-test-${{ github.ref 
+  group: shim-test-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -56,8 +56,8 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
-          username: ${{ github.actor 
-          password: ${{ secrets.GITHUB_TOKEN 
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
@@ -66,50 +66,50 @@ jobs:
         run: |
           # Read shim version from .shim-version
           SHIM_VERSION=$(cat .shim-version | tr -d '[:space:]')
-          echo "Building shim version: ${SHIM_VERSION"
+          echo "Building shim version: ${SHIM_VERSION}"
 
           # Build health-shim and tag as the remote reference consumers expect
-          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION \
+          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
             images/health-shim/
           # Also tag as cache-shim for redis (same binary, different config)
-          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION \
-            ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION
+          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
+            ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION}
           # Also tag as latest for backward compat
-          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION \
+          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
             ghcr.io/wyattau/evergreenshim/health-shim:latest
 
       - name: Build image
         run: |
-          docker build -t ${{ env.REGISTRY /${{ matrix.image :test \
-            images/${{ matrix.image /
+          docker build -t ${{ env.REGISTRY }}/${{ matrix.image }}:test \
+            images/${{ matrix.image }}/
 
       - name: Start container
         run: |
           docker run -d \
-            --name test-${{ matrix.image  \
-            -p ${{ matrix.port :${{ matrix.port  \
+            --name test-${{ matrix.image }} \
+            -p ${{ matrix.port }}:${{ matrix.port }} \
             -p 9101:9101 \
-            ${{ env.REGISTRY /${{ matrix.image :test
+            ${{ env.REGISTRY }}/${{ matrix.image }}:test
           sleep 10
 
       - name: Verify container is running
         run: |
-          docker ps --format '{{.Names' | grep -q "test-${{ matrix.image "
-          echo "Container test-${{ matrix.image  is running"
+          docker ps --format '{{.Names}}' | grep -q "test-${{ matrix.image }}"
+          echo "Container test-${{ matrix.image }} is running"
 
       - name: Test healthcheck
         run: |
-          docker exec test-${{ matrix.image  /shim healthcheck \
-            --tcp 127.0.0.1:${{ matrix.port  && echo "Healthcheck PASSED" || \
-          docker exec test-${{ matrix.image  /usr/local/bin/shim healthcheck \
-            --tcp 127.0.0.1:${{ matrix.port  && echo "Healthcheck PASSED"
+          docker exec test-${{ matrix.image }} /shim healthcheck \
+            --tcp 127.0.0.1:${{ matrix.port }} && echo "Healthcheck PASSED" || \
+          docker exec test-${{ matrix.image }} /usr/local/bin/shim healthcheck \
+            --tcp 127.0.0.1:${{ matrix.port }} && echo "Healthcheck PASSED"
 
       - name: Test metrics endpoint
         run: |
           RESPONSE=$(curl -sf http://localhost:9101/metrics 2>/dev/null || echo "")
-          if [ -n "${RESPONSE" ]; then
+          if [ -n "${RESPONSE}" ]; then
             echo "Metrics endpoint PASSED"
-            echo "${RESPONSE" | head -20
+            echo "${RESPONSE}" | head -20
           else
             echo "Metrics endpoint FAILED"
             exit 1
@@ -117,21 +117,21 @@ jobs:
 
       - name: Test liveness endpoint
         run: |
-          STATUS=$(curl -sf -o /dev/null -w '%{http_code' http://localhost:9101/livez 2>/dev/null || echo "000")
-          if [ "${STATUS" = "200" ]; then
-            echo "Liveness endpoint PASSED (HTTP ${STATUS)"
+          STATUS=$(curl -sf -o /dev/null -w '%{http_code}' http://localhost:9101/livez 2>/dev/null || echo "000")
+          if [ "${STATUS}" = "200" ]; then
+            echo "Liveness endpoint PASSED (HTTP ${STATUS})"
           else
-            echo "Liveness endpoint FAILED (HTTP ${STATUS)"
+            echo "Liveness endpoint FAILED (HTTP ${STATUS})"
             exit 1
           fi
 
       - name: Collect logs on failure
         if: failure()
-        run: docker logs test-${{ matrix.image  2>&1 | tail -50
+        run: docker logs test-${{ matrix.image }} 2>&1 | tail -50
 
       - name: Cleanup
         if: always()
-        run: docker rm -f test-${{ matrix.image  2>/dev/null || true
+        run: docker rm -f test-${{ matrix.image }} 2>/dev/null || true
 
   # ---------------------------------------------------------------------------
   # Aggregate result
@@ -144,7 +144,7 @@ jobs:
     steps:
       - name: Check results
         run: |
-          if [ "${{ needs.shim-test.result " = "success" ]; then
+          if [ "${{ needs.shim-test.result }}" = "success" ]; then
             echo "All shim functionality tests passed"
           else
             echo "Some shim tests failed"

@@ -6,7 +6,7 @@ on:
       - '.github/workflows/*.yaml'
 
 concurrency:
-  group: actionlint-${{ github.ref 
+  group: actionlint-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

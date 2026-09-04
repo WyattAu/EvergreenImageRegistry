@@ -54,14 +54,14 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
-          username: ${{ github.actor 
-          password: ${{ secrets.GITHUB_TOKEN 
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check image sizes
         id: sizes
         run: |
-          THRESHOLD="${{ inputs.threshold || '20' "
-          UPDATE_ONLY="${{ inputs.update_only || 'false' "
+          THRESHOLD="${{ inputs.threshold || '20' }}"
+          UPDATE_ONLY="${{ inputs.update_only || 'false' }}"
 
           if [ "$UPDATE_ONLY" = "true" ]; then
             python3 scripts/track_image_sizes.py --update
@@ -77,7 +77,7 @@ jobs:
             const count = parseInt(process.env.REGRESSION_COUNT || '0');
             const regressions = JSON.parse(process.env.REGRESSIONS || '[]');
             const date = new Date().toISOString().split('T')[0];
-            const threshold = '${{ inputs.threshold || '20' ';
+            const threshold = '${{ inputs.threshold || '20' }}';
 
             if (count === 0) return;
 
@@ -87,22 +87,22 @@ jobs:
               repo: context.repo.repo,
               labels: 'size-regression,automated',
               state: 'open',
-            );
+            });
 
             const todayIssue = existing.data.find(i => i.title.includes(date));
             if (todayIssue) {
-              console.log(`Issue already exists: #${todayIssue.number`);
+              console.log(`Issue already exists: #${todayIssue.number}`);
               return;
-            
+            }
 
             const rows = regressions.map(r =>
-              `| ${r.image | ${r.baseline_human | ${r.current_human | **+${r.change_pct%** |`
+              `| ${r.image} | ${r.baseline_human} | ${r.current_human} | **+${r.change_pct}%** |`
             ).join('\n');
 
             const body = [
-              `## Image Size Regression Alert - ${date`,
+              `## Image Size Regression Alert - ${date}`,
               '',
-              `**${count** images exceeded the ${threshold% size increase threshold.`,
+              `**${count}** images exceeded the ${threshold}% size increase threshold.`,
               '',
               '| Image | Baseline | Current | Change |',
               '|-------|----------|---------|--------|',
@@ -117,9 +117,9 @@ jobs:
               '',
               `### Details`,
               '',
-              `- **Workflow Run**: [${context.runNumber](${context.serverUrl/${context.repository/actions/runs/${context.runId)`,
-              `- **Threshold**: ${threshold%`,
-              `- **Check Date**: ${date`,
+              `- **Workflow Run**: [${context.runNumber}](${context.serverUrl}/${context.repository}/actions/runs/${context.runId})`,
+              `- **Threshold**: ${threshold}%`,
+              `- **Check Date**: ${date}`,
               '',
               '_This issue was automatically created by the Image Size Monitor workflow._'
             ].join('\n');
@@ -127,10 +127,10 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `[SIZE-REGRESSION] ${count images exceed ${threshold% size threshold - ${date`,
+              title: `[SIZE-REGRESSION] ${count} images exceed ${threshold}% size threshold - ${date}`,
               body: body,
               labels: ['size-regression', 'automated'],
-            );
+            });
 
       - name: Generate summary
         if: always()
@@ -140,12 +140,12 @@ jobs:
             echo ""
             echo "| Metric | Value |"
             echo "|--------|-------|"
-            echo "| Regressions | ${{ steps.sizes.outputs.regression_count  |"
-            echo "| Threshold | ${{ inputs.threshold || '20' % |"
+            echo "| Regressions | ${{ steps.sizes.outputs.regression_count }} |"
+            echo "| Threshold | ${{ inputs.threshold || '20' }}% |"
             echo ""
-            if [ "${{ steps.sizes.outputs.regression_count " = "0" ]; then
+            if [ "${{ steps.sizes.outputs.regression_count }}" = "0" ]; then
               echo "No size regressions detected."
             else
               echo "Size regressions detected and reported."
             fi
-           >> "$GITHUB_STEP_SUMMARY"
+          } >> "$GITHUB_STEP_SUMMARY"

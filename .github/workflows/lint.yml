@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 concurrency:
-  group: ${{ github.workflow -${{ github.ref 
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -84,7 +84,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             evergreenctl/target
-          key: ${{ runner.os -cargo-${{ hashFiles('evergreenctl/Cargo.lock') 
+          key: ${{ runner.os }}-cargo-${{ hashFiles('evergreenctl/Cargo.lock') }}
       - name: Run cargo fmt check
         run: cargo fmt --manifest-path evergreenctl/Cargo.toml -- --check
       - name: Run cargo clippy
@@ -138,7 +138,7 @@ jobs:
       - name: Validate shell syntax
         run: |
           find . -name '*.sh' -not -path './.git/*' -type f -print0 | \
-            xargs -0 -I{ bash -n {
+            xargs -0 -I{} bash -n {}
 
   # Check for unpinned FROM lines in Dockerfiles (supply chain integrity)
   digest-pin-check:
@@ -161,15 +161,15 @@ jobs:
                   continue
               tier_match = re.search(r'^tier\\s*=\\s*["\\']([^"\\']+)', manifest.read_text(), re.M)
               raw_tier = tier_match.group(1) if tier_match else 'standard'
-              tier = {'1': 'critical', '2': 'standard', '3': 'standard'.get(raw_tier.lower(), raw_tier.lower())
+              tier = {'1': 'critical', '2': 'standard', '3': 'standard'}.get(raw_tier.lower(), raw_tier.lower())
               dockerfile_text = dockerfile.read_text(errors='replace')
               label_tiers = re.findall(r'evergreen\\.image\\.tier\\s*=\\s*["\\']([^"\\']+)', dockerfile_text, re.I)
-              if label_tiers and {'1': 'critical', '2': 'standard', '3': 'standard'.get(label_tiers[-1].lower(), label_tiers[-1].lower()) != tier:
-                  print(f'::error::Tier metadata conflict in {directory')
+              if label_tiers and {'1': 'critical', '2': 'standard', '3': 'standard'}.get(label_tiers[-1].lower(), label_tiers[-1].lower()) != tier:
+                  print(f'::error::Tier metadata conflict in {directory}')
                   sys.exit(1)
               for number, line in enumerate(dockerfile.read_text(errors='replace').splitlines(), 1):
                   if line.strip().upper().startswith('FROM ') and '@sha256:' not in line and line.strip().lower() != 'from scratch':
-                      unpinned.append((tier, f'{dockerfile:{number: {line'))
+                      unpinned.append((tier, f'{dockerfile}:{number}: {line}'))
           critical = [entry for tier, entry in unpinned if tier == 'critical']
           standard = [entry for tier, entry in unpinned if tier != 'critical']
           if critical:
@@ -177,7 +177,7 @@ jobs:
               print('\\n'.join(critical))
               sys.exit(1)
           if standard:
-              print(f'::warning::{len(standard) unpinned FROM lines remain in standard-tier images')
+              print(f'::warning::{len(standard)} unpinned FROM lines remain in standard-tier images')
               print('\\n'.join(standard))
           else:
               print('All FROM lines are pinned or scratch')
@@ -227,9 +227,9 @@ jobs:
           assert report['critical_unpinned'] == report['critical_total'] - report['critical_from_pinned']
           assert report['tier_conflicts'] == 0
           assert report['invalid_tiers'] == 0
-          print(f"Critical pinning: {report['critical_from_pinned']/{report['critical_total'] fully pinned")
-          print(f"Canonical inventory: {total active images")
-          print(f"SBOM: {report['with_valid_sbom']/{total valid")
+          print(f"Critical pinning: {report['critical_from_pinned']}/{report['critical_total']} fully pinned")
+          print(f"Canonical inventory: {total} active images")
+          print(f"SBOM: {report['with_valid_sbom']}/{total} valid")
           PY
 
   # Go code quality
@@ -287,9 +287,9 @@ jobs:
                   with open(m, 'rb') as f:
                       tomllib.load(f)
               except Exception as e:
-                  print(f'FAIL: {m: {e', file=sys.stderr)
+                  print(f'FAIL: {m}: {e}', file=sys.stderr)
                   errors += 1
-          print(f'Manifest TOML: {total - errors/{total valid')
+          print(f'Manifest TOML: {total - errors}/{total} valid')
           if errors > 0:
               sys.exit(1)
           "
@@ -318,12 +318,12 @@ jobs:
                   with open(s) as f:
                       data = json.load(f)
                   if 'spdxVersion' not in data:
-                      print(f'FAIL: {s: missing spdxVersion', file=sys.stderr)
+                      print(f'FAIL: {s}: missing spdxVersion', file=sys.stderr)
                       errors += 1
               except Exception as e:
-                  print(f'FAIL: {s: {e', file=sys.stderr)
+                  print(f'FAIL: {s}: {e}', file=sys.stderr)
                   errors += 1
-          print(f'SBOM validation: {total - errors/{total valid')
+          print(f'SBOM validation: {total - errors}/{total} valid')
           if errors > 0:
               sys.exit(1)
           "
@@ -339,7 +339,7 @@ jobs:
         run: |
           ALPINE=$(grep -rni '^FROM alpine' images/*/Dockerfile 2>/dev/null | grep -v 'mirror-' || true)
           ALPINE2=$(grep -rni '^FROM .*alpine:' images/*/Dockerfile 2>/dev/null | grep -v 'mirror-' || true)
-          ALPINE="${ALPINE${ALPINE2"
+          ALPINE="${ALPINE}${ALPINE2}"
           if [ -n "$ALPINE" ]; then
             echo "::error::Alpine base images detected (BANNED):"
             echo "$ALPINE"
@@ -365,17 +365,17 @@ jobs:
           # Use 'drift' command per-image (validate-strict doesn't exist)
           MISMATCHES=0
           for img_dir in images/*/; do
-            [ -f "${img_dirDockerfile" ] || continue
+            [ -f "${img_dir}Dockerfile" ] || continue
             [[ "$(basename $img_dir)" == _* ]] && continue
             [[ "$(basename $img_dir)" == "clawdius" ]] && continue
-            result=$(./evergreenctl/target/release/evergreenctl drift "${img_dir" 2>&1 || true)
+            result=$(./evergreenctl/target/release/evergreenctl drift "${img_dir}" 2>&1 || true)
             if echo "$result" | grep -qi "mismatch\|drift"; then
               MISMATCHES=$((MISMATCHES+1))
               echo "::warning::$(basename $img_dir): version drift detected"
             fi
           done
           if [ "$MISMATCHES" -gt 0 ]; then
-            echo "::warning::${MISMATCHES version mismatches detected (non-blocking)"
+            echo "::warning::${MISMATCHES} version mismatches detected (non-blocking)"
           else
             echo "No version drift detected"
           fi
@@ -407,11 +407,11 @@ jobs:
                   copy_re = re.compile(r'(?i)COPY\s+--from=' + re.escape(stage_lower) + r'\b')
                   from_re = re.compile(r'(?i)^FROM\s+' + re.escape(stage_lower) + r'\b', re.MULTILINE)
                   if not copy_re.search(content) and not from_re.search(content):
-                      errors.append(f'{df: stage \"{stage\" declared but never consumed')
+                      errors.append(f'{df}: stage \"{stage}\" declared but never consumed')
           for e in errors:
-              print(f'::error::{e')
+              print(f'::error::{e}')
           if errors:
-              print(f'::error::{len(errors) empty builder stage(s) detected')
+              print(f'::error::{len(errors)} empty builder stage(s) detected')
               sys.exit(1)
           print('No empty builder stages detected')
           "

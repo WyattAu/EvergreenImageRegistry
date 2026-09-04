@@ -36,7 +36,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner 
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}
 
 jobs:
   # ===========================================================================
@@ -47,9 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      total: ${{ steps.report.outputs.total 
-      with_sbom: ${{ steps.report.outputs.with_sbom 
-      coverage: ${{ steps.report.outputs.coverage 
+      total: ${{ steps.report.outputs.total }}
+      with_sbom: ${{ steps.report.outputs.with_sbom }}
+      coverage: ${{ steps.report.outputs.coverage }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
@@ -60,7 +60,7 @@ jobs:
 
           TOTAL=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(d['total_images'])")
           WITH_SBOM=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(d['with_sbom_valid'])")
-          COVERAGE=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(f\"{d['with_sbom_valid']/d['total_images']*100:.1f\")")
+          COVERAGE=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(f\"{d['with_sbom_valid']/d['total_images']*100:.1f}\")")
 
           echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
           echo "with_sbom=$WITH_SBOM" >> "$GITHUB_OUTPUT"
@@ -69,7 +69,7 @@ jobs:
           echo "=== SBOM Coverage ==="
           echo "Total: $TOTAL"
           echo "With SBOM: $WITH_SBOM"
-          echo "Coverage: ${COVERAGE%"
+          echo "Coverage: ${COVERAGE}%"
 
       - name: Upload coverage report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -82,7 +82,7 @@ jobs:
   # Stage 2: Generate SBOMs in Parallel Batches
   # ===========================================================================
   generate:
-    name: 'Generate SBOMs Batch ${{ matrix.batch '
+    name: 'Generate SBOMs Batch ${{ matrix.batch }}'
     needs: coverage-report
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -100,8 +100,8 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
-          username: ${{ github.actor 
-          password: ${{ secrets.GITHUB_TOKEN 
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Syft
         run: |
@@ -111,7 +111,7 @@ jobs:
       - name: Generate SBOMs for batch
         run: |
           # Find images for this batch (round-robin across all manifests)
-          BATCH=${{ matrix.batch 
+          BATCH=${{ matrix.batch }}
           TOTAL_BATCHES=4
           GENERATED=0
           SKIPPED=0
@@ -128,11 +128,11 @@ jobs:
               continue
             fi
 
-            sbom="images/${img/sbom.spdx.json"
-            dockerfile="images/${img/Dockerfile"
+            sbom="images/${img}/sbom.spdx.json"
+            dockerfile="images/${img}/Dockerfile"
 
             # Skip if SBOM exists and not forced
-            if [ -f "$sbom" ] && [ "${{ inputs.force " != "true" ]; then
+            if [ -f "$sbom" ] && [ "${{ inputs.force }}" != "true" ]; then
               size=$(stat --format=%s "$sbom" 2>/dev/null || echo 0)
               if [ "$size" -gt 1000 ]; then
                 SKIPPED=$((SKIPPED + 1))
@@ -140,12 +140,12 @@ jobs:
               fi
             fi
 
-            [ -f "$dockerfile" ] || { FAILED=$((FAILED + 1)); continue; 
+            [ -f "$dockerfile" ] || { FAILED=$((FAILED + 1)); continue; }
 
-            echo "::group::SBOM ${img"
+            echo "::group::SBOM ${img}"
 
             # Try GHCR first
-            REF="ghcr.io/${{ github.repository_owner /${img:latest"
+            REF="ghcr.io/${{ github.repository_owner }}/${img}:latest"
             if docker pull "$REF" > /dev/null 2>&1; then
               if syft "$REF" -o spdx-json="$sbom" 2>/dev/null; then
                 GENERATED=$((GENERATED + 1))
@@ -156,14 +156,14 @@ jobs:
               fi
             else
               # Local build fallback
-              if docker buildx build --platform linux/amd64 -t "sbom-temp:${img" --load "images/${img" > /dev/null 2>&1; then
-                if syft "sbom-temp:${img" -o spdx-json="$sbom" 2>/dev/null; then
+              if docker buildx build --platform linux/amd64 -t "sbom-temp:${img}" --load "images/${img}" > /dev/null 2>&1; then
+                if syft "sbom-temp:${img}" -o spdx-json="$sbom" 2>/dev/null; then
                   GENERATED=$((GENERATED + 1))
                   echo "Generated (local): $img"
                 else
                   FAILED=$((FAILED + 1))
                 fi
-                docker rmi "sbom-temp:${img" 2>/dev/null || true
+                docker rmi "sbom-temp:${img}" 2>/dev/null || true
               else
                 FAILED=$((FAILED + 1))
               fi
@@ -172,13 +172,13 @@ jobs:
             echo "::endgroup::"
           done
 
-          echo "Batch ${{ matrix.batch : gen=$GENERATED skip=$SKIPPED fail=$FAILED"
+          echo "Batch ${{ matrix.batch }}: gen=$GENERATED skip=$SKIPPED fail=$FAILED"
 
       - name: Upload generated SBOMs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: sboms-batch-${{ matrix.batch 
+          name: sboms-batch-${{ matrix.batch }}
           path: images/*/sbom.spdx.json
           retention-days: 1
           if-no-files-found: ignore
@@ -209,7 +209,7 @@ jobs:
           for sbom in /tmp/sbom-merge/images/*/sbom.spdx.json; do
             [ -f "$sbom" ] || continue
             img=$(echo "$sbom" | grep -oP '/tmp/sbom-merge/images/\K[^/]+')
-            target="images/${img/sbom.spdx.json"
+            target="images/${img}/sbom.spdx.json"
 
             # Validate format
             if python3 -c "import json; d=json.load(open('$sbom')); assert 'spdxVersion' in d" 2>/dev/null; then
@@ -223,7 +223,7 @@ jobs:
         run: |
           python3 scripts/sbom_coverage_report.py --json /tmp/post-coverage.json
 
-          BEFORE=${{ needs.coverage-report.outputs.with_sbom 
+          BEFORE=${{ needs.coverage-report.outputs.with_sbom }}
           AFTER=$(python3 -c "import json; print(json.load(open('/tmp/post-coverage.json'))['with_sbom_valid'])")
 
           echo "Before: $BEFORE, After: $AFTER"

@@ -31,7 +31,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  CHART_REPO: ghcr.io/${{ github.repository_owner /evergreenimageregistry/charts
+  CHART_REPO: ghcr.io/${{ github.repository_owner }}/evergreenimageregistry/charts
 
 jobs:
   publish:
@@ -48,13 +48,13 @@ jobs:
 
       - name: Login to GHCR
         run: |
-          echo "${{ secrets.GITHUB_TOKEN " | helm registry login ghcr.io \
-            --username ${{ github.actor  \
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username ${{ github.actor }} \
             --password-stdin
 
       - name: Package and publish charts
         run: |
-          CHART_INPUT="${{ inputs.chart "
+          CHART_INPUT="${{ inputs.chart }}"
 
           if [ -n "$CHART_INPUT" ]; then
             CHARTS="charts/$CHART_INPUT"
@@ -72,9 +72,9 @@ jobs:
             helm package "$chart_dir" -d /tmp/helm-packages/
 
             # Push to OCI
-            pkg_file=$(ls /tmp/helm-packages/${chart_name-*.tgz 2>/dev/null | head -1)
+            pkg_file=$(ls /tmp/helm-packages/${chart_name}-*.tgz 2>/dev/null | head -1)
             if [ -n "$pkg_file" ]; then
-              helm push "$pkg_file" "oci://${{ env.CHART_REPO "
+              helm push "$pkg_file" "oci://${{ env.CHART_REPO }}"
               echo "Published: $chart_name"
             fi
 
@@ -84,5 +84,5 @@ jobs:
       - name: List published charts
         run: |
           echo "=== Published Charts ==="
-          helm search repo "oci://${{ env.CHART_REPO " 2>/dev/null || \
-            echo "Use: helm pull oci://${{ env.CHART_REPO /<chart-name>"
+          helm search repo "oci://${{ env.CHART_REPO }}" 2>/dev/null || \
+            echo "Use: helm pull oci://${{ env.CHART_REPO }}/<chart-name>"

@@ -63,14 +63,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      valid: ${{ steps.check.outputs.valid 
-      error: ${{ steps.check.outputs.error 
+      valid: ${{ steps.check.outputs.valid }}
+      error: ${{ steps.check.outputs.error }}
     steps:
       - name: Check inputs
         id: check
         run: |
-          MODE="${{ inputs.mode "
-          FILTER="${{ inputs.filter "
+          MODE="${{ inputs.mode }}"
+          FILTER="${{ inputs.filter }}"
 
           case "$MODE" in
             tier)
@@ -78,7 +78,7 @@ jobs:
                 echo "valid=true" >> "$GITHUB_OUTPUT"
               else
                 echo "valid=false" >> "$GITHUB_OUTPUT"
-                echo "error=Invalid tier '${FILTER'. Must be: critical|standard|community|experimental" >> "$GITHUB_OUTPUT"
+                echo "error=Invalid tier '${FILTER}'. Must be: critical|standard|community|experimental" >> "$GITHUB_OUTPUT"
               fi
               ;;
             images)
@@ -94,7 +94,7 @@ jobs:
               ;;
             *)
               echo "valid=false" >> "$GITHUB_OUTPUT"
-              echo "error=Unknown mode '${MODE'" >> "$GITHUB_OUTPUT"
+              echo "error=Unknown mode '${MODE}'" >> "$GITHUB_OUTPUT"
               ;;
           esac
 
@@ -105,8 +105,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix 
-      total: ${{ steps.discover.outputs.total 
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -116,9 +116,9 @@ jobs:
         id: discover
         run: |
           chmod +x scripts/discover-images.sh
-          FILTER="${{ inputs.filter "
+          FILTER="${{ inputs.filter }}"
           [ -z "$FILTER" ] && FILTER=""
-          scripts/discover-images.sh "${{ inputs.mode " "${FILTER"
+          scripts/discover-images.sh "${{ inputs.mode }}" "${FILTER}"
         env:
           GITHUB_OUTPUT: $GITHUB_OUTPUT
 
@@ -130,15 +130,15 @@ jobs:
       '0'
     uses: ./.github/workflows/_build-reusable.yml
     with:
-      matrix: ${{ needs.discover.outputs.matrix 
-      tag: ${{ inputs.tag || github.sha 
-      push: ${{ inputs.push 
-      sign: ${{ inputs.sign 
-      multiarch: ${{ inputs.multiarch 
-      tier: demand-${{ inputs.mode 
+      matrix: ${{ needs.discover.outputs.matrix }}
+      tag: ${{ inputs.tag || github.sha }}
+      push: ${{ inputs.push }}
+      sign: ${{ inputs.sign }}
+      multiarch: ${{ inputs.multiarch }}
+      tier: demand-${{ inputs.mode }}
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME 
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN 
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   error:
     name: Input Error
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "::error::${{ needs.validate.outputs.error "
+          echo "::error::${{ needs.validate.outputs.error }}"
           exit 1
 
   empty:
@@ -158,4 +158,4 @@ jobs:
       '0'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "::notice::No images found for mode=${{ inputs.mode  filter=${{ inputs.filter "
+      - run: echo "::notice::No images found for mode=${{ inputs.mode }} filter=${{ inputs.filter }}"

@@ -29,7 +29,7 @@ on:
       - 'manifest.toml'
 
 concurrency:
-  group: build-on-push-${{ github.ref 
+  group: build-on-push-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -44,9 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix 
-      total: ${{ steps.discover.outputs.total 
-      mode: ${{ steps.discover.outputs.mode 
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
+      mode: ${{ steps.discover.outputs.mode }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -64,7 +64,7 @@ jobs:
         if: steps.discover.outputs.total == '0'
         run: |
           echo "::notice::No images changed in this push. Skipping build."
-          echo "matrix={\"include\":[]" >> "$GITHUB_OUTPUT"
+          echo "matrix={\"include\":[]}" >> "$GITHUB_OUTPUT"
 
   # ---------------------------------------------------------------------------
   # STAGE 2: LINT - Fast lint check on changed images only
@@ -83,24 +83,24 @@ jobs:
       - name: Install hadolint
         uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387
       - name: Install shimctl
-        run: cargo install shimctl --git https://github.com/${{ github.repository_owner /EvergreenShims.git --locked
+        run: cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked
       - name: Verify shimctl version
         run: shimctl --version
       - name: Get changed image list
         id: images
         run: |
-          MATRIX='${{ needs.discover.outputs.matrix '
+          MATRIX='${{ needs.discover.outputs.matrix }}'
           IMAGES=$(echo "$MATRIX" | python3 -c "import json,sys; d=json.load(sys.stdin); print(','.join(b['images'] for b in d['include']))" 2>/dev/null)
-          echo "images=${IMAGES" >> "$GITHUB_OUTPUT"
+          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
       - name: Run hadolint
         run: |
-          IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images "
+          IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images }}"
           FAILURES=0
-          for img in "${IMAGE_LIST[@]"; do
+          for img in "${IMAGE_LIST[@]}"; do
             [ -z "$img" ] && continue
-            DF="images/${img/Dockerfile"
+            DF="images/${img}/Dockerfile"
             if [ ! -f "$DF" ]; then
-              echo "::error::Missing Dockerfile for ${img"
+              echo "::error::Missing Dockerfile for ${img}"
               FAILURES=$((FAILURES+1))
               continue
             fi
@@ -109,34 +109,34 @@ jobs:
               --ignore DL3048 --ignore DL3021 --ignore DL3045 --ignore DL3007 \
               --ignore DL1000 --ignore DL4006 --ignore DL4005 --ignore DL4004 \
               --ignore DL4001 --ignore DL3003 --ignore DL3025 --ignore DL3023; then
-              echo "PASS: ${img"
+              echo "PASS: ${img}"
             else
-              echo "::error::${img has lint issues"
+              echo "::error::${img} has lint issues"
               FAILURES=$((FAILURES+1))
             fi
           done
           if [ "$FAILURES" -gt 0 ]; then
-            echo "::error::${FAILURES changed image(s) failed hadolint"
+            echo "::error::${FAILURES} changed image(s) failed hadolint"
             exit 1
           fi
 
       - name: Validate entrypoint patterns (BLOCKING)
         run: |
-          IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images "
+          IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images }}"
           FAILURES=0
-          for img in "${IMAGE_LIST[@]"; do
+          for img in "${IMAGE_LIST[@]}"; do
             [ -z "$img" ] && continue
-            echo "::group::Validate ${img"
+            echo "::group::Validate ${img}"
             if python3 scripts/validate_entrypoint_pattern.py --image "$img"; then
-              echo "PASS: ${img"
+              echo "PASS: ${img}"
             else
-              echo "::error::${img: entrypoint validation FAILED"
+              echo "::error::${img}: entrypoint validation FAILED"
               FAILURES=$((FAILURES+1))
             fi
             echo "::endgroup::"
           done
           if [ "$FAILURES" -gt 0 ]; then
-            echo "::error::${FAILURES image(s) failed entrypoint validation"
+            echo "::error::${FAILURES} image(s) failed entrypoint validation"
             exit 1
           fi
 
@@ -154,12 +154,12 @@ jobs:
       actions: read
     uses: ./.github/workflows/_build-reusable.yml
     with:
-      matrix: ${{ needs.discover.outputs.matrix 
-      tag: ${{ github.sha 
-      push: ${{ github.event_name != 'pull_request' 
+      matrix: ${{ needs.discover.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: ${{ github.event_name != 'pull_request' }}
       sign: false
       multiarch: true
       tier: changed
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME 
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN 
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

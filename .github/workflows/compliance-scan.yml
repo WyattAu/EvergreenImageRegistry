@@ -57,19 +57,19 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
-          username: ${{ github.actor 
-          password: ${{ secrets.GITHUB_TOKEN 
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull image
-        run: docker pull ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image :latest
+        run: docker pull ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest
 
       - name: CIS Docker Benchmark
         id: cis
         run: |
-          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image :latest"
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
 
           # Check non-root user
-          USER=$(docker inspect --format '{{.Config.User' "$REF" 2>/dev/null || echo "root")
+          USER=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "root")
           if [ "$USER" != "root" ] && [ "$USER" != "0" ] && [ -n "$USER" ]; then
             echo "cis_non_root=PASS" >> $GITHUB_OUTPUT
           else
@@ -77,7 +77,7 @@ jobs:
           fi
 
           # Check HEALTHCHECK
-          HC=$(docker inspect --format '{{.Config.Healthcheck.Test' "$REF" 2>/dev/null || echo "none")
+          HC=$(docker inspect --format '{{.Config.Healthcheck.Test}}' "$REF" 2>/dev/null || echo "none")
           if [ "$HC" != "none" ] && [ "$HC" != "[]" ]; then
             echo "cis_healthcheck=PASS" >> $GITHUB_OUTPUT
           else
@@ -89,7 +89,7 @@ jobs:
           if [ "$SUID" = "0" ]; then
             echo "cis_no_suid=PASS" >> $GITHUB_OUTPUT
           else
-            echo "::error::CIS no-SUID check failed (${SUID files)"
+            echo "::error::CIS no-SUID check failed (${SUID} files)"
             echo "cis_no_suid=FAIL" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -97,7 +97,7 @@ jobs:
       - name: FIPS Readiness Check
         id: fips
         run: |
-          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image :latest"
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
 
           # Try to run openssl in the image
           OPENSSL=$(docker run --rm --entrypoint "" "$REF" openssl version 2>/dev/null || echo "NO_OPENSSL")
@@ -114,7 +114,7 @@ jobs:
       - name: Verify supply chain
         id: supply
         run: |
-          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image :latest"
+          REF="ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest"
 
           # Check cosign signature
           if cosign verify "$REF" \
@@ -131,7 +131,7 @@ jobs:
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
             echo "spdx=YES" >> $GITHUB_OUTPUT
           else
-            echo "::error::${{ matrix.image : SPDX attestation verification failed"
+            echo "::error::${{ matrix.image }}: SPDX attestation verification failed"
             echo "spdx=NO" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -139,32 +139,32 @@ jobs:
       - name: Generate evidence bundle
         run: |
           mkdir -p compliance/evidence
-          cat > "compliance/evidence/${{ matrix.image .json" << EVIDENCE
+          cat > "compliance/evidence/${{ matrix.image }}.json" << EVIDENCE
           {
-            "image": "${{ matrix.image ",
-            "ref": "ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image :latest",
+            "image": "${{ matrix.image }}",
+            "ref": "ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest",
             "scanned_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "cis": {
-              "non_root": "${{ steps.cis.outputs.cis_non_root ",
-              "healthcheck": "${{ steps.cis.outputs.cis_healthcheck ",
-              "no_suid": "${{ steps.cis.outputs.cis_no_suid "
-            ,
+              "non_root": "${{ steps.cis.outputs.cis_non_root }}",
+              "healthcheck": "${{ steps.cis.outputs.cis_healthcheck }}",
+              "no_suid": "${{ steps.cis.outputs.cis_no_suid }}"
+            },
             "fips": {
-              "status": "${{ steps.fips.outputs.fips_status ",
-              "openssl": "${{ steps.fips.outputs.openssl_version "
-            ,
+              "status": "${{ steps.fips.outputs.fips_status }}",
+              "openssl": "${{ steps.fips.outputs.openssl_version }}"
+            },
             "supply_chain": {
-              "signed": "${{ steps.supply.outputs.signed ",
-              "spdx_sbom": "${{ steps.supply.outputs.spdx "
-            
-          
+              "signed": "${{ steps.supply.outputs.signed }}",
+              "spdx_sbom": "${{ steps.supply.outputs.spdx }}"
+            }
+          }
           EVIDENCE
 
       - name: Upload evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: compliance-${{ matrix.image 
-          path: compliance/evidence/${{ matrix.image .json
+          name: compliance-${{ matrix.image }}
+          path: compliance/evidence/${{ matrix.image }}.json
           retention-days: 90
 
   aggregate:
@@ -199,22 +199,22 @@ jobs:
 
           # Generate markdown dashboard
           md = "# Compliance Dashboard\n\n"
-          md += f"**Scan Date:** {results[0].get('scanned_at','?') if results else '?'\n"
-          md += f"**Images Scanned:** {len(results)\n\n"
+          md += f"**Scan Date:** {results[0].get('scanned_at','?') if results else '?'}\n"
+          md += f"**Images Scanned:** {len(results)}\n\n"
 
           md += "| Image | Non-Root | Healthcheck | No SUID | FIPS | Signed | SBOM |\n"
           md += "|-------|----------|-------------|---------|------|--------|------|\n"
           for r in results:
-              cis = r.get("cis", {)
-              fips = r.get("fips", {)
-              sc = r.get("supply_chain", {)
-              md += f"| {r['image'] | {cis.get('non_root','?') | {cis.get('healthcheck','?') | {cis.get('no_suid','?') | {fips.get('status','?') | {sc.get('signed','?') | {sc.get('spdx','?') |\n"
+              cis = r.get("cis", {})
+              fips = r.get("fips", {})
+              sc = r.get("supply_chain", {})
+              md += f"| {r['image']} | {cis.get('non_root','?')} | {cis.get('healthcheck','?')} | {cis.get('no_suid','?')} | {fips.get('status','?')} | {sc.get('signed','?')} | {sc.get('spdx','?')} |\n"
 
           md += "\n## Evidence Files\n\n"
           md += "Each image has a detailed JSON evidence file in `compliance/evidence/`.\n"
 
           Path("docs/compliance/dashboard.md").write_text(md)
-          print(f"Dashboard: {len(results) images")
+          print(f"Dashboard: {len(results)} images")
           DASH
 
       - name: Commit dashboard

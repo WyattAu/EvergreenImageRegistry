@@ -19,26 +19,26 @@ permissions:
 env:
   IMAGE_NAME: cloudflared
   REGISTRY: ghcr.io
-  IMAGE: ghcr.io/${{ github.repository_owner /cloudflared
+  IMAGE: ghcr.io/${{ github.repository_owner }}/cloudflared
 
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      digest: ${{ steps.push.outputs.digest 
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Resolve version
         id: version
         run: |
-          VERSION="${{ github.event.inputs.version || $(grep 'version:' images/cloudflared/melange.yaml | head -1 | sed 's/.*version: //') "
-          echo "version=${VERSION" >> "$GITHUB_OUTPUT"
+          VERSION="${{ github.event.inputs.version || $(grep 'version:' images/cloudflared/melange.yaml | head -1 | sed 's/.*version: //') }}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build APK package with melange
         run: |
           docker run --rm --privileged \
-            -v "${{ github.workspace :/work" \
+            -v "${{ github.workspace }}:/work" \
             -w /work \
             cgr.dev/chainguard/melange build \
             images/cloudflared/melange.yaml \
@@ -49,46 +49,46 @@ jobs:
       - name: Build OCI image with apko
         run: |
           docker run --rm \
-            -v "${{ github.workspace :/work" \
+            -v "${{ github.workspace }}:/work" \
             -w /work \
             cgr.dev/chainguard/apko build \
             images/cloudflared/apko.yaml \
-            "ghcr.io/${{ github.repository_owner /cloudflared:${{ steps.version.outputs.version " \
+            "ghcr.io/${{ github.repository_owner }}/cloudflared:${{ steps.version.outputs.version }}" \
             cloudflared-image.tar \
             --repository-append /work/packages \
             --sbom-path /work/sbom
 
       - name: Log in to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN " | docker login ghcr.io -u "${{ github.actor " --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Load and push image
         id: push
         run: |
           docker load -i cloudflared-image.tar
-          FULL_TAG="ghcr.io/${{ github.repository_owner /cloudflared:${{ steps.version.outputs.version "
-          docker tag "ghcr.io/${{ github.repository_owner /cloudflared:${{ steps.version.outputs.version " "$FULL_TAG"
+          FULL_TAG="ghcr.io/${{ github.repository_owner }}/cloudflared:${{ steps.version.outputs.version }}"
+          docker tag "ghcr.io/${{ github.repository_owner }}/cloudflared:${{ steps.version.outputs.version }}" "$FULL_TAG"
           docker push "$FULL_TAG"
 
-          docker tag "$FULL_TAG" "ghcr.io/${{ github.repository_owner /cloudflared:latest"
-          docker push "ghcr.io/${{ github.repository_owner /cloudflared:latest"
+          docker tag "$FULL_TAG" "ghcr.io/${{ github.repository_owner }}/cloudflared:latest"
+          docker push "ghcr.io/${{ github.repository_owner }}/cloudflared:latest"
 
-          DIGEST=$(docker inspect --format '{{index .RepoDigests 0' "$FULL_TAG")
-          echo "digest=${DIGEST" >> "$GITHUB_OUTPUT"
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
           echo "Pushed: $FULL_TAG ($DIGEST)"
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v4.1.2
 
       - name: Sign version tag
-        run: cosign sign --yes "ghcr.io/${{ github.repository_owner /cloudflared:${{ steps.version.outputs.version "
+        run: cosign sign --yes "ghcr.io/${{ github.repository_owner }}/cloudflared:${{ steps.version.outputs.version }}"
 
       - name: Sign latest tag
-        run: cosign sign --yes "ghcr.io/${{ github.repository_owner /cloudflared:latest"
+        run: cosign sign --yes "ghcr.io/${{ github.repository_owner }}/cloudflared:latest"
 
       - name: Upload melange SBOM
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-${{ env.IMAGE_NAME 
+          name: sbom-${{ env.IMAGE_NAME }}
           path: sbom/
           retention-days: 90
 
@@ -96,8 +96,8 @@ jobs:
     needs: build
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     with:
-      image: ghcr.io/${{ github.repository_owner /cloudflared
-      digest: ${{ needs.build.outputs.digest 
+      image: ghcr.io/${{ github.repository_owner }}/cloudflared
+      digest: ${{ needs.build.outputs.digest }}
     permissions:
       id-token: write
       contents: read

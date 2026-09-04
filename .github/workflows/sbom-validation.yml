@@ -14,14 +14,14 @@ jobs:
   discover-changes:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.find.outputs.images 
+      images: ${{ steps.find.outputs.images }}
     steps:
       - uses: actions/checkout@de0fac2e7d77527bb7777412b8d711c9c0070744
         with:
           fetch-depth: 0
       - id: find
         run: |
-          IMAGES=$(git diff --name-only "origin/${{ github.base_ref ...HEAD" \
+          IMAGES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
             | grep '^images/' \
             | cut -d'/' -f2 \
             | sort -u \
@@ -34,13 +34,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ${{ fromJSON(needs.discover-changes.outputs.images) 
+        image: ${{ fromJSON(needs.discover-changes.outputs.images) }}
       fail-fast: false
     steps:
       - uses: actions/checkout@de0fac2e7d77527bb7777412b8d711c9c0070744
       - name: Validate SBOM
         run: |
-          IMAGE="${{ matrix.image "
+          IMAGE="${{ matrix.image }}"
           SBOM_SPDX="images/$IMAGE/sbom.spdx.json"
           SBOM_CDX="images/$IMAGE/sbom.cdx.json"
           echo "## SBOM Validation: $IMAGE" >> "$GITHUB_STEP_SUMMARY"
@@ -71,7 +71,7 @@ jobs:
           fi
 
           FILE_SIZE=$(stat --format=%s "$SBOM_FILE" 2>/dev/null || stat -f%z "$SBOM_FILE" 2>/dev/null || echo 0)
-          echo "**PASSED** -- $PKG_COUNT packages ($FMT, ${FILE_SIZEB)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**PASSED** -- $PKG_COUNT packages ($FMT, ${FILE_SIZE}B)" >> "$GITHUB_STEP_SUMMARY"
 
   aggregate:
     needs: validate-sbom
@@ -81,9 +81,9 @@ jobs:
       - name: Summary
         run: |
           echo "## SBOM Validation Summary" >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ needs.validate-sbom.result " = "success" ]; then
+          if [ "${{ needs.validate-sbom.result }}" = "success" ]; then
             echo "All SBOMs validated successfully." >> "$GITHUB_STEP_SUMMARY"
-          elif [ "${{ needs.validate-sbom.result " = "skipped" ]; then
+          elif [ "${{ needs.validate-sbom.result }}" = "skipped" ]; then
             echo "No images changed in this PR." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "Some SBOM validations failed." >> "$GITHUB_STEP_SUMMARY"

@@ -23,7 +23,7 @@ jobs:
       - name: Run CIS scan
         run: |
           chmod +x compliance/cis/run_cis_scan.sh
-          ./compliance/cis/run_cis_scan.sh --tier ${{ matrix.tier  --output cis-results-${{ matrix.tier .json
+          ./compliance/cis/run_cis_scan.sh --tier ${{ matrix.tier }} --output cis-results-${{ matrix.tier }}.json
 
       - name: Generate XCCDF report
         run: |
@@ -34,7 +34,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: cis-scan-results-${{ matrix.tier 
+          name: cis-scan-results-${{ matrix.tier }}
           path: |
             cis-results-*.json
             xccdf-report.xml
@@ -42,17 +42,17 @@ jobs:
 
       - name: Check compliance threshold
         run: |
-          if [ -f cis-results-${{ matrix.tier .json ]; then
+          if [ -f cis-results-${{ matrix.tier }}.json ]; then
             python3 -c "
           import json
-          with open('cis-results-${{ matrix.tier .json') as f:
+          with open('cis-results-${{ matrix.tier }}.json') as f:
               results = json.load(f)
           total = results.get('total', 0)
           passed = results.get('passed', 0)
           rate = (passed / total * 100) if total > 0 else 0
-          print(f'CIS Compliance: {passed/{total ({rate:.1f%)')
+          print(f'CIS Compliance: {passed}/{total} ({rate:.1f}%)')
           if rate < 90:
-              print(f'ERROR: Compliance rate {rate:.1f% is below 90% threshold')
+              print(f'ERROR: Compliance rate {rate:.1f}% is below 90% threshold')
               exit(1)
           "
           fi

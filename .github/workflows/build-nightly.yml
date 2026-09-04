@@ -49,10 +49,10 @@ jobs:
     name: Discover Critical
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: ${{ !inputs.tier || inputs.tier == 'critical' || inputs.tier == 'all' }}
+    if: ${{ !inputs.tier || inputs.tier == 'critical' || inputs.tier == 'all' 
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
-      total: ${{ steps.discover.outputs.total }}
+      matrix: ${{ steps.discover.outputs.matrix 
+      total: ${{ steps.discover.outputs.total 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - run: |
@@ -66,10 +66,10 @@ jobs:
     name: Discover Standard
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: ${{ !inputs.tier || inputs.tier == 'standard' || inputs.tier == 'all' }}
+    if: ${{ !inputs.tier || inputs.tier == 'standard' || inputs.tier == 'all' 
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
-      total: ${{ steps.discover.outputs.total }}
+      matrix: ${{ steps.discover.outputs.matrix 
+      total: ${{ steps.discover.outputs.total 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - run: |
@@ -83,10 +83,10 @@ jobs:
     name: Discover Community
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: ${{ !inputs.tier || inputs.tier == 'community' || inputs.tier == 'all' }}
+    if: ${{ !inputs.tier || inputs.tier == 'community' || inputs.tier == 'all' 
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
-      total: ${{ steps.discover.outputs.total }}
+      matrix: ${{ steps.discover.outputs.matrix 
+      total: ${{ steps.discover.outputs.total 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - run: |
@@ -113,13 +113,13 @@ jobs:
             # Skip non-image directories
             [[ "$name" == _* ]] && continue
             [ "$name" = "tests" ] || [ "$name" = "health-shim" ] && continue
-            grep -q '^HEALTHCHECK' "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); }
+            grep -q '^HEALTHCHECK' "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); 
             for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do
-              grep -q "$label" "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing $label"; FAIL=$((FAIL+1)); }
+              grep -q "$label" "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing $label"; FAIL=$((FAIL+1)); 
             done
             PASS=$((PASS+1))
           done
-          echo "Gates: ${PASS} checked, ${FAIL} failures"
+          echo "Gates: ${PASS checked, ${FAIL failures"
           if [ "$FAIL" -gt 0 ]; then exit 1; fi
 
   # ---------------------------------------------------------------------------
@@ -138,22 +138,22 @@ jobs:
       - name: Benchmark critical image builds
         run: |
           mkdir -p .specs/06_5_regression
-          REGISTRY="ghcr.io/${{ github.repository_owner }}"
+          REGISTRY="ghcr.io/${{ github.repository_owner "
           CRITICAL_IMAGES="nginx redis grafana"
-          BUILD_TIMES="{}"
+          BUILD_TIMES="{"
           for image in $CRITICAL_IMAGES; do
-            echo "::group::Benchmark ${image}"
+            echo "::group::Benchmark ${image"
             START=$(date +%s%N)
             docker buildx build \
-              --builder "$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)" \
+              --builder "$(docker buildx inspect --format '{{.Name' 2>/dev/null | head -1)" \
               --platform linux/amd64 \
               --load \
-              -t "bench-${image}:latest" \
-              "./images/${image}" 2>&1 || true
+              -t "bench-${image:latest" \
+              "./images/${image" 2>&1 || true
             END=$(date +%s%N)
             ELAPSED=$(( (END - START) / 1000000 ))
-            echo "${image}: ${ELAPSED}ms"
-            BUILD_TIMES=$(echo "$BUILD_TIMES" | jq --arg img "$image" --arg t "$ELAPSED" '. + {($img): ($t | tonumber)}')
+            echo "${image: ${ELAPSEDms"
+            BUILD_TIMES=$(echo "$BUILD_TIMES" | jq --arg img "$image" --arg t "$ELAPSED" '. + {($img): ($t | tonumber)')
             echo "::endgroup::"
           done
           echo "$BUILD_TIMES" | tee .specs/06_5_regression/build_times.json
@@ -167,7 +167,7 @@ jobs:
           if [ "$REGRESSED" -eq 0 ]; then
             cp "$CURRENT" "$BASELINE"
           else
-            echo "::notice::Baseline NOT updated due to ${REGRESSED} regression(s)"
+            echo "::notice::Baseline NOT updated due to ${REGRESSED regression(s)"
           fi
             exit 0
           fi
@@ -181,10 +181,10 @@ jobs:
             CUR=$(jq -r --arg k "$key" '.[$k] // 0' "$CURRENT")
             if [ "$BASE" -gt 0 ]; then
               CHANGE=$(echo "scale=1; (($CUR - $BASE) / $BASE) * 100" | bc)
-              echo "| $key | $BASE | $CUR | ${CHANGE}% |" >> "$GITHUB_STEP_SUMMARY"
+              echo "| $key | $BASE | $CUR | ${CHANGE% |" >> "$GITHUB_STEP_SUMMARY"
               OVER=$(echo "$CHANGE > 50" | bc -l)
               if [ "$OVER" = "1" ]; then
-                echo "::warning::${key} regressed by ${CHANGE}% (threshold: 50%)"
+                echo "::warning::${key regressed by ${CHANGE% (threshold: 50%)"
                 REGRESSED=$((REGRESSED+1))
               fi
             else
@@ -193,7 +193,7 @@ jobs:
           done
           cp "$CURRENT" "$BASELINE"
           if [ "$REGRESSED" -gt 0 ]; then
-            echo "::warning::${REGRESSED} image(s) exceeded 50% regression threshold (non-blocking)"
+            echo "::warning::${REGRESSED image(s) exceeded 50% regression threshold (non-blocking)"
           fi
 
   # ---------------------------------------------------------------------------
@@ -223,15 +223,15 @@ jobs:
     if: needs.discover-critical.result == 'success' && needs.discover-critical.outputs.total != '0'
     uses: ./.github/workflows/_build-reusable.yml
     with:
-      matrix: ${{ needs.discover-critical.outputs.matrix }}
-      tag: ${{ github.sha }}
+      matrix: ${{ needs.discover-critical.outputs.matrix 
+      tag: ${{ github.sha 
       push: true
-      sign: ${{ inputs.sign == 'true' }}
+      sign: ${{ inputs.sign == 'true' 
       multiarch: true
       tier: critical
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME 
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN 
 
   # ---------------------------------------------------------------------------
   # BUILD STANDARD - Multi-arch, unsigned
@@ -242,15 +242,15 @@ jobs:
     if: needs.discover-standard.result == 'success' && needs.discover-standard.outputs.total != '0'
     uses: ./.github/workflows/_build-reusable.yml
     with:
-      matrix: ${{ needs.discover-standard.outputs.matrix }}
-      tag: ${{ github.sha }}
+      matrix: ${{ needs.discover-standard.outputs.matrix 
+      tag: ${{ github.sha 
       push: true
       sign: false
       multiarch: true
       tier: standard
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME 
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN 
 
   # ---------------------------------------------------------------------------
   # BUILD COMMUNITY - amd64 only, unsigned
@@ -261,15 +261,15 @@ jobs:
     if: needs.discover-community.result == 'success' && needs.discover-community.outputs.total != '0'
     uses: ./.github/workflows/_build-reusable.yml
     with:
-      matrix: ${{ needs.discover-community.outputs.matrix }}
-      tag: ${{ github.sha }}
+      matrix: ${{ needs.discover-community.outputs.matrix 
+      tag: ${{ github.sha 
       push: true
       sign: false
       multiarch: false
       tier: community
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME 
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN 
 
   # ---------------------------------------------------------------------------
   # REPORT - Aggregate results
@@ -287,9 +287,9 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Tier | Images | Build |" >> "$GITHUB_STEP_SUMMARY"
           echo "|------|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Gates** | - | ${{ needs.gates.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Critical** | ${{ needs.discover-critical.outputs.total || 0 }} | ${{ needs.build-critical.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Standard** | ${{ needs.discover-standard.outputs.total || 0 }} | ${{ needs.build-standard.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Community** | ${{ needs.discover-community.outputs.total || 0 }} | ${{ needs.build-community.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Gates** | - | ${{ needs.gates.result  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Critical** | ${{ needs.discover-critical.outputs.total || 0  | ${{ needs.build-critical.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Standard** | ${{ needs.discover-standard.outputs.total || 0  | ${{ needs.build-standard.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Community** | ${{ needs.discover-community.outputs.total || 0  | ${{ needs.build-community.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Commit:** \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Commit:** \`${{ github.sha \`" >> "$GITHUB_STEP_SUMMARY"

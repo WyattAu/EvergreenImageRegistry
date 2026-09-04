@@ -9,7 +9,7 @@ on:
       - 'images/health-shim/**'
 
 concurrency:
-  group: go-test-${{ github.ref }}
+  group: go-test-${{ github.ref 
   cancel-in-progress: true
 
 permissions:

@@ -23,7 +23,7 @@ on:
           - cosign
 
 concurrency:
-  group: fips-${{ github.ref }}
+  group: fips-${{ github.ref 
   cancel-in-progress: true
 
 permissions:
@@ -33,7 +33,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository_owner }}
+  IMAGE_PREFIX: ${{ github.repository_owner 
 
 jobs:
   build-go-fips:
@@ -68,35 +68,35 @@ jobs:
 
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
 
       - name: Read version from manifest
         id: meta
         run: |
-          VERSION=$(grep '^version' images/${{ matrix.image }}/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          VERSION=$(grep '^version' images/${{ matrix.image /manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build Go FIPS variant
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/${{ matrix.image :${{ steps.meta.outputs.version -fips"
           docker buildx build \
-            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version  \
             --build-arg CGO_ENABLED=1 \
             --build-arg GOEXPERIMENT=boringcrypto \
             --build-arg BUILDER_IMAGE=golang:1.24-bookworm \
             --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
-            -t "${IMAGE_TAG}" \
+            -t "${IMAGE_TAG" \
             --push \
-            images/${{ matrix.image }}/
+            images/${{ matrix.image /
 
       - name: Sign FIPS image
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
-          cosign sign --yes "${IMAGE_TAG}"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/${{ matrix.image :${{ steps.meta.outputs.version -fips"
+          cosign sign --yes "${IMAGE_TAG"
 
   build-openssl-fips:
     if: |
@@ -121,36 +121,36 @@ jobs:
 
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
 
       - name: Read version from manifest
         id: meta
         run: |
-          VERSION=$(grep '^version' images/${{ matrix.image }}/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          VERSION=$(grep '^version' images/${{ matrix.image /manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build OpenSSL FIPS variant
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/${{ matrix.image :${{ steps.meta.outputs.version -fips"
           docker buildx build \
-            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version  \
             --build-arg OPENSSL_VERSION=3.0.16 \
             --build-arg ENABLE_FIPS=1 \
             --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
             --build-arg OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
-            -f images/${{ matrix.image }}/Dockerfile.fips \
-            -t "${IMAGE_TAG}" \
+            -f images/${{ matrix.image /Dockerfile.fips \
+            -t "${IMAGE_TAG" \
             --push \
-            images/${{ matrix.image }}/
+            images/${{ matrix.image /
 
       - name: Sign FIPS image
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
-          cosign sign --yes "${IMAGE_TAG}"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/${{ matrix.image :${{ steps.meta.outputs.version -fips"
+          cosign sign --yes "${IMAGE_TAG"
 
   build-envoy-fips:
     if: |
@@ -165,9 +165,9 @@ jobs:
 
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
 
@@ -175,22 +175,22 @@ jobs:
         id: meta
         run: |
           VERSION=$(grep '^version' images/envoy/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build Envoy FIPS variant
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/envoy:${{ steps.meta.outputs.version }}-fips"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/envoy:${{ steps.meta.outputs.version -fips"
           docker buildx build \
-            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version  \
             -f images/envoy/Dockerfile.fips \
-            -t "${IMAGE_TAG}" \
+            -t "${IMAGE_TAG" \
             --push \
             images/envoy/
 
       - name: Sign FIPS image
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/envoy:${{ steps.meta.outputs.version }}-fips"
-          cosign sign --yes "${IMAGE_TAG}"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/envoy:${{ steps.meta.outputs.version -fips"
+          cosign sign --yes "${IMAGE_TAG"
 
   build-keycloak-fips:
     if: |
@@ -205,9 +205,9 @@ jobs:
 
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
 
@@ -215,24 +215,24 @@ jobs:
         id: meta
         run: |
           VERSION=$(grep '^version' images/keycloak/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build Keycloak FIPS variant
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/keycloak:${{ steps.meta.outputs.version }}-fips"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/keycloak:${{ steps.meta.outputs.version -fips"
           docker buildx build \
-            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version  \
             --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
             --build-arg JAVA_OPTS="-Djava.security.properties=/etc/java/fips/security.properties -Dorg.bouncycastle.fips.approved_only=true" \
             -f images/keycloak/Dockerfile.fips \
-            -t "${IMAGE_TAG}" \
+            -t "${IMAGE_TAG" \
             --push \
             images/keycloak/
 
       - name: Sign FIPS image
         run: |
-          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/keycloak:${{ steps.meta.outputs.version }}-fips"
-          cosign sign --yes "${IMAGE_TAG}"
+          IMAGE_TAG="${REGISTRY/${IMAGE_PREFIX/keycloak:${{ steps.meta.outputs.version -fips"
+          cosign sign --yes "${IMAGE_TAG"
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

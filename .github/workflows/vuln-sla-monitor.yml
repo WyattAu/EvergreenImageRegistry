@@ -49,7 +49,7 @@ jobs:
       - name: Check existing CVE issues
         id: check
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
           python3 << 'PYEOF'
           import json
@@ -116,19 +116,19 @@ jobs:
                       "age_days": age_days,
                       "sla_days": sla_days,
                       "overdue_days": age_days - sla_days,
-                  })
+                  )
 
           # Output results
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"violation_count={len(violations)}\n")
+              f.write(f"violation_count={len(violations)\n")
               if violations:
                   # Sort by overdue days (most overdue first)
                   violations.sort(key=lambda x: x["overdue_days"], reverse=True)
-                  f.write(f"violations={json.dumps(violations)}\n")
+                  f.write(f"violations={json.dumps(violations)\n")
 
-          print(f"Found {len(violations)} SLA violations")
+          print(f"Found {len(violations) SLA violations")
           for v in violations:
-              print(f"  #{v['number']}: {v['severity']} - {v['age_days']} days old (SLA: {v['sla_days']})")
+              print(f"  #{v['number']: {v['severity'] - {v['age_days'] days old (SLA: {v['sla_days'])")
 
           PYEOF
 
@@ -143,7 +143,7 @@ jobs:
             if (violations.length === 0) {
               console.log('No violations to report');
               return;
-            }
+            
 
             // Check if we already have an open SLA issue for today
             const existing = await github.rest.issues.listForRepo({
@@ -151,29 +151,29 @@ jobs:
               repo: context.repo.repo,
               labels: 'sla-violation,automated',
               state: 'open',
-            });
+            );
 
             const todayIssue = existing.data.find(i =>
               i.title.includes(date) && i.title.includes('SLA')
             );
 
             if (todayIssue) {
-              console.log(`SLA issue already exists: #${todayIssue.number}`);
+              console.log(`SLA issue already exists: #${todayIssue.number`);
               return;
-            }
+            
 
             // Build issue body
             const rows = violations.map(v =>
-              `| #${v.number} | ${v.severity} | ${v.age_days} days | ${v.sla_days} days | **${v.overdue_days} days overdue** |`
+              `| #${v.number | ${v.severity | ${v.age_days days | ${v.sla_days days | **${v.overdue_days days overdue** |`
             ).join('\n');
 
             const criticalCount = violations.filter(v => v.severity === 'CRITICAL').length;
             const highCount = violations.filter(v => v.severity === 'HIGH').length;
 
             const body = [
-              `## Vulnerability SLA Violations - ${date}`,
+              `## Vulnerability SLA Violations - ${date`,
               '',
-              `**${violations.length}** open CVE issues have exceeded their remediation SLA.`,
+              `**${violations.length** open CVE issues have exceeded their remediation SLA.`,
               '',
               '| Issue | Severity | Age | SLA | Status |',
               '|-------|----------|-----|-----|--------|',
@@ -195,10 +195,10 @@ jobs:
               '',
               `### Details`,
               '',
-              `- **Workflow Run**: [${context.runNumber}](${context.serverUrl}/${context.repository}/actions/runs/${context.runId})`,
-              `- **Check Date**: ${date}`,
-              `- **CRITICAL violations**: ${criticalCount}`,
-              `- **HIGH violations**: ${highCount}`,
+              `- **Workflow Run**: [${context.runNumber](${context.serverUrl/${context.repository/actions/runs/${context.runId)`,
+              `- **Check Date**: ${date`,
+              `- **CRITICAL violations**: ${criticalCount`,
+              `- **HIGH violations**: ${highCount`,
               '',
               '_This issue was automatically created by the Vulnerability SLA Monitor workflow._'
             ].join('\n');
@@ -206,10 +206,10 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `[SLA-VIOLATION] ${violations.length} CVE issues exceed remediation SLA - ${date}`,
+              title: `[SLA-VIOLATION] ${violations.length CVE issues exceed remediation SLA - ${date`,
               body: body,
               labels: ['sla-violation', 'security', 'automated'],
-            });
+            );
 
       - name: Generate summary
         if: always()
@@ -219,11 +219,11 @@ jobs:
             echo ""
             echo "| Metric | Count |"
             echo "|--------|-------|"
-            echo "| SLA Violations | ${{ steps.check.outputs.violation_count }} |"
+            echo "| SLA Violations | ${{ steps.check.outputs.violation_count  |"
             echo ""
-            if [ "${{ steps.check.outputs.violation_count }}" = "0" ]; then
+            if [ "${{ steps.check.outputs.violation_count " = "0" ]; then
               echo "No SLA violations detected."
             else
               echo "Issues exceeding SLA thresholds have been reported."
             fi
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"

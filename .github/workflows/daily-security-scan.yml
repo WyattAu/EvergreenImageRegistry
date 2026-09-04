@@ -26,12 +26,12 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow 
   cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
+  OWNER: ${{ github.repository_owner 
 
 permissions:
   contents: read
@@ -47,8 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      total: ${{ steps.find.outputs.total }}
+      matrix: ${{ steps.set-matrix.outputs.matrix 
+      total: ${{ steps.find.outputs.total 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -64,8 +64,8 @@ jobs:
             -not -path '*/arm64/*' \
             | sed 's|images/||' | sed 's|/Dockerfile||' | sort > images.txt
           TOTAL=$(wc -l < images.txt)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Found ${TOTAL} images to scan"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL images to scan"
 
       - name: Validate image count
         run: |
@@ -95,12 +95,12 @@ jobs:
                   "batch": i // batch_size,
                   "images": ",".join(chunk),
                   "count": len(chunk),
-              })
+              )
 
-          matrix_json = json.dumps({"include": batches})
+          matrix_json = json.dumps({"include": batches)
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"matrix={matrix_json}\n")
-          print(f"Created {len(batches)} batches for {len(images)} images")
+              f.write(f"matrix={matrix_json\n")
+          print(f"Created {len(batches) batches for {len(images) images")
           PYEOF
 
       - name: Upload images list
@@ -114,13 +114,13 @@ jobs:
   # STAGE 2: CVE SCAN - Trivy + Grype on all images
   # ===========================================================================
   cve-scan:
-    name: 'CVE Scan Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
+    name: 'CVE Scan Batch ${{ matrix.batch  (${{ matrix.count  images)'
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -133,9 +133,9 @@ jobs:
       - name: Login to Registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Install scanning tools
         run: |
@@ -147,43 +147,43 @@ jobs:
       - name: Pull or build images
         run: |
           mkdir -p /tmp/scan-results
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           BUILT=0
           PULLED=0
           FAILED=0
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
-            SAFE="${image//\//-}"
-            echo "::group::Prepare ${image}"
+            REF="${REGISTRY/${OWNER/${image:latest"
+            SAFE="${image//\//-"
+            echo "::group::Prepare ${image"
 
             if docker pull "$REF" > /dev/null 2>&1; then
               PULLED=$((PULLED + 1))
-              echo "${REF}" >> /tmp/scanned-images.txt
+              echo "${REF" >> /tmp/scanned-images.txt
             else
-              CONTEXT="./images/${image}"
-              if [ ! -f "${CONTEXT}/Dockerfile" ]; then
-                echo "::warning::${image}: Dockerfile not found, skipping"
+              CONTEXT="./images/${image"
+              if [ ! -f "${CONTEXT/Dockerfile" ]; then
+                echo "::warning::${image: Dockerfile not found, skipping"
                 continue
               fi
               if docker buildx build \
                   --platform linux/amd64 \
-                  -t "${REF}" \
+                  -t "${REF" \
                   --load \
-                  --cache-from "type=gha,scope=${image}" \
-                  "${CONTEXT}"; then
+                  --cache-from "type=gha,scope=${image" \
+                  "${CONTEXT"; then
                 BUILT=$((BUILT + 1))
-                echo "${REF}" >> /tmp/scanned-images.txt
+                echo "${REF" >> /tmp/scanned-images.txt
               else
-                echo "::error::${image}: pull and build both failed"
+                echo "::error::${image: pull and build both failed"
                 FAILED=$((FAILED + 1))
               fi
             fi
             echo "::endgroup::"
           done
-          echo "Batch ${{ matrix.batch }}: ${PULLED} pulled, ${BUILT} built, ${FAILED} failed"
-          if [ "$FAILED" -gt 0 ] || [ $((PULLED + BUILT)) -ne "${{ matrix.count }}" ]; then
-            echo "::error::Batch ${{ matrix.batch }} did not prepare every expected image"
+          echo "Batch ${{ matrix.batch : ${PULLED pulled, ${BUILT built, ${FAILED failed"
+          if [ "$FAILED" -gt 0 ] || [ $((PULLED + BUILT)) -ne "${{ matrix.count " ]; then
+            echo "::error::Batch ${{ matrix.batch  did not prepare every expected image"
             exit 1
           fi
 
@@ -197,12 +197,12 @@ jobs:
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
             SAFE=$(echo "$ref" | tr '/:' '_')
-            echo "::group::Trivy scan ${ref}"
+            echo "::group::Trivy scan ${ref"
             trivy image \
               --severity CRITICAL,HIGH,MEDIUM,LOW \
               --ignore-unfixed=false \
               --format json \
-              --output "/tmp/trivy-results/${SAFE}.json" \
+              --output "/tmp/trivy-results/${SAFE.json" \
               "$ref" 2>/dev/null
             trivy image \
               --severity CRITICAL,HIGH,MEDIUM,LOW \
@@ -222,11 +222,11 @@ jobs:
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
             SAFE=$(echo "$ref" | tr '/:' '_')
-            echo "::group::Grype scan ${ref}"
+            echo "::group::Grype scan ${ref"
             grype "$ref" \
               --fail-on none \
               --output json \
-              --file "/tmp/grype-results/${SAFE}.json" 2>/dev/null
+              --file "/tmp/grype-results/${SAFE.json" 2>/dev/null
             grype "$ref" \
               --fail-on none \
               --output table 2>/dev/null
@@ -237,7 +237,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: scan-results-batch-${{ matrix.batch }}
+          name: scan-results-batch-${{ matrix.batch 
           path: |
             /tmp/trivy-results/
             /tmp/grype-results/
@@ -249,13 +249,13 @@ jobs:
   # STAGE 3: SBOM CHECK - Generate SBOMs and compare against baseline
   # ===========================================================================
   sbom-check:
-    name: 'SBOM Check Batch ${{ matrix.batch }}'
+    name: 'SBOM Check Batch ${{ matrix.batch '
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -265,9 +265,9 @@ jobs:
       - name: Login to Registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Install Syft
         run: |
@@ -277,25 +277,25 @@ jobs:
       - name: Generate SBOMs for all images
         run: |
           mkdir -p /tmp/sbom-results /tmp/sbom-baseline
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           DATE=$(date +%Y-%m-%d)
 
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
-            SAFE="${image//\//-}"
+            REF="${REGISTRY/${OWNER/${image:latest"
+            SAFE="${image//\//-"
 
             if ! docker pull "$REF" > /dev/null 2>&1; then
-              echo "::error::${image}: could not pull for SBOM generation"
+              echo "::error::${image: could not pull for SBOM generation"
               exit 1
             fi
 
-            echo "::group::SBOM ${image}"
-            SBOM_FILE="/tmp/sbom-results/${SAFE}-current.spdx.json"
-            if syft "${REF}" -o "spdx-json=${SBOM_FILE}" 2>/dev/null; then
-              echo "Generated SBOM for ${image}"
+            echo "::group::SBOM ${image"
+            SBOM_FILE="/tmp/sbom-results/${SAFE-current.spdx.json"
+            if syft "${REF" -o "spdx-json=${SBOM_FILE" 2>/dev/null; then
+              echo "Generated SBOM for ${image"
             else
-              echo "::error::Failed to generate SBOM for ${image}"
+              echo "::error::Failed to generate SBOM for ${image"
               exit 1
             fi
             echo "::endgroup::"
@@ -307,16 +307,16 @@ jobs:
           for current in /tmp/sbom-results/*-current.spdx.json; do
             [ -f "$current" ] || continue
             BASENAME=$(basename "$current" -current.spdx.json)
-            BASELINE=".reports/sbom_history/${BASENAME}/baseline.spdx.json"
+            BASELINE=".reports/sbom_history/${BASENAME/baseline.spdx.json"
 
             if [ -f "$BASELINE" ]; then
-              echo "::group::Drift check ${BASENAME}"
+              echo "::group::Drift check ${BASENAME"
               python3 << PYEOF
           import json, sys
 
-          with open("${current}") as f:
+          with open("${current") as f:
               current_sbom = json.load(f)
-          with open("${BASELINE}") as f:
+          with open("${BASELINE") as f:
               baseline_sbom = json.load(f)
 
           current_pkgs = set()
@@ -336,42 +336,42 @@ jobs:
                       version_changed.add((name, bver, ver))
 
           if added or removed or version_changed:
-              print(f"DRIFT DETECTED for ${BASENAME}")
+              print(f"DRIFT DETECTED for ${BASENAME")
               if added:
-                  print(f"  New packages: {len(added)}")
+                  print(f"  New packages: {len(added)")
                   for name, ver in sorted(added):
-                      print(f"    + {name} {ver}")
+                      print(f"    + {name {ver")
               if removed:
-                  print(f"  Removed packages: {len(removed)}")
+                  print(f"  Removed packages: {len(removed)")
                   for name, ver in sorted(removed):
-                      print(f"    - {name} {ver}")
+                      print(f"    - {name {ver")
               if version_changed:
-                  print(f"  Version changes: {len(version_changed)}")
+                  print(f"  Version changes: {len(version_changed)")
                   for name, old, new in sorted(version_changed):
-                      print(f"    ~ {name}: {old} -> {new}")
+                      print(f"    ~ {name: {old -> {new")
 
-              with open("/tmp/sbom-diff/${BASENAME}.txt", "w") as out:
-                  out.write(f"SBOM Drift Report: ${BASENAME}\n")
+              with open("/tmp/sbom-diff/${BASENAME.txt", "w") as out:
+                  out.write(f"SBOM Drift Report: ${BASENAME\n")
                   out.write(f"Date: $(date -Iseconds)\n\n")
                   if added:
-                      out.write(f"New packages ({len(added)}):\n")
+                      out.write(f"New packages ({len(added)):\n")
                       for name, ver in sorted(added):
-                          out.write(f"  + {name} {ver}\n")
+                          out.write(f"  + {name {ver\n")
                   if removed:
-                      out.write(f"Removed packages ({len(removed)}):\n")
+                      out.write(f"Removed packages ({len(removed)):\n")
                       for name, ver in sorted(removed):
-                          out.write(f"  - {name} {ver}\n")
+                          out.write(f"  - {name {ver\n")
                   if version_changed:
-                      out.write(f"Version changes ({len(version_changed)}):\n")
+                      out.write(f"Version changes ({len(version_changed)):\n")
                       for name, old, new in sorted(version_changed):
-                          out.write(f"  ~ {name}: {old} -> {new}\n")
+                          out.write(f"  ~ {name: {old -> {new\n")
               sys.exit(1)
           else:
-              print(f"NO DRIFT for ${BASENAME}")
+              print(f"NO DRIFT for ${BASENAME")
           PYEOF
               echo "::endgroup::"
             else
-              echo "No baseline SBOM for ${BASENAME}, skipping comparison"
+              echo "No baseline SBOM for ${BASENAME, skipping comparison"
             fi
           done
 
@@ -379,7 +379,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: sbom-results-batch-${{ matrix.batch }}
+          name: sbom-results-batch-${{ matrix.batch 
           path: |
             /tmp/sbom-results/
             /tmp/sbom-diff/
@@ -410,8 +410,8 @@ jobs:
             | sort -u > /tmp/base-images.txt
           grep -v '^scratch$' /tmp/base-images.txt > /tmp/base-images-filtered.txt
           TOTAL=$(wc -l < /tmp/base-images-filtered.txt)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Found ${TOTAL} non-scratch base images"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL non-scratch base images"
 
       - name: Check base image freshness
         run: |
@@ -424,19 +424,19 @@ jobs:
             [ -z "$base" ] && continue
             SAFE=$(echo "$base" | tr '/:' '_')
 
-            echo "::group::Check ${base}"
+            echo "::group::Check ${base"
 
             if echo "$base" | grep -q 'gcr.io/distroless'; then
               echo "Distroless image - checking via gcr tags"
-              TAG=$(echo "$base" | awk -F: '{print $2}')
-              REPO=$(echo "$base" | awk -F: '{print $1}')
-              PUBLISHED=$(curl -s "https://gcr.io/v2/${REPO#*/}/tags/list" 2>/dev/null \
-                | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('manifest',{}).get(TAG,{}).get('timeCreatedMs','unknown'))" 2>/dev/null || echo "unknown")
+              TAG=$(echo "$base" | awk -F: '{print $2')
+              REPO=$(echo "$base" | awk -F: '{print $1')
+              PUBLISHED=$(curl -s "https://gcr.io/v2/${REPO#*//tags/list" 2>/dev/null \
+                | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('manifest',{).get(TAG,{).get('timeCreatedMs','unknown'))" 2>/dev/null || echo "unknown")
             elif echo "$base" | grep -q 'debian\|ubuntu'; then
               echo "Debian/Ubuntu image - checking via Docker Hub"
-              REPO=$(echo "$base" | awk -F: '{print $1}' | sed 's/^docker\.io\///')
-              TAG=$(echo "$base" | awk -F: '{print $2}')
-              PUBLISHED=$(curl -s "https://hub.docker.com/v2/repositories/${REPO}/tags/${TAG}" 2>/dev/null \
+              REPO=$(echo "$base" | awk -F: '{print $1' | sed 's/^docker\.io\///')
+              TAG=$(echo "$base" | awk -F: '{print $2')
+              PUBLISHED=$(curl -s "https://hub.docker.com/v2/repositories/${REPO/tags/${TAG" 2>/dev/null \
                 | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('last_updated','unknown'))" 2>/dev/null || echo "unknown")
             elif echo "$base" | grep -q 'cgr.dev'; then
               echo "Chainguard image - checking via cgr.dev API"
@@ -449,8 +449,8 @@ jobs:
               PUBLISHED="unknown"
             fi
 
-            echo "Base: ${base}, Published: ${PUBLISHED}"
-            echo "${base},${PUBLISHED}" >> /tmp/base-image-report/freshness.csv
+            echo "Base: ${base, Published: ${PUBLISHED"
+            echo "${base,${PUBLISHED" >> /tmp/base-image-report/freshness.csv
 
             if [ "$PUBLISHED" = "unknown" ]; then
               UNKNOWN_COUNT=$((UNKNOWN_COUNT + 1))
@@ -461,7 +461,7 @@ jobs:
             echo "::endgroup::"
           done < /tmp/base-images-filtered.txt
 
-          echo "Fresh: ${FRESH_COUNT}, Unknown: ${UNKNOWN_COUNT}"
+          echo "Fresh: ${FRESH_COUNT, Unknown: ${UNKNOWN_COUNT"
 
       - name: Check for stale base images (>30 days)
         run: |
@@ -470,12 +470,12 @@ jobs:
           while IFS=, read -r base published; do
             [ -z "$base" ] && continue
             if [ "$published" = "unknown" ]; then
-              echo "${base},unknown,unknown" >> /tmp/base-image-report/stale.csv
-              echo "::warning::${base}: Unable to determine age"
+              echo "${base,unknown,unknown" >> /tmp/base-image-report/stale.csv
+              echo "::warning::${base: Unable to determine age"
               WARNED=$((WARNED + 1))
             fi
           done < /tmp/base-image-report/freshness.csv
-          echo "Checked for stale images: ${WARNED} unknown"
+          echo "Checked for stale images: ${WARNED unknown"
 
       - name: Upload base image report
         if: always()
@@ -506,9 +506,9 @@ jobs:
       - name: Login to Registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Install compliance tools
         run: |
@@ -522,19 +522,19 @@ jobs:
           DATE=$(date +%Y-%m-%d)
 
           for image in $SAMPLE_IMAGES; do
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
+            REF="${REGISTRY/${OWNER/${image:latest"
             if ! docker pull "$REF" > /dev/null 2>&1; then
-              echo "::warning::Could not pull ${image} for CIS check"
+              echo "::warning::Could not pull ${image for CIS check"
               continue
             fi
 
-            echo "::group::CIS Benchmark ${image}"
+            echo "::group::CIS Benchmark ${image"
             /tmp/docker-bench-security/docker-bench-security.sh \
-              --container "${REF}" \
+              --container "${REF" \
               --json \
-              --output "/tmp/compliance-results/cis-${image}.json" 2>/dev/null || true
+              --output "/tmp/compliance-results/cis-${image.json" 2>/dev/null || true
             /tmp/docker-bench-security/docker-bench-security.sh \
-              --container "${REF}" 2>/dev/null || true
+              --container "${REF" 2>/dev/null || true
             echo "::endgroup::"
           done
 
@@ -552,7 +552,7 @@ jobs:
           for cis_file in /tmp/compliance-results/cis-*.json; do
             [ -f "$cis_file" ] || continue
             IMAGE=$(basename "$cis_file" cis- | sed 's/\.json//')
-            echo "${DATE},${IMAGE},-,-,-,-,-,-" >> "$CSV"
+            echo "${DATE,${IMAGE,-,-,-,-,-,-" >> "$CSV"
           done
 
       - name: Upload compliance results
@@ -575,8 +575,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     outputs:
-      has_critical_cves: ${{ steps.analyze.outputs.has_critical_cves }}
-      affected_images: ${{ steps.analyze.outputs.affected_images }}
+      has_critical_cves: ${{ steps.analyze.outputs.has_critical_cves 
+      affected_images: ${{ steps.analyze.outputs.affected_images 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -626,7 +626,7 @@ jobs:
             python3 << PYEOF
           import json, os, sys
 
-          results_file = "${trivy_file}"
+          results_file = "${trivy_file"
           try:
               with open(results_file) as f:
                   data = json.load(f)
@@ -640,9 +640,9 @@ jobs:
                   cve_id = vuln.get("VulnerabilityID", "UNKNOWN")
                   pkg = vuln.get("PkgName", "unknown")
                   if severity == "CRITICAL":
-                      print(f"CRITICAL,{cve_id},{pkg}")
+                      print(f"CRITICAL,{cve_id,{pkg")
                   elif severity == "HIGH":
-                      print(f"HIGH,{cve_id},{pkg}")
+                      print(f"HIGH,{cve_id,{pkg")
           PYEOF
           done > /tmp/report/all-cves.csv
 
@@ -652,15 +652,15 @@ jobs:
           LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
           
           # Ensure numeric values
-          CRITICAL=${CRITICAL:-0}
-          HIGH=${HIGH:-0}
-          MEDIUM=${MEDIUM:-0}
-          LOW=${LOW:-0}
+          CRITICAL=${CRITICAL:-0
+          HIGH=${HIGH:-0
+          MEDIUM=${MEDIUM:-0
+          LOW=${LOW:-0
 
-          echo "CRITICAL=${CRITICAL}" >> "$GITHUB_ENV"
-          echo "HIGH=${HIGH}" >> "$GITHUB_ENV"
-          echo "MEDIUM=${MEDIUM}" >> "$GITHUB_ENV"
-          echo "LOW=${LOW}" >> "$GITHUB_ENV"
+          echo "CRITICAL=${CRITICAL" >> "$GITHUB_ENV"
+          echo "HIGH=${HIGH" >> "$GITHUB_ENV"
+          echo "MEDIUM=${MEDIUM" >> "$GITHUB_ENV"
+          echo "LOW=${LOW" >> "$GITHUB_ENV"
 
           echo "has_critical_cves=false" >> "$GITHUB_OUTPUT"
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
@@ -670,10 +670,10 @@ jobs:
               echo "affected_images<<EOF"
               echo "$AFFECTED"
               echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+             >> "$GITHUB_OUTPUT"
           fi
 
-          echo "CRITICAL=${CRITICAL}, HIGH=${HIGH}, MEDIUM=${MEDIUM}, LOW=${LOW}"
+          echo "CRITICAL=${CRITICAL, HIGH=${HIGH, MEDIUM=${MEDIUM, LOW=${LOW"
 
           # Compare against baseline
           if [ -f .reports/cve_baseline/baseline.json ]; then
@@ -695,28 +695,28 @@ jobs:
         run: |
           DATE=$(date +%Y-%m-%d)
           mkdir -p .reports/cve_history
-          cp /tmp/report/all-cves.csv ".reports/cve_history/${DATE}.csv" 2>/dev/null || true
+          cp /tmp/report/all-cves.csv ".reports/cve_history/${DATE.csv" 2>/dev/null || true
 
       - name: Generate summary report
         if: always()
         run: |
-          CRITICAL=${CRITICAL:-0}
-          HIGH=${HIGH:-0}
-          MEDIUM=${MEDIUM:-0}
-          LOW=${LOW:-0}
+          CRITICAL=${CRITICAL:-0
+          HIGH=${HIGH:-0
+          MEDIUM=${MEDIUM:-0
+          LOW=${LOW:-0
           DATE=$(date +%Y-%m-%d)
 
           {
-            echo "# Daily Security Report - ${DATE}"
+            echo "# Daily Security Report - ${DATE"
             echo ""
             echo "## CVE Summary"
             echo ""
             echo "| Severity | Count |"
             echo "|----------|-------|"
-            echo "| CRITICAL | ${CRITICAL} |"
-            echo "| HIGH | ${HIGH} |"
-            echo "| MEDIUM | ${MEDIUM} |"
-            echo "| LOW | ${LOW} |"
+            echo "| CRITICAL | ${CRITICAL |"
+            echo "| HIGH | ${HIGH |"
+            echo "| MEDIUM | ${MEDIUM |"
+            echo "| LOW | ${LOW |"
             echo ""
 
             if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
@@ -734,14 +734,14 @@ jobs:
             echo ""
             echo "| Stage | Result |"
             echo "|-------|--------|"
-            echo "| Discover | ${{ needs.discover.result }} |"
-            echo "| CVE Scan | ${{ needs.cve-scan.result }} |"
-            echo "| SBOM Check | ${{ needs.sbom-check.result }} |"
-            echo "| Base Image Check | ${{ needs.base-image-check.result }} |"
-            echo "| Compliance Check | ${{ needs.compliance-check.result }} |"
+            echo "| Discover | ${{ needs.discover.result  |"
+            echo "| CVE Scan | ${{ needs.cve-scan.result  |"
+            echo "| SBOM Check | ${{ needs.sbom-check.result  |"
+            echo "| Base Image Check | ${{ needs.base-image-check.result  |"
+            echo "| Compliance Check | ${{ needs.compliance-check.result  |"
             echo ""
             echo "_Report generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"
 
       - name: Create GitHub Issue for new CVEs
         if: steps.analyze.outputs.has_critical_cves == 'true'
@@ -759,9 +759,9 @@ jobs:
             const highCount = cveLines.filter(l => l.startsWith('HIGH')).length;
 
             const body = [
-              `## Daily Security Scan Alert - ${date}`,
+              `## Daily Security Scan Alert - ${date`,
               '',
-              `**${criticalCount} CRITICAL** and **${highCount} HIGH** CVEs detected across registry images.`,
+              `**${criticalCount CRITICAL** and **${highCount HIGH** CVEs detected across registry images.`,
               '',
               '### Affected CVEs',
               '',
@@ -769,8 +769,8 @@ jobs:
               '|----------|--------|---------|',
               ...cveLines.map(line => {
                 const [severity, cveId, pkg] = line.split(',');
-                return `| ${severity} | ${cveId} | ${pkg} |`;
-              }),
+                return `| ${severity | ${cveId | ${pkg |`;
+              ),
               '',
               '### Action Required',
               '',
@@ -780,8 +780,8 @@ jobs:
               '',
               `### Scan Details`,
               '',
-              `- **Workflow Run**: [${context.runNumber}](${context.serverUrl}/${context.repository}/actions/runs/${context.runId})`,
-              `- **Scan Date**: ${date}`,
+              `- **Workflow Run**: [${context.runNumber](${context.serverUrl/${context.repository/actions/runs/${context.runId)`,
+              `- **Scan Date**: ${date`,
               '',
               '_This issue was automatically created by the Daily Security Scan workflow._'
             ].join('\n');
@@ -789,12 +789,12 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `[CVE-ALERT] ${criticalCount} CRITICAL, ${highCount} HIGH CVEs detected - ${date}`,
+              title: `[CVE-ALERT] ${criticalCount CRITICAL, ${highCount HIGH CVEs detected - ${date`,
               body: body,
               labels: ['security', 'cve', 'automated']
-            });
+            );
         env:
-          AFFECTED: ${{ steps.analyze.outputs.affected_images }}
+          AFFECTED: ${{ steps.analyze.outputs.affected_images 
 
   # ===========================================================================
   # STAGE 7: REBUILD - Conditionally trigger rebuild for CRITICAL CVEs
@@ -816,7 +816,7 @@ jobs:
         with:
           script: |
             const date = new Date().toISOString().split('T')[0];
-            console.log(`Triggering rebuild for CRITICAL CVEs detected on ${date}`);
+            console.log(`Triggering rebuild for CRITICAL CVEs detected on ${date`);
 
             try {
               await github.rest.actions.createWorkflowDispatch({
@@ -829,17 +829,17 @@ jobs:
                   filter: 'critical',
                   sign: 'true',
                   push: 'true'
-                }
-              });
+                
+              );
               console.log('Rebuild workflow dispatched successfully');
-            } catch (error) {
-              console.error(`Failed to dispatch rebuild: ${error.message}`);
-              core.setFailed(`Rebuild dispatch failed: ${error.message}`);
-            }
+             catch (error) {
+              console.error(`Failed to dispatch rebuild: ${error.message`);
+              core.setFailed(`Rebuild dispatch failed: ${error.message`);
+            
 
       - name: Log rebuild trigger
         run: |
           DATE=$(date +%Y-%m-%d)
           mkdir -p .reports/cve_history
-          echo "${DATE},rebuild_triggered,CRITICAL_CVE_DETECTED" >> .reports/cve_history/rebuilds.log
-          echo "Rebuild triggered for CRITICAL CVEs on ${DATE}"
+          echo "${DATE,rebuild_triggered,CRITICAL_CVE_DETECTED" >> .reports/cve_history/rebuilds.log
+          echo "Rebuild triggered for CRITICAL CVEs on ${DATE"

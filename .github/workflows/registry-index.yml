@@ -56,8 +56,8 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             evergreenctl/target
-          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os -${{ hashFiles('evergreenctl/Cargo.lock') 
+          restore-keys: cargo-${{ runner.os -
 
       - name: Build evergreenctl
         run: cargo build --release --manifest-path evergreenctl/Cargo.toml
@@ -80,18 +80,18 @@ jobs:
           HC=$(python3 -c "import json; print(json.load(open('/tmp/index-stats.json'))['with_healthcheck'])")
           PINNED=$(python3 -c "import json; print(json.load(open('/tmp/index-stats.json'))['digest_pinned_pct'])")
 
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "sbom=${SBOM}" >> "$GITHUB_OUTPUT"
-          echo "healthcheck=${HC}" >> "$GITHUB_OUTPUT"
-          echo "pinned=${PINNED}" >> "$GITHUB_OUTPUT"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "sbom=${SBOM" >> "$GITHUB_OUTPUT"
+          echo "healthcheck=${HC" >> "$GITHUB_OUTPUT"
+          echo "pinned=${PINNED" >> "$GITHUB_OUTPUT"
 
       - name: Generate summary
         if: always()
         run: |
-          TOTAL=${{ steps.stats.outputs.total || '0' }}
-          SBOM=${{ steps.stats.outputs.sbom || '0' }}
-          HC=${{ steps.stats.outputs.healthcheck || '0' }}
-          PINNED=${{ steps.stats.outputs.pinned || '0' }}
+          TOTAL=${{ steps.stats.outputs.total || '0' 
+          SBOM=${{ steps.stats.outputs.sbom || '0' 
+          HC=${{ steps.stats.outputs.healthcheck || '0' 
+          PINNED=${{ steps.stats.outputs.pinned || '0' 
 
           {
             echo "# Registry Index Report"
@@ -100,17 +100,17 @@ jobs:
             echo ""
             echo "| Metric | Value |"
             echo "|--------|-------|"
-            echo "| **Total Images** | ${TOTAL} |"
-            echo "| **SBOM Coverage** | ${SBOM} |"
-            echo "| **Healthcheck** | ${HC} |"
-            echo "| **Digest Pinned** | ${PINNED}% |"
+            echo "| **Total Images** | ${TOTAL |"
+            echo "| **SBOM Coverage** | ${SBOM |"
+            echo "| **Healthcheck** | ${HC |"
+            echo "| **Digest Pinned** | ${PINNED% |"
             echo ""
             echo "## Index Files"
             echo ""
             echo "- `.registry.db` - SQLite database"
             echo ""
             echo "_Generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload index database
         if: always()

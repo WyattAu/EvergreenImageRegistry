@@ -67,8 +67,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/image-audit-report.md
           DATE=$(date +%Y-%m-%d)
-          TOTAL="${{ steps.audit.outputs.total_images }}"
-          git commit -m "docs: auto-update audit report (${TOTAL} images, ${DATE})
+          TOTAL="${{ steps.audit.outputs.total_images "
+          git commit -m "docs: auto-update audit report (${TOTAL images, ${DATE)
 
           🤖 Generated with auto-audit-report.yml
           Co-Authored-By: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
@@ -82,15 +82,15 @@ jobs:
             echo ""
             echo "| Metric | Count |"
             echo "|--------|-------|"
-            echo "| Total images | ${{ steps.audit.outputs.total_images }} |"
-            echo "| Manifests | ${{ steps.audit.outputs.manifests }} |"
-            echo "| Dockerfiles | ${{ steps.audit.outputs.dockerfiles }} |"
-            echo "| SBOMs | ${{ steps.audit.outputs.sboms }} |"
-            echo "| FIPS variants | ${{ steps.audit.outputs.fips }} |"
+            echo "| Total images | ${{ steps.audit.outputs.total_images  |"
+            echo "| Manifests | ${{ steps.audit.outputs.manifests  |"
+            echo "| Dockerfiles | ${{ steps.audit.outputs.dockerfiles  |"
+            echo "| SBOMs | ${{ steps.audit.outputs.sboms  |"
+            echo "| FIPS variants | ${{ steps.audit.outputs.fips  |"
             echo ""
-            if [ "${{ steps.changes.outputs.changed }}" = "true" ]; then
+            if [ "${{ steps.changes.outputs.changed " = "true" ]; then
               echo "Report updated and committed"
             else
               echo "No changes detected, report is current"
             fi
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"

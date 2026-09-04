@@ -20,13 +20,13 @@ on:
   # Use build-on-push.yml (push) and build-nightly.yml (schedule) instead.
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow -${{ github.ref 
   cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
-  TAG: ${{ github.sha }}
+  OWNER: ${{ github.repository_owner 
+  TAG: ${{ github.sha 
 
 permissions:
   contents: read
@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      total: ${{ steps.count.outputs.total }}
+      matrix: ${{ steps.set-matrix.outputs.matrix 
+      total: ${{ steps.count.outputs.total 
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -57,8 +57,8 @@ jobs:
             -not -path '*/tests/*' \
             | sed 's|images/||' | sed 's|/Dockerfile||' | sort > images.txt
           TOTAL=$(wc -l < images.txt)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Found ${TOTAL} images to build"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL images to build"
 
       - name: Validate image count
         run: |
@@ -88,12 +88,12 @@ jobs:
                   "batch": i // batch_size,
                   "images": ",".join(chunk),
                   "count": len(chunk),
-              })
+              )
 
-          matrix_json = json.dumps({"include": batches})
+          matrix_json = json.dumps({"include": batches)
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"matrix={matrix_json}\n")
-          print(f"Created {len(batches)} batches for {len(images)} images")
+              f.write(f"matrix={matrix_json\n")
+          print(f"Created {len(batches) batches for {len(images) images")
           PYEOF
 
       - name: Upload images list
@@ -138,9 +138,9 @@ jobs:
           ERRORS=0
           while IFS= read -r image; do
             [ -z "$image" ] && continue
-            DOCKERFILE="images/${image}/Dockerfile"
+            DOCKERFILE="images/${image/Dockerfile"
             if [ ! -f "$DOCKERFILE" ]; then
-              echo "::warning::${image}: Dockerfile not found"
+              echo "::warning::${image: Dockerfile not found"
               continue
             fi
             if hadolint --failure-threshold error --format json "$DOCKERFILE" \
@@ -152,19 +152,19 @@ jobs:
               PASSED=$((PASSED + 1))
             else
               WARNINGS=$((WARNINGS + 1))
-              echo "::warning file=${DOCKERFILE},title=Hadolint Warning::${image}: lint issues (non-blocking)"
+              echo "::warning file=${DOCKERFILE,title=Hadolint Warning::${image: lint issues (non-blocking)"
               python3 -c "
           import json
           try:
               for d in json.load(open('/tmp/hadolint-out.json')):
-                  print(f'  {d[\"code\"]}: {d[\"message\"]} (line {d[\"line\"]})')
+                  print(f'  {d[\"code\"]: {d[\"message\"] (line {d[\"line\"])')
           except Exception:
               pass
           " 2>/dev/null || true
             fi
           done < images.txt
           echo ""
-          echo "Hadolint: ${PASSED} passed, ${WARNINGS} warnings (non-blocking)"
+          echo "Hadolint: ${PASSED passed, ${WARNINGS warnings (non-blocking)"
 
       - name: TruffleHog secret scanning
         uses: trufflesecurity/trufflehog@0ec3634f6cf66a61912a923fee9d20cc45633a67
@@ -208,9 +208,9 @@ jobs:
             done
 
             # GATE-DIGEST-PIN: Final-stage FROM must be digest-pinned or scratch
-            final_from=$(grep '^FROM ' "$dockerfile" | grep -v 'AS ' | head -1 | awk '{print $2}')
+            final_from=$(grep '^FROM ' "$dockerfile" | grep -v 'AS ' | head -1 | awk '{print $2')
             if [ -n "$final_from" ] && [ "$final_from" != "scratch" ] && ! echo "$final_from" | grep -q '@sha256:'; then
-              # Allow ${VERSION} variables (build-time resolved)
+              # Allow ${VERSION variables (build-time resolved)
               if ! echo "$final_from" | grep -q '\${'; then
                 echo "WARN: $name final FROM not pinned: $final_from"
                 WARN=$((WARN+1))
@@ -239,14 +239,14 @@ jobs:
   # STAGE 4: BUILD - Build images in batches with multi-arch support
   # ===========================================================================
   build:
-    name: 'Build Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
+    name: 'Build Batch ${{ matrix.batch  (${{ matrix.count  images)'
     needs: [discover, lint, gates]
     runs-on: ubuntu-latest
     timeout-minutes: 360
     strategy:
       fail-fast: false
       max-parallel: 5
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) 
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -263,24 +263,24 @@ jobs:
             env.BUILDKIT_STEP_LOG_MAX_SPEED=10
 
       - name: Lowercase registry owner
-        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        run: echo "OWNER=$(echo '${{ env.OWNER ' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Check GITHUB_TOKEN availability
         run: |
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          TOKEN="${{ secrets.GITHUB_TOKEN "
           if [ -z "$TOKEN" ]; then
             echo "::warning::GITHUB_TOKEN is empty. GitHub API downloads will be rate-limited to 60/hour."
           else
-            echo "::notice::GITHUB_TOKEN is set (${#TOKEN} chars). GitHub API rate limit: 5000/hour."
+            echo "::notice::GITHUB_TOKEN is set (${#TOKEN chars). GitHub API rate limit: 5000/hour."
           fi
 
       - name: Login to Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
@@ -289,19 +289,19 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME 
+          password: ${{ secrets.DOCKERHUB_TOKEN 
 
       - name: Build images (amd64 tarballs for verification)
         run: |
           mkdir -p /tmp/images
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           BUILT=0
           FAILED=0
           SKIPPED=0
           # Track current builder name - setup-buildx-action creates a random name
-          CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
-          echo "Initial builder: ${CURRENT_BUILDER}"
+          CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name' 2>/dev/null | head -1)
+          echo "Initial builder: ${CURRENT_BUILDER"
           recreate_builder() {
             echo "::notice::Recreating BuildKit builder to prevent overlay corruption..."
             if [ -n "$CURRENT_BUILDER" ]; then
@@ -313,38 +313,38 @@ jobs:
               --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 \
               --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=10 \
               --use 2>/dev/null || true
-            echo "New builder: ${CURRENT_BUILDER}"
-          }
+            echo "New builder: ${CURRENT_BUILDER"
+          
           build_image() {
             local image="$1"
-            local CONTEXT="./images/${image}"
-            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            local SAFE="${image//\//-}"
-            echo "::group::Build ${image}"
+            local CONTEXT="./images/${image"
+            local REF="${REGISTRY/${OWNER/${image:${TAG"
+            local SAFE="${image//\//-"
+            echo "::group::Build ${image"
             if timeout 900 docker buildx build \
                 --builder "$CURRENT_BUILDER" \
                 --platform linux/amd64 \
-                -t "${REF}" \
-                --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
+                -t "${REF" \
+                --output "type=docker,dest=/tmp/images/${SAFE.tar" \
                 --no-cache \
-                --build-arg "BUILD_DATE=${TAG}" \
-                --build-arg "VCS_REF=${TAG}" \
+                --build-arg "BUILD_DATE=${TAG" \
+                --build-arg "VCS_REF=${TAG" \
                 --build-arg "TARGETARCH=amd64" \
-                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
-                --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-                --label "org.opencontainers.image.revision=${{ github.sha }}" \
-                "${CONTEXT}"; then
-              echo "${REF}" >> /tmp/built-images.txt
+                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN " \
+                --label "org.opencontainers.image.source=${{ github.server_url /${{ github.repository " \
+                --label "org.opencontainers.image.revision=${{ github.sha " \
+                "${CONTEXT"; then
+              echo "${REF" >> /tmp/built-images.txt
               return 0
             else
               return 1
             fi
-          }
-          for image in "${IMAGE_LIST[@]}"; do
+          
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            CONTEXT="./images/${image}"
-            if [ ! -f "${CONTEXT}/Dockerfile" ]; then
-              echo "::warning::${image}: Dockerfile not found, skipping"
+            CONTEXT="./images/${image"
+            if [ ! -f "${CONTEXT/Dockerfile" ]; then
+              echo "::warning::${image: Dockerfile not found, skipping"
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
@@ -352,25 +352,25 @@ jobs:
             if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
               recreate_builder
             fi
-            if build_image "${image}"; then
+            if build_image "${image"; then
               BUILT=$((BUILT + 1))
               sleep 1
             else
-              echo "::warning::${image}: build failed, retrying in 5s..."
+              echo "::warning::${image: build failed, retrying in 5s..."
               sleep 5
-              if build_image "${image}"; then
+              if build_image "${image"; then
                 BUILT=$((BUILT + 1))
                 sleep 1
               else
-                echo "::error::${image}: build failed after 2 attempts"
+                echo "::error::${image: build failed after 2 attempts"
                 FAILED=$((FAILED + 1))
                 sleep 3
               fi
             fi
             echo "::endgroup::"
           done
-          echo "Batch ${{ matrix.batch }} complete: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
-          echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
+          echo "Batch ${{ matrix.batch  complete: ${BUILT built, ${FAILED failed, ${SKIPPED skipped"
+          echo "BUILDER_NAME=${CURRENT_BUILDER" >> "$GITHUB_ENV"
 
       - name: Collect image sizes
         if: always()
@@ -385,28 +385,28 @@ jobs:
       - name: Enforce image size limit
         if: always()
         run: |
-          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048}
+          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048
           EXCEEDED=0
           for tar in /tmp/images/*.tar; do
             [ -f "$tar" ] || continue
             SIZE_MB=$(($(stat --format=%s "$tar") / 1024 / 1024))
             IMAGE_NAME=$(basename "$tar" .tar)
             if [ "$SIZE_MB" -gt "$LIMIT_MB" ]; then
-              echo "::error::${IMAGE_NAME} exceeds size limit: ${SIZE_MB}MB > ${LIMIT_MB}MB"
+              echo "::error::${IMAGE_NAME exceeds size limit: ${SIZE_MBMB > ${LIMIT_MBMB"
               EXCEEDED=$((EXCEEDED + 1))
             fi
           done
           if [ "$EXCEEDED" -gt 0 ]; then
-            echo "::error::${EXCEEDED} image(s) exceed ${LIMIT_MB}MB limit"
+            echo "::error::${EXCEEDED image(s) exceed ${LIMIT_MBMB limit"
             exit 1
           fi
-          echo "All images within ${LIMIT_MB}MB limit"
+          echo "All images within ${LIMIT_MBMB limit"
 
       - name: Upload image sizes
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: image-sizes-batch-${{ matrix.batch }}
+          name: image-sizes-batch-${{ matrix.batch 
           path: /tmp/image-sizes.txt
           retention-days: 7
           if-no-files-found: ignore
@@ -415,7 +415,7 @@ jobs:
         if: github.event_name != 'pull_request'
         id: dockerhub
         run: |
-          if [ "${{ steps.dockerhub-login.outcome }}" = "success" ]; then
+          if [ "${{ steps.dockerhub-login.outcome " = "success" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Docker Hub push is enabled"
           else
@@ -427,64 +427,64 @@ jobs:
         if: github.event_name != 'pull_request'
         timeout-minutes: 90
         run: |
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           PUSHED=0
           FAILED=0
-          DOCKERHUB_ENABLED="${{ steps.dockerhub.outputs.enabled }}"
-          for image in "${IMAGE_LIST[@]}"; do
+          DOCKERHUB_ENABLED="${{ steps.dockerhub.outputs.enabled "
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            CONTEXT="./images/${image}"
-            [ ! -f "${CONTEXT}/Dockerfile" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            TAG_ARGS="-t ${REF}"
+            CONTEXT="./images/${image"
+            [ ! -f "${CONTEXT/Dockerfile" ] && continue
+            REF="${REGISTRY/${OWNER/${image:${TAG"
+            TAG_ARGS="-t ${REF"
             if [ "$DOCKERHUB_ENABLED" = "true" ]; then
-              DH_REF="docker.io/${{ github.repository_owner }}/${image}:${TAG}"
+              DH_REF="docker.io/${{ github.repository_owner /${image:${TAG"
               DH_REF=$(echo "$DH_REF" | tr '[:upper:]' '[:lower:]')
-              TAG_ARGS="${TAG_ARGS} -t ${DH_REF}"
+              TAG_ARGS="${TAG_ARGS -t ${DH_REF"
             fi
-            echo "::group::Push ${image} (linux/amd64,linux/arm64)"
+            echo "::group::Push ${image (linux/amd64,linux/arm64)"
             if timeout 900 docker buildx build \
               --platform linux/amd64,linux/arm64 \
               --push \
-              ${TAG_ARGS} \
-              --cache-from "type=gha,scope=${image}" \
-              --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
+              ${TAG_ARGS \
+              --cache-from "type=gha,scope=${image" \
+              --cache-to "type=gha,scope=${image,mode=max,compression=zstd" \
               --attest "type=provenance,mode=max" \
-              --build-arg "BUILD_DATE=${TAG}" \
-              --build-arg "VCS_REF=${TAG}" \
-              --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
-              "${CONTEXT}"; then
+              --build-arg "BUILD_DATE=${TAG" \
+              --build-arg "VCS_REF=${TAG" \
+              --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN " \
+              "${CONTEXT"; then
               PUSHED=$((PUSHED + 1))
             else
-              echo "::warning::${image}: push failed (may not support arm64)"
+              echo "::warning::${image: push failed (may not support arm64)"
               FAILED=$((FAILED + 1))
             fi
             # Rate-limit backoff between GitHub downloads
             sleep 2
             echo "::endgroup::"
           done
-          echo "Push: ${PUSHED} succeeded, ${FAILED} failed"
-          if [ "$FAILED" -gt 0 ]; then echo "::warning::${FAILED} image(s) failed to push (arm64 incompatible?)"; fi
+          echo "Push: ${PUSHED succeeded, ${FAILED failed"
+          if [ "$FAILED" -gt 0 ]; then echo "::warning::${FAILED image(s) failed to push (arm64 incompatible?)"; fi
 
       - name: Enforce image size limits
         if: always()
         run: |
           {
-            echo "## Image Sizes - Batch ${{ matrix.batch }}"
+            echo "## Image Sizes - Batch ${{ matrix.batch "
             echo ""
             echo "| Image | Size | Tier Limit | Status |"
             echo "|-------|------|------------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"
 
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
-          for image in "${IMAGE_LIST[@]}"; do
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            SAFE="${image//\//-}"
-            TAR="/tmp/images/${SAFE}.tar"
+            SAFE="${image//\//-"
+            TAR="/tmp/images/${SAFE.tar"
             [ ! -f "$TAR" ] && continue
 
             SIZE_MB=$(($(stat --format=%s "$TAR") / 1024 / 1024))
-            DOCKERFILE="./images/${image}/Dockerfile"
+            DOCKERFILE="./images/${image/Dockerfile"
 
             if grep -q 'FROM scratch' "$DOCKERFILE" 2>/dev/null; then
               LIMIT=50
@@ -495,18 +495,18 @@ jobs:
             fi
 
             if [ "$SIZE_MB" -gt "$LIMIT" ]; then
-              STATUS=":warning: OVER (${SIZE_MB}MB > ${LIMIT}MB)"
+              STATUS=":warning: OVER (${SIZE_MBMB > ${LIMITMB)"
             else
-              STATUS=":white_check_mark: OK (${SIZE_MB}MB)"
+              STATUS=":white_check_mark: OK (${SIZE_MBMB)"
             fi
-            echo "| ${image} | ${SIZE_MB}MB | ${TIER} | ${STATUS} |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| ${image | ${SIZE_MBMB | ${TIER | ${STATUS |" >> "$GITHUB_STEP_SUMMARY"
           done
 
       - name: Upload built image tarballs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: images-batch-${{ matrix.batch }}
+          name: images-batch-${{ matrix.batch 
           path: /tmp/images/
           retention-days: 7
           overwrite: true
@@ -515,7 +515,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: built-list-batch-${{ matrix.batch }}
+          name: built-list-batch-${{ matrix.batch 
           path: /tmp/built-images.txt
           retention-days: 7
           overwrite: true
@@ -530,38 +530,38 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/sbom
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           COUNT=0
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            SAFE="${image//\//-}"
-            TAR="/tmp/images/${SAFE}.tar"
+            SAFE="${image//\//-"
+            TAR="/tmp/images/${SAFE.tar"
             [ ! -f "$TAR" ] && continue
 
-            OUT_DIR="/tmp/sbom/${image}"
+            OUT_DIR="/tmp/sbom/${image"
             mkdir -p "$OUT_DIR"
 
-            if syft "docker-archive:${TAR}" -o spdx-json="${OUT_DIR}/sbom-buildtime.spdx.json" --quiet 2>/dev/null; then
-              echo "Generated SPDX SBOM for ${image}"
+            if syft "docker-archive:${TAR" -o spdx-json="${OUT_DIR/sbom-buildtime.spdx.json" --quiet 2>/dev/null; then
+              echo "Generated SPDX SBOM for ${image"
             else
-              echo "::warning::syft SPDX generation failed for ${image}"
+              echo "::warning::syft SPDX generation failed for ${image"
             fi
 
-            if syft "docker-archive:${TAR}" -o cyclonedx-json="${OUT_DIR}/sbom-buildtime.cdx.json" --quiet 2>/dev/null; then
-              echo "Generated CycloneDX SBOM for ${image}"
+            if syft "docker-archive:${TAR" -o cyclonedx-json="${OUT_DIR/sbom-buildtime.cdx.json" --quiet 2>/dev/null; then
+              echo "Generated CycloneDX SBOM for ${image"
             else
-              echo "::warning::syft CycloneDX generation failed for ${image}"
+              echo "::warning::syft CycloneDX generation failed for ${image"
             fi
 
             COUNT=$((COUNT + 1))
           done
-          echo "Generated SBOMs for ${COUNT} images"
+          echo "Generated SBOMs for ${COUNT images"
 
       - name: Upload build-time SBOMs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: sbom-buildtime-batch-${{ matrix.batch }}
+          name: sbom-buildtime-batch-${{ matrix.batch 
           path: /tmp/sbom/
           retention-days: 30
           if-no-files-found: warn
@@ -573,7 +573,7 @@ jobs:
   publish-references:
     name: Publish Image References
     needs: [build]
-    if: ${{ needs.build.result == 'success' && github.event_name != 'pull_request' }}
+    if: ${{ needs.build.result == 'success' && github.event_name != 'pull_request' 
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -590,9 +590,9 @@ jobs:
           cat /tmp/batches/built-list-batch-*/built-images.txt 2>/dev/null \
             | sort -u > /tmp/output/images.txt || true
           TOTAL=$(wc -l < /tmp/output/images.txt 2>/dev/null || echo 0)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Merged ${TOTAL} image references"
-          if [ "${TOTAL}" -eq 0 ]; then
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Merged ${TOTAL image references"
+          if [ "${TOTAL" -eq 0 ]; then
             echo "::warning::No image references found in any batch"
           fi
 
@@ -611,7 +611,7 @@ jobs:
   health-check:
     name: Health Check
     needs: [discover, build]
-    if: ${{ needs.build.result == 'success' }}
+    if: ${{ needs.build.result == 'success' 
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -619,7 +619,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Lowercase registry owner
-        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        run: echo "OWNER=$(echo '${{ env.OWNER ' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Download all batch image references
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -641,10 +641,10 @@ jobs:
           TOTAL=0
 
           for tar in /tmp/images/images-batch-*/*.tar; do
-            [ -f "$tar" ] || { echo "No tarballs found"; exit 0; }
+            [ -f "$tar" ] || { echo "No tarballs found"; exit 0; 
             TOTAL=$((TOTAL + 1))
             BASE=$(basename "$tar" .tar)
-            echo "::group::Health check ${BASE}"
+            echo "::group::Health check ${BASE"
 
             if ! docker load -i "$tar" > /dev/null 2>&1; then
               echo "FAIL: Could not load tarball"
@@ -659,27 +659,27 @@ jobs:
               WARN=$((WARN + 1))
               echo "::endgroup::"
               continue
-            }
+            
 
-            LAYERS=$(docker inspect --format '{{len .RootFS.Layers}}' "$REF" 2>/dev/null || echo "0")
+            LAYERS=$(docker inspect --format '{{len .RootFS.Layers' "$REF" 2>/dev/null || echo "0")
 
             if [ "$LAYERS" -le 1 ]; then
-              echo "WARN: Only ${LAYERS} layer(s) - image may be just a FROM without modifications"
+              echo "WARN: Only ${LAYERS layer(s) - image may be just a FROM without modifications"
               WARN=$((WARN + 1))
             else
-              echo "PASS: ${LAYERS} layers"
+              echo "PASS: ${LAYERS layers"
               PASS=$((PASS + 1))
             fi
 
-            SIZE=$(docker image inspect --format '{{.Size}}' "$REF" 2>/dev/null || echo "0")
+            SIZE=$(docker image inspect --format '{{.Size' "$REF" 2>/dev/null || echo "0")
             SIZE_MB=$((SIZE / 1024 / 1024))
-            echo "INFO: Image size: ${SIZE_MB}MB"
+            echo "INFO: Image size: ${SIZE_MBMB"
 
             echo "::endgroup::"
           done
 
           echo ""
-          echo "Health checks: ${PASS} passed, ${FAIL} failed, ${WARN} warnings (${TOTAL} total)"
+          echo "Health checks: ${PASS passed, ${FAIL failed, ${WARN warnings (${TOTAL total)"
 
   # ===========================================================================
   # STAGE 5: SECURITY SCAN - Trivy filesystem scanning
@@ -687,7 +687,7 @@ jobs:
   security-scan:
     name: Security Scan
     needs: [discover, build]
-    if: ${{ needs.build.result == 'success' }}
+    if: ${{ needs.build.result == 'success' 
     runs-on: ubuntu-latest
     timeout-minutes: 30
     continue-on-error: true
@@ -711,7 +711,7 @@ jobs:
   sbom:
     name: Generate SBOM
     needs: [discover, build]
-    if: ${{ needs.build.result == 'success' }}
+    if: ${{ needs.build.result == 'success' 
     runs-on: ubuntu-latest
     timeout-minutes: 15
     continue-on-error: true
@@ -737,38 +737,38 @@ jobs:
   # STAGE 7: VERIFY - Constraint tests + CVE scanning per batch
   # ===========================================================================
   verify:
-    name: 'Verify Batch ${{ matrix.batch }}'
+    name: 'Verify Batch ${{ matrix.batch '
     needs: [discover, build]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) 
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Lowercase registry owner
-        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        run: echo "OWNER=$(echo '${{ env.OWNER ' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Download batch image tarballs
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: images-batch-${{ matrix.batch }}
+          name: images-batch-${{ matrix.batch 
           path: /tmp/images/
 
       - name: Load images from tarballs
         run: |
           COUNT=0
           for tar in /tmp/images/*.tar; do
-            [ -f "$tar" ] || { echo "No tarballs found in batch"; exit 0; }
+            [ -f "$tar" ] || { echo "No tarballs found in batch"; exit 0; 
             if docker load -i "$tar" > /dev/null 2>&1; then
               COUNT=$((COUNT + 1))
             else
               echo "::warning::Failed to load $(basename "$tar")"
             fi
           done
-          echo "Loaded ${COUNT} images"
+          echo "Loaded ${COUNT images"
 
       - name: Install scanning tools
         run: |
@@ -780,21 +780,21 @@ jobs:
       - name: Run constraint tests and CVE scans
         run: |
           FAILURES=0
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
 
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            SAFE="${image//\//-}"
-            TAR="/tmp/images/${SAFE}.tar"
+            SAFE="${image//\//-"
+            TAR="/tmp/images/${SAFE.tar"
             [ ! -f "$TAR" ] && {
-              echo "::warning::${image}: tarball missing, skipping"
+              echo "::warning::${image: tarball missing, skipping"
               continue
-            }
+            
 
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            echo "::group::Verify ${image}"
+            REF="${REGISTRY/${OWNER/${image:${TAG"
+            echo "::group::Verify ${image"
 
-            DOCKERFILE="images/${image}/Dockerfile"
+            DOCKERFILE="images/${image/Dockerfile"
             FINAL_FROM=$(grep -oP '^FROM \K\S+' "$DOCKERFILE" 2>/dev/null | tail -1)
             IS_SCRATCH=false
             if echo "$FINAL_FROM" | grep -qi 'scratch'; then
@@ -803,23 +803,23 @@ jobs:
 
             if [ "$IS_SCRATCH" = "true" ]; then
               # C001: Non-root user (UID 65534)
-              USER_ID=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "")
+              USER_ID=$(docker inspect --format '{{.Config.User' "$REF" 2>/dev/null || echo "")
               if echo "$USER_ID" | grep -qE '^(65534|nobody|[0-9]+:[0-9]+)$'; then
-                echo "PASS C001: Non-root (${USER_ID})"
-              elif [ "$USER_ID" = "" ] && docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE ''; then
+                echo "PASS C001: Non-root (${USER_ID)"
+              elif [ "$USER_ID" = "" ] && docker inspect --format '{{.Config.User' "$REF" 2>/dev/null | grep -qE ''; then
                 # Check if image has USER directive or runs as non-root via label
-                if docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE '65534|nobody|1000'; then
-                  echo "PASS C001: Non-root (${USER_ID})"
+                if docker inspect --format '{{.Config.User' "$REF" 2>/dev/null | grep -qE '65534|nobody|1000'; then
+                  echo "PASS C001: Non-root (${USER_ID)"
                 else
-                  echo "FAIL C001: Non-root (${USER_ID:-root})"
+                  echo "FAIL C001: Non-root (${USER_ID:-root)"
                   FAILURES=$((FAILURES + 1))
                 fi
               else
-                echo "PASS C001: Non-root (${USER_ID})"
+                echo "PASS C001: Non-root (${USER_ID)"
               fi
 
               # C002: Read-only root filesystem
-              READONLY_LABEL=$(docker inspect --format '{{index .Config.Labels "evergreen.security.read-only-rootfs"}}' "$REF" 2>/dev/null || echo "")
+              READONLY_LABEL=$(docker inspect --format '{{index .Config.Labels "evergreen.security.read-only-rootfs"' "$REF" 2>/dev/null || echo "")
               if [ "$READONLY_LABEL" = "true" ]; then
                 echo "SKIP C002: read-only-rootfs=true label set (runtime enforcement via --read-only flag)"
               elif docker run --rm --read-only "$REF" touch /test 2>/dev/null; then
@@ -840,9 +840,9 @@ jobs:
               for shell in /bin/sh /bin/bash /dash /ash; do
                 if docker run --rm "$REF" test -f "$shell" 2>/dev/null; then
                   if [ "$HEALTHCHECK_NEEDS_SHELL" = "true" ]; then
-                    echo "SKIP C003: Shell found (${shell}) but required by HEALTHCHECK"
+                    echo "SKIP C003: Shell found (${shell) but required by HEALTHCHECK"
                   else
-                    echo "FAIL C003: Shell found (${shell})"
+                    echo "FAIL C003: Shell found (${shell)"
                     FAILURES=$((FAILURES + 1))
                   fi
                   HAS_SHELL=1
@@ -860,9 +860,9 @@ jobs:
               for pm in /usr/bin/apt /usr/bin/apk /usr/bin/dnf /usr/bin/yum; do
                 if docker run --rm "$REF" test -f "$pm" 2>/dev/null; then
                   if [ "$DOCKERFILE_USES_PKG_MGR" = "true" ]; then
-                    echo "SKIP C004: Package manager found (${pm}) but required by Dockerfile build"
+                    echo "SKIP C004: Package manager found (${pm) but required by Dockerfile build"
                   else
-                    echo "FAIL C004: Package manager found (${pm})"
+                    echo "FAIL C004: Package manager found (${pm)"
                     FAILURES=$((FAILURES + 1))
                   fi
                   HAS_PKG=1
@@ -871,9 +871,9 @@ jobs:
               done
               [ "$HAS_PKG" = "0" ] && echo "PASS C004: No package manager"
             else
-              echo "SKIP: ${image} is ${FINAL_FROM} (not scratch) - skipping constraint tests C001-C004"
-              LABELS=$(docker inspect --format '{{json .Config.Labels}}' "$REF" 2>/dev/null || echo "{}")
-              if [ "$LABELS" != "{}" ] && [ "$LABELS" != "null" ] && [ -n "$LABELS" ]; then
+              echo "SKIP: ${image is ${FINAL_FROM (not scratch) - skipping constraint tests C001-C004"
+              LABELS=$(docker inspect --format '{{json .Config.Labels' "$REF" 2>/dev/null || echo "{")
+              if [ "$LABELS" != "{" ] && [ "$LABELS" != "null" ] && [ -n "$LABELS" ]; then
                 echo "PASS: Image has labels"
               else
                 echo "WARN: Image has no labels"
@@ -883,7 +883,7 @@ jobs:
             echo "::endgroup::"
 
             # --- CVE SCANNING ---
-            echo "::group::CVE Scan ${image}"
+            echo "::group::CVE Scan ${image"
 
             # Trivy: report CRITICAL/HIGH, warn only (upstream CVEs are expected)
             echo "--- Trivy ---"
@@ -909,7 +909,7 @@ jobs:
           done
 
           echo ""
-          echo "Batch ${{ matrix.batch }}: ${FAILURES} check(s) failed"
+          echo "Batch ${{ matrix.batch : ${FAILURES check(s) failed"
           if [ "$FAILURES" -gt 0 ]; then exit 1; fi
 
   # ===========================================================================
@@ -918,7 +918,7 @@ jobs:
   sign-push:
     name: Sign & Attest
     needs: [build, verify]
-    if: ${{ needs.build.result == 'success' && needs.verify.result == 'success' && github.ref == 'refs/heads/main' }}
+    if: ${{ needs.build.result == 'success' && needs.verify.result == 'success' && github.ref == 'refs/heads/main' 
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -933,7 +933,7 @@ jobs:
           fetch-depth: 0
 
       - name: Lowercase registry owner
-        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        run: echo "OWNER=$(echo '${{ env.OWNER ' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9
@@ -949,8 +949,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Download all built image references
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -964,46 +964,46 @@ jobs:
           cat /tmp/batches/built-list-batch-*/built-images.txt 2>/dev/null \
             | sort -u > /tmp/all-images.txt || true
           TOTAL=$(wc -l < /tmp/all-images.txt 2>/dev/null || echo 0)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Will sign and attest ${TOTAL} images"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Will sign and attest ${TOTAL images"
           if [ "$TOTAL" -eq 0 ]; then echo "::warning::No built images found to sign"; fi
 
       - name: Sign images with Cosign (keyless)
         if: steps.images.outputs.total != '0'
         env:
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY 
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD 
         run: |
           echo "=== Cosign Keyless Signing ==="
           SIGNED=0
           FAILED=0
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
-            echo "::group::Sign ${ref}"
+            echo "::group::Sign ${ref"
             if [ -n "$COSIGN_PRIVATE_KEY" ]; then
-              cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${ref}" 2>&1
+              cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${ref" 2>&1
             else
               cosign sign --yes \
-                --certificate-identity="${{ github.repository_owner }}" \
+                --certificate-identity="${{ github.repository_owner " \
                 --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-                "${ref}" 2>&1 || {
-                  echo "::warning::Keyless signing failed for ${ref} (OIDC federation may not be configured)"
+                "${ref" 2>&1 || {
+                  echo "::warning::Keyless signing failed for ${ref (OIDC federation may not be configured)"
                   echo "Configuration ready for OIDC federation with Sigstore"
                   echo "To activate: enable 'Trusted Publishing' in Sigstore settings"
                   FAILED=$((FAILED + 1))
                   echo "::endgroup::"
                   continue
-                }
+                
             fi
             if [ $? -eq 0 ]; then
               SIGNED=$((SIGNED + 1))
             else
-              echo "::warning::Failed to sign ${ref}"
+              echo "::warning::Failed to sign ${ref"
               FAILED=$((FAILED + 1))
             fi
             echo "::endgroup::"
           done < /tmp/all-images.txt
-          echo "Signed: ${SIGNED}, Failed: ${FAILED}"
+          echo "Signed: ${SIGNED, Failed: ${FAILED"
           if [ "$FAILED" -gt 0 ]; then
             echo "Some images failed to sign - this is expected if OIDC federation is not yet configured"
             echo "Images will be signed with keyless Sigstore (no key management needed)"
@@ -1019,8 +1019,8 @@ jobs:
       - name: Attest SBOMs
         if: steps.images.outputs.total != '0'
         env:
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY 
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD 
         run: |
           echo "=== SBOM Attestation ==="
           SIGNED=0
@@ -1028,24 +1028,24 @@ jobs:
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
             SAFE=$(echo "$ref" | tr '/:' '_')
-            SBOM="/tmp/sbom-${SAFE}.spdx.json"
+            SBOM="/tmp/sbom-${SAFE.spdx.json"
 
-            echo "::group::SBOM ${ref}"
-            if ! cosign download sbom "${ref}" > /dev/null 2>&1; then
+            echo "::group::SBOM ${ref"
+            if ! cosign download sbom "${ref" > /dev/null 2>&1; then
               echo "No remote SBOM found, generating locally..."
               cosign attest --yes \
                 --predicate sbom.spdx.json --type spdxjson \
-                "${ref}" 2>&1 || {
+                "${ref" 2>&1 || {
                   echo "SBOM attestation configured (requires signing to be active)"
                   FAILED=$((FAILED + 1))
                   echo "::endgroup::"
                   continue
-                }
+                
             fi
             SIGNED=$((SIGNED + 1))
             echo "::endgroup::"
           done < /tmp/all-images.txt
-          echo "SBOMs attested: ${SIGNED}, Failed: ${FAILED}"
+          echo "SBOMs attested: ${SIGNED, Failed: ${FAILED"
 
       - name: Upload SBOMs
         if: always()
@@ -1066,9 +1066,9 @@ jobs:
   # Prebuilt images with arch-aware download URLs use TARGETARCH.
   # ===========================================================================
   build-multiarch:
-    name: 'Multi-Arch ${{ matrix.image }} (${{ matrix.arch }})'
+    name: 'Multi-Arch ${{ matrix.image  (${{ matrix.arch )'
     needs: [discover, lint, gates]
-    if: ${{ needs.discover.result == 'success' && needs.lint.result == 'success' && needs.gates.result == 'success' }}
+    if: ${{ needs.discover.result == 'success' && needs.lint.result == 'success' && needs.gates.result == 'success' 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -1723,25 +1723,25 @@ jobs:
 
       - name: Build multi-arch source image
         run: |
-          IMAGE=${{ matrix.image }}
-          ARCH=${{ matrix.arch }}
-          echo "Building ${IMAGE} for ${ARCH} (multi-arch with QEMU/cross-compile)..."
+          IMAGE=${{ matrix.image 
+          ARCH=${{ matrix.arch 
+          echo "Building ${IMAGE for ${ARCH (multi-arch with QEMU/cross-compile)..."
 
           docker buildx build \
-            --platform linux/${ARCH} \
-            --build-arg TARGETARCH=${ARCH} \
-            --build-arg GOARCH=${ARCH} \
-            -t ${IMAGE}:${ARCH}-test \
+            --platform linux/${ARCH \
+            --build-arg TARGETARCH=${ARCH \
+            --build-arg GOARCH=${ARCH \
+            -t ${IMAGE:${ARCH-test \
             --load \
-            images/${IMAGE}/ || echo "BUILD_FAILED"
+            images/${IMAGE/ || echo "BUILD_FAILED"
 
-          docker inspect ${IMAGE}:${ARCH}-test 2>/dev/null && echo "PASS ${IMAGE}:${ARCH}" || echo "FAIL ${IMAGE}:${ARCH}"
+          docker inspect ${IMAGE:${ARCH-test 2>/dev/null && echo "PASS ${IMAGE:${ARCH" || echo "FAIL ${IMAGE:${ARCH"
 
       # To create multi-arch manifest after per-arch images are pushed:
       # docker buildx imagetools create \
-      #   ghcr.io/${{ github.repository }}/health-checks:latest \
-      #   ghcr.io/${{ github.repository }}/health-checks:amd64 \
-      #   ghcr.io/${{ github.repository }}/health-checks:arm64
+      #   ghcr.io/${{ github.repository /health-checks:latest \
+      #   ghcr.io/${{ github.repository /health-checks:amd64 \
+      #   ghcr.io/${{ github.repository /health-checks:arm64
 
   # ===========================================================================
   # STAGE 9: REPORT - Aggregate results and generate summary
@@ -1773,26 +1773,26 @@ jobs:
             echo ""
             echo "| Metric | Value |"
             echo "|--------|-------|"
-            echo "| **Total Images** | ${{ needs.discover.outputs.total }} |"
-            echo "| **Commit** | \`${{ github.sha }}\` |"
-            echo "| **Branch** | \`${{ github.ref_name }}\` |"
-            echo "| **Trigger** | ${{ github.event_name }} |"
-            echo "| **Discover** | ${{ needs.discover.result }} |"
-            echo "| **Lint** | ${{ needs.lint.result }} |"
-            echo "| **Gates** | ${{ needs.gates.result }} |"
-            echo "| **Build** | ${{ needs.build.result }} |"
-            echo "| **Publish Refs** | ${{ needs.publish-references.result }} |"
-            echo "| **Health Check** | ${{ needs.health-check.result }} |"
-            echo "| **Security Scan** | ${{ needs.security-scan.result }} |"
-            echo "| **SBOM** | ${{ needs.sbom.result }} |"
-            echo "| **Verify** | ${{ needs.verify.result }} |"
-            echo "| **Sign & Push** | ${{ needs.sign-push.result }} |"
-            echo "| **Multi-Arch Build** | ${{ needs.build-multiarch.result }} |"
+            echo "| **Total Images** | ${{ needs.discover.outputs.total  |"
+            echo "| **Commit** | \`${{ github.sha \` |"
+            echo "| **Branch** | \`${{ github.ref_name \` |"
+            echo "| **Trigger** | ${{ github.event_name  |"
+            echo "| **Discover** | ${{ needs.discover.result  |"
+            echo "| **Lint** | ${{ needs.lint.result  |"
+            echo "| **Gates** | ${{ needs.gates.result  |"
+            echo "| **Build** | ${{ needs.build.result  |"
+            echo "| **Publish Refs** | ${{ needs.publish-references.result  |"
+            echo "| **Health Check** | ${{ needs.health-check.result  |"
+            echo "| **Security Scan** | ${{ needs.security-scan.result  |"
+            echo "| **SBOM** | ${{ needs.sbom.result  |"
+            echo "| **Verify** | ${{ needs.verify.result  |"
+            echo "| **Sign & Push** | ${{ needs.sign-push.result  |"
+            echo "| **Multi-Arch Build** | ${{ needs.build-multiarch.result  |"
             echo ""
 
             OVERALL="success"
             for job in discover lint gates build verify; do
-              RESULT="${{ needs[job].result }}"
+              RESULT="${{ needs[job].result "
               if [ "$RESULT" = "failure" ]; then
                 OVERALL="failure"
                 break
@@ -1804,6 +1804,6 @@ jobs:
             else
               echo "## :white_check_mark: Pipeline Passed"
             fi
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"
 
 # Sat 25 Apr 03:50:08 BST 2026

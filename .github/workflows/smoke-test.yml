@@ -31,13 +31,13 @@ jobs:
       - name: Run smoke tests
         run: |
           chmod +x scripts/smoke_test.sh
-          ./scripts/smoke_test.sh --tier ${{ matrix.tier }}
+          ./scripts/smoke_test.sh --tier ${{ matrix.tier 
       
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: smoke-test-results-${{ matrix.tier }}
+          name: smoke-test-results-${{ matrix.tier 
           path: smoke-test-results/
           retention-days: 7
 
@@ -125,8 +125,8 @@ jobs:
                   passed += 1
               else:
                   failed += 1
-                  print(f'FAIL: {df.parent.name}')
-          print(f'C003: {passed}/{passed+failed} PASS')
+                  print(f'FAIL: {df.parent.name')
+          print(f'C003: {passed/{passed+failed PASS')
           if failed > 0:
               exit(1)
           "

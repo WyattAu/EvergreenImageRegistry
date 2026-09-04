@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: readme-${{ github.ref }}
+  group: readme-${{ github.ref 
   cancel-in-progress: true
 
 jobs:
@@ -42,11 +42,11 @@ jobs:
 
           for image_dir in $(ls -d $IMAGE_BASE_PATH/*/ | sort); do
             image_name=$(basename $image_dir)
-            dockerfile_path="${image_dir}Dockerfile"
-            readme_path="./${image_dir}README.md"
+            dockerfile_path="${image_dirDockerfile"
+            readme_path="./${image_dirREADME.md"
 
             # Extract the version from the Dockerfile's ARG. Assumes a format like 'ARG IMAGE_VERSION=...'
-            version=$(grep -m 1 'ARG .*_VERSION=' "$dockerfile_path" | awk -F'=' '{print $2}' | tr -d '[:space:]')
+            version=$(grep -m 1 'ARG .*_VERSION=' "$dockerfile_path" | awk -F'=' '{print $2' | tr -d '[:space:]')
             if [ -z "$version" ]; then
               version="N/A"
             fi
@@ -61,11 +61,11 @@ jobs:
             echo "table_content<<EOF"
             echo "$new_table_content"
             echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+           >> "$GITHUB_OUTPUT"
 
       - name: Update README.md file
         env:
-          TABLE_CONTENT: ${{ steps.generate_list.outputs.table_content }}
+          TABLE_CONTENT: ${{ steps.generate_list.outputs.table_content 
         run: |
           printf '%b\n' "$TABLE_CONTENT" > /tmp/table_content.txt
           python3 /dev/stdin << 'PYEOF'

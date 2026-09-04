@@ -19,7 +19,7 @@ on:
         type: string
 
 concurrency:
-  group: musl-rebuild-${{ github.ref }}
+  group: musl-rebuild-${{ github.ref 
   cancel-in-progress: true
 
 permissions:
@@ -39,30 +39,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      matrix: ${{ steps.find.outputs.matrix }}
-      total: ${{ steps.find.outputs.total }}
+      matrix: ${{ steps.find.outputs.matrix 
+      total: ${{ steps.find.outputs.total 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Find eligible images
         id: find
         run: |
-          MANUAL_IMAGE="${{ inputs.image }}"
+          MANUAL_IMAGE="${{ inputs.image "
           MATRIX="[]"
           TOTAL=0
 
           if [[ -n "$MANUAL_IMAGE" ]]; then
-            if [[ -d "images/${MANUAL_IMAGE}" ]] && [[ -f "images/${MANUAL_IMAGE}/Dockerfile" ]]; then
+            if [[ -d "images/${MANUAL_IMAGE" ]] && [[ -f "images/${MANUAL_IMAGE/Dockerfile" ]]; then
               # Check if image downloads a Go or Rust binary
               if grep -qE 'github\.com/.*releases/download|rust-lang\.org/dist|golang\.org/dl/' \
-                  "images/${MANUAL_IMAGE}/Dockerfile" 2>/dev/null; then
-                MATRIX='[{"image":"'"${MANUAL_IMAGE}"'"}]'
+                  "images/${MANUAL_IMAGE/Dockerfile" 2>/dev/null; then
+                MATRIX='[{"image":"'"${MANUAL_IMAGE"'"]'
                 TOTAL=1
               else
-                echo "::warning::${MANUAL_IMAGE} does not appear to be a Go/Rust binary-download image"
+                echo "::warning::${MANUAL_IMAGE does not appear to be a Go/Rust binary-download image"
               fi
             else
-              echo "::error::Image directory images/${MANUAL_IMAGE} not found"
+              echo "::error::Image directory images/${MANUAL_IMAGE not found"
               exit 1
             fi
           else
@@ -72,21 +72,21 @@ jobs:
               name=$(basename "$dir")
               [[ "$name" == _* ]] && continue
               [[ "$name" == "tests" ]] || [[ "$name" == "health-shim" ]] && continue
-              [[ ! -f "${dir}Dockerfile" ]] && continue
+              [[ ! -f "${dirDockerfile" ]] && continue
               if grep -qE 'github\.com/.*releases/download|rust-lang\.org/dist|golang\.org/dl/' \
-                  "${dir}Dockerfile" 2>/dev/null; then
+                  "${dirDockerfile" 2>/dev/null; then
                 IMGS+=("$name")
               fi
             done
-            TOTAL=${#IMGS[@]}
+            TOTAL=${#IMGS[@]
             if [[ $TOTAL -eq 0 ]]; then
               MATRIX="[]"
             else
               # Build JSON array
               JSON="["
-              for i in "${!IMGS[@]}"; do
+              for i in "${!IMGS[@]"; do
                 [[ $i -gt 0 ]] && JSON+=","
-                JSON+='{"image":"'"${IMGS[$i]}"'"}'
+                JSON+='{"image":"'"${IMGS[$i]"'"'
               done
               JSON+="]"
               MATRIX="$JSON"
@@ -101,28 +101,28 @@ jobs:
   # BUILD-CHECK - Build musl variant and compare sizes
   # ---------------------------------------------------------------------------
   rebuild-check:
-    name: 'Rebuild ${{ matrix.image }}'
+    name: 'Rebuild ${{ matrix.image '
     needs: discover
     if: needs.discover.outputs.total != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
-      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) 
       fail-fast: false
     outputs:
-      savings_pct: ${{ steps.compare.outputs.savings_pct }}
-      status: ${{ steps.build.outcome }}
+      savings_pct: ${{ steps.compare.outputs.savings_pct 
+      status: ${{ steps.build.outcome 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Determine build type
         id: type
         run: |
-          IMAGE="${{ matrix.image }}"
-          if grep -q 'github\.com/.*releases/download' "images/${IMAGE}/Dockerfile" 2>/dev/null; then
-            if grep -q 'golang\|go\.dev/dl/' "images/${IMAGE}/Dockerfile" 2>/dev/null; then
+          IMAGE="${{ matrix.image "
+          if grep -q 'github\.com/.*releases/download' "images/${IMAGE/Dockerfile" 2>/dev/null; then
+            if grep -q 'golang\|go\.dev/dl/' "images/${IMAGE/Dockerfile" 2>/dev/null; then
               echo "build_type=go" >> "$GITHUB_OUTPUT"
-            elif grep -q 'rust-lang\.org/dist' "images/${IMAGE}/Dockerfile" 2>/dev/null; then
+            elif grep -q 'rust-lang\.org/dist' "images/${IMAGE/Dockerfile" 2>/dev/null; then
               echo "build_type=rust" >> "$GITHUB_OUTPUT"
             else
               echo "build_type=unknown" >> "$GITHUB_OUTPUT"
@@ -134,13 +134,13 @@ jobs:
       - name: Generate musl Dockerfile
         id: generate
         run: |
-          IMAGE="${{ matrix.image }}"
-          BUILD_TYPE="${{ steps.type.outputs.build_type }}"
+          IMAGE="${{ matrix.image "
+          BUILD_TYPE="${{ steps.type.outputs.build_type "
 
           # Check if a pre-generated musl Dockerfile already exists
-          if [[ -f "images/${IMAGE}/Dockerfile.musl-src" ]]; then
+          if [[ -f "images/${IMAGE/Dockerfile.musl-src" ]]; then
             echo "Using pre-generated musl Dockerfile"
-            cp "images/${IMAGE}/Dockerfile.musl-src" "/tmp/Dockerfile.musl"
+            cp "images/${IMAGE/Dockerfile.musl-src" "/tmp/Dockerfile.musl"
             exit 0
           fi
 
@@ -150,16 +150,16 @@ jobs:
           elif [[ "$BUILD_TYPE" == "rust" ]]; then
             bash scripts/rebuild_rust_musl.sh "$IMAGE"
           else
-            echo "::warning::Cannot auto-generate musl Dockerfile for ${IMAGE} (unknown build type)"
+            echo "::warning::Cannot auto-generate musl Dockerfile for ${IMAGE (unknown build type)"
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          if [[ -f "images/${IMAGE}/Dockerfile.musl-src" ]]; then
-            cp "images/${IMAGE}/Dockerfile.musl-src" "/tmp/Dockerfile.musl"
+          if [[ -f "images/${IMAGE/Dockerfile.musl-src" ]]; then
+            cp "images/${IMAGE/Dockerfile.musl-src" "/tmp/Dockerfile.musl"
             echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::Musl Dockerfile generation failed for ${IMAGE}"
+            echo "::warning::Musl Dockerfile generation failed for ${IMAGE"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -167,26 +167,26 @@ jobs:
         if: steps.generate.outputs.skip != 'true'
         id: build-original
         run: |
-          IMAGE="${{ matrix.image }}"
+          IMAGE="${{ matrix.image "
           echo "Building original glibc image..."
-          docker build -t "evergreen-${IMAGE}-glibc" "images/${IMAGE}/"
+          docker build -t "evergreen-${IMAGE-glibc" "images/${IMAGE/"
 
       - name: Build musl image
         if: steps.generate.outputs.skip != 'true'
         id: build-musl
         run: |
-          IMAGE="${{ matrix.image }}"
+          IMAGE="${{ matrix.image "
           echo "Building musl image..."
-          docker build -t "evergreen-${IMAGE}-musl" -f /tmp/Dockerfile.musl "images/${IMAGE}/"
+          docker build -t "evergreen-${IMAGE-musl" -f /tmp/Dockerfile.musl "images/${IMAGE/"
 
       - name: Compare image sizes
         if: steps.generate.outputs.skip != 'true' && steps.build-musl.outcome == 'success'
         id: compare
         run: |
-          IMAGE="${{ matrix.image }}"
+          IMAGE="${{ matrix.image "
 
-          SIZE_BEFORE=$(docker image inspect "evergreen-${IMAGE}-glibc" --format='{{.Size}}' 2>/dev/null || echo "0")
-          SIZE_AFTER=$(docker image inspect "evergreen-${IMAGE}-musl" --format='{{.Size}}' 2>/dev/null || echo "0")
+          SIZE_BEFORE=$(docker image inspect "evergreen-${IMAGE-glibc" --format='{{.Size' 2>/dev/null || echo "0")
+          SIZE_AFTER=$(docker image inspect "evergreen-${IMAGE-musl" --format='{{.Size' 2>/dev/null || echo "0")
 
           if [[ "$SIZE_BEFORE" -eq 0 ]]; then
             echo "::warning::Could not get original image size"
@@ -201,36 +201,36 @@ jobs:
           SIZE_AFTER_MB=$((SIZE_AFTER / 1024 / 1024))
           SAVED_MB=$((SAVED / 1024 / 1024))
 
-          echo "Original:  ${SIZE_BEFORE_MB} MB"
-          echo "Musl:      ${SIZE_AFTER_MB} MB"
-          echo "Savings:   ${SAVED_MB} MB (${SAVINGS_PCT}%)"
+          echo "Original:  ${SIZE_BEFORE_MB MB"
+          echo "Musl:      ${SIZE_AFTER_MB MB"
+          echo "Savings:   ${SAVED_MB MB (${SAVINGS_PCT%)"
 
-          echo "savings_pct=${SAVINGS_PCT}" >> "$GITHUB_OUTPUT"
-          echo "size_before=${SIZE_BEFORE_MB}" >> "$GITHUB_OUTPUT"
-          echo "size_after=${SIZE_AFTER_MB}" >> "$GITHUB_OUTPUT"
+          echo "savings_pct=${SAVINGS_PCT" >> "$GITHUB_OUTPUT"
+          echo "size_before=${SIZE_BEFORE_MB" >> "$GITHUB_OUTPUT"
+          echo "size_after=${SIZE_AFTER_MB" >> "$GITHUB_OUTPUT"
 
       - name: Verify musl image works
         if: steps.generate.outputs.skip != 'true' && steps.build-musl.outcome == 'success'
         id: verify
         run: |
-          IMAGE="${{ matrix.image }}"
+          IMAGE="${{ matrix.image "
 
           echo "=== Running --version check ==="
-          docker run --rm "evergreen-${IMAGE}-musl" --version || true
+          docker run --rm "evergreen-${IMAGE-musl" --version || true
 
           echo ""
           echo "=== Running health-shim check ==="
           # Try common ports
           for PORT in 8080 9090 3000 80 443 9100; do
-            docker run --rm --entrypoint="" "evergreen-${IMAGE}-musl" \
-              /shim healthcheck --tcp "127.0.0.1:${PORT}" 2>/dev/null && break || true
+            docker run --rm --entrypoint="" "evergreen-${IMAGE-musl" \
+              /shim healthcheck --tcp "127.0.0.1:${PORT" 2>/dev/null && break || true
           done
 
       - name: Upload musl Dockerfile artifact
         if: steps.generate.outputs.skip != 'true' && steps.build-musl.outcome == 'success'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: musl-${{ matrix.image }}
+          name: musl-${{ matrix.image 
           path: /tmp/Dockerfile.musl
           retention-days: 7
 
@@ -256,7 +256,7 @@ jobs:
         id: pr
         run: |
           BRANCH="musl-rebuild-$(date +%Y%m%d-%H%M%S)"
-          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "branch=${BRANCH" >> "$GITHUB_OUTPUT"
 
           BODY="# Musl Rebuild - Automated\n\n"
           BODY+="## Size Comparison\n\n"
@@ -267,17 +267,17 @@ jobs:
           for dir in /tmp/musl-dockerfiles/musl-*/; do
             [[ ! -d "$dir" ]] && continue
             IMAGE_NAME=$(basename "$dir" | sed 's/^musl-//')
-            echo "Including musl Dockerfile for: ${IMAGE_NAME}"
-            if [[ -f "images/${IMAGE_NAME}/Dockerfile.musl-src" ]]; then
-              cp "/tmp/musl-dockerfiles/musl-${IMAGE_NAME}/Dockerfile.musl" \
-                "images/${IMAGE_NAME}/Dockerfile.musl-src"
+            echo "Including musl Dockerfile for: ${IMAGE_NAME"
+            if [[ -f "images/${IMAGE_NAME/Dockerfile.musl-src" ]]; then
+              cp "/tmp/musl-dockerfiles/musl-${IMAGE_NAME/Dockerfile.musl" \
+                "images/${IMAGE_NAME/Dockerfile.musl-src"
             fi
           done
 
           # Get rebuild-check outputs for each image
-          MATRIX='${{ needs.discover.outputs.matrix }}'
+          MATRIX='${{ needs.discover.outputs.matrix '
           echo "$MATRIX" | jq -r '.[].image' | while read -r img; do
-            BODY+="| ${img} | - | - | - | pending |\n"
+            BODY+="| ${img | - | - | - | pending |\n"
           done
 
           BODY+="\n\n---\n*Generated by musl-rebuild pipeline*"
@@ -288,7 +288,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          BRANCH="${{ steps.pr.outputs.branch }}"
+          BRANCH="${{ steps.pr.outputs.branch "
           git checkout -b "$BRANCH"
           git add images/*/Dockerfile.musl-src || true
           git commit -m "ci: add musl source-build Dockerfiles [automated]" || exit 0
@@ -301,7 +301,7 @@ jobs:
             --label "musl-rebuild,automated" \
             --base main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN 
 
   # ---------------------------------------------------------------------------
   # UPDATE-TRACKER - Update musl_rebuild_status.json
@@ -322,13 +322,13 @@ jobs:
 
           # Read existing or create new
           if [[ ! -f "$TRACKER" ]]; then
-            echo '{"version":1,"images":{}}' > "$TRACKER"
+            echo '{"version":1,"images":{' > "$TRACKER"
           fi
 
           # Update each image
-          MATRIX='${{ needs.discover.outputs.matrix }}'
+          MATRIX='${{ needs.discover.outputs.matrix '
           echo "$MATRIX" | jq -r '.[].image' | while read -r img; do
-            STATUS="${{ needs.rebuild-check.result }}"
+            STATUS="${{ needs.rebuild-check.result "
             tmp=$(mktemp)
             jq --arg img "$img" \
                --arg status "$STATUS" \
@@ -337,7 +337,7 @@ jobs:
                   "last_rebuild": $date,
                   "status": $status,
                   "musl_dockerfile": ("images/" + $img + "/Dockerfile.musl-src")
-                }' "$TRACKER" > "$tmp" && mv "$tmp" "$TRACKER"
+                ' "$TRACKER" > "$tmp" && mv "$tmp" "$TRACKER"
           done
 
       - name: Commit tracker
@@ -348,7 +348,7 @@ jobs:
           git diff --cached --quiet || git commit -m "ci: update musl rebuild status tracker [automated]"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN 
 
   # ---------------------------------------------------------------------------
   # REPORT - Summary
@@ -365,11 +365,11 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
           echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Images scanned | ${{ needs.discover.outputs.total || 0 }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Rebuild check | ${{ needs.rebuild-check.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| PR created | ${{ needs.create-pr.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Tracker updated | ${{ needs.update-tracker.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Images scanned | ${{ needs.discover.outputs.total || 0  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Rebuild check | ${{ needs.rebuild-check.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| PR created | ${{ needs.create-pr.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tracker updated | ${{ needs.update-tracker.result || 'skipped'  |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Commit:** \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Commit:** \`${{ github.sha \`" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Schedule:** \`${{ github.event.schedule || 'manual' }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Schedule:** \`${{ github.event.schedule || 'manual' \`" >> "$GITHUB_STEP_SUMMARY"

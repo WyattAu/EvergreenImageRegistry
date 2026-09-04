@@ -48,7 +48,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
+  OWNER: ${{ github.repository_owner 
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -59,8 +59,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      has_outdated: ${{ steps.check.outputs.has_outdated }}
-      outdated_count: ${{ steps.check.outputs.outdated_count }}
+      has_outdated: ${{ steps.check.outputs.has_outdated 
+      outdated_count: ${{ steps.check.outputs.outdated_count 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -76,8 +76,8 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             evergreenctl/target
-          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os -${{ hashFiles('evergreenctl/Cargo.lock') 
+          restore-keys: cargo-${{ runner.os -
 
       - name: Build evergreenctl
         run: cargo build --release --manifest-path evergreenctl/Cargo.toml
@@ -86,8 +86,8 @@ jobs:
         id: check
         run: |
           # Run auto-version in dry-run mode to detect outdated images
-          DRY_RUN="${{ inputs.dry_run || 'true' }}"
-          ALLOW_MAJOR="${{ inputs.allow_major || 'false' }}"
+          DRY_RUN="${{ inputs.dry_run || 'true' "
+          ALLOW_MAJOR="${{ inputs.allow_major || 'false' "
 
           ARGS="--images-dir images --format json"
           if [ "$DRY_RUN" = "true" ]; then
@@ -112,11 +112,11 @@ jobs:
               print(0)
           " 2>/dev/null || echo 0)
 
-          echo "outdated_count=${OUTDATED}" >> "$GITHUB_OUTPUT"
+          echo "outdated_count=${OUTDATED" >> "$GITHUB_OUTPUT"
 
-          if [ "${OUTDATED}" -gt 0 ]; then
+          if [ "${OUTDATED" -gt 0 ]; then
             echo "has_outdated=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Found ${OUTDATED} outdated images"
+            echo "::notice::Found ${OUTDATED outdated images"
           else
             echo "has_outdated=false" >> "$GITHUB_OUTPUT"
             echo "::notice::All images are up-to-date"
@@ -140,13 +140,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      bumped_count: ${{ steps.bump.outputs.bumped_count }}
-      needs_approval: ${{ steps.bump.outputs.needs_approval }}
+      bumped_count: ${{ steps.bump.outputs.bumped_count 
+      needs_approval: ${{ steps.bump.outputs.needs_approval 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 2
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN 
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
@@ -158,8 +158,8 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             evergreenctl/target
-          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os -${{ hashFiles('evergreenctl/Cargo.lock') 
+          restore-keys: cargo-${{ runner.os -
 
       - name: Build evergreenctl
         run: cargo build --release --manifest-path evergreenctl/Cargo.toml
@@ -167,8 +167,8 @@ jobs:
       - name: Run auto-version (actual bump)
         id: bump
         run: |
-          DRY_RUN="${{ inputs.dry_run || 'true' }}"
-          ALLOW_MAJOR="${{ inputs.allow_major || 'false' }}"
+          DRY_RUN="${{ inputs.dry_run || 'true' "
+          ALLOW_MAJOR="${{ inputs.allow_major || 'false' "
 
           ARGS="--images-dir images --format json"
           if [ "$DRY_RUN" = "true" ]; then
@@ -202,10 +202,10 @@ jobs:
               print(0)
           " 2>/dev/null || echo 0)
 
-          echo "bumped_count=${BUMPED}" >> "$GITHUB_OUTPUT"
-          echo "needs_approval=${NEEDS_APPROVAL}" >> "$GITHUB_OUTPUT"
+          echo "bumped_count=${BUMPED" >> "$GITHUB_OUTPUT"
+          echo "needs_approval=${NEEDS_APPROVAL" >> "$GITHUB_OUTPUT"
 
-          echo "Bumped: ${BUMPED}, Needs approval: ${NEEDS_APPROVAL}"
+          echo "Bumped: ${BUMPED, Needs approval: ${NEEDS_APPROVAL"
 
       - name: Upload report
         if: always()
@@ -225,7 +225,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      all_pass: ${{ steps.validate.outputs.all_pass }}
+      all_pass: ${{ steps.validate.outputs.all_pass 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -241,8 +241,8 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             evergreenctl/target
-          key: cargo-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os -${{ hashFiles('evergreenctl/Cargo.lock') 
+          restore-keys: cargo-${{ runner.os -
 
       - name: Build evergreenctl
         run: cargo build --release --manifest-path evergreenctl/Cargo.toml
@@ -265,9 +265,9 @@ jobs:
               print(0)
           " 2>/dev/null || echo 0)
 
-          if [ "${FAILED}" -gt 0 ]; then
+          if [ "${FAILED" -gt 0 ]; then
             echo "all_pass=false" >> "$GITHUB_OUTPUT"
-            echo "::error::${FAILED} images failed validation"
+            echo "::error::${FAILED images failed validation"
           else
             echo "all_pass=true" >> "$GITHUB_OUTPUT"
             echo "::notice::All images passed validation"
@@ -297,7 +297,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 2
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN 
 
       - name: Check for changes
         id: changes
@@ -312,12 +312,12 @@ jobs:
       - name: Create commit
         if: steps.changes.outputs.has_changes == 'true'
         run: |
-          BUMPED=${{ needs.bump.outputs.bumped_count }}
+          BUMPED=${{ needs.bump.outputs.bumped_count 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add images/*/manifest.toml
           git commit -m "$(cat <<'EOF'
-          chore: auto-bump ${BUMPED} image versions
+          chore: auto-bump ${BUMPED image versions
 
           Automated version bump from upstream releases.
           All constraints validated via parallel validation.
@@ -346,7 +346,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 2
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN 
 
       - name: Create PR for tier 1 bumps
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
@@ -359,16 +359,16 @@ jobs:
             try {
               const reportData = fs.readFileSync('/tmp/auto-version-report.json', 'utf8');
               report = JSON.parse(reportData);
-            } catch (e) {
+             catch (e) {
               console.log('No report file found, skipping PR creation');
               return;
-            }
+            
 
             const needsApproval = report.bump_actions?.filter(a => a.requires_approval) || [];
             if (needsApproval.length === 0) {
               console.log('No tier 1 images need approval');
               return;
-            }
+            
 
             const body = [
               '## Auto-Version: Tier 1 Image Bumps Requiring Approval',
@@ -378,7 +378,7 @@ jobs:
               '| Image | Current | Latest | Reason |',
               '|-------|---------|--------|--------|',
               ...needsApproval.map(a =>
-                `| ${a.image} | ${a.old_version} | ${a.new_version} | ${a.reason} |`
+                `| ${a.image | ${a.old_version | ${a.new_version | ${a.reason |`
               ),
               '',
               '### Action Required',
@@ -398,10 +398,10 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `[AUTO-VERSION] ${needsApproval.length} tier 1 images need approval`,
+              title: `[AUTO-VERSION] ${needsApproval.length tier 1 images need approval`,
               body: body,
               labels: ['auto-version', 'needs-review', 'critical']
-            });
+            );
 
   # ---------------------------------------------------------------------------
   # STAGE 6: REPORT - Summary
@@ -415,11 +415,11 @@ jobs:
     steps:
       - name: Generate summary
         run: |
-          OUTDATED=${{ needs.discover.outputs.outdated_count || '0' }}
-          BUMPED=${{ needs.bump.outputs.bumped_count || '0' }}
-          NEEDS_APPROVAL=${{ needs.bump.outputs.needs_approval || '0' }}
-          ALL_PASS=${{ needs.validate.outputs.all_pass || 'unknown' }}
-          COMMIT=${{ needs.commit.result || 'skipped' }}
+          OUTDATED=${{ needs.discover.outputs.outdated_count || '0' 
+          BUMPED=${{ needs.bump.outputs.bumped_count || '0' 
+          NEEDS_APPROVAL=${{ needs.bump.outputs.needs_approval || '0' 
+          ALL_PASS=${{ needs.validate.outputs.all_pass || 'unknown' 
+          COMMIT=${{ needs.commit.result || 'skipped' 
 
           {
             echo "# Auto-Version Pipeline Report"
@@ -428,29 +428,29 @@ jobs:
             echo ""
             echo "| Metric | Value |"
             echo "|--------|-------|"
-            echo "| **Outdated Images** | ${OUTDATED} |"
-            echo "| **Auto-Bumped** | ${BUMPED} |"
-            echo "| **Need Approval** | ${NEEDS_APPROVAL} |"
-            echo "| **Validation** | ${ALL_PASS} |"
-            echo "| **Commit** | ${COMMIT} |"
+            echo "| **Outdated Images** | ${OUTDATED |"
+            echo "| **Auto-Bumped** | ${BUMPED |"
+            echo "| **Need Approval** | ${NEEDS_APPROVAL |"
+            echo "| **Validation** | ${ALL_PASS |"
+            echo "| **Commit** | ${COMMIT |"
             echo ""
             echo "## Pipeline Status"
             echo ""
             echo "| Stage | Result |"
             echo "|-------|--------|"
-            echo "| Discover | ${{ needs.discover.result }} |"
-            echo "| Bump | ${{ needs.bump.result }} |"
-            echo "| Validate | ${{ needs.validate.result }} |"
-            echo "| Commit | ${{ needs.commit.result }} |"
+            echo "| Discover | ${{ needs.discover.result  |"
+            echo "| Bump | ${{ needs.bump.result  |"
+            echo "| Validate | ${{ needs.validate.result  |"
+            echo "| Commit | ${{ needs.commit.result  |"
             echo ""
-            if [ "${OUTDATED}" = "0" ]; then
+            if [ "${OUTDATED" = "0" ]; then
               echo ":white_check_mark: All images are up-to-date!"
             else
-              echo ":package: ${BUMPED} images were auto-bumped"
-              if [ "${NEEDS_APPROVAL}" -gt 0 ]; then
-                echo ":warning: ${NEEDS_APPROVAL} tier 1 images need manual approval"
+              echo ":package: ${BUMPED images were auto-bumped"
+              if [ "${NEEDS_APPROVAL" -gt 0 ]; then
+                echo ":warning: ${NEEDS_APPROVAL tier 1 images need manual approval"
               fi
             fi
             echo ""
             echo "_Generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"

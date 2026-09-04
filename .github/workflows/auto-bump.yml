@@ -21,7 +21,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow 
   cancel-in-progress: false
 
 permissions:
@@ -31,13 +31,13 @@ permissions:
 jobs:
   check-upstream:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' 
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Check upstream versions
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
           python3 scripts/check_upstream_versions.py || true
 
@@ -46,11 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      has_changes: ${{ steps.detect.outputs.has_changes }}
-      outdated_count: ${{ steps.detect.outputs.outdated_count }}
-      batch_count: ${{ steps.batch.outputs.batch_count }}
-      batch_indices: ${{ steps.batch.outputs.batch_indices }}
-      changed_images: ${{ steps.batch.outputs.changed_images }}
+      has_changes: ${{ steps.detect.outputs.has_changes 
+      outdated_count: ${{ steps.detect.outputs.outdated_count 
+      batch_count: ${{ steps.batch.outputs.batch_count 
+      batch_indices: ${{ steps.batch.outputs.batch_indices 
+      changed_images: ${{ steps.batch.outputs.changed_images 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -63,9 +63,9 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: evergreenctl/target
-          key: evergreenctl-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
+          key: evergreenctl-${{ runner.os -${{ hashFiles('evergreenctl/Cargo.lock') 
           restore-keys: |
-            evergreenctl-${{ runner.os }}-
+            evergreenctl-${{ runner.os -
 
       - name: Build evergreenctl
         run: cd evergreenctl && cargo build --release
@@ -73,7 +73,7 @@ jobs:
       - name: Check rate limit before upstream check
         id: ratelimit
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
           REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
           RESET=$(gh api rate_limit --jq '.resources.core.reset')
@@ -82,12 +82,12 @@ jobs:
 
           if [ "$REMAINING" -lt 100 ]; then
             WAIT=$((RESET - NOW + 60))
-            echo "Rate limit low ($REMAINING). Waiting ${WAIT}s for reset."
+            echo "Rate limit low ($REMAINING). Waiting ${WAITs for reset."
             sleep "$WAIT"
             REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
           fi
 
-          echo "remaining=${REMAINING}" >> "$GITHUB_OUTPUT"
+          echo "remaining=${REMAINING" >> "$GITHUB_OUTPUT"
 
           if [ "$REMAINING" -lt 10 ]; then
             echo "::error::Rate limit critically low ($REMAINING). Aborting."
@@ -102,7 +102,7 @@ jobs:
           cat /tmp/outdated.txt
 
           OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || echo "0")
-          echo "outdated_count=${OUTDATED_COUNT}" >> "$GITHUB_OUTPUT"
+          echo "outdated_count=${OUTDATED_COUNT" >> "$GITHUB_OUTPUT"
 
           if [ "$OUTDATED_COUNT" -eq 0 ]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -111,18 +111,18 @@ jobs:
           fi
 
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
-          echo "Found ${OUTDATED_COUNT} outdated images"
+          echo "Found ${OUTDATED_COUNT outdated images"
 
       - name: Bump outdated versions
         id: batch
         if: steps.detect.outputs.has_changes == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
           chmod +x scripts/bump_versions.sh scripts/bump_all_outdated.sh
 
-          BATCH_SIZE="${{ inputs.batch_size || '50' }}"
-          [[ "$BATCH_SIZE" =~ ^[0-9]+$ ]] || { echo "::error::batch_size must be numeric, got: $BATCH_SIZE"; exit 1; }
+          BATCH_SIZE="${{ inputs.batch_size || '50' "
+          [[ "$BATCH_SIZE" =~ ^[0-9]+$ ]] || { echo "::error::batch_size must be numeric, got: $BATCH_SIZE"; exit 1; 
           ./scripts/bump_all_outdated.sh /tmp/outdated.txt || true
 
           if [ -z "$(git status --porcelain)" ]; then
@@ -135,13 +135,13 @@ jobs:
 
             CHANGED_IMAGES=$(git diff --name-only | grep -oP '^images/\K[^/]+' | sort -u)
             CHANGED_COUNT=$(echo "$CHANGED_IMAGES" | grep -c . || echo "0")
-            echo "changed_count=${CHANGED_COUNT}" >> "$GITHUB_OUTPUT"
+            echo "changed_count=${CHANGED_COUNT" >> "$GITHUB_OUTPUT"
 
              BATCH_COUNT=$(( (CHANGED_COUNT + BATCH_SIZE - 1) / BATCH_SIZE ))
-             echo "batch_count=${BATCH_COUNT}" >> "$GITHUB_OUTPUT"
-             BATCH_INDICES=$(python3 -c "import json; print(json.dumps(list(range(${BATCH_COUNT}))))")
-             echo "batch_indices=${BATCH_INDICES}" >> "$GITHUB_OUTPUT"
-             echo "Will create up to ${BATCH_COUNT} PR batch(es) (batch_size=${BATCH_SIZE})"
+             echo "batch_count=${BATCH_COUNT" >> "$GITHUB_OUTPUT"
+             BATCH_INDICES=$(python3 -c "import json; print(json.dumps(list(range(${BATCH_COUNT))))")
+             echo "batch_indices=${BATCH_INDICES" >> "$GITHUB_OUTPUT"
+             echo "Will create up to ${BATCH_COUNT PR batch(es) (batch_size=${BATCH_SIZE)"
 
             echo "CHANGED_IMAGES<<EOF" >> "$GITHUB_OUTPUT"
             echo "$CHANGED_IMAGES" >> "$GITHUB_OUTPUT"
@@ -175,7 +175,7 @@ jobs:
             echo ""
             SBOM_CHANGED=$(git diff --name-only | grep -c "sbom" || true)
             if [ "$SBOM_CHANGED" -gt 0 ]; then
-              echo "SBOM files changed: ${SBOM_CHANGED}"
+              echo "SBOM files changed: ${SBOM_CHANGED"
               echo ""
               echo '<details><summary>SBOM Changes</summary>'
               echo ""
@@ -191,7 +191,7 @@ jobs:
             echo "---"
             echo ""
             echo "_This PR will be auto-merged if all checks pass (patch/minor bumps only). Major version bumps require manual review._"
-          } > /tmp/changelog.md
+           > /tmp/changelog.md
           cat /tmp/changelog.md
 
       - name: Create Pull Request (single batch or dry run)
@@ -207,9 +207,9 @@ jobs:
             dependencies
             auto-bump
             do-not-merge-automatically
-          reviewers: ${{ github.repository_owner }}
-          draft: ${{ inputs.dry_run == 'true' }}
-          commit-message: 'chore: auto-bump {image} to {version}'
+          reviewers: ${{ github.repository_owner 
+          draft: ${{ inputs.dry_run == 'true' 
+          commit-message: 'chore: auto-bump {image to {version'
           signoff: false
 
   bump-batched:
@@ -219,7 +219,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        batch_index: ${{ fromJson(needs.bump.outputs.batch_indices) }}
+        batch_index: ${{ fromJson(needs.bump.outputs.batch_indices) 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -229,52 +229,52 @@ jobs:
       - name: 'Check rate limit before batch PR'
         id: ratelimit
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
           REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
           echo "Rate limit remaining: $REMAINING"
           if [ "$REMAINING" -lt 10 ]; then
-            echo "::error::Rate limit too low ($REMAINING). Skipping batch ${{ matrix.batch_index }}."
+            echo "::error::Rate limit too low ($REMAINING). Skipping batch ${{ matrix.batch_index ."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
 
-      - name: 'Create batch PR ${{ matrix.batch_index }}'
+      - name: 'Create batch PR ${{ matrix.batch_index '
         if: steps.ratelimit.outputs.skip != 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
-          BATCH_SIZE="${{ inputs.batch_size || '50' }}"
-          INDEX="${{ matrix.batch_index }}"
-          CHANGED_IMAGES="${{ needs.bump.outputs.changed_images }}"
+          BATCH_SIZE="${{ inputs.batch_size || '50' "
+          INDEX="${{ matrix.batch_index "
+          CHANGED_IMAGES="${{ needs.bump.outputs.changed_images "
 
           BATCH=$(echo "$CHANGED_IMAGES" | sed -n "$((INDEX * BATCH_SIZE + 1)),$(( (INDEX + 1) * BATCH_SIZE ))p")
 
           if [ -z "$BATCH" ]; then
-            echo "Empty batch ${INDEX}, skipping"
+            echo "Empty batch ${INDEX, skipping"
             exit 0
           fi
 
-          echo "Batch ${INDEX} images:"
+          echo "Batch ${INDEX images:"
           echo "$BATCH"
 
           CHANGED_FILES=""
           for img in $BATCH; do
-            FILES=$(git diff --name-only main -- "images/${img}/" 2>/dev/null)
+            FILES=$(git diff --name-only main -- "images/${img/" 2>/dev/null)
             if [ -n "$FILES" ]; then
-              CHANGED_FILES="${CHANGED_FILES} ${FILES}"
+              CHANGED_FILES="${CHANGED_FILES ${FILES"
             fi
           done
 
           if [ -z "$CHANGED_FILES" ]; then
-            echo "No changed files for batch ${INDEX}, skipping"
+            echo "No changed files for batch ${INDEX, skipping"
             exit 0
           fi
 
           IMAGE_LIST=$(echo "$BATCH" | tr '\n' ', ' | sed 's/,$//')
 
-          git checkout -b "auto-bump/batch-${INDEX}" origin/main 2>/dev/null || git checkout -b "auto-bump/batch-${INDEX}"
+          git checkout -b "auto-bump/batch-${INDEX" origin/main 2>/dev/null || git checkout -b "auto-bump/batch-${INDEX"
 
           for f in $CHANGED_FILES; do
             git checkout auto-bump/versions -- "$f" 2>/dev/null || true
@@ -283,11 +283,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "chore: auto-bump batch ${INDEX} - ${IMAGE_LIST}" || {
-            echo "Nothing to commit for batch ${INDEX}"
+          git commit -m "chore: auto-bump batch ${INDEX - ${IMAGE_LIST" || {
+            echo "Nothing to commit for batch ${INDEX"
             exit 0
-          }
-          git push -u origin "auto-bump/batch-${INDEX}" -f
+          
+          git push -u origin "auto-bump/batch-${INDEX" -f
 
           SBOM_DIFF=""
           SBOM_FILES=$(echo "$CHANGED_FILES" | tr ' ' '\n' | grep "sbom" || true)
@@ -299,17 +299,17 @@ jobs:
           fi
 
           CHANGELOG=""
-          CHANGELOG+="## Automated Version Bumps (Batch ${INDEX})"
+          CHANGELOG+="## Automated Version Bumps (Batch ${INDEX)"
           CHANGELOG+=$'\n\n'
           CHANGELOG+="This PR was created by the daily auto-bump workflow."
           CHANGELOG+=$'\n\n'
-          CHANGELOG+="**Images in this batch:** ${IMAGE_LIST}"
+          CHANGELOG+="**Images in this batch:** ${IMAGE_LIST"
           CHANGELOG+=$'\n\n'
           CHANGELOG+="**Action:** Review the changes, verify checksums, and merge when ready."
           CHANGELOG+=$'\n\n'
           CHANGELOG+=$'\n### Version Changes\n\n```diff\n'
           for img in $BATCH; do
-            DIFF=$(git diff main -- "images/${img}/Dockerfile" 2>/dev/null | grep "ARG VERSION" || true)
+            DIFF=$(git diff main -- "images/${img/Dockerfile" 2>/dev/null | grep "ARG VERSION" || true)
             if [ -n "$DIFF" ]; then
               echo "$DIFF"
             fi
@@ -324,10 +324,10 @@ jobs:
           CHANGELOG+="_Patch/minor bumps will be auto-merged if all checks pass. Major bumps require manual review._"
 
           gh pr create \
-            --title "chore: auto-bump batch ${INDEX} - ${IMAGE_LIST}" \
+            --title "chore: auto-bump batch ${INDEX - ${IMAGE_LIST" \
             --body "$CHANGELOG" \
             --label "automated,dependencies,do-not-merge-automatically" \
-            --reviewer "${{ github.repository_owner }}"
+            --reviewer "${{ github.repository_owner "
 
   auto-merge:
     needs: bump
@@ -341,9 +341,9 @@ jobs:
 
       - name: Auto-merge eligible PRs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
-          AUTO_MERGE="${{ inputs.auto_merge || 'true' }}"
+          AUTO_MERGE="${{ inputs.auto_merge || 'true' "
           if [ "$AUTO_MERGE" != "true" ]; then
             echo "Auto-merge disabled by input"
             exit 0
@@ -361,7 +361,7 @@ jobs:
             MERGEABLE=$(gh pr view "$PR_NUM" --json mergeable --jq '.mergeable')
             CHECKS=$(gh pr view "$PR_NUM" --json statusCheckRollup --jq '.statusCheckRollup[]')
 
-            echo "Checking PR #${PR_NUM}: ${PR_TITLE}"
+            echo "Checking PR #${PR_NUM: ${PR_TITLE"
 
             if [ "$MERGEABLE" != "true" ]; then
               echo "  PR not mergeable, skipping"
@@ -390,7 +390,7 @@ jobs:
                     OLD_MAJOR=$(echo "$OLD_VER" | grep -oP '^\d+' || echo "0")
                     NEW_MAJOR=$(echo "$NEW_VER" | grep -oP '^\d+' || echo "0")
                     if [ "$OLD_MAJOR" != "$NEW_MAJOR" ] && [ -n "$OLD_MAJOR" ] && [ -n "$NEW_MAJOR" ]; then
-                      echo "  Major version bump detected: ${OLD_VER} -> ${NEW_VER}"
+                      echo "  Major version bump detected: ${OLD_VER -> ${NEW_VER"
                       HAS_MAJOR=true
                     fi
                   fi
@@ -404,7 +404,7 @@ jobs:
                 continue
               fi
 
-              echo "  All checks pass. Auto-merging PR #${PR_NUM}"
+              echo "  All checks pass. Auto-merging PR #${PR_NUM"
               gh pr merge "$PR_NUM" --merge --auto || true
             else
               echo "  Waiting for checks to complete"

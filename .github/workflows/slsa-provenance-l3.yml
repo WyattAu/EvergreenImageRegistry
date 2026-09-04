@@ -32,7 +32,7 @@ jobs:
     name: Generate SLSA L3 Provenance
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
@@ -45,21 +45,21 @@ jobs:
       - name: Log in to GHCR
         uses: docker/login-action@184bdaa0721073962dff019f1fbf7a42e484e6d6
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Generate SLSA provenance
         run: |
           # Get build metadata
-          COMMIT_SHA="${{ github.sha }}"
-          REPO="${{ github.repository }}"
-          BUILD_ID="${{ github.run_id }}"
+          COMMIT_SHA="${{ github.sha "
+          REPO="${{ github.repository "
+          BUILD_ID="${{ github.run_id "
           BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
           # Find changed images
           IMAGES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -oP 'images/\K[^/]+' | sort -u || true)
-          if [ -z "${IMAGES}" ]; then
+          if [ -z "${IMAGES" ]; then
             echo "No changed active images found; provenance job has nothing to attest."
             exit 0
           fi
@@ -70,60 +70,60 @@ jobs:
 
             echo "::group::Provenance: $img"
 
-            REF="${REGISTRY}/${REPO}/${img}:latest"
+            REF="${REGISTRY/${REPO/${img:latest"
 
             # Resolve the published manifest digest; never attest a placeholder digest.
-            IMAGE_DIGEST=$(docker buildx imagetools inspect "${REF}" --format '{{json .Manifest.Digest}}' 2>/dev/null | tr -d '"')
-            if ! printf '%s' "${IMAGE_DIGEST}" | grep -Eq '^sha256:[a-f0-9]{64}$'; then
-              echo "::error::Unable to resolve a valid digest for ${REF}"
+            IMAGE_DIGEST=$(docker buildx imagetools inspect "${REF" --format '{{json .Manifest.Digest' 2>/dev/null | tr -d '"')
+            if ! printf '%s' "${IMAGE_DIGEST" | grep -Eq '^sha256:[a-f0-9]{64$'; then
+              echo "::error::Unable to resolve a valid digest for ${REF"
               exit 1
             fi
 
             # Generate in-toto provenance statement
-            cat > /tmp/provenance-${img}.json << PROVENANCE
+            cat > /tmp/provenance-${img.json << PROVENANCE
           {
             "_type": "https://in-toto.io/Statement/v0.1",
             "predicateType": "https://slsa.dev/provenance/v1",
             "subject": [{
-              "name": "${REF}",
-              "digest": {"sha256": "${IMAGE_DIGEST}"}
-            }],
+              "name": "${REF",
+              "digest": {"sha256": "${IMAGE_DIGEST"
+            ],
             "predicate": {
               "builder": {
-                "id": "https://github.com/${REPO}/.github/workflows/_build-reusable.yml@${COMMIT_SHA}"
-              },
+                "id": "https://github.com/${REPO/.github/workflows/_build-reusable.yml@${COMMIT_SHA"
+              ,
               "buildType": "https://github.com/WyattAu/EvergreenImageRegistry/build@v1",
               "invocation": {
                 "configSource": {
-                  "uri": "git+https://github.com/${REPO}@${COMMIT_SHA}",
-                  "digest": {"sha1": "${COMMIT_SHA}"},
-                  "entryPoint": "images/${img}/Dockerfile"
-                }
-              },
+                  "uri": "git+https://github.com/${REPO@${COMMIT_SHA",
+                  "digest": {"sha1": "${COMMIT_SHA",
+                  "entryPoint": "images/${img/Dockerfile"
+                
+              ,
               "metadata": {
-                "buildInvocationId": "${BUILD_ID}",
-                "buildStartedOn": "${BUILD_TIME}",
+                "buildInvocationId": "${BUILD_ID",
+                "buildStartedOn": "${BUILD_TIME",
                 "completeness": {
                   "parameters": true,
                   "environment": false,
                   "materials": true
-                },
+                ,
                 "reproducible": false
-              },
+              ,
               "materials": [{
-                "uri": "git+https://github.com/${REPO}@${COMMIT_SHA}",
-                "digest": {"sha1": "${COMMIT_SHA}"}
-              }]
-            }
-          }
+                "uri": "git+https://github.com/${REPO@${COMMIT_SHA",
+                "digest": {"sha1": "${COMMIT_SHA"
+              ]
+            
+          
           PROVENANCE
 
             # Sign with cosign (keyless)
-            if [ -f "/tmp/provenance-${img}.json" ]; then:
+            if [ -f "/tmp/provenance-${img.json" ]; then:
               cosign attest --yes \
-                --predicate /tmp/provenance-${img}.json \
+                --predicate /tmp/provenance-${img.json \
                 --type slsaprovenance \
-                "${REF}"
+                "${REF"
             fi
 
             echo "::endgroup::"

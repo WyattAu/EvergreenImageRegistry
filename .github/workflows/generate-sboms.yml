@@ -42,8 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      matrix: ${{ steps.find.outputs.matrix }}
-      total: ${{ steps.find.outputs.total }}
+      matrix: ${{ steps.find.outputs.matrix 
+      total: ${{ steps.find.outputs.total 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -53,8 +53,8 @@ jobs:
       - name: Find images needing SBOMs
         id: find
         run: |
-          FILTER="${{ inputs.image_filter }}"
-          FORCE="${{ inputs.force }}"
+          FILTER="${{ inputs.image_filter "
+          FORCE="${{ inputs.force "
 
           # Find all active image directories
           find images -maxdepth 1 -type d \
@@ -66,7 +66,7 @@ jobs:
 
           # Filter if specified
           if [ -n "$FILTER" ]; then
-            grep "^${FILTER}$" /tmp/all-images.txt > /tmp/target-images.txt || true
+            grep "^${FILTER$" /tmp/all-images.txt > /tmp/target-images.txt || true
           else
             cp /tmp/all-images.txt /tmp/target-images.txt
           fi
@@ -74,7 +74,7 @@ jobs:
           # Skip images that already have SBOMs (unless force)
           if [ "$FORCE" != "true" ]; then
             while IFS= read -r img; do
-              if [ -f "images/${img}/sbom.spdx.json" ]; then
+              if [ -f "images/${img/sbom.spdx.json" ]; then
                 continue
               fi
               echo "$img"
@@ -84,8 +84,8 @@ jobs:
           fi
 
           TOTAL=$(wc -l < /tmp/pending-images.txt)
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "Found ${TOTAL} images needing SBOMs"
+          echo "total=${TOTAL" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL images needing SBOMs"
 
           # Create batches of 50
           python3 << 'PYEOF'
@@ -100,25 +100,25 @@ jobs:
                   "batch": i // batch_size,
                   "images": ",".join(chunk),
                   "count": len(chunk),
-              })
-          matrix = json.dumps({"include": batches}) if batches else '{"include":[]}'
+              )
+          matrix = json.dumps({"include": batches) if batches else '{"include":[]'
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"matrix={matrix}\n")
-          print(f"Created {len(batches)} batches")
+              f.write(f"matrix={matrix\n")
+          print(f"Created {len(batches) batches")
           PYEOF
 
   # ===========================================================================
   # STAGE 2: GENERATE - Build SBOMs in parallel batches
   # ===========================================================================
   generate-batch:
-    name: 'Generate SBOMs Batch ${{ matrix.batch }}'
+    name: 'Generate SBOMs Batch ${{ matrix.batch '
     needs: [discover]
     if: needs.discover.outputs.total != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -130,8 +130,8 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Install Syft
         run: |
@@ -139,57 +139,57 @@ jobs:
 
       - name: Generate SBOMs
         run: |
-          IFS=',' read -ra IMAGES <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGES <<< "${{ matrix.images "
           GENERATED=0
           SKIPPED=0
           FAILED=0
 
-          for img in "${IMAGES[@]}"; do
+          for img in "${IMAGES[@]"; do
             [ -z "$img" ] && continue
 
             # Skip if SBOM exists
-            if [ -f "images/${img}/sbom.spdx.json" ] && [ "${{ inputs.force }}" != "true" ]; then
+            if [ -f "images/${img/sbom.spdx.json" ] && [ "${{ inputs.force " != "true" ]; then
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
 
             # Skip if no Dockerfile
-            if [ ! -f "images/${img}/Dockerfile" ]; then
-              echo "SKIP: ${img} (no Dockerfile)"
+            if [ ! -f "images/${img/Dockerfile" ]; then
+              echo "SKIP: ${img (no Dockerfile)"
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
 
-            echo "::group::SBOM ${img}"
+            echo "::group::SBOM ${img"
 
             # Try to pull from GHCR first
-            REF="ghcr.io/${{ github.repository_owner }}/${img}:latest"
+            REF="ghcr.io/${{ github.repository_owner /${img:latest"
             if docker pull "$REF" > /dev/null 2>&1; then
               # Generate SBOM from pulled image
-              if syft "$REF" -o spdx-json="images/${img}/sbom.spdx.json" 2>/dev/null; then
+              if syft "$REF" -o spdx-json="images/${img/sbom.spdx.json" 2>/dev/null; then
                 GENERATED=$((GENERATED + 1))
-                echo "Generated SBOM for ${img} (from GHCR)"
+                echo "Generated SBOM for ${img (from GHCR)"
               else
-                echo "::warning::Failed to generate SBOM for ${img}"
+                echo "::warning::Failed to generate SBOM for ${img"
                 FAILED=$((FAILED + 1))
               fi
             else
               # Build locally and generate SBOM
               if docker buildx build \
                   --platform linux/amd64 \
-                  -t "sbom-temp:${img}" \
+                  -t "sbom-temp:${img" \
                   --load \
-                  "images/${img}" > /dev/null 2>&1; then
-                if syft "sbom-temp:${img}" -o spdx-json="images/${img}/sbom.spdx.json" 2>/dev/null; then
+                  "images/${img" > /dev/null 2>&1; then
+                if syft "sbom-temp:${img" -o spdx-json="images/${img/sbom.spdx.json" 2>/dev/null; then
                   GENERATED=$((GENERATED + 1))
-                  echo "Generated SBOM for ${img} (from local build)"
+                  echo "Generated SBOM for ${img (from local build)"
                 else
-                  echo "::warning::Failed to generate SBOM for ${img}"
+                  echo "::warning::Failed to generate SBOM for ${img"
                   FAILED=$((FAILED + 1))
                 fi
-                docker rmi "sbom-temp:${img}" > /dev/null 2>&1 || true
+                docker rmi "sbom-temp:${img" > /dev/null 2>&1 || true
               else
-                echo "::warning::Failed to build ${img} for SBOM generation"
+                echo "::warning::Failed to build ${img for SBOM generation"
                 FAILED=$((FAILED + 1))
               fi
             fi
@@ -197,13 +197,13 @@ jobs:
             echo "::endgroup::"
           done
 
-          echo "Batch ${{ matrix.batch }}: ${GENERATED} generated, ${SKIPPED} skipped, ${FAILED} failed"
+          echo "Batch ${{ matrix.batch : ${GENERATED generated, ${SKIPPED skipped, ${FAILED failed"
 
       - name: Upload generated SBOMs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: sboms-batch-${{ matrix.batch }}
+          name: sboms-batch-${{ matrix.batch 
           path: images/*/sbom.spdx.json
           retention-days: 1
           if-no-files-found: ignore
@@ -233,7 +233,7 @@ jobs:
         run: |
           echo "=== SBOM Verification ==="
           TOTAL=$(find images -maxdepth 2 -name 'sbom.spdx.json' ! -path '*_wip*' ! -path '*_archive*' | wc -l)
-          echo "Total SBOMs in active images: ${TOTAL}"
+          echo "Total SBOMs in active images: ${TOTAL"
 
           # Validate SBOM format
           ERRORS=0
@@ -248,10 +248,10 @@ jobs:
             fi
           done
 
-          echo "Valid: ${VALID}, Invalid: ${ERRORS}"
+          echo "Valid: ${VALID, Invalid: ${ERRORS"
 
           if [ "$ERRORS" -gt 0 ]; then
-            echo "::warning::${ERRORS} invalid SBOMs found"
+            echo "::warning::${ERRORS invalid SBOMs found"
             exit 1
           else
             echo "All SBOMs valid"
@@ -266,8 +266,8 @@ jobs:
             echo ""
             echo "| Metric | Count |"
             echo "|--------|-------|"
-            echo "| Target images | ${{ needs.discover.outputs.total }} |"
-            echo "| Total SBOMs (active) | ${TOTAL} |"
+            echo "| Target images | ${{ needs.discover.outputs.total  |"
+            echo "| Total SBOMs (active) | ${TOTAL |"
             echo ""
             echo "SBOMs are generated in SPDX 2.3 format using Syft."
-          } >> "$GITHUB_STEP_SUMMARY"
+           >> "$GITHUB_STEP_SUMMARY"

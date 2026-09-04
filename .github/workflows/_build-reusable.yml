@@ -50,13 +50,13 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository }}
+  OWNER: ${{ github.repository 
 
-permissions: {}
+permissions: {
 
 jobs:
   build:
-    name: 'Build ${{ inputs.tier }} Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
+    name: 'Build ${{ inputs.tier  Batch ${{ matrix.batch  (${{ matrix.count  images)'
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 5
-      matrix: ${{ fromJson(inputs.matrix) }}
+      matrix: ${{ fromJson(inputs.matrix) 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -75,16 +75,16 @@ jobs:
 
       - name: Set SOURCE_DATE_EPOCH
         run: |
-          SOURCE_DATE_EPOCH=$(git show -s --format=%ct "${{ github.sha }}")
-          echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}" >> "$GITHUB_ENV"
+          SOURCE_DATE_EPOCH=$(git show -s --format=%ct "${{ github.sha ")
+          echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH" >> "$GITHUB_ENV"
 
       - name: Resolve tag
         id: resolve-tag
         run: |
-          if [ -n "${{ inputs.tag }}" ]; then
-            echo "TAG=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          if [ -n "${{ inputs.tag " ]; then
+            echo "TAG=${{ inputs.tag " >> "$GITHUB_OUTPUT"
           else
-            echo "TAG=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            echo "TAG=${{ github.sha " >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up QEMU (for multi-arch builds)
@@ -105,20 +105,20 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: /tmp/.buildkit-cache
-          key: buildkit-${{ inputs.tier }}-${{ github.sha }}
+          key: buildkit-${{ inputs.tier -${{ github.sha 
           restore-keys: |
-            buildkit-${{ inputs.tier }}-
+            buildkit-${{ inputs.tier -
 
       - name: Lowercase registry owner
-        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        run: echo "OWNER=$(echo '${{ env.OWNER ' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Login to Registry
         if: inputs.push
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Login to Docker Hub (for pulling upstreams + pushing to org)
         if: inputs.push
@@ -126,8 +126,8 @@ jobs:
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME 
+          password: ${{ secrets.DOCKERHUB_TOKEN 
 
       - name: Install cosign
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
@@ -144,44 +144,44 @@ jobs:
 
       - name: Build images (multi-arch or amd64 tarballs)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN 
         run: |
-          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          TAG="${{ steps.resolve-tag.outputs.TAG "
           mkdir -p /tmp/images
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           BUILT=0; FAILED=0; SKIPPED=0
           # No buildx needed — using plain docker build
           build_image() {
             local image="$1"
-            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            local SAFE="${image//\//-}"
-            echo "::group::Build ${image}"
-            local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
-            local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
+            local REF="${REGISTRY/${OWNER/${image:${TAG"
+            local SAFE="${image//\//-"
+            echo "::group::Build ${image"
+            local LATEST_REF="${REGISTRY/${OWNER/${image:latest"
+            local TAG_FLAGS="-t ${REF -t ${LATEST_REF"
             # Extract upstream version: Dockerfile ARG VERSION → manifest.toml metadata.version
-            local VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
-            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image}/manifest.toml" ]; then
-              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image}/manifest.toml" 2>/dev/null | head -1)
+            local VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image/Dockerfile" 2>/dev/null | head -1)
+            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image/manifest.toml" ]; then
+              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image/manifest.toml" 2>/dev/null | head -1)
             fi
             if [ -n "$VERSION_TAG" ]; then
-              local VERSIONED_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
-              TAG_FLAGS="${TAG_FLAGS} -t ${VERSIONED_REF}"
-              echo "  Version tag: ${VERSION_TAG}"
+              local VERSIONED_REF="${REGISTRY/${OWNER/${image:${VERSION_TAG"
+              TAG_FLAGS="${TAG_FLAGS -t ${VERSIONED_REF"
+              echo "  Version tag: ${VERSION_TAG"
             fi
 
-            if [ "${{ inputs.multiarch }}" = "true" ]; then
+            if [ "${{ inputs.multiarch " = "true" ]; then
               # Multi-arch: buildx with QEMU emulation, push directly (no local tarball)
               if timeout 1200 docker buildx build \
-                  ${TAG_FLAGS} \
+                  ${TAG_FLAGS \
                   --platform linux/amd64,linux/arm64,linux/s390x,linux/ppc64le \
-                  --build-arg "BUILD_DATE=${TAG}" \
-                  --build-arg "VCS_REF=${TAG}" \
+                  --build-arg "BUILD_DATE=${TAG" \
+                  --build-arg "VCS_REF=${TAG" \
                   --build-arg "SHIM_VERSION=v1.3.0" \
-                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-                  --label "org.opencontainers.image.revision=${{ github.sha }}" \
+                  --label "org.opencontainers.image.source=${{ github.server_url /${{ github.repository " \
+                  --label "org.opencontainers.image.revision=${{ github.sha " \
                   --push \
-                  "./images/${image}"; then
-                echo "${REF}" >> /tmp/built-images.txt
+                  "./images/${image"; then
+                echo "${REF" >> /tmp/built-images.txt
                 return 0
               else
                 return 1
@@ -189,40 +189,40 @@ jobs:
             else
               # Single-arch: plain docker build (inherits host credentials)
               if timeout 900 docker build \
-                  ${TAG_FLAGS} \
-                  --build-arg "BUILD_DATE=${TAG}" \
-                  --build-arg "VCS_REF=${TAG}" \
+                  ${TAG_FLAGS \
+                  --build-arg "BUILD_DATE=${TAG" \
+                  --build-arg "VCS_REF=${TAG" \
                   --build-arg "SHIM_VERSION=v1.3.0" \
-                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-                  --label "org.opencontainers.image.revision=${{ github.sha }}" \
-                  "./images/${image}"; then
-                echo "${REF}" >> /tmp/built-images.txt
+                  --label "org.opencontainers.image.source=${{ github.server_url /${{ github.repository " \
+                  --label "org.opencontainers.image.revision=${{ github.sha " \
+                  "./images/${image"; then
+                echo "${REF" >> /tmp/built-images.txt
                 return 0
               else
                 return 1
               fi
             fi
-          }
-          for image in "${IMAGE_LIST[@]}"; do
+          
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            [ ! -f "./images/${image}/Dockerfile" ] && { echo "::warning::${image}: no Dockerfile"; SKIPPED=$((SKIPPED+1)); continue; }
+            [ ! -f "./images/${image/Dockerfile" ] && { echo "::warning::${image: no Dockerfile"; SKIPPED=$((SKIPPED+1)); continue; 
             if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
               docker image prune -f 2>/dev/null || true
             fi
-            if build_image "${image}"; then
+            if build_image "${image"; then
               BUILT=$((BUILT+1)); sleep 1
               # Smoke test: verify shim binary exists in the built image
-              SAFE="${image//\//-}"
-              TAR="/tmp/images/${SAFE}.tar"
-              if [ "${{ inputs.multiarch }}" != "true" ] && [ -f "$TAR" ]; then
-                echo "::group::Smoke test ${image}"
-                docker load -i "$TAR" 2>/dev/null || { echo "::error::${image}: failed to load built image"; exit 1; }
-                CONTAINER_ID=$(docker create "${REGISTRY}/${OWNER}/${image}:${TAG}" 2>/dev/null || echo "")
+              SAFE="${image//\//-"
+              TAR="/tmp/images/${SAFE.tar"
+              if [ "${{ inputs.multiarch " != "true" ] && [ -f "$TAR" ]; then
+                echo "::group::Smoke test ${image"
+                docker load -i "$TAR" 2>/dev/null || { echo "::error::${image: failed to load built image"; exit 1; 
+                CONTAINER_ID=$(docker create "${REGISTRY/${OWNER/${image:${TAG" 2>/dev/null || echo "")
                 if [ -n "$CONTAINER_ID" ]; then
-                  if docker cp "${CONTAINER_ID}:/usr/local/bin/shim" /dev/null 2>/dev/null; then
+                  if docker cp "${CONTAINER_ID:/usr/local/bin/shim" /dev/null 2>/dev/null; then
                     echo "Smoke: PASS — /usr/local/bin/shim exists"
                   else
-                    echo "::error::${image}: smoke test FAILED — /usr/local/bin/shim not found in image"
+                    echo "::error::${image: smoke test FAILED — /usr/local/bin/shim not found in image"
                     FAILED=$((FAILED+1))
                     BUILT=$((BUILT-1))
                   fi
@@ -231,25 +231,25 @@ jobs:
                 echo "::endgroup::"
               fi
             else
-              echo "::warning::${image}: build failed, retrying..."
+              echo "::warning::${image: build failed, retrying..."
               sleep 2
-              if build_image "${image}"; then
+              if build_image "${image"; then
                 BUILT=$((BUILT+1)); sleep 1
               else
-                echo "::error::${image}: build failed after 2 attempts"
+                echo "::error::${image: build failed after 2 attempts"
                 FAILED=$((FAILED+1)); sleep 3
               fi
             fi
             echo "::endgroup::"
           done
-          echo "Batch ${{ matrix.batch }}: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
-          echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
-          if [ "${FAILED}" -gt 0 ]; then
-            echo "::error::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
+          echo "Batch ${{ matrix.batch : ${BUILT built, ${FAILED failed, ${SKIPPED skipped"
+          echo "BUILDER_NAME=${CURRENT_BUILDER" >> "$GITHUB_ENV"
+          if [ "${FAILED" -gt 0 ]; then
+            echo "::error::${FAILED image(s) failed to build in batch ${{ matrix.batch "
             exit 1
           fi
-          if [ "${BUILT}" -eq 0 ]; then
-            echo "::error::No images were built in batch ${{ matrix.batch }}"
+          if [ "${BUILT" -eq 0 ]; then
+            echo "::error::No images were built in batch ${{ matrix.batch "
             exit 1
           fi
 
@@ -268,13 +268,13 @@ jobs:
       - name: Enforce image size limit
         if: always() && !inputs.multiarch
         run: |
-          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048}
+          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048
           EXCEEDED=0
           for tar in /tmp/images/*.tar; do
             [ -f "$tar" ] || continue
             SIZE_MB=$(($(stat --format=%s "$tar") / 1024 / 1024))
             if [ "$SIZE_MB" -gt "$LIMIT_MB" ]; then
-              echo "::error::$(basename "$tar" .tar): ${SIZE_MB}MB > ${LIMIT_MB}MB"
+              echo "::error::$(basename "$tar" .tar): ${SIZE_MBMB > ${LIMIT_MBMB"
               EXCEEDED=$((EXCEEDED+1))
             fi
           done
@@ -284,7 +284,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: images-${{ inputs.tier }}-batch-${{ matrix.batch }}
+          name: images-${{ inputs.tier -batch-${{ matrix.batch 
           path: /tmp/images/
           retention-days: 7
           if-no-files-found: ignore
@@ -294,7 +294,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: built-list-${{ inputs.tier }}-batch-${{ matrix.batch }}
+          name: built-list-${{ inputs.tier -batch-${{ matrix.batch 
           path: /tmp/built-images.txt
           retention-days: 7
           if-no-files-found: ignore
@@ -305,7 +305,7 @@ jobs:
         # continue-on-error: true
         run: |
           echo "::group::Build shimctl"
-          cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked 2>&1 || \
+          cargo install shimctl --git https://github.com/${{ github.repository_owner /EvergreenShims.git --locked 2>&1 || \
             echo "::warning::shimctl build failed (non-blocking)"
           if command -v shimctl &>/dev/null; then
             shimctl --version 2>&1 || true
@@ -316,96 +316,96 @@ jobs:
         if: always() && inputs.push && !inputs.multiarch
         timeout-minutes: 120
         run: |
-          TAG="${{ steps.resolve-tag.outputs.TAG }}"
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          TAG="${{ steps.resolve-tag.outputs.TAG "
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           PUSHED=0; FAILED=0
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            [ ! -f "./images/${image}/Dockerfile" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
-            echo "::group::Push ${image}"
+            [ ! -f "./images/${image/Dockerfile" ] && continue
+            REF="${REGISTRY/${OWNER/${image:${TAG"
+            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image/Dockerfile" 2>/dev/null | head -1)
+            echo "::group::Push ${image"
             # Check if image was actually built
-            if ! docker image inspect "${REF}" >/dev/null 2>&1; then
-              echo "::warning::${image}: not built, skipping push"
+            if ! docker image inspect "${REF" >/dev/null 2>&1; then
+              echo "::warning::${image: not built, skipping push"
               FAILED=$((FAILED+1))
               echo "::endgroup::"
               continue
             fi
             # Push :latest and versioned tag
-            LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
-            docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
+            LATEST_REF="${REGISTRY/${OWNER/${image:latest"
+            docker tag "${REF" "${LATEST_REF" 2>/dev/null || true
             # Extract upstream version: Dockerfile ARG VERSION → manifest.toml metadata.version
-            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
-            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image}/manifest.toml" ]; then
-              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image}/manifest.toml" 2>/dev/null | head -1)
+            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image/Dockerfile" 2>/dev/null | head -1)
+            if [ -z "$VERSION_TAG" ] && [ -f "./images/${image/manifest.toml" ]; then
+              VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image/manifest.toml" 2>/dev/null | head -1)
             fi
             VERSIONED_REF=""
             if [ -n "$VERSION_TAG" ]; then
-              VERSIONED_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
-              docker tag "${REF}" "${VERSIONED_REF}" 2>/dev/null || true
+              VERSIONED_REF="${REGISTRY/${OWNER/${image:${VERSION_TAG"
+              docker tag "${REF" "${VERSIONED_REF" 2>/dev/null || true
             fi
             PUSH_OK=0
             for attempt in 1 2 3; do
-              PUSH_OUTPUT=$(timeout 300 docker push "${LATEST_REF}" 2>&1) && {
+              PUSH_OUTPUT=$(timeout 300 docker push "${LATEST_REF" 2>&1) && {
                 PUSH_OK=1; break
-              }
-              echo "Push attempt $attempt failed for ${image}:"
+              
+              echo "Push attempt $attempt failed for ${image:"
               echo "$PUSH_OUTPUT" | tail -5
               sleep 10
             done
             # Push versioned tag
             if [ -n "$VERSIONED_REF" ] && [ "$PUSH_OK" = "1" ]; then
               for attempt in 1 2 3; do
-                timeout 300 docker push "${VERSIONED_REF}" 2>&1 && break
+                timeout 300 docker push "${VERSIONED_REF" 2>&1 && break
                 sleep 10
               done
             fi
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))
               # Set visibility public on GHCR
-              GHCR_PKG="evergreenimageregistry%2F${image}"
-              gh api -X PATCH "/user/packages/container/${GHCR_PKG}/visibility" \
+              GHCR_PKG="evergreenimageregistry%2F${image"
+              gh api -X PATCH "/user/packages/container/${GHCR_PKG/visibility" \
                 -f visibility=public 2>/dev/null || true
               # Push to Docker Hub (:latest + versioned)
-              DH_USER="${{ secrets.DOCKERHUB_USERNAME }}"
+              DH_USER="${{ secrets.DOCKERHUB_USERNAME "
               if [ -n "$DH_USER" ]; then
-                DH_LATEST="docker.io/${DH_USER}/${image}:latest"
-                docker tag "${REF}" "$DH_LATEST" 2>/dev/null || true
-                timeout 300 docker push "$DH_LATEST" 2>&1 || echo "::warning::${image}: Docker Hub push failed"
+                DH_LATEST="docker.io/${DH_USER/${image:latest"
+                docker tag "${REF" "$DH_LATEST" 2>/dev/null || true
+                timeout 300 docker push "$DH_LATEST" 2>&1 || echo "::warning::${image: Docker Hub push failed"
                 if [ -n "$VERSION_TAG" ]; then
-                  DH_VERSIONED="docker.io/${DH_USER}/${image}:${VERSION_TAG}"
-                  docker tag "${REF}" "$DH_VERSIONED" 2>/dev/null || true
-                  timeout 300 docker push "$DH_VERSIONED" 2>&1 || echo "::warning::${image}: Docker Hub versioned push failed"
+                  DH_VERSIONED="docker.io/${DH_USER/${image:${VERSION_TAG"
+                  docker tag "${REF" "$DH_VERSIONED" 2>/dev/null || true
+                  timeout 300 docker push "$DH_VERSIONED" 2>&1 || echo "::warning::${image: Docker Hub versioned push failed"
                 fi
               fi
               # Throttle between images
               sleep 2
             else
-              echo "::warning::${image}: push failed after 3 attempts"
+              echo "::warning::${image: push failed after 3 attempts"
               FAILED=$((FAILED+1))
             fi
             echo "::endgroup::"
           done
-          echo "Push: ${PUSHED} ok, ${FAILED} failed"
-          if [ "${FAILED}" -gt 0 ]; then
-            echo "::warning::${FAILED} image(s) skipped/failed push in batch ${{ matrix.batch }}"
+          echo "Push: ${PUSHED ok, ${FAILED failed"
+          if [ "${FAILED" -gt 0 ]; then
+            echo "::warning::${FAILED image(s) skipped/failed push in batch ${{ matrix.batch "
           fi
 
       - name: Sign, SBOM, and Attest images
         if: always() && inputs.push
         run: |
-          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images "
           SIGNED=0; ATTESTED=0; FAILED=0
-          for image in "${IMAGE_LIST[@]}"; do
+          for image in "${IMAGE_LIST[@]"; do
             [ -z "$image" ] && continue
-            [ ! -f "./images/${image}/Dockerfile" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
-            echo "::group::Sign + SBOM + Attest ${image}"
+            [ ! -f "./images/${image/Dockerfile" ] && continue
+            REF="${REGISTRY/${OWNER/${image:latest"
+            echo "::group::Sign + SBOM + Attest ${image"
 
             # Check if image exists in registry (use :latest since that's what we push)
             if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
-              echo "  SKIP: ${image} not pushed, skipping sign/attest"
+              echo "  SKIP: ${image not pushed, skipping sign/attest"
               FAILED=$((FAILED+1))
               echo "::endgroup::"
               continue
@@ -414,18 +414,18 @@ jobs:
             # 1. Sign the image with cosign (keyless via OIDC)
             if cosign sign --yes "$REF" 2>&1; then
               SIGNED=$((SIGNED+1))
-              echo "  ✅ Signed ${image}"
+              echo "  ✅ Signed ${image"
             else
-              echo "  ❌ Sign failed for ${image}"
+              echo "  ❌ Sign failed for ${image"
               FAILED=$((FAILED+1))
               echo "::endgroup::"
               continue
             fi
 
             # 2. Generate SPDX SBOM from the built image (not the Dockerfile context)
-            SBOM_SPDX="./images/${image}/sbom.spdx.json"
+            SBOM_SPDX="./images/${image/sbom.spdx.json"
             if syft scan "$REF" -o spdx-json > "$SBOM_SPDX" 2>/dev/null; then
-              echo "  ✅ SPDX SBOM generated for ${image}"
+              echo "  ✅ SPDX SBOM generated for ${image"
               if cosign attest --yes --predicate "$SBOM_SPDX" --type spdxjson "$REF" 2>&1; then
                 echo "  ✅ SPDX attested"
               else
@@ -433,14 +433,14 @@ jobs:
                 FAILED=$((FAILED+1))
               fi
             else
-              echo "  ❌ SPDX generation failed for ${image}"
+              echo "  ❌ SPDX generation failed for ${image"
               FAILED=$((FAILED+1))
             fi
 
             # 3. Generate CycloneDX SBOM
-            SBOM_CDX="./images/${image}/sbom.cyclonedx.json"
+            SBOM_CDX="./images/${image/sbom.cyclonedx.json"
             if syft scan "$REF" -o cyclone-dx-json > "$SBOM_CDX" 2>/dev/null; then
-              echo "  ✅ CycloneDX SBOM generated for ${image}"
+              echo "  ✅ CycloneDX SBOM generated for ${image"
               if cosign attest --yes --predicate "$SBOM_CDX" --type cyclonedx "$REF" 2>&1; then
                 echo "  ✅ CycloneDX attested"
               else
@@ -448,18 +448,18 @@ jobs:
                 FAILED=$((FAILED+1))
               fi
             else
-              echo "  ❌ CycloneDX generation failed for ${image}"
+              echo "  ❌ CycloneDX generation failed for ${image"
               FAILED=$((FAILED+1))
             fi
 
             # 4. Generate SLSA provenance attestation
             # Note: cosign expects JUST the predicate, not the full in-toto statement
-            PROV_FILE="/tmp/provenance-${image//\//-}.json"
-            DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{}])[0].get("digest","unknown"))' 2>/dev/null || echo "sha256:unknown")
-            SHA256="${DIGEST#sha256:}"
-            RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
+            PROV_FILE="/tmp/provenance-${image//\//-.json"
+            DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{])[0].get("digest","unknown"))' 2>/dev/null || echo "sha256:unknown")
+            SHA256="${DIGEST#sha256:"
+            RUN_ID="${{ github.run_id -${{ github.run_attempt "
             BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            echo "{\"builder\":{\"id\":\"github-actions:${RUN_ID}\"},\"buildType\":\"https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml\",\"invocation\":{\"configSource\":{\"uri\":\"git+${{ github.server_url }}/${{ github.repository }}\",\"digest\":{\"sha1\":\"${{ github.sha }}\"}},\"parameters\":{\"image\":\"${image}\",\"tag\":\"${TAG}\",\"tier\":\"${{ inputs.tier }}\"}},\"buildConfig\":{\"image\":\"${image}\",\"sha\":\"${{ github.sha }}\"},\"metadata\":{\"buildStartedOn\":\"${BUILD_DATE}\",\"completeness\":{\"parameters\":true,\"environment\":true,\"materials\":true},\"reproducible\":false}}" > "$PROV_FILE"
+            echo "{\"builder\":{\"id\":\"github-actions:${RUN_ID\",\"buildType\":\"https://github.com/WyattAu/EvergreenImageRegistry/_build-reusable.yml\",\"invocation\":{\"configSource\":{\"uri\":\"git+${{ github.server_url /${{ github.repository \",\"digest\":{\"sha1\":\"${{ github.sha \",\"parameters\":{\"image\":\"${image\",\"tag\":\"${TAG\",\"tier\":\"${{ inputs.tier \",\"buildConfig\":{\"image\":\"${image\",\"sha\":\"${{ github.sha \",\"metadata\":{\"buildStartedOn\":\"${BUILD_DATE\",\"completeness\":{\"parameters\":true,\"environment\":true,\"materials\":true,\"reproducible\":false" > "$PROV_FILE"
             if cosign attest --yes --predicate "$PROV_FILE" --type slsaprovenance "$REF" 2>&1; then
               ATTESTED=$((ATTESTED+1))
               echo "  ✅ SLSA provenance attested"
@@ -470,27 +470,27 @@ jobs:
 
             echo "::endgroup::"
           done
-          echo "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} failed"
+          echo "Sign/Attest: ${SIGNED signed, ${ATTESTED SLSA attested, ${FAILED failed"
           if [ "$FAILED" -gt 0 ]; then
-            echo "::error::${FAILED} image attestation operation(s) failed in batch ${{ matrix.batch }}"
+            echo "::error::${FAILED image attestation operation(s) failed in batch ${{ matrix.batch "
             exit 1
           fi
 
   report:
-    name: Build Report (${{ inputs.tier }})
+    name: Build Report (${{ inputs.tier )
     needs: [build]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - run: |
-          echo "# Build Report - ${{ inputs.tier }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Build Report - ${{ inputs.tier " >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
           echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Tier** | ${{ inputs.tier }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Tag** | \`${{ inputs.tag || github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Push** | ${{ inputs.push }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Sign** | ${{ inputs.sign }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Multi-arch** | ${{ inputs.multiarch }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Build** | ${{ needs.build.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Tier** | ${{ inputs.tier  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Tag** | \`${{ inputs.tag || github.sha \` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Push** | ${{ inputs.push  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Sign** | ${{ inputs.sign  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Multi-arch** | ${{ inputs.multiarch  |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Build** | ${{ needs.build.result  |" >> "$GITHUB_STEP_SUMMARY"

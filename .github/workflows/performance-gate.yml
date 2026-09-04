@@ -41,7 +41,7 @@ jobs:
           for f in $(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep 'images/.*Dockerfile' || true); do
             img=$(echo "$f" | grep -oP 'images/\K[^/]+')
             if [ -f "images/$img/Dockerfile" ]; then
-              IMAGES="${IMAGES:+$IMAGES }$img"
+              IMAGES="${IMAGES:+$IMAGES $img"
             fi
           done
           echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
@@ -51,7 +51,7 @@ jobs:
         if: steps.changes.outputs.images != ''
         id: timing
         run: |
-          THRESHOLD=${{ inputs.threshold || '50' }}
+          THRESHOLD=${{ inputs.threshold || '50' 
           BASELINE_FILE=".specs/06_5_regression/build_times.json"
           mkdir -p .specs/06_5_regression
 
@@ -59,13 +59,13 @@ jobs:
           if [ -f "$BASELINE_FILE" ]; then
             cp "$BASELINE_FILE" /tmp/baselines.json
           else
-            echo '{"version":1,"threshold_percent":50,"images":{}}' > /tmp/baselines.json
+            echo '{"version":1,"threshold_percent":50,"images":{' > /tmp/baselines.json
           fi
 
           REGRESSIONS=0
           TESTED=0
 
-          for img in ${{ steps.changes.outputs.images }}; do
+          for img in ${{ steps.changes.outputs.images ; do
             dockerfile="images/$img/Dockerfile"
             [ -f "$dockerfile" ] || continue
 
@@ -73,7 +73,7 @@ jobs:
             TESTED=$((TESTED + 1))
 
             START_NS=$(date +%s%N)
-            if docker build -t "perf-gate:${img}" "images/${img}" >/dev/null 2>&1; then
+            if docker build -t "perf-gate:${img" "images/${img" >/dev/null 2>&1; then
               END_NS=$(date +%s%N)
               ELAPSED_MS=$(( (END_NS - START_NS) / 1000000 ))
 
@@ -83,21 +83,21 @@ jobs:
           try:
               with open('/tmp/baselines.json') as f:
                   data = json.load(f)
-              bt = data.get('images', {}).get('$img', {}).get('build_time_ms', 0)
+              bt = data.get('images', {).get('$img', {).get('build_time_ms', 0)
               print(bt)
           except: print(0)
           ")
 
               if [ "$BASELINE" -gt 0 ]; then
                 INCREASE=$(( (ELAPSED_MS - BASELINE) * 100 / BASELINE ))
-                echo "Build time: ${ELAPSED_MS}ms (baseline: ${BASELINE}ms, change: +${INCREASE}%)"
+                echo "Build time: ${ELAPSED_MSms (baseline: ${BASELINEms, change: +${INCREASE%)"
 
                 if [ "$INCREASE" -gt "$THRESHOLD" ]; then
-                  echo "::error::REGRESSION DETECTED: $img build time increased by ${INCREASE}% (>${THRESHOLD}% threshold)"
+                  echo "::error::REGRESSION DETECTED: $img build time increased by ${INCREASE% (>${THRESHOLD% threshold)"
                   REGRESSIONS=$((REGRESSIONS + 1))
                 fi
               else
-                echo "New baseline: ${ELAPSED_MS}ms"
+                echo "New baseline: ${ELAPSED_MSms"
               fi
 
               # Update baseline
@@ -108,19 +108,19 @@ jobs:
               with open('/tmp/baselines.json') as f:
                   data = json.load(f)
           except:
-              data = {'version': 1, 'threshold_percent': $THRESHOLD, 'images': {}}
+              data = {'version': 1, 'threshold_percent': $THRESHOLD, 'images': {
 
           if 'images' not in data:
-              data['images'] = {}
+              data['images'] = {
           data['images']['$img'] = {
               'build_time_ms': $ELAPSED_MS,
               'updated': datetime.utcnow().isoformat() + 'Z'
-          }
+          
           with open('/tmp/baselines.json', 'w') as f:
               json.dump(data, f, indent=2)
           "
 
-              docker rmi "perf-gate:${img}" 2>/dev/null || true
+              docker rmi "perf-gate:${img" 2>/dev/null || true
             else
               echo "Build failed for $img (skipped)"
             fi
@@ -134,7 +134,7 @@ jobs:
           echo "tested=$TESTED" >> "$GITHUB_OUTPUT"
 
           if [ "$REGRESSIONS" -gt 0 ]; then
-            echo "::error::$REGRESSIONS image(s) have build time regression >${THRESHOLD}%"
+            echo "::error::$REGRESSIONS image(s) have build time regression >${THRESHOLD%"
             exit 1
           fi
 
@@ -151,12 +151,12 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
-            const tested = '${{ steps.timing.outputs.tested }}' || '0';
-            const regressions = '${{ steps.timing.outputs.regressions }}' || '0';
+            const tested = '${{ steps.timing.outputs.tested ' || '0';
+            const regressions = '${{ steps.timing.outputs.regressions ' || '0';
             const status = regressions > 0 ? '❌' : '✅';
-            const body = `## Performance Gate ${status}\n\n` +
-              `**Tested:** ${tested} image(s)\n` +
-              `**Regressions:** ${regression} (>50% threshold)\n\n` +
+            const body = `## Performance Gate ${status\n\n` +
+              `**Tested:** ${tested image(s)\n` +
+              `**Regressions:** ${regression (>50% threshold)\n\n` +
               (regressions > 0
                 ? '⚠️ Build time regression detected. Please investigate before merging.'
                 : '✅ All build times within acceptable range.');
@@ -166,4 +166,4 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
-            });
+            );

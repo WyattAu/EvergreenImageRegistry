@@ -27,7 +27,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
+  OWNER: ${{ github.repository_owner 
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -36,11 +36,11 @@ jobs:
   discover:
     name: Discover Built Images
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' 
     timeout-minutes: 5
     outputs:
-      images: ${{ steps.list.outputs.images }}
-      count: ${{ steps.list.outputs.count }}
+      images: ${{ steps.list.outputs.images 
+      count: ${{ steps.list.outputs.count 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -62,12 +62,12 @@ jobs:
             for f in /tmp/artifacts/*.txt; do
               [ -f "$f" ] || continue
               while IFS= read -r line; do
-                IMG=$(echo "$line" | grep -oP "${REGISTRY}/${OWNER}/\K[^:]+" || true)
+                IMG=$(echo "$line" | grep -oP "${REGISTRY/${OWNER/\K[^:]+" || true)
                 if [ -n "$IMG" ]; then
                   if [ -z "$IMAGES" ]; then
                     IMAGES="$IMG"
                   else
-                    IMAGES="${IMAGES},${IMG}"
+                    IMAGES="${IMAGES,${IMG"
                   fi
                   COUNT=$((COUNT + 1))
                 fi
@@ -79,19 +79,19 @@ jobs:
           if [ "$COUNT" -eq 0 ]; then
             echo "::notice::No build artifacts found. Verifying critical tier images."
             for img in postgres redis nginx envoy traefik keycloak-quarkus golang jenkins; do
-              [ -d "images/${img}" ] || continue
+              [ -d "images/${img" ] || continue
               if [ -z "$IMAGES" ]; then
                 IMAGES="$img"
               else
-                IMAGES="${IMAGES},${img}"
+                IMAGES="${IMAGES,${img"
               fi
               COUNT=$((COUNT + 1))
             done
           fi
 
-          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
-          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
-          echo "Found ${COUNT} images to verify"
+          echo "images=${IMAGES" >> "$GITHUB_OUTPUT"
+          echo "count=${COUNT" >> "$GITHUB_OUTPUT"
+          echo "Found ${COUNT images to verify"
 
   # ---------------------------------------------------------------------------
   # Verify SBOM attestations exist and are valid
@@ -112,13 +112,13 @@ jobs:
       - name: Login to GHCR
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Verify SBOM attestations
         env:
-          IMAGES: ${{ needs.discover.outputs.images }}
+          IMAGES: ${{ needs.discover.outputs.images 
         run: |
           SPDX_VERIFIED=0
           CDX_VERIFIED=0
@@ -128,12 +128,12 @@ jobs:
           TOTAL=0
 
           IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
-          for image in "${IMG_ARRAY[@]}"; do
+          for image in "${IMG_ARRAY[@]"; do
             [ -z "$image" ] && continue
             TOTAL=$((TOTAL + 1))
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
+            REF="${REGISTRY/${OWNER/${image:latest"
 
-            echo "::group::Verify ${image}"
+            echo "::group::Verify ${image"
 
             # Check image exists in registry
             if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
@@ -146,7 +146,7 @@ jobs:
             # Verify SPDX SBOM attestation
             if cosign verify-attestation \
                 --type spdxjson \
-                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-identity-regexp "https://github.com/${{ github.repository /" \
                 --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
                 "$REF" 2>/dev/null; then
               echo "  ✅ SPDX SBOM attestation verified"
@@ -154,13 +154,13 @@ jobs:
             else
               echo "  ❌ SPDX SBOM attestation missing"
               SPDX_MISSING=$((SPDX_MISSING + 1))
-              echo "::warning::${image}: missing SPDX SBOM attestation"
+              echo "::warning::${image: missing SPDX SBOM attestation"
             fi
 
             # Verify CycloneDX SBOM attestation
             if cosign verify-attestation \
                 --type cyclonedx \
-                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-identity-regexp "https://github.com/${{ github.repository /" \
                 --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
                 "$REF" 2>/dev/null; then
               echo "  ✅ CycloneDX SBOM attestation verified"
@@ -168,7 +168,7 @@ jobs:
             else
               echo "  ❌ CycloneDX SBOM attestation missing"
               CDX_MISSING=$((CDX_MISSING + 1))
-              echo "::warning::${image}: missing CycloneDX SBOM attestation"
+              echo "::warning::${image: missing CycloneDX SBOM attestation"
             fi
 
             echo "::endgroup::"
@@ -178,10 +178,10 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Metric | SPDX | CycloneDX |" >> "$GITHUB_STEP_SUMMARY"
           echo "|--------|------|-----------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ✅ Verified | ${SPDX_VERIFIED} | ${CDX_VERIFIED} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ❌ Missing | ${SPDX_MISSING} | ${CDX_MISSING} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Total | ${TOTAL} | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ⚠️ Not in registry | ${NOT_IN_REGISTRY} | ${NOT_IN_REGISTRY} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ✅ Verified | ${SPDX_VERIFIED | ${CDX_VERIFIED |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ❌ Missing | ${SPDX_MISSING | ${CDX_MISSING |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total | ${TOTAL | ${TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ⚠️ Not in registry | ${NOT_IN_REGISTRY | ${NOT_IN_REGISTRY |" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$SPDX_MISSING" -gt 0 ] || [ "$CDX_MISSING" -gt 0 ]; then
             echo "::warning::SBOM attestations missing for some images"
@@ -215,24 +215,24 @@ jobs:
       - name: Login to GHCR
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY 
+          username: ${{ github.actor 
+          password: ${{ secrets.GITHUB_TOKEN 
 
       - name: Generate and attach missing SBOM attestations
         env:
-          IMAGES: ${{ needs.discover.outputs.images }}
+          IMAGES: ${{ needs.discover.outputs.images 
         run: |
           SPDX_ATTESTED=0
           CDX_ATTESTED=0
           SKIPPED=0
 
           IFS=',' read -ra IMG_ARRAY <<< "$IMAGES"
-          for image in "${IMG_ARRAY[@]}"; do
+          for image in "${IMG_ARRAY[@]"; do
             [ -z "$image" ] && continue
-            REF="${REGISTRY}/${OWNER}/${image}:latest"
+            REF="${REGISTRY/${OWNER/${image:latest"
 
-            echo "::group::SBOM ${image}"
+            echo "::group::SBOM ${image"
 
             # Check image exists
             if ! docker manifest inspect "$REF" >/dev/null 2>&1; then
@@ -246,7 +246,7 @@ jobs:
             SPDX_EXISTS=false
             if cosign verify-attestation \
                 --type spdxjson \
-                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-identity-regexp "https://github.com/${{ github.repository /" \
                 --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
                 "$REF" 2>/dev/null; then
               SPDX_EXISTS=true
@@ -256,7 +256,7 @@ jobs:
             CDX_EXISTS=false
             if cosign verify-attestation \
                 --type cyclonedx \
-                --certificate-identity-regexp "https://github.com/${{ github.repository }}/" \
+                --certificate-identity-regexp "https://github.com/${{ github.repository /" \
                 --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
                 "$REF" 2>/dev/null; then
               CDX_EXISTS=true
@@ -270,8 +270,8 @@ jobs:
             fi
 
             # Generate SBOM from the registry image
-            SBOM_SPDX="/tmp/sbom-${image//\//-}-spdx.json"
-            SBOM_CDX="/tmp/sbom-${image//\//-}-cdx.json"
+            SBOM_SPDX="/tmp/sbom-${image//\//--spdx.json"
+            SBOM_CDX="/tmp/sbom-${image//\//--cdx.json"
 
             if [ "$SPDX_EXISTS" = "false" ]; then
               echo "  Generating SPDX SBOM..."
@@ -314,6 +314,6 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
           echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| SPDX attested | ${SPDX_ATTESTED} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| CycloneDX attested | ${CDX_ATTESTED} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Skipped (already attested) | ${SKIPPED} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| SPDX attested | ${SPDX_ATTESTED |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| CycloneDX attested | ${CDX_ATTESTED |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Skipped (already attested) | ${SKIPPED |" >> "$GITHUB_STEP_SUMMARY"

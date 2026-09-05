@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "golang-cache"
-version = "1.0.0"
+version = "1.27.1"
 description = "Evergreen hardened Golang-Cache - in-memory cache service"
 
 [build]

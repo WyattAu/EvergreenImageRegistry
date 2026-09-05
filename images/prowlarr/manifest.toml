@@ -1,6 +1,6 @@
 [metadata]
 name = "prowlarr"
-version = "2.3.5.5327"
+version = "2.5.2"
 description = "Prowlarr - indexer manager and proxy for PVR software"
 vendor = "Prowlarr"
 source = "https://github.com/Prowlarr/Prowlarr"

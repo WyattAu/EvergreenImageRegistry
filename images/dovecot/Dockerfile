@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM dovecot/dovecot:v2.3.21
+FROM dovecot/dovecot:2.4.5
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

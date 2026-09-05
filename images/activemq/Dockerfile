@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM apache/activemq-classic:v5.18.3
+FROM apache/activemq-classic:5.19.2
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM searxng/searxng:v2024.4.10
+FROM searxng/searxng:2026.8.12-563823135
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

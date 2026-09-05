@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM egroupware/egroupware:v23.1.20240608
+FROM egroupware/egroupware:23.1.20260819-1
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

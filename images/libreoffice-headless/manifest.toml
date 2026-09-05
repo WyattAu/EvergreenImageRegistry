@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "libreoffice-headless"
-version = "24.8.2"
+version = "25.8.7"
 description = "libreoffice-headless container image"
 
 [build]
@@ -22,7 +22,7 @@ expose = [8080, 9101]
 "org.opencontainers.image.source" = "https://www.libreoffice.org/"
 "org.opencontainers.image.title" = "libreoffice-headless"
 "org.opencontainers.image.vendor" = "LibreOffice"
-"org.opencontainers.image.version" = "24.8.2"
+"org.opencontainers.image.version" = "25.8.7"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

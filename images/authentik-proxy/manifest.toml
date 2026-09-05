@@ -1,7 +1,7 @@
 [metadata]
 name = "authentik-proxy"
 version = "2026.2.2"
-upstream_version = "2026.2.2"
+upstream_version = "2025.6.4"
 description = "authentik-proxy container image"
 vendor = "goauthentik"
 source = "https://github.com/goauthentik/authentik"

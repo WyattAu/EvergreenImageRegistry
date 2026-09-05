@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM getsentry/sentry:vnightly
+FROM getsentry/sentry:9daeb6862a30fc7798532a682ac8ae28232cd648
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \

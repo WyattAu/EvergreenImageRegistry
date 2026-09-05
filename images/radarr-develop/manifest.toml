@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "radarr-develop"
-version = "6.2.0.10390"
+version = "6.3.0"
 description = "radarr-develop container image"
 
 [build]

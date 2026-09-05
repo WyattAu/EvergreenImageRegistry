@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "subsonic"
-version = "10.6.0"
+version = "11.1.4"
 description = "subsonic container image"
 
 [build]
@@ -22,7 +22,7 @@ expose = [4040, 9101]
 "org.opencontainers.image.source" = "https://github.com/airsonic-advanced/airsonic-advanced/releases"
 "org.opencontainers.image.title" = "subsonic"
 "org.opencontainers.image.vendor" = "Airsonic-Advanced"
-"org.opencontainers.image.version" = "10.6.0"
+"org.opencontainers.image.version" = "11.1.4"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

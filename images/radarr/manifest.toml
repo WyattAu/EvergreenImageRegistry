@@ -1,6 +1,6 @@
 [metadata]
 name = "radarr"
-version = "6.1.1.10360"
+version = "6.3.0"
 description = "Radarr - movie collection manager for Usenet and BitTorrent"
 vendor = "Radarr"
 source = "https://github.com/Radarr/Radarr"

@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "duplicati"
-version = "2.1.0.1"
+version = "2.4.0"
 description = "duplicati container image"
 
 [build]
@@ -22,7 +22,7 @@ expose = [8200, 9101]
 "org.opencontainers.image.source" = "https://github.com/duplicati/duplicati"
 "org.opencontainers.image.title" = "duplicati"
 "org.opencontainers.image.vendor" = "Duplicati"
-"org.opencontainers.image.version" = "2.1.0.1"
+"org.opencontainers.image.version" = "2.4.0"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

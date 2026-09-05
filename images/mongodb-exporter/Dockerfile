@@ -1,6 +1,6 @@
 ARG SHIM_VERSION=v2.0.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
-FROM percona/mongodb_exporter:latest
+FROM percona/mongodb_exporter:0.53.0
 COPY --from=shim /shim /usr/local/bin/shim
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
 

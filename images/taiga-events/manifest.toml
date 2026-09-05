@@ -6,7 +6,7 @@ vendor = "Taiga"
 source = "https://github.com/taigaio/taiga-events"
 license = "MPL-2.0"
 tier = "standard"
-upstream_version = "6.9.0"
+upstream_version = "6.10.0"
 
 [build]
 base = "wolfi-base"

@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "zeromq"
-version = "4.3.5"
+version = "v4.0.5"
 description = "zeromq container image"
 
 [build]
@@ -19,7 +19,7 @@ expose = [9101]
 "org.opencontainers.image.source" = "https://github.com/zeromq/libzmq"
 "org.opencontainers.image.title" = "zeromq"
 "org.opencontainers.image.vendor" = "ZeroMQ"
-"org.opencontainers.image.version" = "4.3.5"
+"org.opencontainers.image.version" = "v4.0.5"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.distrole" = "debian-slim"
 "evergreen.constraint.nonroot" = "true"

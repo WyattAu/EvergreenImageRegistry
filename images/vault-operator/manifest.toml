@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "vault-operator"
-version = "1.32.1"
+version = "1.19.0"
 description = "vault-operator container image"
 
 [build]

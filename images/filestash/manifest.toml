@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "filestash"
-version = "v0.4"
+version = "9f083ea"
 description = "filestash container image"
 
 [build]

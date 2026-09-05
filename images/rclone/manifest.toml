@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "rclone"
-version = "v1.69.1"
+version = "1.75.1"
 description = "rclone container image"
 
 [build]
@@ -22,7 +22,7 @@ expose = [5572, 9101]
 "org.opencontainers.image.source" = "https://github.com/rclone/rclone"
 "org.opencontainers.image.title" = "rclone"
 "org.opencontainers.image.vendor" = "Rclone"
-"org.opencontainers.image.version" = "v1.69.1"
+"org.opencontainers.image.version" = "1.75.1"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.base" = "scratch"
 "evergreen.constraint.nonroot" = "true"

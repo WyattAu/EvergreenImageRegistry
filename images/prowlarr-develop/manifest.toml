@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "prowlarr-develop"
-version = "2.3.6.5351"
+version = "2.5.2"
 description = "prowlarr-develop container image"
 
 [build]

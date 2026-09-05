@@ -16,7 +16,7 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 80 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
 LABEL org.opencontainers.image.title="headscale-ui" \

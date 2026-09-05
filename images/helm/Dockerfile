@@ -22,11 +22,11 @@ ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
-
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/helm"]
-CMD []
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+
+  CMD []
 
 LABEL org.opencontainers.image.title="helm" \
       org.opencontainers.image.version="${VERSION}" \

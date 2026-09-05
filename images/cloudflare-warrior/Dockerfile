@@ -35,11 +35,11 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 7844
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:7844"]
-
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cloudflared"]
-CMD ["--", "tunnel", "--no-autoupdate"]
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+
+  CMD ["--", "tunnel", "--no-autoupdate"]
 LABEL org.opencontainers.image.title="cloudflare-warrior" \
       org.opencontainers.image.version="2026.5.0" \
       org.opencontainers.image.vendor="Cloudflare" \

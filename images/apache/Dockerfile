@@ -6,8 +6,7 @@ FROM httpd:v2.4.66
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /usr/local/apache2 && chown -R 65532:65532 /usr/local/apache2
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
 

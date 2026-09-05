@@ -6,9 +6,7 @@ FROM rabbitmq:3.13@sha256:87178a0ee3e2f52980ba356d38646ed1056705ff2d5ff281f89654
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /var/lib/rabbitmq && chown -R 65532:65532 /var/lib/rabbitmq
-RUN mkdir -p /var/lib/rabbitmq && chown -R 65532:65532 /var/lib/rabbitmq
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5672"]
 
 

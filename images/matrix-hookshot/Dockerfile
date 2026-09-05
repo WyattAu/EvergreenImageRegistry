@@ -6,7 +6,7 @@ FROM halfshot/matrix-hookshot:7.3.2@sha256:44283e5131a1a5818bbbf6d9d1e07dccdc29a
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9993"]
 
 

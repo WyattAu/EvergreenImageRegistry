@@ -6,9 +6,7 @@ FROM mysql:8.4.1@sha256:a7dc4a4e07a9c5d53c0cf36b5b4e8a1b3bb677cb0d544256a0581114
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /var/lib/mysql && chown -R 65532:65532 /var/lib/mysql
-RUN mkdir -p /var/lib/mysql && chown -R 65532:65532 /var/lib/mysql
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
 
 

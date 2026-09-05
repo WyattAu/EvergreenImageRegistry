@@ -6,7 +6,7 @@ FROM favonia/cloudflare-ddns:1.16.2@sha256:bc53b40b13c8b2a84e9b93c21f65fcd7d574b
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
 

@@ -6,8 +6,7 @@ FROM cockroachdb/cockroach:v24.3.0@sha256:736a42385c600673d034e0be6c4475d55975ea
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /cockroach/cockroach-data && chown -R 65532:65532 /cockroach/cockroach-data
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
 
 

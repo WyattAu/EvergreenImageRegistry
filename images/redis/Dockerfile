@@ -27,11 +27,11 @@ WORKDIR /data
 
 EXPOSE 6380 9101
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
-
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c"]
-CMD ["redis-server", "--dir", "/data", "--bind", "0.0.0.0", "--protected-mode", "no"]
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+
+  CMD ["redis-server", "--dir", "/data", "--bind", "0.0.0.0", "--protected-mode", "no"]
 
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - source-built, static, non-root, distroless" \

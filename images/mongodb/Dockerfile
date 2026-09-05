@@ -6,9 +6,7 @@ FROM mongo:7.0.12@sha256:ae1cf99fa7bfb007db8416ad4f3980c46054d949fa55d28e6d301a8
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /data/db && chown -R 65532:65532 /data/db
-RUN mkdir -p /data/configdb && chown -R 65532:65532 /data/configdb
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
 ENV SHIM_METRICS_ENABLED="true"

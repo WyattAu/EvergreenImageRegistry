@@ -6,7 +6,7 @@ FROM sqlpad/sqlpad:6.11.0@sha256:73c2a6b8a55aefd5edf5bd92bd100941962d0cf18d2a95d
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
 ENV SHIM_METRICS_ENABLED="true"

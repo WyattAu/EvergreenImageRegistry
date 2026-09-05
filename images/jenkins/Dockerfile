@@ -8,9 +8,7 @@ FROM jenkins/jenkins:2.462.1@sha256:2bafb1fb2d6489bccadc1b7c172937e9b56a888ed77e
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /var/jenkins_home && chown -R 65532:65532 /var/jenkins_home
-RUN mkdir -p /var/jenkins_home && chown -R 65532:65532 /var/jenkins_home
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
 ENV SHIM_METRICS_ENABLED="true"

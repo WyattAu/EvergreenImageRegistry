@@ -2,7 +2,7 @@ ARG VERSION=26.6.2
 
 FROM quay.io/keycloak/keycloak:${VERSION}
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v1.3.0 AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 AS shim
 
 FROM quay.io/keycloak/keycloak:${VERSION}
 USER 0

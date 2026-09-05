@@ -6,7 +6,7 @@ FROM openzipkin/zipkin:3.4.2@sha256:32599e9a997272a15a57f1775709ad86f973de98b407
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9411"]
 
 

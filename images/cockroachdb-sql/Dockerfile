@@ -46,11 +46,11 @@ ENV SHIM_BACKUP_ENABLED="true" \
 WORKDIR /app
 EXPOSE 26257
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
-
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/cockroach"]
-CMD ["--", "sql", "--insecure"]
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+
+  CMD ["--", "sql", "--insecure"]
 LABEL org.opencontainers.image.title="cockroachdb-sql" \
       org.opencontainers.image.version="23.2.3" \
       org.opencontainers.image.vendor="Cockroach Labs" \

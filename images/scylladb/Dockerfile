@@ -6,9 +6,7 @@ FROM scylladb/scylla:5.4.0
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /var/lib/scylla && chown -R 65532:65532 /var/lib/scylla
-RUN mkdir -p /var/lib/scylla && chown -R 65532:65532 /var/lib/scylla
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9042"]
 
 ENV SHIM_METRICS_ENABLED="true"

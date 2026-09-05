@@ -6,9 +6,7 @@ FROM hashicorp/vault:1.18.1@sha256:3580fa352195aa7e76449cb8fadeef6d2f90a454c3898
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-RUN mkdir -p /vault/file && chown -R 65532:65532 /vault/file
-RUN mkdir -p /vault/config && chown -R 65532:65532 /vault/config
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
 
 ENV SHIM_METRICS_ENABLED="true"

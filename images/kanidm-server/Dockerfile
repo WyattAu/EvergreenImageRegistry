@@ -6,7 +6,7 @@ FROM kanidm/server:1.9.4@sha256:fd58c1469da961536b0c3d891c82fd774904d08857ea9c0b
 COPY --from=shim /shim /usr/local/bin/shim
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-USER 65532:65532
+
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8443"]
 
 

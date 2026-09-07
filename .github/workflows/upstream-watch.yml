@@ -256,6 +256,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      # CRITICAL: re-apply the bumps HERE. The bump job runs on a separate
+      # ephemeral runner - its file modifications are thrown away when the
+      # job ends. A fresh checkout here is clean, so create-pull-request
+      # would find nothing to commit ("not ahead of base") and silently
+      # drop every bump (the root cause of 130+ rotted pins).
+      - name: Bump outdated versions (re-apply in this runner)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATES: ${{ needs.check.outputs.updates }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, subprocess
+
+          updates = json.loads(os.environ["UPDATES"])
+          for update in updates:
+              image = update["image"]
+              new_version = update["latest"]
+              result = subprocess.run(
+                  ["bash", "scripts/bump_versions.sh", image, new_version],
+                  capture_output=True, text=True
+              )
+              if result.returncode == 0:
+                  print(f"Bumped: {image} -> {new_version}")
+              else:
+                  print(f"Failed: {image}: {result.stderr}")
+          PYEOF
+
       - name: Generate changelog
         run: |
           UPDATES='${{ needs.check.outputs.updates }}'

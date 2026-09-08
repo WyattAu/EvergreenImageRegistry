@@ -5,7 +5,7 @@ ARG APP_GID=65532
 
 FROM gravitl/netmaker-ui:v1.5.1 AS upstream
 FROM ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 AS shim
-FROM cgr.dev/chainguard/wolfi-base:1.5.1
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72
 COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache nginx ca-certificates && \
     mkdir -p /var/log/nginx /var/cache/nginx /var/run /etc/nginx/conf.d /www && \

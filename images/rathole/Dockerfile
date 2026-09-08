@@ -5,6 +5,7 @@ ARG RATHOLE_VERSION=v0.4.8
 RUN apk add --no-cache curl unzip && \
     curl -fsSL --retry 3 "https://github.com/rapiz1/rathole/releases/download/${RATHOLE_VERSION}/rathole-x86_64-unknown-linux-musl.zip" -o /tmp/rathole.zip && \
     unzip -o /tmp/rathole.zip -d /tmp && \
+    mkdir -p /usr/local/bin && \
     mv /tmp/rathole /usr/local/bin/rathole && \
     chmod +x /usr/local/bin/rathole
 FROM scratch

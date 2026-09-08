@@ -3,8 +3,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim
 ARG MKCERT_VERSION=v1.4.4
-ADD https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64 /usr/local/bin/mkcert
-RUN chmod +x /usr/local/bin/mkcert
+ADD --chmod=0755 https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64 /usr/local/bin/mkcert
 USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/mkcert"]
 LABEL evergreen.entrypoint.pattern="no-op"

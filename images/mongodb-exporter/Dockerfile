@@ -12,3 +12,5 @@ LABEL evergreen.entrypoint.pattern="repack-upstream-init" \
       evergreen.security.no-new-privileges="true"
 EXPOSE 9216 9101
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

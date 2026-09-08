@@ -30,3 +30,5 @@ LABEL evergreen.image.tier="standard" \
       evergreen.security.cap-drop="ALL" \
       evergreen.security.no-new-privileges="true"
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

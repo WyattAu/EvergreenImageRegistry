@@ -33,4 +33,5 @@ LABEL org.opencontainers.image.title="zookeeper" \
       evergreen.entrypoint.pattern="repack-upstream-init"
 
 STOPSIGNAL SIGTERM
-
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

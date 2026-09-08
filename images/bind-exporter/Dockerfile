@@ -48,4 +48,5 @@ LABEL org.opencontainers.image.title="bind-exporter" \
       evergreen.base.image="upstream"
 
 STOPSIGNAL SIGTERM
-
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

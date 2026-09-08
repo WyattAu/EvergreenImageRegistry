@@ -21,3 +21,5 @@ LABEL evergreen.image.tier="standard" \
       evergreen.security.no-new-privileges="true"
 EXPOSE 2333 9101
 STOPSIGNAL SIGTERM
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

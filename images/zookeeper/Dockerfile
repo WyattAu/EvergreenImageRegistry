@@ -18,7 +18,8 @@ USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 2181 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2181"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2181"]
 
 LABEL org.opencontainers.image.title="zookeeper" \
       org.opencontainers.image.version="latest" \

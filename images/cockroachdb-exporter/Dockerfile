@@ -7,9 +7,15 @@ FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=23.2.3
 RUN mkdir -p /opt/cockroach/cockroach || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz -o /cockroach.tar.gz ; echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /cockroach.tar.gz" | sha256sum -c  ; mkdir -p /opt/cockroach ; \
-    [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach ; chmod +x /opt/cockroach/cockroach || { echo "Binary not available - download failed" >&2; exit 1; }
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o /cockroach.tar.gz && \
+    echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /cockroach.tar.gz" | sha256sum -c && \
+    mkdir -p /opt/cockroach && \
+    tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 && \
+    rm -f /cockroach.tar.gz && \
+    strip /opt/cockroach/cockroach && \
+    chmod +x /opt/cockroach/cockroach
 FROM debian:bookworm-slim AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/null || true
@@ -47,8 +53,7 @@ EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cockroach"]
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-
-  CMD ["--", "start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 LABEL org.opencontainers.image.title="cockroachdb-exporter" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint" \
       org.opencontainers.image.version="${VERSION}" \

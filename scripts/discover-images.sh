@@ -105,7 +105,12 @@ get_changed_images() {
         | sed 's|/.*||' \
         | grep -v "^_" \
         | grep -v "^clawdius$" \
-        | sort -u)
+        | sort -u \
+        | while read -r img; do
+            # Skip deleted dirs (e.g. renamed into _archive): the deletion
+            # side of a rename leaves a name with no Dockerfile at HEAD.
+            [ -f "${IMAGES_DIR}/${img}/Dockerfile" ] && echo "$img"
+          done)
 
     # Also check for changes to shared scripts, top-level manifest, or CI
     # If these changed, we should still only build affected images (not all)

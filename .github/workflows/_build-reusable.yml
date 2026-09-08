@@ -278,7 +278,9 @@ jobs:
               EXCEEDED=$((EXCEEDED+1))
             fi
           done
-          [ "$EXCEEDED" -gt 0 ] && exit 1
+          if [ "$EXCEEDED" -gt 0 ]; then
+            exit 1
+          fi
 
       - name: Upload image tarballs
         if: always()

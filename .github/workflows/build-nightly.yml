@@ -227,14 +227,14 @@ jobs:
       tag: ${{ github.sha }}
       push: true
       sign: ${{ inputs.sign == 'true' }}
-      multiarch: true
+      multiarch: false
       tier: critical
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # ---------------------------------------------------------------------------
-  # BUILD STANDARD - Multi-arch, unsigned
+  # BUILD STANDARD - amd64 only, unsigned
   # ---------------------------------------------------------------------------
   build-standard:
     name: Build Standard
@@ -246,7 +246,7 @@ jobs:
       tag: ${{ github.sha }}
       push: true
       sign: false
-      multiarch: true
+      multiarch: false
       tier: standard
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

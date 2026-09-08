@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN ARCH=$(case "${TARGETARCH}" in amd64) echo "amd64" ;; arm64) echo "arm64" ;; *) echo "amd64" ;; esac) && \
     curl -fsSL --retry 3 "https://github.com/prometheus-community/bind_exporter/releases/download/v${VERSION}/bind_exporter-${VERSION}.linux-${ARCH}.tar.gz" -o /tmp/bind_exporter.tar.gz && \
     tar -xzf /tmp/bind_exporter.tar.gz -C /tmp && \
-    mv /tmp/bind_exporter /tmp/download
+    mv "/tmp/bind_exporter-${VERSION}.linux-${ARCH}/bind_exporter" /tmp/download
 
 RUN cp /etc/ssl/certs/ca-certificates.crt /ca-certificates.crt
 

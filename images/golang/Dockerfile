@@ -4,12 +4,12 @@ ARG SHIM_VERSION=v2.0.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 # Build stage: Go toolchain on wolfi
-FROM cgr.dev/chainguard/wolfi-base:1.23 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72 AS builder
 ARG VERSION
 RUN apk add --no-cache go~${VERSION} git ca-certificates
 
 # Final stage: wolfi-base with Go toolchain
-FROM cgr.dev/chainguard/wolfi-base:1.23
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /usr/bin/go /usr/bin/go
 COPY --from=builder /usr/lib/go/ /usr/lib/go/

@@ -1,7 +1,7 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM cgr.dev/chainguard/wolfi-base:0.30.1
+FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72
 COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 ARG VERSION=0.30.1
 RUN apk add --no-cache ruby ca-certificates git openssh && \

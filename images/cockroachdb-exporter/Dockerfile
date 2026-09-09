@@ -9,8 +9,8 @@ ARG VERSION=23.2.3
 RUN mkdir -p /opt/cockroach/cockroach || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o /cockroach.tar.gz && \
-    echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /cockroach.tar.gz" | sha256sum -c && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o /cockroach.tar.gz && \
+    echo "909b7a28ae9362cdbfc44a30b20694e6e271b1d3d1cc63fdfd0ab3370566bed4  /cockroach.tar.gz" | sha256sum -c && \
     mkdir -p /opt/cockroach && \
     tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 && \
     rm -f /cockroach.tar.gz && \

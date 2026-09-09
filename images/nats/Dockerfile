@@ -24,8 +24,7 @@ EXPOSE 4222 9101
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/nats-server"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-
-  CMD []
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4222"]
 
 LABEL org.opencontainers.image.title="nats" evergreen.image.tier="critical" evergreen.constraint.nonroot="true"
 LABEL evergreen.base.image="scratch" evergreen.security.cap-drop="ALL"

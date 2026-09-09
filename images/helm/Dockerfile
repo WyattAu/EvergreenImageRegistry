@@ -25,8 +25,7 @@ EXPOSE 9101
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/helm"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-
-  CMD []
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
 LABEL org.opencontainers.image.title="helm" \
       org.opencontainers.image.version="${VERSION}" \

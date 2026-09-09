@@ -5,9 +5,9 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72 AS builder
 ARG FRP_VERSION
-RUN apk add --no-cache curl tar && \
+RUN apk add --no-cache curl busybox && \
     curl -fsSL "https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_amd64.tar.gz" | \
-    tar xz -C /tmp && \
+    busybox tar xz -C /tmp && \
     cp /tmp/frp_${FRP_VERSION}_linux_amd64/frps /usr/local/bin/frps
 
 FROM scratch

@@ -1,8 +1,8 @@
 ARG SHIM_VERSION=v2.0.0
 
+ARG NODEJS_VERSION=22
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-ARG NODEJS_VERSION=22
 FROM gcr.io/distroless/nodejs22-debian12:${NODEJS_VERSION}
 COPY --from=shim /shim /usr/local/bin/shim
 

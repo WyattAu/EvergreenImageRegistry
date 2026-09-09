@@ -8,6 +8,7 @@ ARG FRP_VERSION
 RUN apk add --no-cache curl busybox && \
     curl -fsSL "https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_amd64.tar.gz" | \
     busybox tar xz -C /tmp && \
+    mkdir -p /usr/local/bin && \
     cp /tmp/frp_${FRP_VERSION}_linux_amd64/frps /usr/local/bin/frps
 
 FROM scratch

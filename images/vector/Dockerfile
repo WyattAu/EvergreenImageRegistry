@@ -6,10 +6,11 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72 AS builder
 
 ARG VECTOR_VERSION
-RUN apk add --no-cache curl unzip && \
+RUN apk add --no-cache curl busybox && \
     curl -fsSL "https://github.com/vectordotdev/vector/releases/download/v${VECTOR_VERSION}/vector-${VECTOR_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | \
-    tar xz -C /tmp && \
-    mv /tmp/vector-${VECTOR_VERSION}-x86_64-unknown-linux-gnu/bin/vector /usr/local/bin/vector
+    busybox tar xz -C /tmp && \
+    mkdir -p /usr/local/bin && \
+    mv /tmp/vector-x86_64-unknown-linux-gnu/bin/vector /usr/local/bin/vector
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b142cb92cb2e48676cc2dcebea72
 

@@ -2,7 +2,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM portainer/portainer-ce:v2.20.1
+FROM portainer/portainer-ce:2.45.0-alpine
 COPY --from=shim /shim /usr/local/bin/shim
 
 USER 65532:65532

@@ -13,13 +13,12 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:a31344ab2cb8618db84f535eec56f76f6178b1
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /usr/bin/go /usr/bin/go
 COPY --from=builder /usr/lib/go/ /usr/lib/go/
-COPY --from=builder /usr/local/go/ /usr/local/go/
 RUN apk add --no-cache git ca-certificates && \
     mkdir -p /go/src /go/bin /root/.cache && \
     chown -R 65532:65532 /go /root/.cache
 
 ENV GOPATH=/go
-ENV PATH="${GOPATH}/bin:/usr/local/go/bin:${PATH}"
+ENV PATH="${GOPATH}/bin:${PATH}"
 ENV SHIM_METRICS_ENABLED="true"
 
 USER 65532:65532

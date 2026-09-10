@@ -150,6 +150,16 @@ jobs:
           mkdir -p /tmp/images
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           BUILT=0; FAILED=0; SKIPPED=0
+
+          # Stagger batch starts: all batches launching at once bursts
+          # thousands of Docker Hub pulls through the rate window and
+          # 429s whole batches (Sep 9-10 nightly incident).
+          STAGGER=$(( ${{ matrix.batch }} * 120 ))
+          if [ "$STAGGER" -gt 0 ]; then
+            echo "Staggering batch ${{ matrix.batch }} start by ${STAGGER}s to spread registry pulls"
+            sleep "$STAGGER"
+          fi
+
           # No buildx needed — using plain docker build
           build_image() {
             local image="$1"

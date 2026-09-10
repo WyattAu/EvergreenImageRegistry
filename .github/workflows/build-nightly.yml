@@ -123,6 +123,20 @@ jobs:
           if [ "$FAIL" -gt 0 ]; then exit 1; fi
 
   # ---------------------------------------------------------------------------
+  # UPSTREAM PIN CHECK - Advisory: resolve every FROM at its registry
+  # ---------------------------------------------------------------------------
+  pin-check:
+    name: Upstream Pin Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Verify all FROM refs resolve
+        run: |
+          python3 scripts/verify_from_refs.py
+
+  # ---------------------------------------------------------------------------
   # PERF REGRESSION - Non-blocking performance regression gate
   # ---------------------------------------------------------------------------
   perf-regression:

@@ -42,7 +42,7 @@ jobs:
       matrix: ${{ steps.find.outputs.matrix }}
       total: ${{ steps.find.outputs.total }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Find eligible images
         id: find
@@ -113,7 +113,7 @@ jobs:
       savings_pct: ${{ steps.compare.outputs.savings_pct }}
       status: ${{ steps.build.outcome }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Determine build type
         id: type
@@ -228,7 +228,7 @@ jobs:
 
       - name: Upload musl Dockerfile artifact
         if: steps.generate.outputs.skip != 'true' && steps.build-musl.outcome == 'success'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: musl-${{ matrix.image }}
           path: /tmp/Dockerfile.musl
@@ -244,10 +244,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Download all musl artifacts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           pattern: musl-*
           path: /tmp/musl-dockerfiles
@@ -313,7 +313,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Update status file
         run: |

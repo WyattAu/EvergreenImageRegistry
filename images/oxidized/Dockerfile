@@ -4,9 +4,10 @@ ARG APP_GID=65532
 FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=ghcr.io/wyattau/evergreenshim/health-shim:v2.0.0 /shim /usr/local/bin/shim
 ARG VERSION=0.30.1
-RUN apk add --no-cache ruby ruby-dev gcc make glibc-dev ca-certificates git openssh && \
+RUN apk add --no-cache ruby ruby-dev gcc make glibc-dev cmake pkgconf openssl-dev zlib-dev libssh2-dev heimdal-dev ca-certificates git openssh && \
+    ln -sf /usr/lib/libruby.so.3.3 /usr/lib/libruby.so && \
     gem install oxidized --no-document && \
-    apk del ruby-dev gcc make glibc-dev && \
+    apk del ruby-dev gcc make glibc-dev cmake pkgconf openssl-dev zlib-dev libssh2-dev heimdal-dev && \
     mkdir -p /home/oxidized/.config/oxidized
 USER 65532:65532
 WORKDIR /home/oxidized

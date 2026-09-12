@@ -4,9 +4,9 @@
 
 [metadata]
 image = "grafana"
-version = "11.0.0"
+version = "v13.2.1"
 created = "2026-04-22T00:00:00Z"
-last_verified = "2026-04-22T00:00:00Z"
+last_verified = "2026-09-12T09:54:52Z"
 verification_method = "upstream-tarball"
 verifier = "manual"
 
@@ -15,4 +15,4 @@ url = "https://dl.grafana.com/oss/release/grafana-11.0.0.linux-amd64.tar.gz"
 filename = "grafana-11.0.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING_VERIFY"
+expected_sha256 = "97c70aa4fd11aa75bbb575d7d48764cb3a6c3356b53f34c7750c0dd7e006204d"

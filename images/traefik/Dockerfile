@@ -1,4 +1,4 @@
-ARG VERSION=3.7.3
+ARG VERSION=v3.7.13
 ARG SHIM_VERSION=v2.0.0
 
 # Download Traefik binary

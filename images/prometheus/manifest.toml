@@ -1,6 +1,6 @@
 [metadata]
 name = "prometheus"
-version = "2.54.0"
+version = "v3.14.0"
 description = "Prometheus - monitoring and alerting toolkit"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/prometheus"

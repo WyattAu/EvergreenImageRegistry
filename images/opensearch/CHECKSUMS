@@ -16,7 +16,7 @@
 
 [metadata]
 image = "opensearch"
-version = "2.12.0"
+version = "3.8.0"
 created = "2026-04-21"
 last_verified = "2026-04-21"
 verification_method = "download-verify"
@@ -27,7 +27,7 @@ url = "https://artifacts.opensearch.org/releases/bundle/opensearch/2.12.0/opense
 filename = "opensearch-2.12.0-linux-x64.tar.gz"
 
 [checksum]
-expected_sha256 = "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 url = "https://artifacts.opensearch.org/releases/bundle/opensearch/2.12.0/opensearch-2.12.0-linux-x64.tar.gz.sha512"

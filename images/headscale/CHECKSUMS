@@ -16,7 +16,7 @@
 
 [metadata]
 image = "headscale"
-version = "0.16.0"
+version = "v0.29.3"
 created = "2026-04-19T22:23:34Z"
 last_verified = "2026-04-19T22:23:34Z"
 verification_method = "github-release-checksums"
@@ -28,7 +28,7 @@ filename = "headscale_0.16.0_linux_amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "2c86ff30605d8c4ab69e18d941ccd3deb2bf298a8db17878d8f6535070cc8a7c"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

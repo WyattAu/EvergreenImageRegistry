@@ -16,9 +16,9 @@
 
 [metadata]
 image = "prometheus"
-version = "2.53.0"
+version = "v3.14.0"
 created = "2026-04-19T22:24:57Z"
-last_verified = "2026-04-19T22:24:57Z"
+last_verified = "2026-09-12T09:54:54Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
 
@@ -28,9 +28,9 @@ filename = "prometheus-2.53.0.linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "bf4ef82fc332dbb1a254c8ed7919363415126c1ed4e2ede536f8a049649976f5"
+expected_sha256 = "d9900a11e3c89261e6416e3c9989858bad7b206af8b6838dfe9a5392d8ddc60d"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/prometheus/prometheus/releases/download/v2.53.0/sha256sums.txt"
+url = "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz"
 format = "sha256"

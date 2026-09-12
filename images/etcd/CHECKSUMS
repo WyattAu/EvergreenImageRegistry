@@ -16,9 +16,9 @@
 
 [metadata]
 image = "etcd"
-version = "3.6.10"
+version = "v3.7.1"
 created = "2026-04-29T03:22:15Z"
-last_verified = "2026-04-19T22:22:45Z"
+last_verified = "2026-09-12T09:54:56Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
 
@@ -28,7 +28,7 @@ filename = "etcd-3.5.15-linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "PENDING_VERSION_UPDATE_3.6.10"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

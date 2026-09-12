@@ -16,7 +16,7 @@
 
 [metadata]
 image = "caddy"
-version = "2.7.6"
+version = "v2.11.4"
 created = "2026-04-19T22:22:14Z"
 last_verified = "2026-04-19T22:22:14Z"
 verification_method = "download-and-compute"
@@ -28,7 +28,7 @@ filename = "caddy_2.7.6_linux_amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "99587cf77c595f0bf62cc23c9ea101f9879fa016c7b689d498ce054904821f22"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

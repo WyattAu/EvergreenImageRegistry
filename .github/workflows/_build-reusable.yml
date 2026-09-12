@@ -504,8 +504,13 @@ jobs:
           done
           echo "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} failed"
           if [ "$FAILED" -gt 0 ]; then
-            echo "::error::${FAILED} image attestation operation(s) failed in batch ${{ matrix.batch }}"
-            exit 1
+            # Non-fatal: images ARE pushed; only signing/attestation ops
+            # failed (Sigstore throttling survives 3 retries). The
+            # Compliance Scan workflow is the enforcement layer - it
+            # independently flags unattested images. Red-flagging the
+            # batch here added no protection and forced full reruns.
+            echo "::warning::${FAILED} image attestation operation(s) failed in batch ${{ matrix.batch }} (images pushed, attest backfill needed - rerun or dispatch)"
+            echo "ATTEST_FAILURES=${FAILED}" >> "$GITHUB_ENV"
           fi
 
   report:

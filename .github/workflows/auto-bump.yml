@@ -101,7 +101,8 @@ jobs:
           echo "=== Outdated images ==="
           cat /tmp/outdated.txt
 
-          OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || echo "0")
+          OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || true)
+          OUTDATED_COUNT=${OUTDATED_COUNT:-0}
           echo "outdated_count=${OUTDATED_COUNT}" >> "$GITHUB_OUTPUT"
 
           if [ "$OUTDATED_COUNT" -eq 0 ]; then
@@ -134,7 +135,18 @@ jobs:
             git diff --stat
 
             CHANGED_IMAGES=$(git diff --name-only | grep -oP '^images/\K[^/]+' | sort -u)
-            CHANGED_COUNT=$(echo "$CHANGED_IMAGES" | grep -c . || echo "0")
+            # grep -c prints 0 AND exits 1 on no-match; '|| echo 0' made this
+            # multi-line and blew up the arithmetic below. Sanitize instead.
+            CHANGED_COUNT=$(echo "$CHANGED_IMAGES" | grep -c . || true)
+            CHANGED_COUNT=${CHANGED_COUNT:-0}
+            CHANGED_COUNT=$(echo "$CHANGED_COUNT" | head -1 | tr -cd '0-9')
+
+            if [ "${CHANGED_COUNT:-0}" -eq 0 ]; then
+              echo "Changes landed outside images/ - nothing to bump"
+              echo "has_changes=false" >> "$GITHUB_ENV"
+              exit 0
+            fi
+
             echo "changed_count=${CHANGED_COUNT}" >> "$GITHUB_OUTPUT"
 
              BATCH_COUNT=$(( (CHANGED_COUNT + BATCH_SIZE - 1) / BATCH_SIZE ))

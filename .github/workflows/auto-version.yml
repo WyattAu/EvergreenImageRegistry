@@ -98,6 +98,7 @@ jobs:
           fi
 
           # Run auto-version and capture output
+          # shellcheck disable=SC2086 # ARGS is an intentionally-split flag list
           cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
             auto-version $ARGS > /tmp/auto-version-report.json 2>&1 || true
 
@@ -178,6 +179,7 @@ jobs:
             ARGS="$ARGS --allow-major"
           fi
 
+          # shellcheck disable=SC2086 # ARGS is an intentionally-split flag list
           cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
             auto-version $ARGS > /tmp/auto-version-report.json 2>&1 || true
 
@@ -312,11 +314,12 @@ jobs:
       - name: Create commit
         if: steps.changes.outputs.has_changes == 'true'
         run: |
-          BUMPED=${{ needs.bump.outputs.bumped_count }}
+          BUMPED="${{ needs.bump.outputs.bumped_count }}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add images/*/manifest.toml
-          git commit -m "$(cat <<'EOF'
+          # shellcheck disable=SC2086 # message templating
+          git commit -m "$(cat <<EOF
           chore: auto-bump ${BUMPED} image versions
 
           Automated version bump from upstream releases.
@@ -416,6 +419,7 @@ jobs:
       - name: Generate summary
         run: |
           OUTDATED=${{ needs.discover.outputs.outdated_count || '0' }}
+          # shellcheck disable=SC2034 # consumed via git-commit message template
           BUMPED=${{ needs.bump.outputs.bumped_count || '0' }}
           NEEDS_APPROVAL=${{ needs.bump.outputs.needs_approval || '0' }}
           ALL_PASS=${{ needs.validate.outputs.all_pass || 'unknown' }}

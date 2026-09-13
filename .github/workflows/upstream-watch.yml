@@ -285,7 +285,6 @@ jobs:
 
       - name: Generate changelog
         run: |
-          UPDATES='${{ needs.check.outputs.updates }}'
           python3 << 'PYEOF'
           import json, os
 
@@ -449,15 +448,17 @@ jobs:
     timeout-minutes: 2
     steps:
       - run: |
-          echo "# Upstream Version Watch Report" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Stage | Result |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Check | ${{ needs.check.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Bump | ${{ needs.bump.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| PR | ${{ needs.pr.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Auto-merge | ${{ needs.auto-merge.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Updates found:** ${{ needs.check.outputs.update_count }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "# Upstream Version Watch Report"
+            echo ""
+            echo "| Stage | Result |"
+            echo "|-------|--------|"
+            echo "| Check | ${{ needs.check.result }} |"
+            echo "| Bump | ${{ needs.bump.result }} |"
+            echo "| PR | ${{ needs.pr.result }} |"
+            echo "| Auto-merge | ${{ needs.auto-merge.result }} |"
+            echo ""
+            echo "**Updates found:** ${{ needs.check.outputs.update_count }}"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
           echo "_Run completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)_" >> "$GITHUB_STEP_SUMMARY"

@@ -72,6 +72,7 @@ jobs:
             helm package "$chart_dir" -d /tmp/helm-packages/
 
             # Push to OCI
+            # shellcheck disable=SC2012,SC2086 # glob pick from controlled names
             pkg_file=$(ls /tmp/helm-packages/${chart_name}-*.tgz 2>/dev/null | head -1)
             if [ -n "$pkg_file" ]; then
               helm push "$pkg_file" "oci://${{ env.CHART_REPO }}"

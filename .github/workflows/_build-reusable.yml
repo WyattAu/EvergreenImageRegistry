@@ -169,7 +169,8 @@ jobs:
             local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
             local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
             # Extract upstream version: Dockerfile ARG VERSION → manifest.toml metadata.version
-            local VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
+            local VERSION_TAG
+            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
             if [ -z "$VERSION_TAG" ] && [ -f "./images/${image}/manifest.toml" ]; then
               VERSION_TAG=$(grep -oP '^version\s*=\s*"\K[^"]+' "./images/${image}/manifest.toml" 2>/dev/null | head -1)
             fi
@@ -181,6 +182,7 @@ jobs:
 
             if [ "${{ inputs.multiarch }}" = "true" ]; then
               # Multi-arch: buildx with QEMU emulation, push directly (no local tarball)
+              # shellcheck disable=SC2086 # TAG_FLAGS is an intentionally-split flag list
               if timeout 1200 docker buildx build \
                   ${TAG_FLAGS} \
                   --platform linux/amd64,linux/arm64,linux/s390x,linux/ppc64le \
@@ -198,6 +200,7 @@ jobs:
               fi
             else
               # Single-arch: plain docker build (inherits host credentials)
+              # shellcheck disable=SC2086 # TAG_FLAGS is an intentionally-split flag list
               if timeout 900 docker build \
                   ${TAG_FLAGS} \
                   --build-arg "BUILD_DATE=${TAG}" \
@@ -488,6 +491,7 @@ jobs:
             # Note: cosign expects JUST the predicate, not the full in-toto statement
             PROV_FILE="/tmp/provenance-${image//\//-}.json"
             DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | python3 -c 'import sys,json;m=json.load(sys.stdin);print(m.get("manifests",[{}])[0].get("digest","unknown"))' 2>/dev/null || echo "sha256:unknown")
+            # shellcheck disable=SC2034 # SHA256 referenced by the heredoc template
             SHA256="${DIGEST#sha256:}"
             RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
             BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -521,13 +525,15 @@ jobs:
     timeout-minutes: 5
     steps:
       - run: |
-          echo "# Build Report - ${{ inputs.tier }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Tier** | ${{ inputs.tier }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Tag** | \`${{ inputs.tag || github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Push** | ${{ inputs.push }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Sign** | ${{ inputs.sign }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Multi-arch** | ${{ inputs.multiarch }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Build** | ${{ needs.build.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "# Build Report - ${{ inputs.tier }}"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| **Tier** | ${{ inputs.tier }} |"
+            echo "| **Tag** | \`${{ inputs.tag || github.sha }}\` |"
+            echo "| **Push** | ${{ inputs.push }} |"
+            echo "| **Sign** | ${{ inputs.sign }} |"
+            echo "| **Multi-arch** | ${{ inputs.multiarch }} |"
+            echo "| **Build** | ${{ needs.build.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

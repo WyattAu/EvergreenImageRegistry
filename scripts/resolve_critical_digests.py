@@ -88,12 +88,7 @@ def inspect_manifest(reference: str, timeout: float = 15.0, credentials: dict | 
     if parsed is None:
         return {"reference": reference, "status": "unsupported-reference"}
     registry, repository, tag = parsed
-    headers = {"Accept": ", ".join([
-        "application/vnd.oci.image.index.v1+json",
-        "application/vnd.docker.distribution.manifest.list.v2+json",
-        "application/vnd.oci.image.manifest.v1+json",
-        "application/vnd.docker.distribution.manifest.v2+json",
-    ]), "User-Agent": "evergreen-critical-digest-resolver/1"}
+    headers = {"Accept": "application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json", "User-Agent": "evergreen-critical-digest-resolver/1"}
     credentials = credentials or {}
     username, password = credentials.get(registry + "_USERNAME"), credentials.get(registry + "_PASSWORD")
     if username is not None and password is not None:

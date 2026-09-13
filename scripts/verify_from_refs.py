@@ -11,8 +11,14 @@ BEFORE a build wastes 40 minutes failing on it. Classifies each ref:
 Exit 0 unless DEAD refs are found. Usage:
   verify_from_refs.py [--images name1,name2] [--json]
 """
-import argparse, json, os, re, sys, time
-import urllib.request, urllib.error
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,12 +61,7 @@ def dockerhub_token(repo):
 def check_dockerhub(repo, tag):
     tok = dockerhub_token(repo)
     hdr = {"Authorization": f"Bearer {tok}"}
-    accept = ", ".join([
-        "application/vnd.docker.distribution.manifest.list.v2+json",
-        "application/vnd.docker.distribution.manifest.v2+json",
-        "application/vnd.oci.image.index.v1+json",
-        "application/vnd.oci.image.manifest.v1+json",
-    ])
+    accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json"
     code = http_code(f"https://registry-1.docker.io/v2/{repo}/manifests/{tag}", {**hdr, "Accept": accept})
     if code == 200:
         return "OK", ""
@@ -98,12 +99,7 @@ def check_ghcr(repo, tag):
     tok = get_token(f"https://ghcr.io/token?scope=repository:{repo}:pull")
     if not tok:
         return "UNKNOWN", "ghcr token refused"
-    accept = ", ".join([
-        "application/vnd.oci.image.index.v1+json",
-        "application/vnd.oci.image.manifest.v1+json",
-        "application/vnd.docker.distribution.manifest.list.v2+json",
-        "application/vnd.docker.distribution.manifest.v2+json",
-    ])
+    accept = "application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json"
     code = http_code(f"https://ghcr.io/v2/{repo}/manifests/{tag}",
                      {"Authorization": f"Bearer {tok}", "Accept": accept})
     if code == 200:
@@ -134,12 +130,7 @@ def check_cgr(repo, tag):
     tok = get_token(f"https://cgr.dev/token?scope=repository:{repo}:pull")
     if not tok:
         return "UNKNOWN", "cgr token fetch failed"
-    accept = ", ".join([
-        "application/vnd.docker.distribution.manifest.list.v2+json",
-        "application/vnd.docker.distribution.manifest.v2+json",
-        "application/vnd.oci.image.index.v1+json",
-        "application/vnd.oci.image.manifest.v1+json",
-    ])
+    accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json"
     code = http_code(f"https://cgr.dev/v2/{repo}/manifests/{tag}",
                      {"Accept": accept, "Authorization": f"Bearer {tok}"})
     if code == 200:
@@ -153,10 +144,7 @@ def check_gcr(repo, tag):
     tok = get_token(f"https://gcr.io/v2/token?service=gcr.io&scope=repository:{repo}:pull")
     if not tok:
         return "UNKNOWN", "gcr token fetch failed"
-    accept = ", ".join([
-        "application/vnd.docker.distribution.manifest.list.v2+json",
-        "application/vnd.oci.image.index.v1+json",
-    ])
+    accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.index.v1+json"
     code = http_code(f"https://gcr.io/v2/{repo}/manifests/{tag}",
                      {"Authorization": f"Bearer {tok}", "Accept": accept})
     if code == 200:
@@ -216,7 +204,8 @@ def check_registry(ref):
 
 def parse_dockerfile(path):
     """Extract (ref, image_name) FROM refs with ARG-default substitution."""
-    text = open(path, errors="replace").read()
+    with open(path, errors="replace") as f:
+        text = f.read()
     lines = text.splitlines()
     args = {}          # global args (before first FROM)
     stage_args = {}    # args after a FROM, reset each stage
@@ -240,7 +229,7 @@ def parse_dockerfile(path):
             ref = m.group(1)
             combined = {**args, **stage_args}
             # substitute ${VAR}
-            def sub(mo):
+            def sub(mo, combined=combined):
                 return combined.get(mo.group(1), "")
             ref = re.sub(r"\$\{(\w+)\}", sub, ref)
             stage_args = {}  # reset for next stage
@@ -278,8 +267,7 @@ def main():
     results = []  # (image, ref, status, detail)
     with ThreadPoolExecutor(max_workers=10) as ex:
         futures = {ex.submit(check_registry, ref): (img, ref) for img, ref in tasks}
-        for fut in futures:
-            img, ref = futures[fut]
+        for fut, (img, ref) in futures.items():
             try:
                 status, detail = fut.result()
             except Exception as e:

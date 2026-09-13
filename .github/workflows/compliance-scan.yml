@@ -71,26 +71,26 @@ jobs:
           # Check non-root user
           USER=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "root")
           if [ "$USER" != "root" ] && [ "$USER" != "0" ] && [ -n "$USER" ]; then
-            echo "cis_non_root=PASS" >> $GITHUB_OUTPUT
+            echo "cis_non_root=PASS" >> "$GITHUB_OUTPUT"
           else
-            echo "cis_non_root=FAIL" >> $GITHUB_OUTPUT
+            echo "cis_non_root=FAIL" >> "$GITHUB_OUTPUT"
           fi
 
           # Check HEALTHCHECK
           HC=$(docker inspect --format '{{.Config.Healthcheck.Test}}' "$REF" 2>/dev/null || echo "none")
           if [ "$HC" != "none" ] && [ "$HC" != "[]" ]; then
-            echo "cis_healthcheck=PASS" >> $GITHUB_OUTPUT
+            echo "cis_healthcheck=PASS" >> "$GITHUB_OUTPUT"
           else
-            echo "cis_healthcheck=FAIL" >> $GITHUB_OUTPUT
+            echo "cis_healthcheck=FAIL" >> "$GITHUB_OUTPUT"
           fi
 
           # Check for SUID files
           SUID=$(docker run --rm --entrypoint "" "$REF" find / -perm -4000 -type f 2>/dev/null | wc -l || echo "0")
           if [ "$SUID" = "0" ]; then
-            echo "cis_no_suid=PASS" >> $GITHUB_OUTPUT
+            echo "cis_no_suid=PASS" >> "$GITHUB_OUTPUT"
           else
             echo "::error::CIS no-SUID check failed (${SUID} files)"
-            echo "cis_no_suid=FAIL" >> $GITHUB_OUTPUT
+            echo "cis_no_suid=FAIL" >> "$GITHUB_OUTPUT"
             exit 1
           fi
 
@@ -103,13 +103,13 @@ jobs:
           OPENSSL=$(docker run --rm --entrypoint "" "$REF" openssl version 2>/dev/null || echo "NO_OPENSSL")
 
           if [ "$OPENSSL" = "NO_OPENSSL" ]; then
-            echo "fips_status=NOT_APPLICABLE" >> $GITHUB_OUTPUT
+            echo "fips_status=NOT_APPLICABLE" >> "$GITHUB_OUTPUT"
           elif echo "$OPENSSL" | grep -qi "fips"; then
-            echo "fips_status=FIPS_CAPABLE" >> $GITHUB_OUTPUT
+            echo "fips_status=FIPS_CAPABLE" >> "$GITHUB_OUTPUT"
           else
-            echo "fips_status=NOT_FIPS" >> $GITHUB_OUTPUT
+            echo "fips_status=NOT_FIPS" >> "$GITHUB_OUTPUT"
           fi
-          echo "openssl_version=$OPENSSL" >> $GITHUB_OUTPUT
+          echo "openssl_version=$OPENSSL" >> "$GITHUB_OUTPUT"
 
       - name: Verify supply chain
         id: supply
@@ -120,19 +120,19 @@ jobs:
           if cosign verify "$REF" \
             --certificate-identity-regexp "https://github.com/WyattAu/EvergreenImageRegistry/" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
-            echo "signed=YES" >> $GITHUB_OUTPUT
+            echo "signed=YES" >> "$GITHUB_OUTPUT"
           else
-            echo "signed=NO" >> $GITHUB_OUTPUT
+            echo "signed=NO" >> "$GITHUB_OUTPUT"
           fi
 
           # Check SPDX SBOM
           if cosign verify-attestation "$REF" --type spdxjson \
             --certificate-identity-regexp "https://github.com/WyattAu/EvergreenImageRegistry/" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
-            echo "spdx=YES" >> $GITHUB_OUTPUT
+            echo "spdx=YES" >> "$GITHUB_OUTPUT"
           else
             echo "::error::${{ matrix.image }}: SPDX attestation verification failed"
-            echo "spdx=NO" >> $GITHUB_OUTPUT
+            echo "spdx=NO" >> "$GITHUB_OUTPUT"
             exit 1
           fi
 

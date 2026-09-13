@@ -147,5 +147,5 @@ jobs:
       - name: Sign FIPS image
         run: |
           cosign sign --yes \
-            ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips@$(docker inspect --format '{{index .RepoDigests 0}}' ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips:latest | cut -d@ -f2) \
+            "$(docker inspect --format '{{index .RepoDigests 0}}' "${{ env.IMAGE_PREFIX }}/${{ matrix.image }}-fips:latest" | cut -d@ -f2)" \
             2>/dev/null || echo "Cosign signing skipped (keyless)"

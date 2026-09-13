@@ -32,16 +32,17 @@ jobs:
           # This script builds a markdown table of all images found in the /images directory.
           # It reads the version from the ARG in each Dockerfile.
 
-          START_MARKER="<!-- AUTO_IMAGE_LIST_START -->"
-          END_MARKER="<!-- AUTO_IMAGE_LIST_END -->"
+          export START_MARKER="<!-- AUTO_IMAGE_LIST_START -->"
+          export END_MARKER="<!-- AUTO_IMAGE_LIST_END -->"
           TABLE_HEADER="| Image | Upstream Version | Documentation |\n| :---- | :--------------- | :------------ |"
           IMAGE_BASE_PATH="images"
 
           # Start building the new content for the table
           new_table_content="$TABLE_HEADER"
 
-          for image_dir in $(ls -d $IMAGE_BASE_PATH/*/ | sort); do
-            image_name=$(basename $image_dir)
+          # shellcheck disable=SC2012,SC2086 # glob list is controlled; names are simple
+          for image_dir in $(ls -d "$IMAGE_BASE_PATH"/*/ | sort); do
+            image_name=$(basename "$image_dir")
             dockerfile_path="${image_dir}Dockerfile"
             readme_path="./${image_dir}README.md"
 

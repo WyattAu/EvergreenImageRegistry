@@ -58,7 +58,7 @@ jobs:
             [[ -f "$df" ]] || continue
             [[ "$df" == *"_wip"* || "$df" == *"_archive"* ]] && continue
             
-            name=$(basename $(dirname "$df"))
+            name=$(basename "$(dirname "$df")")
             content=$(cat "$df")
             errors=""
             
@@ -139,7 +139,7 @@ jobs:
           
           for df in images/*/Dockerfile.wolfi; do
             [[ -f "$df" ]] || continue
-            name=$(basename $(dirname "$df"))
+            name=$(basename "$(dirname "$df")")
             content=$(cat "$df")
             errors=""
             

@@ -93,8 +93,10 @@ jobs:
             fi
           fi
 
-          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
-          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          {
+            echo "matrix=$MATRIX"
+            echo "total=$TOTAL"
+          } >> "$GITHUB_OUTPUT"
           echo "::notice::Found $TOTAL eligible Go/Rust images for musl rebuild"
 
   # ---------------------------------------------------------------------------
@@ -111,7 +113,7 @@ jobs:
       fail-fast: false
     outputs:
       savings_pct: ${{ steps.compare.outputs.savings_pct }}
-      status: ${{ steps.build.outcome }}
+      status: ${{ steps.build-original.outcome }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
@@ -205,9 +207,11 @@ jobs:
           echo "Musl:      ${SIZE_AFTER_MB} MB"
           echo "Savings:   ${SAVED_MB} MB (${SAVINGS_PCT}%)"
 
-          echo "savings_pct=${SAVINGS_PCT}" >> "$GITHUB_OUTPUT"
-          echo "size_before=${SIZE_BEFORE_MB}" >> "$GITHUB_OUTPUT"
-          echo "size_after=${SIZE_AFTER_MB}" >> "$GITHUB_OUTPUT"
+          {
+            echo "savings_pct=${SAVINGS_PCT}"
+            echo "size_before=${SIZE_BEFORE_MB}"
+            echo "size_after=${SIZE_AFTER_MB}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Verify musl image works
         if: steps.generate.outputs.skip != 'true' && steps.build-musl.outcome == 'success'
@@ -263,6 +267,7 @@ jobs:
           BODY+="| Image | Before | After | Savings | Status |\n"
           BODY+="|-------|--------|-------|---------|--------|\n"
 
+          # shellcheck disable=SC2034 # consumed by the PR-body aggregation step
           SAVINGS_BODY=""
           for dir in /tmp/musl-dockerfiles/musl-*/; do
             [[ ! -d "$dir" ]] && continue
@@ -361,15 +366,17 @@ jobs:
     timeout-minutes: 2
     steps:
       - run: |
-          echo "# Musl Rebuild Report" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Images scanned | ${{ needs.discover.outputs.total || 0 }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Rebuild check | ${{ needs.rebuild-check.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| PR created | ${{ needs.create-pr.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Tracker updated | ${{ needs.update-tracker.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Commit:** \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Schedule:** \`${{ github.event.schedule || 'manual' }}\`" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "# Musl Rebuild Report"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| Images scanned | ${{ needs.discover.outputs.total || 0 }} |"
+            echo "| Rebuild check | ${{ needs.rebuild-check.result || 'skipped' }} |"
+            echo "| PR created | ${{ needs.create-pr.result || 'skipped' }} |"
+            echo "| Tracker updated | ${{ needs.update-tracker.result || 'skipped' }} |"
+            echo ""
+            echo "**Commit:** \`${{ github.sha }}\`"
+            echo ""
+            echo "**Schedule:** \`${{ github.event.schedule || 'manual' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

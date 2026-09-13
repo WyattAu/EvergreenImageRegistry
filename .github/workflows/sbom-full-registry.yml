@@ -62,9 +62,11 @@ jobs:
           WITH_SBOM=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(d['with_sbom_valid'])")
           COVERAGE=$(python3 -c "import json; d=json.load(open('/tmp/coverage.json')); print(f\"{d['with_sbom_valid']/d['total_images']*100:.1f}\")")
 
-          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
-          echo "with_sbom=$WITH_SBOM" >> "$GITHUB_OUTPUT"
-          echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
+          {
+            echo "total=$TOTAL"
+            echo "with_sbom=$WITH_SBOM"
+            echo "coverage=$COVERAGE"
+          } >> "$GITHUB_OUTPUT"
 
           echo "=== SBOM Coverage ==="
           echo "Total: $TOTAL"

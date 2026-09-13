@@ -90,8 +90,10 @@ jobs:
             done
           fi
 
-          echo "images=${IMAGES}" >> "$GITHUB_OUTPUT"
-          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+          {
+            echo "images=${IMAGES}"
+            echo "count=${COUNT}"
+          } >> "$GITHUB_OUTPUT"
           echo "Found ${COUNT} images to verify"
 
   # ---------------------------------------------------------------------------
@@ -180,15 +182,17 @@ jobs:
             echo "::endgroup::"
           done
 
-          echo "## SLSA Provenance Verification Report" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Total images | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ✅ Verified | ${VERIFIED} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ❌ Missing/Failed | ${FAILED} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ⚠️ Not in registry | ${MISSING} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## SLSA Provenance Verification Report"
+            echo ""
+            echo "| Metric | Count |"
+            echo "|--------|-------|"
+            echo "| Total images | ${TOTAL} |"
+            echo "| ✅ Verified | ${VERIFIED} |"
+            echo "| ❌ Missing/Failed | ${FAILED} |"
+            echo "| ⚠️ Not in registry | ${MISSING} |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ "$FAILED" -gt 0 ]; then
             echo "::warning::${FAILED} image(s) missing SLSA provenance attestation"
           fi
@@ -258,6 +262,7 @@ jobs:
             DIGEST=$(docker manifest inspect "$REF" 2>/dev/null | \
               python3 -c 'import sys,json; m=json.load(sys.stdin); print(m.get("manifests",[{}])[0].get("digest","unknown"))' 2>/dev/null || echo "unknown")
             BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            # shellcheck disable=SC2034 # template-consumed field
             RUN_ID="${{ github.run_id }}-${{ github.run_attempt }}"
 
             PROV_FILE="/tmp/provenance-${image//\//-}.json"
@@ -308,7 +313,9 @@ jobs:
             echo "::endgroup::"
           done
 
-          echo "## Re-attestation Report" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Attested:** ${ATTESTED}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Skipped (already attested or not found):** ${SKIPPED}" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Re-attestation Report"
+            echo ""
+            echo "- **Attested:** ${ATTESTED}"
+            echo "- **Skipped (already attested or not found):** ${SKIPPED}"
+          } >> "$GITHUB_STEP_SUMMARY"

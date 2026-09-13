@@ -79,7 +79,8 @@ jobs:
               exit 1
             fi
 
-            # Generate in-toto provenance statement
+            # Generate in-toto provenance statement (heredoc expands ${img}/${REF} by design)
+            # shellcheck disable=SC2086
             cat > /tmp/provenance-${img}.json << PROVENANCE
           {
             "_type": "https://in-toto.io/Statement/v0.1",
@@ -119,9 +120,9 @@ jobs:
           PROVENANCE
 
             # Sign with cosign (keyless)
-            if [ -f "/tmp/provenance-${img}.json" ]; then:
+            if [ -f "/tmp/provenance-${img}.json" ]; then
               cosign attest --yes \
-                --predicate /tmp/provenance-${img}.json \
+                --predicate "/tmp/provenance-${img}.json" \
                 --type slsaprovenance \
                 "${REF}"
             fi

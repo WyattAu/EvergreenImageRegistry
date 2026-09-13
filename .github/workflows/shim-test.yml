@@ -69,13 +69,13 @@ jobs:
           echo "Building shim version: ${SHIM_VERSION}"
 
           # Build health-shim and tag as the remote reference consumers expect
-          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
+          docker build -t "ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION}" \
             images/health-shim/
           # Also tag as cache-shim for redis (same binary, different config)
-          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
-            ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION}
+          docker tag "ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION}" \
+            "ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION}"
           # Also tag as latest for backward compat
-          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
+          docker tag "ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION}" \
             ghcr.io/wyattau/evergreenshim/health-shim:latest
 
       - name: Build image

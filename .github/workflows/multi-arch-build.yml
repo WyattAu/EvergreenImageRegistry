@@ -70,8 +70,10 @@ jobs:
           fi
 
           if [ -z "$IMAGES" ]; then
-            echo "images=" >> "$GITHUB_OUTPUT"
-            echo 'matrix={"batch":[]}' >> "$GITHUB_OUTPUT"
+            {
+              echo "images="
+              echo 'matrix={"batch":[]}'
+            } >> "$GITHUB_OUTPUT"
           else
             # Build matrix JSON
             MATRIX=$(python3 -c "
@@ -79,8 +81,10 @@ jobs:
           images = [x.strip() for x in '$IMAGES'.split(',') if x.strip()]
           print(json.dumps({'image': images}))
           ")
-            echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
-            echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+            {
+              echo "images=$IMAGES"
+              echo "matrix=$MATRIX"
+            } >> "$GITHUB_OUTPUT"
           fi
 
   # ===========================================================================
@@ -137,6 +141,7 @@ jobs:
         run: |
           echo "=== Multi-Arch Verification ==="
           manifest=$(docker manifest inspect ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}:latest 2>/dev/null || echo "{}")
+          # shellcheck disable=SC2034 # consumed downstream via env/outputs
           architectures=$(echo "$manifest" | python3 -c "
           import json, sys
           data = json.load(sys.stdin)

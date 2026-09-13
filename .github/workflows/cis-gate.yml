@@ -178,9 +178,11 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## CIS Benchmark Gate — ${{ matrix.image }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "All checks completed for \`images/${{ matrix.image }}/Dockerfile\`" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## CIS Benchmark Gate — ${{ matrix.image }}"
+            echo ""
+            echo "All checks completed for \`images/${{ matrix.image }}/Dockerfile\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ---------------------------------------------------------------------------
   # Aggregate results
@@ -193,12 +195,14 @@ jobs:
     steps:
       - name: Report
         run: |
-          echo "## CIS Docker Benchmark Gate" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Job | Result |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| CIS Check | ${{ needs.cis-check.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## CIS Docker Benchmark Gate"
+            echo ""
+            echo "| Job | Result |"
+            echo "|-----|--------|"
+            echo "| CIS Check | ${{ needs.cis-check.result }} |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ needs.cis-check.result }}" = "failure" ]; then
             echo "::error::CIS Docker Benchmark gate failed — see details above"
             exit 1

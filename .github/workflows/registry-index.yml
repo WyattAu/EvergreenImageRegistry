@@ -80,10 +80,12 @@ jobs:
           HC=$(python3 -c "import json; print(json.load(open('/tmp/index-stats.json'))['with_healthcheck'])")
           PINNED=$(python3 -c "import json; print(json.load(open('/tmp/index-stats.json'))['digest_pinned_pct'])")
 
-          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-          echo "sbom=${SBOM}" >> "$GITHUB_OUTPUT"
-          echo "healthcheck=${HC}" >> "$GITHUB_OUTPUT"
-          echo "pinned=${PINNED}" >> "$GITHUB_OUTPUT"
+          {
+            echo "total=${TOTAL}"
+            echo "sbom=${SBOM}"
+            echo "healthcheck=${HC}"
+            echo "pinned=${PINNED}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Generate summary
         if: always()
@@ -107,7 +109,7 @@ jobs:
             echo ""
             echo "## Index Files"
             echo ""
-            echo "- `.registry.db` - SQLite database"
+            echo "- \`.registry.db\` - SQLite database"
             echo ""
             echo "_Generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -150,8 +152,10 @@ jobs:
 
       - name: Query tier 1 images
         run: |
-          echo "## Tier 1 Images" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Tier 1 Images"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
           cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
             index-query --db-path .registry.db --tier 1 --format text \
             >> "$GITHUB_STEP_SUMMARY" 2>&1 || echo "Query failed"
@@ -159,8 +163,10 @@ jobs:
 
       - name: Query by source type
         run: |
-          echo "## Binary Download Images" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Binary Download Images"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
           cargo run --release --manifest-path evergreenctl/Cargo.toml -- \
             index-query --db-path .registry.db --source-type binary-download --format text \
             >> "$GITHUB_STEP_SUMMARY" 2>&1 || echo "Query failed"

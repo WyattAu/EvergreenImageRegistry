@@ -9,9 +9,9 @@ Hardened container images for production, with inventory and coverage metrics ge
 [![SBOM coverage](https://img.shields.io/badge/SBOM%20coverage-generated-brightgreen.svg?style=flat-square)](docs/standards.md)
 
 Evergreen provides a long-term home for open-source container images that vendors have abandoned or moved behind
-paywalls. Images target a strict set of [Image Standards](docs/standards.md), including non-root execution, minimal runtime
-bases, healthchecks where supported, and reproducible-build controls. Coverage is measured by generated reports; these
-artifacts are not a substitute for deployment-specific verification.
+paywalls. Images target a strict set of [Image Standards](docs/standards.md), including non-root execution, minimal
+runtime bases, healthchecks where supported, and reproducible-build controls. Coverage is measured by generated reports;
+these artifacts are not a substitute for deployment-specific verification.
 
 ## Quick Start
 
@@ -36,27 +36,27 @@ docker pull ghcr.io/wyattau/evergreenimageregistry/redis@sha256:<digest>
 
 ## Security Guarantees
 
-| Hardening Control             | Coverage          | Standard Reference       |
-| ----------------------------- | ----------------- | ------------------------ |
-| Non-root execution            | Generated         | CIS 4.5.1                |
-| HEALTHCHECK instruction       | Generated         | Docker best practice     |
-| SBOM (SPDX 2.3)               | Generated         | NIST SP 800-218          |
-| Digest-pinned final stages    | Generated         | Supply chain integrity   |
-| Critical-tier FROM pinning    | Blocking in CI    | Supply chain integrity   |
-| Standard-tier FROM pinning    | Tracked debt      | Supply chain integrity   |
-| CAP_DROP ALL documented       | Policy target     | CIS 4.5.3                |
-| no-new-privileges documented  | Policy target     | CIS 4.5.1                |
-| Multi-stage builds            | Generated         | Attack surface reduction |
-| SOURCE_DATE_EPOCH             | Build control     | Reproducible builds      |
-| No hardcoded secrets          | Generated         | NIST SP 800-53 SC-12     |
+| Hardening Control            | Coverage       | Standard Reference       |
+| ---------------------------- | -------------- | ------------------------ |
+| Non-root execution           | Generated      | CIS 4.5.1                |
+| HEALTHCHECK instruction      | Generated      | Docker best practice     |
+| SBOM (SPDX 2.3)              | Generated      | NIST SP 800-218          |
+| Digest-pinned final stages   | Generated      | Supply chain integrity   |
+| Critical-tier FROM pinning   | Blocking in CI | Supply chain integrity   |
+| Standard-tier FROM pinning   | Tracked debt   | Supply chain integrity   |
+| CAP_DROP ALL documented      | Policy target  | CIS 4.5.3                |
+| no-new-privileges documented | Policy target  | CIS 4.5.1                |
+| Multi-stage builds           | Generated      | Attack surface reduction |
+| SOURCE_DATE_EPOCH            | Build control  | Reproducible builds      |
+| No hardcoded secrets         | Generated      | NIST SP 800-53 SC-12     |
 
 Images are intended to use approved minimal final stages. Build tools, compilers, and package managers should be
 excluded from runtime images; the validation pipeline remains the authoritative source for coverage.
 
 ## Image Catalog
 
-Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html). The catalog generator derives the
-current image count and categories from active image directories:
+Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html). The catalog generator derives the current
+image count and categories from active image directories:
 
 | Category   | Count | Category          | Count |
 | ---------- | ----- | ----------------- | ----- |

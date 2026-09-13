@@ -44,13 +44,15 @@ jobs:
           VEX=$(grep "^eir_vex_documents_total" /tmp/eir_metrics.prom | awk '{print $2}')
           WORKFLOWS=$(grep "^eir_workflows_total" /tmp/eir_metrics.prom | awk '{print $2}')
 
-          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
-          echo "passed=$PASSED" >> "$GITHUB_OUTPUT"
-          echo "block=$BLOCK" >> "$GITHUB_OUTPUT"
-          echo "warn=$WARN" >> "$GITHUB_OUTPUT"
-          echo "sbom=$SBOM" >> "$GITHUB_OUTPUT"
-          echo "vex=$VEX" >> "$GITHUB_OUTPUT"
-          echo "workflows=$WORKFLOWS" >> "$GITHUB_OUTPUT"
+          {
+            echo "total=$TOTAL"
+            echo "passed=$PASSED"
+            echo "block=$BLOCK"
+            echo "warn=$WARN"
+            echo "sbom=$SBOM"
+            echo "vex=$VEX"
+            echo "workflows=$WORKFLOWS"
+          } >> "$GITHUB_OUTPUT"
 
           if [ "$TOTAL" -gt 0 ]; then
             RATE=$(echo "scale=1; $PASSED * 100 / $TOTAL" | bc)
@@ -129,14 +131,16 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## 📊 Compliance Metrics Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Total Images | ${{ steps.metrics.outputs.total }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Passing | ${{ steps.metrics.outputs.passed }} (${{ steps.metrics.outputs.pass_rate }}%) |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| BLOCK Violations | ${{ steps.metrics.outputs.block }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| WARN Violations | ${{ steps.metrics.outputs.warn }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| SBOM Coverage | ${{ steps.metrics.outputs.sbom }}/${{ steps.metrics.outputs.total }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| VEX Documents | ${{ steps.metrics.outputs.vex }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| CI Workflows | ${{ steps.metrics.outputs.workflows }} |" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## 📊 Compliance Metrics Summary"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| Total Images | ${{ steps.metrics.outputs.total }} |"
+            echo "| Passing | ${{ steps.metrics.outputs.passed }} (${{ steps.metrics.outputs.pass_rate }}%) |"
+            echo "| BLOCK Violations | ${{ steps.metrics.outputs.block }} |"
+            echo "| WARN Violations | ${{ steps.metrics.outputs.warn }} |"
+            echo "| SBOM Coverage | ${{ steps.metrics.outputs.sbom }}/${{ steps.metrics.outputs.total }} |"
+            echo "| VEX Documents | ${{ steps.metrics.outputs.vex }} |"
+            echo "| CI Workflows | ${{ steps.metrics.outputs.workflows }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

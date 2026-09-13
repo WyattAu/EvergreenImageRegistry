@@ -154,7 +154,6 @@ jobs:
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             REF="${REGISTRY}/${OWNER}/${image}:latest"
-            SAFE="${image//\//-}"
             echo "::group::Prepare ${image}"
 
             if docker pull "$REF" > /dev/null 2>&1; then
@@ -181,8 +180,9 @@ jobs:
             fi
             echo "::endgroup::"
           done
+          EXPECTED="${{ matrix.count }}"
           echo "Batch ${{ matrix.batch }}: ${PULLED} pulled, ${BUILT} built, ${FAILED} failed"
-          if [ "$FAILED" -gt 0 ] || [ $((PULLED + BUILT)) -ne "${{ matrix.count }}" ]; then
+          if [ "$FAILED" -gt 0 ] || [ "${EXPECTED}" != "" ] && [ $((PULLED + BUILT)) -ne "$EXPECTED" ]; then
             echo "::error::Batch ${{ matrix.batch }} did not prepare every expected image"
             exit 1
           fi
@@ -278,7 +278,6 @@ jobs:
         run: |
           mkdir -p /tmp/sbom-results /tmp/sbom-baseline
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
-          DATE=$(date +%Y-%m-%d)
 
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
@@ -416,13 +415,11 @@ jobs:
       - name: Check base image freshness
         run: |
           mkdir -p /tmp/base-image-report
-          STALE_COUNT=0
           FRESH_COUNT=0
           UNKNOWN_COUNT=0
 
           while IFS= read -r base; do
             [ -z "$base" ] && continue
-            SAFE=$(echo "$base" | tr '/:' '_')
 
             echo "::group::Check ${base}"
 
@@ -519,7 +516,6 @@ jobs:
         run: |
           mkdir -p /tmp/compliance-results
           SAMPLE_IMAGES="nginx redis coredns traefik haproxy"
-          DATE=$(date +%Y-%m-%d)
 
           for image in $SAMPLE_IMAGES; do
             REF="${REGISTRY}/${OWNER}/${image}:latest"
@@ -657,10 +653,12 @@ jobs:
           MEDIUM=${MEDIUM:-0}
           LOW=${LOW:-0}
 
-          echo "CRITICAL=${CRITICAL}" >> "$GITHUB_ENV"
-          echo "HIGH=${HIGH}" >> "$GITHUB_ENV"
-          echo "MEDIUM=${MEDIUM}" >> "$GITHUB_ENV"
-          echo "LOW=${LOW}" >> "$GITHUB_ENV"
+          {
+            echo "CRITICAL=${CRITICAL}"
+            echo "HIGH=${HIGH}"
+            echo "MEDIUM=${MEDIUM}"
+            echo "LOW=${LOW}"
+          } >> "$GITHUB_ENV"
 
           echo "has_critical_cves=false" >> "$GITHUB_OUTPUT"
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then

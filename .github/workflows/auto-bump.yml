@@ -130,8 +130,10 @@ jobs:
             echo "No changes to commit"
             echo "has_changes=false" >> "$GITHUB_ENV"
           else
-            echo "has_changes=true" >> "$GITHUB_ENV"
-            echo "=== Changed files ==="
+            {
+              echo "has_changes=true"
+              echo "=== Changed files ==="
+            } >> "$GITHUB_ENV"
             git diff --stat
 
             CHANGED_IMAGES=$(git diff --name-only | grep -oP '^images/\K[^/]+' | sort -u)
@@ -147,17 +149,22 @@ jobs:
               exit 0
             fi
 
-            echo "changed_count=${CHANGED_COUNT}" >> "$GITHUB_OUTPUT"
+            {
+              echo "changed_count=${CHANGED_COUNT}"
+            } >> "$GITHUB_OUTPUT"
 
              BATCH_COUNT=$(( (CHANGED_COUNT + BATCH_SIZE - 1) / BATCH_SIZE ))
-             echo "batch_count=${BATCH_COUNT}" >> "$GITHUB_OUTPUT"
-             BATCH_INDICES=$(python3 -c "import json; print(json.dumps(list(range(${BATCH_COUNT}))))")
-             echo "batch_indices=${BATCH_INDICES}" >> "$GITHUB_OUTPUT"
-             echo "Will create up to ${BATCH_COUNT} PR batch(es) (batch_size=${BATCH_SIZE})"
+             {
+               echo "batch_count=${BATCH_COUNT}"
+               echo "batch_indices=$(python3 -c "import json; print(json.dumps(list(range(${BATCH_COUNT}))))")"
+               echo "Will create up to ${BATCH_COUNT} PR batch(es) (batch_size=${BATCH_SIZE})"
+             } >> "$GITHUB_OUTPUT"
 
-            echo "CHANGED_IMAGES<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$CHANGED_IMAGES" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
+            {
+              echo "CHANGED_IMAGES<<EOF"
+              echo "$CHANGED_IMAGES"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
           fi
 
       - name: Generate changelog and SBOM diff

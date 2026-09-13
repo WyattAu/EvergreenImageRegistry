@@ -663,7 +663,7 @@ jobs:
           echo "has_critical_cves=false" >> "$GITHUB_OUTPUT"
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
             echo "has_critical_cves=true" >> "$GITHUB_OUTPUT"
-            AFFECTED=$(cat /tmp/report/all-cves.csv | grep -E "^(CRITICAL|HIGH)," | head -20 || true)
+            AFFECTED=$(grep -E "^(CRITICAL|HIGH)," /tmp/report/all-cves.csv | head -20 || true)
             {
               echo "affected_images<<EOF"
               echo "$AFFECTED"

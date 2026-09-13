@@ -18,9 +18,7 @@ from pathlib import Path
 def run_cmd(cmd: list[str], timeout: int = 300) -> tuple[int, str, str]:
     """Run a command and return (returncode, stdout, stderr)."""
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         return result.returncode, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
         return -1, "", "timeout"
@@ -46,7 +44,9 @@ def build_image(image_name: str, dockerfile: str, context: str) -> bool:
         return False
 
 
-def run_container(image_name: str, container_name: str, timeout: int = 30) -> str | None:
+def run_container(
+    image_name: str, container_name: str, timeout: int = 30
+) -> str | None:
     """Run a container and return container ID."""
     print(f"  Running {container_name}...", end=" ", flush=True)
     rc, stdout, _ = run_cmd(
@@ -64,9 +64,7 @@ def run_container(image_name: str, container_name: str, timeout: int = 30) -> st
 def check_non_root(container_id: str) -> bool:
     """Verify container is running as non-root (UID 65532)."""
     print("  Checking non-root...", end=" ", flush=True)
-    rc, stdout, _ = run_cmd(
-        ["docker", "exec", container_id, "cat", "/proc/1/status"]
-    )
+    rc, stdout, _ = run_cmd(["docker", "exec", container_id, "cat", "/proc/1/status"])
     if rc == 0:
         for line in stdout.splitlines():
             if line.startswith("Uid:"):
@@ -91,9 +89,7 @@ def check_non_root(container_id: str) -> bool:
 def check_process_running(container_id: str) -> bool:
     """Check if the main process is running."""
     print("  Checking process...", end=" ", flush=True)
-    rc, _, _ = run_cmd(
-        ["docker", "exec", container_id, "kill", "-0", "1"]
-    )
+    rc, _, _ = run_cmd(["docker", "exec", container_id, "kill", "-0", "1"])
     if rc == 0:
         print("✅")
         return True
@@ -112,7 +108,9 @@ def test_image(img_dir: Path, variant: str = "Dockerfile") -> dict:
     """Test a single image variant."""
     img_name = img_dir.name
     dockerfile = img_dir / variant
-    image_tag = f"runtime-test/{img_name}:{variant.replace('Dockerfile.', '') or 'latest'}"
+    image_tag = (
+        f"runtime-test/{img_name}:{variant.replace('Dockerfile.', '') or 'latest'}"
+    )
     container_name = f"rt-{img_name}-{variant.replace('Dockerfile.', '') or 'default'}"
 
     result = {
@@ -167,8 +165,7 @@ def main():
     else:
         # All images (or critical tier)
         image_dirs = sorted(
-            d for d in images_dir.iterdir()
-            if d.is_dir() and not d.name.startswith("_")
+            d for d in images_dir.iterdir() if d.is_dir() and not d.name.startswith("_")
         )
 
     print("=" * 60)
@@ -205,7 +202,11 @@ def main():
     print(f"Process: {process_pass}/{total}")
 
     # List failures
-    failures = [r for r in results if not all([r["build"], r["run"], r["non_root"], r["process"]])]
+    failures = [
+        r
+        for r in results
+        if not all([r["build"], r["run"], r["non_root"], r["process"]])
+    ]
     if failures:
         print()
         print("Failures:")

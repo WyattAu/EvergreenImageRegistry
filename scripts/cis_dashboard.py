@@ -30,7 +30,9 @@ def check_image_compliance(img_dir: Path) -> dict:
     content = dockerfile.read_text()
 
     # Check non-root
-    result["non_root"] = any(u in content for u in ["USER 65532", "USER 65534", "USER nobody"])
+    result["non_root"] = any(
+        u in content for u in ["USER 65532", "USER 65534", "USER nobody"]
+    )
 
     # Check healthcheck
     result["healthcheck"] = "HEALTHCHECK" in content
@@ -83,10 +85,18 @@ def generate_dashboard(images_dir: Path, output_file: Path):
     md.append(f"| Total images | {total} |")
     md.append(f"| Critical tier | {len(critical)} |")
     md.append(f"| Standard tier | {len(standard)} |")
-    md.append(f"| Non-root compliance | {non_root_pass}/{total} ({non_root_pass/total*100:.1f}%) |")
-    md.append(f"| Healthcheck compliance | {healthcheck_pass}/{total} ({healthcheck_pass/total*100:.1f}%) |")
-    md.append(f"| Entrypoint compliance | {entrypoint_pass}/{total} ({entrypoint_pass/total*100:.1f}%) |")
-    md.append(f"| Digest pinned | {digest_pass}/{total} ({digest_pass/total*100:.1f}%) |")
+    md.append(
+        f"| Non-root compliance | {non_root_pass}/{total} ({non_root_pass / total * 100:.1f}%) |"
+    )
+    md.append(
+        f"| Healthcheck compliance | {healthcheck_pass}/{total} ({healthcheck_pass / total * 100:.1f}%) |"
+    )
+    md.append(
+        f"| Entrypoint compliance | {entrypoint_pass}/{total} ({entrypoint_pass / total * 100:.1f}%) |"
+    )
+    md.append(
+        f"| Digest pinned | {digest_pass}/{total} ({digest_pass / total * 100:.1f}%) |"
+    )
     md.append("")
 
     # Non-compliant images
@@ -109,7 +119,9 @@ def generate_dashboard(images_dir: Path, output_file: Path):
 
 def main():
     images_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("images")
-    output_file = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("docs/cis-dashboard.md")
+    output_file = (
+        Path(sys.argv[2]) if len(sys.argv) > 2 else Path("docs/cis-dashboard.md")
+    )
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
     generate_dashboard(images_dir, output_file)

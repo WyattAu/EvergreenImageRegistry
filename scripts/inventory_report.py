@@ -78,9 +78,15 @@ def scan() -> dict:
         manifest_tier = _manifest_tier(manifest_data)
         dockerfile_tiers = TIER_RE.findall(text)
         tier = normalize_tier(manifest_tier)
-        normalized_dockerfile_tiers = [normalize_tier(value) for value in dockerfile_tiers]
-        tier_conflict = bool(normalized_dockerfile_tiers) and any(value != tier for value in normalized_dockerfile_tiers)
-        if dockerfile_tiers and all(value.strip() in {"1", "2", "3"} for value in dockerfile_tiers):
+        normalized_dockerfile_tiers = [
+            normalize_tier(value) for value in dockerfile_tiers
+        ]
+        tier_conflict = bool(normalized_dockerfile_tiers) and any(
+            value != tier for value in normalized_dockerfile_tiers
+        )
+        if dockerfile_tiers and all(
+            value.strip() in {"1", "2", "3"} for value in dockerfile_tiers
+        ):
             tier_conflict = False
         from_lines = _from_lines(text)
         unpinned_from = [item for item in from_lines if not item["pinned"]]
@@ -96,8 +102,13 @@ def scan() -> dict:
                 "manifest": True,
                 "sbom": (directory / "sbom.spdx.json").exists(),
                 "sbom_has_packages": _sbom_has_packages(directory / "sbom.spdx.json"),
-                "has_user": any(line.upper().startswith("USER ") for line in text.splitlines()),
-                "has_healthcheck": any(line.upper().startswith("HEALTHCHECK ") for line in text.splitlines()),
+                "has_user": any(
+                    line.upper().startswith("USER ") for line in text.splitlines()
+                ),
+                "has_healthcheck": any(
+                    line.upper().startswith("HEALTHCHECK ")
+                    for line in text.splitlines()
+                ),
                 "all_from_pinned": not unpinned_from and bool(from_lines),
                 "unpinned_from": unpinned_from,
             }
@@ -117,7 +128,10 @@ def scan() -> dict:
         "critical_total": len(critical),
         "critical_from_pinned": len(critical) - len(critical_unpinned),
         "critical_unpinned": len(critical_unpinned),
-        "standard_unpinned": sum(item["tier"] != "critical" and not item["all_from_pinned"] for item in images),
+        "standard_unpinned": sum(
+            item["tier"] != "critical" and not item["all_from_pinned"]
+            for item in images
+        ),
         "tier_conflicts": sum(item["tier_conflict"] for item in images),
         "invalid_tiers": sum(item["invalid_tier"] for item in images),
         "critical_unpinned_images": [item["name"] for item in critical_unpinned],

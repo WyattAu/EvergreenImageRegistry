@@ -65,7 +65,7 @@ jobs:
       - name: Build shim images locally
         run: |
           # Read shim version from .shim-version
-          SHIM_VERSION=$(cat .shim-version | tr -d '[:space:]')
+          SHIM_VERSION=$(tr -d '[:space:]' < .shim-version)
           echo "Building shim version: ${SHIM_VERSION}"
 
           # Build health-shim and tag as the remote reference consumers expect

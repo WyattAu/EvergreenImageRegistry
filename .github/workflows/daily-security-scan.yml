@@ -721,7 +721,7 @@ jobs:
               echo "## :warning: New CRITICAL/HIGH CVEs Detected"
               echo ""
               echo "\`\`\`"
-              cat /tmp/report/all-cves.csv 2>/dev/null | grep -E "^(CRITICAL|HIGH)," || echo "None"
+              grep -E "^(CRITICAL|HIGH)," /tmp/report/all-cves.csv 2>/dev/null || echo "None"
               echo "\`\`\`"
             else
               echo "## :white_check_mark: No New CRITICAL/HIGH CVEs"

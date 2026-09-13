@@ -32,13 +32,15 @@ from typing import Any
 # Rego AST / evaluation types
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RegoRule:
     """A parsed deny[msg] rule."""
+
     package: str
     condition: str  # raw condition text
-    message: str    # message expression
-    raw: str        # full Rego source
+    message: str  # message expression
+    raw: str  # full Rego source
 
 
 @dataclass
@@ -51,6 +53,7 @@ class PolicyEvaluation:
 # ---------------------------------------------------------------------------
 # Rego parser (subset)
 # ---------------------------------------------------------------------------
+
 
 def parse_rego(source: str) -> list[RegoRule]:
     """Parse a Rego source string into structured rules.
@@ -67,7 +70,7 @@ def parse_rego(source: str) -> list[RegoRule]:
 
     # Extract deny blocks
     deny_pattern = re.compile(
-        r'deny\[msg\]\s*\{([^}]+)\}',
+        r"deny\[msg\]\s*\{([^}]+)\}",
         re.DOTALL,
     )
 
@@ -86,12 +89,14 @@ def parse_rego(source: str) -> list[RegoRule]:
                 condition_lines.append(line)
         condition = " AND ".join(condition_lines)
 
-        rules.append(RegoRule(
-            package=package,
-            condition=condition,
-            message=message,
-            raw=body,
-        ))
+        rules.append(
+            RegoRule(
+                package=package,
+                condition=condition,
+                message=message,
+                raw=body,
+            )
+        )
 
     return rules
 
@@ -99,6 +104,7 @@ def parse_rego(source: str) -> list[RegoRule]:
 # ---------------------------------------------------------------------------
 # Rego evaluator (subset)
 # ---------------------------------------------------------------------------
+
 
 def eval_contains(haystack: str, needle: str) -> bool:
     """Evaluate a contains(haystack, needle) expression."""
@@ -240,7 +246,7 @@ def evaluate_rule(rule: RegoRule, input_data: dict[str, Any]) -> PolicyEvaluatio
 # extracted by the parser. The eval_regex_match function receives the
 # extracted pattern string directly.
 POLICY_SOURCES: dict[str, str] = {
-    "DOCKER-SEC-001": r'''
+    "DOCKER-SEC-001": r"""
 package evergreen.dockerfile
 
 deny[msg] {
@@ -249,8 +255,8 @@ deny[msg] {
     regex.match("(?i)^\s*FROM\s+.*alpine", input.dockerfile)
     msg := "Alpine base images are BANNED for final stage (ADR-007)"
 }
-''',
-    "DOCKER-SEC-002": r'''
+""",
+    "DOCKER-SEC-002": r"""
 package evergreen.dockerfile
 
 deny[msg] {
@@ -259,8 +265,8 @@ deny[msg] {
     regex.match("(?i)^\s*FROM\s+.*debian.*slim", input.dockerfile)
     msg := "debian-slim is BANNED per ADR-007. Use wolfi-base instead."
 }
-''',
-    "DOCKER-SEC-003": '''
+""",
+    "DOCKER-SEC-003": """
 package evergreen.dockerfile
 
 deny[msg] {
@@ -269,8 +275,8 @@ deny[msg] {
     not contains(input.dockerfile, "USER nonroot")
     msg := "Final stage must run as non-root user (UID 65532)"
 }
-''',
-    "SC-001": '''
+""",
+    "SC-001": """
 package evergreen.supply_chain
 
 deny[msg] {
@@ -278,8 +284,8 @@ deny[msg] {
     not input.sbom
     msg := "Tier 1 (critical) images must have a valid SBOM"
 }
-''',
-    "SC-003": r'''
+""",
+    "SC-003": r"""
 package evergreen.supply_chain
 
 deny[msg] {
@@ -287,7 +293,7 @@ deny[msg] {
     regex.match("(?i)(password|secret|token|api.key|private.key)", input.dockerfile)
     msg := "Dockerfile contains potential secrets"
 }
-''',
+""",
 }
 
 
@@ -320,11 +326,13 @@ def evaluate_policies(
     for policy_id in sources:
         source = POLICY_SOURCES.get(policy_id)
         if not source:
-            results.append(PolicyEvaluation(
-                rule_id=policy_id,
-                status="error",
-                message=f"Unknown policy: {policy_id}",
-            ))
+            results.append(
+                PolicyEvaluation(
+                    rule_id=policy_id,
+                    status="error",
+                    message=f"Unknown policy: {policy_id}",
+                )
+            )
             continue
 
         rules = parse_rego(source)
@@ -339,6 +347,7 @@ def evaluate_policies(
 # ---------------------------------------------------------------------------
 # OCI reference parser (Python, for testing and lightweight use)
 # ---------------------------------------------------------------------------
+
 
 def parse_oci_reference(ref: str) -> tuple[str, str, str, str | None]:
     """Parse a container image reference into (registry, repository, tag, error).
@@ -384,6 +393,7 @@ def parse_oci_reference(ref: str) -> tuple[str, str, str, str | None]:
 # Image-level evaluation
 # ---------------------------------------------------------------------------
 
+
 def evaluate_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     """Evaluate all Rego policies for a single image."""
     image_dir = images_dir / image_name
@@ -410,6 +420,7 @@ def evaluate_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     if manifest_path.exists():
         try:
             import tomllib
+
             manifest = tomllib.loads(manifest_path.read_text())
         except Exception:
             pass
@@ -430,11 +441,13 @@ def evaluate_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     )
 
     for e in evaluations:
-        result["evaluations"].append({
-            "policy_id": e.rule_id,
-            "status": e.status,
-            "message": e.message,
-        })
+        result["evaluations"].append(
+            {
+                "policy_id": e.rule_id,
+                "status": e.status,
+                "message": e.message,
+            }
+        )
         if e.status == "pass":
             result["pass"] += 1
         elif e.status == "fail":
@@ -449,6 +462,7 @@ def evaluate_image(image_name: str, images_dir: Path) -> dict[str, Any]:
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> int:
     images_dir = Path("images")
     if not images_dir.is_dir():
@@ -457,8 +471,7 @@ def main() -> int:
 
     # Discover all images
     image_dirs = sorted(
-        d for d in images_dir.iterdir()
-        if d.is_dir() and not d.name.startswith("_")
+        d for d in images_dir.iterdir() if d.is_dir() and not d.name.startswith("_")
     )
 
     results = []

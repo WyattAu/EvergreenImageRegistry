@@ -226,8 +226,10 @@ jobs:
           echo "=== Running health-shim check ==="
           # Try common ports
           for PORT in 8080 9090 3000 80 443 9100; do
-            docker run --rm --entrypoint="" "evergreen-${IMAGE}-musl" \
-              /shim healthcheck --tcp "127.0.0.1:${PORT}" 2>/dev/null && break || true
+            if docker run --rm --entrypoint="" "evergreen-${IMAGE}-musl" \
+                /shim healthcheck --tcp "127.0.0.1:${PORT}" 2>/dev/null; then
+              break
+            fi
           done
 
       - name: Upload musl Dockerfile artifact

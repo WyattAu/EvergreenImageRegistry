@@ -83,6 +83,7 @@ BANNED_BASES = {
 # Data model
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class ValidationError:
     severity: str  # "block" | "warn" | "info"
@@ -106,6 +107,7 @@ class ManifestResult:
 # ---------------------------------------------------------------------------
 # Validation logic
 # ---------------------------------------------------------------------------
+
 
 def normalize_tier(raw: str) -> str:
     """Normalize a tier string to canonical form."""
@@ -133,7 +135,12 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
     for key in REQUIRED_METADATA:
         if key not in metadata:
             errors.append(
-                ValidationError("block", "M002", f"Missing required metadata.{key}", f"metadata.{key}")
+                ValidationError(
+                    "block",
+                    "M002",
+                    f"Missing required metadata.{key}",
+                    f"metadata.{key}",
+                )
             )
 
     # Tier validation
@@ -142,7 +149,9 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
         normalized = normalize_tier(str(raw_tier))
         if normalized not in VALID_TIERS:
             errors.append(
-                ValidationError("block", "M003", f"Invalid tier: {raw_tier!r}", "metadata.tier")
+                ValidationError(
+                    "block", "M003", f"Invalid tier: {raw_tier!r}", "metadata.tier"
+                )
             )
 
     # --- build section ---
@@ -153,7 +162,9 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
         for key in REQUIRED_BUILD:
             if key not in build:
                 errors.append(
-                    ValidationError("block", "M011", f"Missing required build.{key}", f"build.{key}")
+                    ValidationError(
+                        "block", "M011", f"Missing required build.{key}", f"build.{key}"
+                    )
                 )
 
         # Banned base images
@@ -163,14 +174,23 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
             for banned in BANNED_BASES:
                 if base_lower == banned or base_lower.endswith("/" + banned):
                     errors.append(
-                        ValidationError("block", "M012", f"Banned base image: {base}", "build.base")
+                        ValidationError(
+                            "block", "M012", f"Banned base image: {base}", "build.base"
+                        )
                     )
 
         # Non-root enforcement
         user = build.get("user", "")
-        if user and "65532" not in str(user) and "65534" not in str(user) and "nobody" not in str(user):
+        if (
+            user
+            and "65532" not in str(user)
+            and "65534" not in str(user)
+            and "nobody" not in str(user)
+        ):
             errors.append(
-                ValidationError("warn", "M013", f"Non-standard USER: {user}", "build.user")
+                ValidationError(
+                    "warn", "M013", f"Non-standard USER: {user}", "build.user"
+                )
             )
 
     # --- source section ---
@@ -181,12 +201,19 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
         for key in REQUIRED_SOURCE:
             if key not in source:
                 errors.append(
-                    ValidationError("block", "M021", f"Missing required source.{key}", f"source.{key}")
+                    ValidationError(
+                        "block",
+                        "M021",
+                        f"Missing required source.{key}",
+                        f"source.{key}",
+                    )
                 )
         build_type = source.get("type", "")
         if build_type and build_type not in VALID_BUILD_TYPES:
             errors.append(
-                ValidationError("warn", "M022", f"Unknown build type: {build_type!r}", "source.type")
+                ValidationError(
+                    "warn", "M022", f"Unknown build type: {build_type!r}", "source.type"
+                )
             )
 
     # --- runtime section ---
@@ -197,7 +224,9 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
         for key in REQUIRED_RUNTIME:
             if key not in runtime:
                 errors.append(
-                    ValidationError("warn", "M031", f"Missing runtime.{key}", f"runtime.{key}")
+                    ValidationError(
+                        "warn", "M031", f"Missing runtime.{key}", f"runtime.{key}"
+                    )
                 )
 
     # --- labels drift detection ---
@@ -211,7 +240,8 @@ def validate_manifest(data: dict[str, Any], image_name: str) -> list[ValidationE
                 if label_val and field_val and label_val != field_val:
                     errors.append(
                         ValidationError(
-                            "warn", "M040",
+                            "warn",
+                            "M040",
                             f"Label drift: {label_key}={label_val!r} vs {section}.{field_name}={field_val!r}",
                             f"labels.{label_key}",
                         )
@@ -263,7 +293,10 @@ def load_and_validate(path: Path, image_name: str) -> ManifestResult:
 # Label consistency with Dockerfile
 # ---------------------------------------------------------------------------
 
-def check_dockerfile_label_drift(manifest: ManifestResult, images_dir: Path) -> list[ValidationError]:
+
+def check_dockerfile_label_drift(
+    manifest: ManifestResult, images_dir: Path
+) -> list[ValidationError]:
     """Check for label drift between manifest.toml and Dockerfile labels."""
     warnings = []
     dockerfile = images_dir / manifest.image / "Dockerfile"
@@ -285,7 +318,8 @@ def check_dockerfile_label_drift(manifest: ManifestResult, images_dir: Path) -> 
             if label_key not in df_content:
                 warnings.append(
                     ValidationError(
-                        "warn", "M041",
+                        "warn",
+                        "M041",
                         f"Label {label_key} in manifest but missing from Dockerfile",
                         f"labels.{label_key}",
                     )
@@ -298,6 +332,7 @@ def check_dockerfile_label_drift(manifest: ManifestResult, images_dir: Path) -> 
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> int:
     images_dir = Path("images")
     if not images_dir.is_dir():
@@ -308,10 +343,9 @@ def main() -> int:
     stats = {"total": 0, "valid": 0, "block": 0, "warn": 0, "info": 0}
 
     image_dirs = sorted(
-        d for d in images_dir.iterdir()
-        if d.is_dir()
-        and not d.name.startswith("_")
-        and (d / "manifest.toml").exists()
+        d
+        for d in images_dir.iterdir()
+        if d.is_dir() and not d.name.startswith("_") and (d / "manifest.toml").exists()
     )
 
     for img_dir in image_dirs:
@@ -362,8 +396,7 @@ def main() -> int:
             ]
         if r.info:
             entry["info"] = [
-                {"code": e.code, "message": e.message, "field": e.field}
-                for e in r.info
+                {"code": e.code, "message": e.message, "field": e.field} for e in r.info
             ]
         report["images"].append(entry)
 

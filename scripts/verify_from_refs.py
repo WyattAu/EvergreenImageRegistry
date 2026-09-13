@@ -11,6 +11,7 @@ BEFORE a build wastes 40 minutes failing on it. Classifies each ref:
 Exit 0 unless DEAD refs are found. Usage:
   verify_from_refs.py [--images name1,name2] [--json]
 """
+
 import argparse
 import json
 import os
@@ -51,7 +52,8 @@ def dockerhub_token(repo):
     if repo not in TOKEN_CACHE:
         try:
             d = http_json(
-                f"https://auth.docker.io/token?service=registry.docker.io&scope=repository:{repo}:pull")
+                f"https://auth.docker.io/token?service=registry.docker.io&scope=repository:{repo}:pull"
+            )
             TOKEN_CACHE[repo] = d.get("token", "")
         except Exception:
             TOKEN_CACHE[repo] = ""
@@ -62,7 +64,10 @@ def check_dockerhub(repo, tag):
     tok = dockerhub_token(repo)
     hdr = {"Authorization": f"Bearer {tok}"}
     accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json"
-    code = http_code(f"https://registry-1.docker.io/v2/{repo}/manifests/{tag}", {**hdr, "Accept": accept})
+    code = http_code(
+        f"https://registry-1.docker.io/v2/{repo}/manifests/{tag}",
+        {**hdr, "Accept": accept},
+    )
     if code == 200:
         return "OK", ""
     if code == 404:
@@ -70,7 +75,9 @@ def check_dockerhub(repo, tag):
     if code == 401:
         # distinguish locked repo: tag list also 404 => DEAD (locked), else UNKNOWN
         try:
-            d = http_json(f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=1")
+            d = http_json(
+                f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=1"
+            )
             if d.get("count", 0) == 0:
                 return "DEAD", "401 + no tags (locked/empty repo)"
             return "OK", "exists (401 was registry auth quirk)"
@@ -100,8 +107,10 @@ def check_ghcr(repo, tag):
     if not tok:
         return "UNKNOWN", "ghcr token refused"
     accept = "application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json"
-    code = http_code(f"https://ghcr.io/v2/{repo}/manifests/{tag}",
-                     {"Authorization": f"Bearer {tok}", "Accept": accept})
+    code = http_code(
+        f"https://ghcr.io/v2/{repo}/manifests/{tag}",
+        {"Authorization": f"Bearer {tok}", "Accept": accept},
+    )
     if code == 200:
         return "OK", ""
     if code in (404, 401):
@@ -131,8 +140,10 @@ def check_cgr(repo, tag):
     if not tok:
         return "UNKNOWN", "cgr token fetch failed"
     accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json"
-    code = http_code(f"https://cgr.dev/v2/{repo}/manifests/{tag}",
-                     {"Accept": accept, "Authorization": f"Bearer {tok}"})
+    code = http_code(
+        f"https://cgr.dev/v2/{repo}/manifests/{tag}",
+        {"Accept": accept, "Authorization": f"Bearer {tok}"},
+    )
     if code == 200:
         return "OK", ""
     if code in (404, 401):
@@ -141,12 +152,16 @@ def check_cgr(repo, tag):
 
 
 def check_gcr(repo, tag):
-    tok = get_token(f"https://gcr.io/v2/token?service=gcr.io&scope=repository:{repo}:pull")
+    tok = get_token(
+        f"https://gcr.io/v2/token?service=gcr.io&scope=repository:{repo}:pull"
+    )
     if not tok:
         return "UNKNOWN", "gcr token fetch failed"
     accept = "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.index.v1+json"
-    code = http_code(f"https://gcr.io/v2/{repo}/manifests/{tag}",
-                     {"Authorization": f"Bearer {tok}", "Accept": accept})
+    code = http_code(
+        f"https://gcr.io/v2/{repo}/manifests/{tag}",
+        {"Authorization": f"Bearer {tok}", "Accept": accept},
+    )
     if code == 200:
         return "OK", ""
     if code in (404, 401, 403):
@@ -155,13 +170,19 @@ def check_gcr(repo, tag):
 
 
 def check_ecr(repo, tag):
-    tok = get_token("https://public.ecr.aws/token/?service=public.ecr.aws&scope=repository:"
-                    f"{repo}:pull")
+    tok = get_token(
+        "https://public.ecr.aws/token/?service=public.ecr.aws&scope=repository:"
+        f"{repo}:pull"
+    )
     if not tok:
         return "UNKNOWN", "ecr token fetch failed"
-    code = http_code(f"https://public.ecr.aws/v2/{repo}/manifests/{tag}",
-                     {"Authorization": f"Bearer {tok}",
-                      "Accept": "application/vnd.docker.distribution.manifest.list.v2+json"})
+    code = http_code(
+        f"https://public.ecr.aws/v2/{repo}/manifests/{tag}",
+        {
+            "Authorization": f"Bearer {tok}",
+            "Accept": "application/vnd.docker.distribution.manifest.list.v2+json",
+        },
+    )
     if code == 200:
         return "OK", ""
     if code in (404, 401):
@@ -173,8 +194,11 @@ def check_registry(ref):
     """Return (status, detail) for image:tag ref."""
     # normalize bare/dotted refs to docker.io
     first = ref.split("/")[0]
-    if "/" == ref[0:1] or ("." not in first and ":" not in first.split("/")[0] and "/" in ref) \
-            or ("/" not in ref):
+    if (
+        "/" == ref[0:1]
+        or ("." not in first and ":" not in first.split("/")[0] and "/" in ref)
+        or ("/" not in ref)
+    ):
         if "." not in first or "/" not in ref:
             path = ref.split(":")[0] if ":" in ref else ref
             path = "library/" + path if "/" not in path else path
@@ -196,7 +220,9 @@ def check_registry(ref):
         # lscr.io is a ghcr-backed CNAME: linuxserver/<name>
         path = ref[8:]
         name = path.split(":")[0]
-        return check_ghcr(f"linuxserver/{name}", ref.split(":", 1)[1] if ":" in ref else "latest")
+        return check_ghcr(
+            f"linuxserver/{name}", ref.split(":", 1)[1] if ":" in ref else "latest"
+        )
     if ref.startswith("quay.io/"):
         return "UNKNOWN", "quay unsupported (add if needed)"
     return "UNKNOWN", f"unhandled registry: {ref.split('/')[0]}"
@@ -207,8 +233,8 @@ def parse_dockerfile(path):
     with open(path, errors="replace") as f:
         text = f.read()
     lines = text.splitlines()
-    args = {}          # global args (before first FROM)
-    stage_args = {}    # args after a FROM, reset each stage
+    args = {}  # global args (before first FROM)
+    stage_args = {}  # args after a FROM, reset each stage
     refs = []
     seen_first_from = False
     for raw in lines:
@@ -218,7 +244,7 @@ def parse_dockerfile(path):
             name, default = m.group(1), m.group(2)
             if not seen_first_from:
                 if default is not None:
-                    args[name] = default.strip('"\'')
+                    args[name] = default.strip("\"'")
             else:
                 if default is not None:
                     stage_args[name] = default.strip("\"'")
@@ -228,9 +254,11 @@ def parse_dockerfile(path):
             seen_first_from = True
             ref = m.group(1)
             combined = {**args, **stage_args}
+
             # substitute ${VAR}
             def sub(mo, combined=combined):
                 return combined.get(mo.group(1), "")
+
             ref = re.sub(r"\$\{(\w+)\}", sub, ref)
             stage_args = {}  # reset for next stage
             if ref in ("scratch",):
@@ -252,7 +280,8 @@ def main():
         names = [n.strip() for n in opts.images.split(",") if n.strip()]
     else:
         names = sorted(
-            d for d in os.listdir(IMAGES_DIR)
+            d
+            for d in os.listdir(IMAGES_DIR)
             if os.path.isdir(os.path.join(IMAGES_DIR, d)) and d not in SKIP_DIRS
         )
 
@@ -278,12 +307,21 @@ def main():
     unknown = [r for r in results if r[2] == "UNKNOWN"]
 
     if opts.as_json:
-        print(json.dumps({
-            "total": len(results),
-            "ok": len(results) - len(dead) - len(unknown),
-            "dead": [{"image": r[0], "ref": r[1], "detail": r[3]} for r in dead],
-            "unknown": [{"image": r[0], "ref": r[1], "detail": r[3]} for r in unknown],
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "total": len(results),
+                    "ok": len(results) - len(dead) - len(unknown),
+                    "dead": [
+                        {"image": r[0], "ref": r[1], "detail": r[3]} for r in dead
+                    ],
+                    "unknown": [
+                        {"image": r[0], "ref": r[1], "detail": r[3]} for r in unknown
+                    ],
+                },
+                indent=2,
+            )
+        )
     else:
         print(f"Checked {len(results)} FROM refs across {len(names)} images")
         for img, ref, status, detail in dead:

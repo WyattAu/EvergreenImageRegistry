@@ -30,20 +30,31 @@ from typing import Any
 # Runtime checks
 # ---------------------------------------------------------------------------
 
+
 def check_nonroot(dockerfile_content: str) -> dict[str, Any] | None:
     """Verify USER 65532 is set."""
     if "USER 65532" in dockerfile_content:
         return None
-    return {"code": "RT001", "severity": "block", "message": "No USER 65532 in Dockerfile"}
+    return {
+        "code": "RT001",
+        "severity": "block",
+        "message": "No USER 65532 in Dockerfile",
+    }
 
 
-def check_healthcheck(dockerfile_content: str, is_scratch: bool) -> dict[str, Any] | None:
+def check_healthcheck(
+    dockerfile_content: str, is_scratch: bool
+) -> dict[str, Any] | None:
     """Verify HEALTHCHECK is defined for non-scratch images."""
     if is_scratch:
         return None  # scratch images don't need HEALTHCHECK
     if "HEALTHCHECK" in dockerfile_content:
         return None
-    return {"code": "RT002", "severity": "block", "message": "No HEALTHCHECK in non-scratch image"}
+    return {
+        "code": "RT002",
+        "severity": "block",
+        "message": "No HEALTHCHECK in non-scratch image",
+    }
 
 
 def check_healthcheck_strategy(manifest: dict[str, Any]) -> dict[str, Any] | None:
@@ -74,7 +85,9 @@ def check_stop_signal(manifest: dict[str, Any]) -> dict[str, Any] | None:
     return {"code": "RT004", "severity": "warn", "message": "No stop signal defined"}
 
 
-def check_readonly_rootfs(dockerfile_content: str, manifest: dict[str, Any]) -> dict[str, Any] | None:
+def check_readonly_rootfs(
+    dockerfile_content: str, manifest: dict[str, Any]
+) -> dict[str, Any] | None:
     """Check for read-only root filesystem compatibility."""
     labels = manifest.get("labels", {})
     if labels.get("evergreen.security.read-only-rootfs") == "true":
@@ -91,7 +104,9 @@ def check_readonly_rootfs(dockerfile_content: str, manifest: dict[str, Any]) -> 
     }
 
 
-def check_capabilities(dockerfile_content: str, manifest: dict[str, Any]) -> dict[str, Any] | None:
+def check_capabilities(
+    dockerfile_content: str, manifest: dict[str, Any]
+) -> dict[str, Any] | None:
     """Check for capability dropping."""
     labels = manifest.get("labels", {})
     if labels.get("evergreen.security.cap-drop") == "ALL":
@@ -105,7 +120,9 @@ def check_capabilities(dockerfile_content: str, manifest: dict[str, Any]) -> dic
     }
 
 
-def check_no_new_privileges(dockerfile_content: str, manifest: dict[str, Any]) -> dict[str, Any] | None:
+def check_no_new_privileges(
+    dockerfile_content: str, manifest: dict[str, Any]
+) -> dict[str, Any] | None:
     """Check for no-new-privileges."""
     labels = manifest.get("labels", {})
     if labels.get("evergreen.security.no-new-privileges") == "true":
@@ -119,7 +136,9 @@ def check_no_new_privileges(dockerfile_content: str, manifest: dict[str, Any]) -
     }
 
 
-def check_seccomp(dockerfile_content: str, manifest: dict[str, Any]) -> dict[str, Any] | None:
+def check_seccomp(
+    dockerfile_content: str, manifest: dict[str, Any]
+) -> dict[str, Any] | None:
     """Check for seccomp profile."""
     labels = manifest.get("labels", {})
     if labels.get("evergreen.security.seccomp"):
@@ -189,6 +208,7 @@ def check_init_system(manifest: dict[str, Any]) -> dict[str, Any] | None:
 # Full verification
 # ---------------------------------------------------------------------------
 
+
 def verify_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     """Run full runtime verification for an image."""
     image_dir = images_dir / image_name
@@ -203,22 +223,26 @@ def verify_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     # Load Dockerfile
     dockerfile = image_dir / "Dockerfile"
     if not dockerfile.exists():
-        result["violations"].append({
-            "code": "RT000",
-            "severity": "block",
-            "message": "Dockerfile missing",
-        })
+        result["violations"].append(
+            {
+                "code": "RT000",
+                "severity": "block",
+                "message": "Dockerfile missing",
+            }
+        )
         result["compliant"] = False
         return result
 
     try:
         df_content = dockerfile.read_text()
     except OSError:
-        result["violations"].append({
-            "code": "RT000",
-            "severity": "block",
-            "message": "Dockerfile unreadable",
-        })
+        result["violations"].append(
+            {
+                "code": "RT000",
+                "severity": "block",
+                "message": "Dockerfile unreadable",
+            }
+        )
         result["compliant"] = False
         return result
 
@@ -284,6 +308,7 @@ def discover_critical_images(images_dir: Path) -> list[str]:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
 
 def main() -> int:
     images_dir = Path("images")

@@ -65,7 +65,7 @@ DATA_DIR_IMAGES = {
 # These will get a comment instead of auto-fix
 SPECIAL_CASES = {
     "homeassistant-supervisor",  # Needs root for supervisor
-    "portainer",                 # Needs root for Docker socket
+    "portainer",  # Needs root for Docker socket
 }
 
 
@@ -116,7 +116,9 @@ def find_insert_point(lines: list[str]) -> int:
     # Fallback: insert before the last LABEL or EXPOSE
     for i in range(len(lines) - 1, last_from_idx, -1):
         stripped = lines[i].strip()
-        if stripped.upper().startswith("LABEL ") or stripped.upper().startswith("EXPOSE "):
+        if stripped.upper().startswith("LABEL ") or stripped.upper().startswith(
+            "EXPOSE "
+        ):
             return i
 
     # Ultimate fallback: append at end
@@ -177,7 +179,9 @@ def fix_dockerfile(dockerfile_path: Path, dry_run: bool = False) -> bool:
     if not dry_run:
         dockerfile_path.write_text(new_content)
 
-    chown_info = f" (+ chown for {', '.join(d for d, _ in chown_dirs)})" if chown_dirs else ""
+    chown_info = (
+        f" (+ chown for {', '.join(d for d, _ in chown_dirs)})" if chown_dirs else ""
+    )
     print(f"  FIXED: {image_name}{chown_info}")
     return True
 

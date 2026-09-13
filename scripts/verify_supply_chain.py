@@ -27,38 +27,45 @@ from typing import Any
 # Supply-chain checks
 # ---------------------------------------------------------------------------
 
+
 def check_sbom_binding(image_dir: Path) -> list[dict[str, str]]:
     """Verify SBOM exists, has packages, and records a content hash."""
     violations = []
     sbom_path = image_dir / "sbom.spdx.json"
 
     if not sbom_path.exists():
-        violations.append({
-            "code": "SC001",
-            "severity": "block",
-            "message": "SBOM (sbom.spdx.json) missing",
-        })
+        violations.append(
+            {
+                "code": "SC001",
+                "severity": "block",
+                "message": "SBOM (sbom.spdx.json) missing",
+            }
+        )
         return violations
 
     try:
         content = sbom_path.read_text()
         data = json.loads(content)
     except (OSError, json.JSONDecodeError) as exc:
-        violations.append({
-            "code": "SC002",
-            "severity": "block",
-            "message": f"SBOM unreadable or invalid JSON: {exc}",
-        })
+        violations.append(
+            {
+                "code": "SC002",
+                "severity": "block",
+                "message": f"SBOM unreadable or invalid JSON: {exc}",
+            }
+        )
         return violations
 
     # Check packages
     packages = data.get("packages", [])
     if not packages:
-        violations.append({
-            "code": "SC003",
-            "severity": "block",
-            "message": "SBOM has no packages",
-        })
+        violations.append(
+            {
+                "code": "SC003",
+                "severity": "block",
+                "message": "SBOM has no packages",
+            }
+        )
 
     # Record content hash
     sbom_hash = hashlib.sha256(content.encode()).hexdigest()
@@ -68,11 +75,13 @@ def check_sbom_binding(image_dir: Path) -> list[dict[str, str]]:
     # Check for external document references (attestation binding)
     external = data.get("externalDocumentReferences", [])
     if not external:
-        violations.append({
-            "code": "SC004",
-            "severity": "warn",
-            "message": "SBOM has no external document references (attestation binding)",
-        })
+        violations.append(
+            {
+                "code": "SC004",
+                "severity": "warn",
+                "message": "SBOM has no external document references (attestation binding)",
+            }
+        )
 
     return violations
 
@@ -86,11 +95,13 @@ def check_signature(image_dir: Path) -> list[dict[str, str]]:
     sigstore = image_dir / ".cosign"
 
     if not sig_files and not sigstore.exists():
-        violations.append({
-            "code": "SC010",
-            "severity": "warn",
-            "message": "No cosign signature files found locally",
-        })
+        violations.append(
+            {
+                "code": "SC010",
+                "severity": "warn",
+                "message": "No cosign signature files found locally",
+            }
+        )
 
     return violations
 
@@ -106,11 +117,13 @@ def check_provenance(image_dir: Path) -> list[dict[str, str]]:
     )
 
     if not provenance_files:
-        violations.append({
-            "code": "SC020",
-            "severity": "warn",
-            "message": "No local SLSA provenance attestation found",
-        })
+        violations.append(
+            {
+                "code": "SC020",
+                "severity": "warn",
+                "message": "No local SLSA provenance attestation found",
+            }
+        )
 
     return violations
 
@@ -125,7 +138,8 @@ def check_digest_pinning(image_dir: Path) -> list[dict[str, str]]:
 
     content = dockerfile.read_text()
     from_lines = [
-        line.strip() for line in content.splitlines()
+        line.strip()
+        for line in content.splitlines()
         if line.strip().upper().startswith("FROM ")
     ]
 
@@ -142,11 +156,13 @@ def check_digest_pinning(image_dir: Path) -> list[dict[str, str]]:
             continue
 
         if "@sha256:" not in ref:
-            violations.append({
-                "code": "SC030",
-                "severity": "warn",
-                "message": f"FROM line not digest-pinned: {line}",
-            })
+            violations.append(
+                {
+                    "code": "SC030",
+                    "severity": "warn",
+                    "message": f"FROM line not digest-pinned: {line}",
+                }
+            )
 
     return violations
 
@@ -171,20 +187,24 @@ def check_build_reproducibility(image_dir: Path) -> list[dict[str, str]]:
     has_source_url = bool(data.get("source", {}).get("url"))
 
     if not has_build_type or not has_source_url:
-        violations.append({
-            "code": "SC040",
-            "severity": "warn",
-            "message": "Incomplete build metadata (missing type or url)",
-        })
+        violations.append(
+            {
+                "code": "SC040",
+                "severity": "warn",
+                "message": "Incomplete build metadata (missing type or url)",
+            }
+        )
 
     # Check for reproducibility indicator
     reproducible = labels.get("evergreen.build.reproducible")
     if reproducible is None:
-        violations.append({
-            "code": "SC041",
-            "severity": "info",
-            "message": "No evergreen.build.reproducible label",
-        })
+        violations.append(
+            {
+                "code": "SC041",
+                "severity": "info",
+                "message": "No evergreen.build.reproducible label",
+            }
+        )
 
     return violations
 
@@ -192,6 +212,7 @@ def check_build_reproducibility(image_dir: Path) -> list[dict[str, str]]:
 # ---------------------------------------------------------------------------
 # Full verification
 # ---------------------------------------------------------------------------
+
 
 def verify_image(image_name: str, images_dir: Path) -> dict[str, Any]:
     """Run full supply-chain verification for an image."""
@@ -259,6 +280,7 @@ def discover_critical_images(images_dir: Path) -> list[str]:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
 
 def main() -> int:
     images_dir = Path("images")

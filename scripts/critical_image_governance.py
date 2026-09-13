@@ -61,6 +61,7 @@ def discover_critical_images(images_dir: Path) -> list[str]:
 # Contract checks
 # ---------------------------------------------------------------------------
 
+
 class ContractCheck:
     def __init__(self, code: str, description: str):
         self.code = code
@@ -114,7 +115,11 @@ def check_dockerfile(image_dir: Path, manifest: dict[str, Any] | None) -> list[s
         violations.append("CC004: No HEALTHCHECK in non-scratch image")
 
     # CC006: Banned base images in final stage
-    from_lines = [line.strip() for line in content.splitlines() if line.strip().upper().startswith("FROM ")]
+    from_lines = [
+        line.strip()
+        for line in content.splitlines()
+        if line.strip().upper().startswith("FROM ")
+    ]
     for fl in from_lines:
         base = fl.split()[1].split("@")[0].split(":")[0].lower()
         # Remove registry prefixes
@@ -135,7 +140,9 @@ def check_dockerfile(image_dir: Path, manifest: dict[str, Any] | None) -> list[s
         if base == "scratch" or "distroless" in base.lower():
             for shell in BANNED_ENTRYPOINT_SHELLS:
                 if f'"{shell}"' in content or f"'{shell}'" in content:
-                    violations.append(f"CC009: Shell entrypoint ({shell}) in static image")
+                    violations.append(
+                        f"CC009: Shell entrypoint ({shell}) in static image"
+                    )
                     break
 
     # CC010: OCI labels
@@ -242,6 +249,7 @@ def validate_critical_image(image_name: str, images_dir: Path) -> dict[str, Any]
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
 
 def main() -> int:
     images_dir = Path("images")

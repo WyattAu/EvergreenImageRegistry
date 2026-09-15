@@ -1,6 +1,6 @@
 [metadata]
 name = "elasticsearch"
-version = "8.14.0"
+version = "v9.5.3"
 description = "Elasticsearch - distributed search and analytics engine"
 vendor = "Elastic"
 source = "https://github.com/elastic/elasticsearch"

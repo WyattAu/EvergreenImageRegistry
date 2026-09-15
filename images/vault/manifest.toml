@@ -1,6 +1,6 @@
 [metadata]
 name = "vault"
-version = "1.18.1"
+version = "v2.1.0"
 description = "Vault - secrets management and data protection by HashiCorp"
 vendor = "HashiCorp"
 source = "https://github.com/hashicorp/vault"

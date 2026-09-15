@@ -16,7 +16,7 @@
 
 [metadata]
 image = "vault"
-version = "1.18.1"
+version = "v2.1.0"
 created = "2026-04-19T22:26:26Z"
 last_verified = "2026-04-19T22:26:26Z"
 verification_method = "hashicorp-SHA256SUMS"
@@ -28,7 +28,7 @@ filename = "vault_1.18.1_linux_amd64.zip"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "d6486e4644cbeefa841ff6a41e39b68a5129c329bd2e271b29368948ff9ddfc4"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

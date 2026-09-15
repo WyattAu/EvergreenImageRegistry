@@ -16,7 +16,7 @@
 
 [metadata]
 image = "elasticsearch"
-version = "8.14.0"
+version = "v9.5.3"
 created = "2026-05-03T15:41:18Z"
 last_verified = "2026-05-03T15:41:18Z"
 verification_method = "download-and-compute"
@@ -27,7 +27,7 @@ url = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.14.0
 filename = "elasticsearch-8.14.0-linux-x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "fafb16fa5e42bcb6816422383b4a69b9c3a2ddc3b36e4594e1631caa2d9a965c5d3ce42c25e5ac1b27a18e72121eeaabfd158ccc6300bdce531d4d3abd098a9e"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 url = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.14.0-linux-x86_64.tar.gz.sha512"

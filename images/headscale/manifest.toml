@@ -1,6 +1,6 @@
 [metadata]
 name = "headscale"
-version = "0.16.0"
+version = "v0.29.3"
 description = "Headscale - open source implementation of the Tailscale control server"
 vendor = "Headscale"
 source = "https://github.com/juanfont/headscale"

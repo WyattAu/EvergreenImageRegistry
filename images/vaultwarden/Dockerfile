@@ -5,6 +5,10 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM vaultwarden/server:1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
 USER 0
 COPY --from=shim /shim /usr/local/bin/shim
+# CIS: strip inherited setuid/setgid binaries from the debian-based upstream;
+# pre-create /data so fresh volumes inherit non-root ownership
+RUN find / -xdev -perm /6000 -type f -exec chmod a-s {} + && \
+    mkdir -p /data && chown -R 65532:65532 /data
 USER 65532:65532
 
 ENV SHIM_METRICS_ENABLED="true" ROCKET_ADDRESS=0.0.0.0 ROCKET_PORT=80

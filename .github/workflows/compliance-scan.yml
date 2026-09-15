@@ -60,6 +60,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
       - name: Pull image
         run: docker pull ghcr.io/wyattau/evergreenimageregistry/${{ matrix.image }}:latest
 
@@ -126,7 +129,10 @@ jobs:
           fi
 
           # Check SPDX SBOM
-          if cosign verify-attestation "$REF" --type spdxjson \
+          # cosign v3 (used by _build-reusable to attest) stores referrers in
+          # the tag-fallback index and no longer maps "spdxjson" to the
+          # predicate URI on verify — pass the URI explicitly.
+          if cosign verify-attestation "$REF" --type "https://spdx.dev/Document" \
             --certificate-identity-regexp "https://github.com/WyattAu/EvergreenImageRegistry/" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" >/dev/null 2>&1; then
             echo "spdx=YES" >> "$GITHUB_OUTPUT"

@@ -17,6 +17,9 @@ pub mod outdated;
 pub mod output;
 pub mod patterns;
 pub mod pin_digests;
+pub mod policy;
+#[cfg(feature = "rego-eval")]
+pub mod policy_eval;
 pub mod registry_index;
 pub mod report;
 pub mod run;

@@ -15,7 +15,7 @@
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::error::{EvergreenError, Result};
 
@@ -125,8 +125,10 @@ pub struct PolicyInput {
 
 /// Returns the 10 built-in policy bundles.
 ///
-/// The rules are exported as Rego source, but evaluation is intentionally not
-/// performed in this crate until an OPA/Wasm backend is configured.
+/// The rules are exported as Rego source. Real evaluation is provided by the
+/// `rego-eval` feature (`crate::policy_eval`, backed by regorus); without the
+/// feature, `PolicyEngine` only conservatively supports the two legacy checks
+/// below and reports everything else as `Error` rather than a false pass.
 pub fn built_in_policies() -> Vec<PolicyBundle> {
     vec![
         dockerfile_security_policy(),
@@ -153,7 +155,8 @@ fn dockerfile_security_policy() -> PolicyBundle {
             PolicyRule {
                 id: "DOCKER-SEC-001".to_string(),
                 name: "No Alpine base images".to_string(),
-                description: "Alpine base images are BANNED for final stage per ADR-007".to_string(),
+                description: "Alpine base images are BANNED for final stage per ADR-007"
+                    .to_string(),
                 severity: PolicySeverity::Critical,
                 rego_code: r#"
 package evergreen.dockerfile
@@ -161,10 +164,11 @@ package evergreen.dockerfile
 deny[msg] {
     input.dockerfile
     contains(input.dockerfile, "FROM")
-    regex.match("(?i)^\\s*FROM\\s+.*alpine", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*alpine", input.dockerfile)
     msg := "Alpine base images are BANNED for final stage (ADR-007)"
 }
-"#.to_string(),
+"#
+                .to_string(),
                 remediation: "Use wolfi-base, distroless, or scratch as base image".to_string(),
                 tags: vec!["security".to_string(), "adr-007".to_string()],
             },
@@ -179,11 +183,13 @@ package evergreen.dockerfile
 deny[msg] {
     input.dockerfile
     contains(input.dockerfile, "FROM")
-    regex.match("(?i)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
     msg := "debian-slim is BANNED per ADR-007. Use wolfi-base instead."
 }
-"#.to_string(),
-                remediation: "Replace debian:bookworm-slim with cgr.dev/chainguard/wolfi-base".to_string(),
+"#
+                .to_string(),
+                remediation: "Replace debian:bookworm-slim with cgr.dev/chainguard/wolfi-base"
+                    .to_string(),
                 tags: vec!["security".to_string(), "adr-007".to_string()],
             },
             PolicyRule {
@@ -200,7 +206,8 @@ deny[msg] {
     not contains(input.dockerfile, "USER nonroot")
     msg := "Final stage must run as non-root user (UID 65532)"
 }
-"#.to_string(),
+"#
+                .to_string(),
                 remediation: "Add 'USER 65532' in final stage".to_string(),
                 tags: vec!["security".to_string(), "cis-4.4".to_string()],
             },
@@ -233,8 +240,10 @@ deny[msg] {
     not input.sbom
     msg := "Tier 1 (critical) images must have a valid SBOM"
 }
-"#.to_string(),
-                remediation: "Run: scripts/generate_sboms_from_source.sh --image <name>".to_string(),
+"#
+                .to_string(),
+                remediation: "Run: scripts/generate_sboms_from_source.sh --image <name>"
+                    .to_string(),
                 tags: vec!["supply_chain".to_string(), "sbom".to_string()],
             },
             PolicyRule {
@@ -247,11 +256,15 @@ package evergreen.supply_chain
 
 deny[msg] {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+(?!scratch)[^@]+(?<!@sha256:[a-f0-9]+)\\s*$", input.dockerfile)
-    msg := "FROM lines should be pinned to digest (supply chain security)"
+    contains(input.dockerfile, "FROM")
+    from_line := regex.find_n("(?im)^\\s*FROM\\s+[^@\\n]+$", input.dockerfile, -1)[_]
+    not startswith(trim_space(from_line), "FROM scratch")
+    msg := sprintf("FROM line is not digest-pinned: %s", [trim_space(from_line)])
 }
-"#.to_string(),
-                remediation: "Pin FROM to SHA256 digest (e.g., FROM image@sha256:abc123...)".to_string(),
+"#
+                .to_string(),
+                remediation: "Pin FROM to SHA256 digest (e.g., FROM image@sha256:abc123...)"
+                    .to_string(),
                 tags: vec!["supply_chain".to_string(), "pinning".to_string()],
             },
             PolicyRule {
@@ -267,8 +280,11 @@ deny[msg] {
     regex.match("(?i)(password|secret|token|api.key|private.key)", input.dockerfile)
     msg := "Dockerfile contains potential secrets — use build secrets or env vars instead"
 }
-"#.to_string(),
-                remediation: "Use --build-arg with Docker BuildKit secrets or environment variables".to_string(),
+"#
+                .to_string(),
+                remediation:
+                    "Use --build-arg with Docker BuildKit secrets or environment variables"
+                        .to_string(),
                 tags: vec!["supply_chain".to_string(), "secrets".to_string()],
             },
         ],
@@ -299,20 +315,23 @@ default deny = false
 deny[msg] {
     input.dockerfile
     contains(input.dockerfile, "FROM")
-    base := regex.find_n("(?i)^\\s*FROM\\s+(\\S+)", input.dockerfile, 1)[0]
+    base := regex.find_n("(?im)^\\s*FROM\\s+(\\S+)", input.dockerfile, 1)[0]
     not startswith(base, "FROM scratch")
     not startswith(base, "FROM cgr.dev/chainguard/")
     not startswith(base, "FROM gcr.io/distroless/")
     not startswith(base, "FROM registry.access.redhat.com/ubi9/")
     msg := sprintf("Base image %s is not in the approved allowlist", [base])
 }
-"#.to_string(),
-            remediation: "Use approved base: scratch, wolfi-base, distroless, or ubi-micro".to_string(),
+"#
+            .to_string(),
+            remediation: "Use approved base: scratch, wolfi-base, distroless, or ubi-micro"
+                .to_string(),
             tags: vec!["base_image".to_string(), "adr-007".to_string()],
         }],
-        metadata: HashMap::from([
-            ("allowlist".to_string(), "scratch, wolfi-base, distroless, ubi-micro".to_string()),
-        ]),
+        metadata: HashMap::from([(
+            "allowlist".to_string(),
+            "scratch, wolfi-base, distroless, ubi-micro".to_string(),
+        )]),
     }
 }
 
@@ -336,7 +355,8 @@ deny[msg] {
     not contains(input.dockerfile, "USER 65532")
     msg := "USER 65532 is required for non-root execution"
 }
-"#.to_string(),
+"#
+            .to_string(),
             remediation: "Add 'USER 65532' to final stage".to_string(),
             tags: vec!["security".to_string()],
         }],
@@ -364,7 +384,8 @@ deny[msg] {
     not contains(input.dockerfile, "HEALTHCHECK")
     msg := "HEALTHCHECK instruction is required for container health monitoring"
 }
-"#.to_string(),
+"#
+            .to_string(),
             remediation: "Add HEALTHCHECK with TCP or HTTP probe".to_string(),
             tags: vec!["reliability".to_string(), "cis-4.5".to_string()],
         }],
@@ -393,7 +414,8 @@ deny[msg] {
     not input.fips_matrix_entry
     msg := "Image claims FIPS compliance but is not in compliance/fips/fips_image_matrix.yaml"
 }
-"#.to_string(),
+"#
+                .to_string(),
                 remediation: "Add image to compliance/fips/fips_image_matrix.yaml".to_string(),
                 tags: vec!["compliance".to_string(), "fips".to_string()],
             },
@@ -410,14 +432,13 @@ warn[msg] {
     not input.fips_matrix_entry
     msg := "Image claims FIPS but is not in FIPS matrix — consider removing the claim"
 }
-"#.to_string(),
+"#
+                .to_string(),
                 remediation: "Remove compliance.fips label or add to FIPS matrix".to_string(),
                 tags: vec!["compliance".to_string(), "fips".to_string()],
             },
         ],
-        metadata: HashMap::from([
-            ("standard".to_string(), "FIPS 140-2/3".to_string()),
-        ]),
+        metadata: HashMap::from([("standard".to_string(), "FIPS 140-2/3".to_string())]),
     }
 }
 
@@ -442,13 +463,15 @@ deny[msg] {
     startswith(pkg.license, "GPL")
     msg := sprintf("Tier 1 image contains GPL-licensed package: %s (%s)", [pkg.name, pkg.license])
 }
-"#.to_string(),
+"#
+            .to_string(),
             remediation: "Replace GPL package with OSI-approved alternative".to_string(),
             tags: vec!["compliance".to_string(), "license".to_string()],
         }],
-        metadata: HashMap::from([
-            ("allowed_licenses".to_string(), "MIT, Apache-2.0, BSD, ISC, MPL-2.0".to_string()),
-        ]),
+        metadata: HashMap::from([(
+            "allowed_licenses".to_string(),
+            "MIT, Apache-2.0, BSD, ISC, MPL-2.0".to_string(),
+        )]),
     }
 }
 
@@ -474,7 +497,8 @@ deny[msg] {
     cve.fixed_version == ""
     msg := sprintf("Tier 1 image has unpatched critical CVE: %s", [cve.id])
 }
-"#.to_string(),
+"#
+            .to_string(),
             remediation: "Patch or document CVE as not exploitable in VEX".to_string(),
             tags: vec!["security".to_string(), "vulnerability".to_string()],
         }],
@@ -501,13 +525,13 @@ deny[msg] {
     input.image_size_mb > 500
     msg := sprintf("Image size %dMB exceeds 500MB threshold", [input.image_size_mb])
 }
-"#.to_string(),
-            remediation: "Optimize Dockerfile, use multi-stage builds, remove unnecessary files".to_string(),
+"#
+            .to_string(),
+            remediation: "Optimize Dockerfile, use multi-stage builds, remove unnecessary files"
+                .to_string(),
             tags: vec!["performance".to_string(), "size".to_string()],
         }],
-        metadata: HashMap::from([
-            ("max_size_mb".to_string(), "500".to_string()),
-        ]),
+        metadata: HashMap::from([("max_size_mb".to_string(), "500".to_string())]),
     }
 }
 
@@ -531,7 +555,8 @@ deny[msg] {
     not contains(input.dockerfile, "org.opencontainers.image")
     msg := "OCI standard labels are required (org.opencontainers.image.*)"
 }
-"#.to_string(),
+"#
+            .to_string(),
             remediation: "Add LABEL org.opencontainers.image.* directives".to_string(),
             tags: vec!["metadata".to_string(), "oci".to_string()],
         }],
@@ -622,8 +647,7 @@ impl PolicyEngine {
         };
 
         let is_alpine_rule = rego_code.contains("Alpine base images are BANNED");
-        let is_non_root_rule = rego_code.contains("USER 65532")
-            && rego_code.contains("non-root");
+        let is_non_root_rule = rego_code.contains("USER 65532") && rego_code.contains("non-root");
 
         if !is_alpine_rule && !is_non_root_rule {
             return PolicyStatus::Error;
@@ -644,7 +668,8 @@ impl PolicyEngine {
 
     /// Export policies as JSON bundle
     pub fn export_bundle(&self) -> Result<String> {
-        serde_json::to_string_pretty(&self.bundles).map_err(|e| EvergreenError::Other(e.to_string()))
+        serde_json::to_string_pretty(&self.bundles)
+            .map_err(|e| EvergreenError::PolicyError(e.to_string()))
     }
 }
 
@@ -675,7 +700,9 @@ mod tests {
         let engine = PolicyEngine::new();
         let input = PolicyInput {
             image: "test-image".to_string(),
-            dockerfile: Some("FROM scratch\nCOPY app /app\nUSER 65532\nENTRYPOINT [\"/app\"]".to_string()),
+            dockerfile: Some(
+                "FROM scratch\nCOPY app /app\nUSER 65532\nENTRYPOINT [\"/app\"]".to_string(),
+            ),
             manifest: None,
             sbom: None,
             labels: HashMap::new(),
@@ -688,7 +715,10 @@ mod tests {
             .iter()
             .filter(|r| r.status == PolicyStatus::Fail)
             .collect();
-        assert!(fails.is_empty(), "Clean Dockerfile should pass supported policies");
+        assert!(
+            fails.is_empty(),
+            "Clean Dockerfile should pass supported policies"
+        );
         assert!(results.iter().any(|r| r.status == PolicyStatus::Error));
     }
 

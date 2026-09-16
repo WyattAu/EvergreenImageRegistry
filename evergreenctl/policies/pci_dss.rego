@@ -28,13 +28,13 @@ import rego.v1
 # PCI-DSS-2.2.1: System hardening standards
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*alpine", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*alpine", input.dockerfile)
     msg := "PCI DSS 2.2.1: Alpine images do not meet hardening standards. Use wolfi-base or distroless."
 }
 
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
     msg := "PCI DSS 2.2.1: debian-slim does not meet hardening standards. Use wolfi-base."
 }
 

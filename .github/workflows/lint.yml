@@ -89,12 +89,19 @@ jobs:
         run: cargo fmt --manifest-path evergreenctl/Cargo.toml -- --check
       - name: Run cargo clippy
         run: cargo clippy --manifest-path evergreenctl/Cargo.toml -- -D warnings
+      # rego-eval is a superset of the default build (adds policy_eval), so
+      # running clippy/test with it keeps the default-off Rego evaluator
+      # compiled in CI instead of rotting unverified.
+      - name: Run cargo clippy (rego-eval)
+        run: cargo clippy --manifest-path evergreenctl/Cargo.toml --features rego-eval -- -D warnings
       - name: Run cargo audit
         run: |
           cargo install cargo-audit --locked
           cd evergreenctl && cargo audit
       - name: Run cargo test
         run: cargo test --manifest-path evergreenctl/Cargo.toml
+      - name: Run cargo test (rego-eval)
+        run: cargo test --manifest-path evergreenctl/Cargo.toml --features rego-eval
       - name: Run cargo build --release
         run: cargo build --release --manifest-path evergreenctl/Cargo.toml
 

@@ -181,12 +181,65 @@ pub async fn execute(command: Commands) -> anyhow::Result<()> {
             clap_complete::generate(shell, &mut cmd, "evergreenctl", &mut std::io::stdout());
             Ok(())
         }
+
+        #[cfg(feature = "rego-eval")]
+        Commands::Policy { command } => handle_policy_eval(command),
     }
 }
 
 // ---------------------------------------------------------------------------
 // Individual command handlers (extracted from match arms)
 // ---------------------------------------------------------------------------
+
+/// `evergreenctl policy eval` — evaluate the built-in Rego bundles against a
+/// Dockerfile. Exit codes: 0 = compliant, 1 = eval error, 2 = violations.
+#[cfg(feature = "rego-eval")]
+fn handle_policy_eval(command: crate::cli::PolicyCommands) -> anyhow::Result<()> {
+    let crate::cli::PolicyCommands::Eval { dockerfile, format } = command;
+
+    let content = std::fs::read_to_string(&dockerfile)
+        .map_err(|e| anyhow::anyhow!("failed to read Dockerfile '{}': {e}", dockerfile))?;
+
+    let input = crate::policy::PolicyInput {
+        image: dockerfile.clone(),
+        dockerfile: Some(content),
+        manifest: None,
+        sbom: None,
+        labels: std::collections::HashMap::new(),
+    };
+
+    let results = crate::policy_eval::eval_builtins(&input);
+
+    match format.as_str() {
+        "json" => {
+            println!("{}", serde_json::to_string_pretty(&results)?);
+        }
+        "text" => {
+            for (bundle_id, verdict) in &results {
+                println!("{bundle_id}: {verdict}");
+                if let crate::policy_eval::PolicyVerdict::Violations(violations) = verdict {
+                    for v in violations {
+                        println!("  [{}] {}", v.rule, v.message);
+                    }
+                }
+            }
+        }
+        other => anyhow::bail!("unknown format '{other}' (expected 'text' or 'json')"),
+    }
+
+    let has_error = results.iter().any(|(_, v)| v.is_eval_error());
+    let has_violations = results
+        .iter()
+        .any(|(_, v)| matches!(v, crate::policy_eval::PolicyVerdict::Violations(_)));
+
+    if has_error {
+        anyhow::bail!("policy evaluation failed (fail-closed)");
+    }
+    if has_violations {
+        std::process::exit(2);
+    }
+    Ok(())
+}
 
 async fn handle_discover(
     image: &str,

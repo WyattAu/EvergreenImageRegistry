@@ -52,7 +52,7 @@ deny[msg] if {
 # FEDRAMP-AC-17: Remote access
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*(EXPOSE|CMD|ENTRYPOINT).*0\\.0\\.0\\.0", input.dockerfile)
+    regex.match("(?im)^\\s*(EXPOSE|CMD|ENTRYPOINT).*0\\.0\\.0\\.0", input.dockerfile)
     msg := "FedRAMP AC-17: Service should not bind to all interfaces"
 }
 
@@ -87,20 +87,20 @@ deny[msg] if {
 # FEDRAMP-CM-2: Baseline configuration
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*alpine", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*alpine", input.dockerfile)
     msg := "FedRAMP CM-2: Alpine not in approved baseline. Use wolfi-base or distroless."
 }
 
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*debian.*slim", input.dockerfile)
     msg := "FedRAMP CM-2: debian-slim not in approved baseline. Use wolfi-base."
 }
 
 # FEDRAMP-CM-3: Configuration change control
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*:latest", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*:latest", input.dockerfile)
     msg := "FedRAMP CM-3: :latest tag not allowed — pin to specific version"
 }
 

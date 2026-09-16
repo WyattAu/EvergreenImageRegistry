@@ -9,6 +9,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### evergreenctl 1.1.0 — Rego evaluation behind `rego-eval` (regorus)
+
+- **Real Rego evaluation** (`evergreenctl/src/policy_eval.rs`, feature `rego-eval`, default-off):
+  - Adopts `regorus` 0.12 (Microsoft's OPA-compatible Rego interpreter) to evaluate the
+    10 built-in policy bundles — replacing the drifting Python shadow evaluator
+    (`scripts/rego_evaluate.py`) as the enforcement source of truth.
+  - Typed verdicts: `PolicyVerdict { Compliant, Violations(Vec<Violation{rule, message}>), EvalError }`.
+    Eval is fail-closed: a rule that cannot compile or evaluate (e.g. RE2-incompatible
+    regex) surfaces as `EvalError`, never as a silent pass; a bundle with any rule error
+    reports `EvalError` for the whole bundle.
+  - `policy.rs` was an orphan module (declared nowhere, so never compiled); it is now
+    wired into the crate root and a `EvergreenError::PolicyError` variant was added for it.
+  - Rego dialect auto-detection per rule: regorus v1 (default) first, v0 fallback —
+    both the generated v0 bundles and the standalone `import rego.v1` files evaluate.
+  - CLI: `evergreenctl policy eval --dockerfile <path> [--format text|json]`.
+    Exit codes: 0 compliant, 1 eval error, 2 violations (CI-gateable).
+- **Anchor bug fix** (`(?i)^` → `(?im)^`): `^` without `(?m)` only matched line 1, so a
+  banned `alpine`/`debian-slim` `FROM` on any later line of a multi-line Dockerfile
+  silently passed everywhere the pattern is generated:
+  - `evergreenctl/src/policy.rs` (DOCKER-SEC-001, DOCKER-SEC-002, BASE-001).
+  - `evergreenctl/policies/{fedramp,hipaa,pci_dss}.rego` (9 occurrences).
+  - SC-002 (digest pinning) additionally rewritten RE2-safe: the old pattern used
+    lookahead/lookbehind, which neither OPA/RE2 nor regorus can evaluate — the rule
+    could never have fired. New form flags each unpinned non-scratch `FROM` line
+    individually (`regex.find_n` + per-line violation).
+- Tests: compliant Dockerfile → `Compliant` across all 10 bundles; multi-line Dockerfile
+  with alpine `FROM` not on line 1 → `Violations` (anchor regression); typed `EvalError`
+  paths; v0/v1 dialect; fail-closed bundle aggregation. 186 lib tests green with the
+  feature; `--no-default-features` build still green.
+- CI: `lint.yml` rust-quality job now also runs clippy+test with `--features rego-eval`.
+
+---
+
 ### Phase 36: Functional Audit and Placeholder Hardening
 
 - **Per-image functional audit** (commit `b8f298d98`): 424 files changed across 839 active images

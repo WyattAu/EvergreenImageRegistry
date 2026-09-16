@@ -312,6 +312,27 @@ pub enum Commands {
         #[arg(long, value_enum)]
         shell: clap_complete::Shell,
     },
+    /// Evaluate built-in Rego policy bundles (rego-eval feature)
+    #[cfg(feature = "rego-eval")]
+    Policy {
+        #[command(subcommand)]
+        command: PolicyCommands,
+    },
+}
+
+/// Subcommands for `evergreenctl policy` (requires the `rego-eval` feature).
+#[cfg(feature = "rego-eval")]
+#[derive(Subcommand)]
+pub enum PolicyCommands {
+    /// Evaluate the built-in Rego bundles against a Dockerfile
+    Eval {
+        /// Path to the Dockerfile to evaluate
+        #[arg(long)]
+        dockerfile: String,
+        /// Output format (text, json)
+        #[arg(short, long, default_value = "text")]
+        format: String,
+    },
 }
 
 /// Validate all path arguments for traversal attacks.
@@ -376,6 +397,12 @@ pub fn validate_command_paths(command: &Commands) -> anyhow::Result<bool> {
         }
         Index { images_dir, .. } => {
             validate_path(images_dir, None)?;
+        }
+        #[cfg(feature = "rego-eval")]
+        Policy {
+            command: PolicyCommands::Eval { dockerfile, .. },
+        } => {
+            validate_path(dockerfile, None)?;
         }
         _ => return Ok(false), // CiDiff, Report, Completion, IndexStats, IndexQuery don't take user path args
     }

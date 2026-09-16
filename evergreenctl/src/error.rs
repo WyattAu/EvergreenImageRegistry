@@ -131,6 +131,9 @@ pub enum EvergreenError {
     // --- Build errors ---
     #[error("Dockerfile generation failed for '{image}': {reason}")]
     GenerationFailed { image: String, reason: String },
+
+    #[error("policy error: {0}")]
+    PolicyError(String),
 }
 
 /// Convenience alias for Results using EvergreenError.

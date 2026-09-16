@@ -44,7 +44,7 @@ deny[msg] if {
 # HIPAA-AC-03: No interactive shells
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*(CMD|ENTRYPOINT)\\s+.*(/bin/sh|/bin/bash|bash|sh)", input.dockerfile)
+    regex.match("(?im)^\\s*(CMD|ENTRYPOINT)\\s+.*(/bin/sh|/bin/bash|bash|sh)", input.dockerfile)
     msg := "HIPAA §164.312(a): Interactive shells increase attack surface"
 }
 
@@ -73,7 +73,7 @@ warn[msg] if {
 # HIPAA-INT-01: Image integrity
 deny[msg] if {
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+(?!scratch|cgr\\.dev|gcr\\.io/distroless|registry\\.access\\.redhat\\.com)", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+(?!scratch|cgr\\.dev|gcr\\.io/distroless|registry\\.access\\.redhat\\.com)", input.dockerfile)
     msg := "HIPAA §164.312(c): Only approved base images allowed (integrity control)"
 }
 
@@ -138,6 +138,6 @@ warn[msg] if {
 deny[msg] if {
     input.labels["compliance.hipaa"] == "true"
     input.dockerfile
-    regex.match("(?i)^\\s*FROM\\s+.*:latest", input.dockerfile)
+    regex.match("(?im)^\\s*FROM\\s+.*:latest", input.dockerfile)
     msg := "HIPAA: :latest tag not allowed for PHI systems — use pinned versions"
 }

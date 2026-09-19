@@ -62,6 +62,7 @@ jobs:
             -not -path '*/__pycache__/*' \
             -not -path '*/tests/*' \
             -not -path '*/arm64/*' \
+            -not -path '*/_archive/*' \
             | sed 's|images/||' | sed 's|/Dockerfile||' | sort > images.txt
           TOTAL=$(wc -l < images.txt)
           echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"

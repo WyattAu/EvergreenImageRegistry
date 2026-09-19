@@ -12,16 +12,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### evergreenctl 1.1.1 — HIPAA INT-01 RE2-safe rewrite; Python shadow evaluator removed
 
 - **HIPAA-INT-01 rewritten RE2-safe** (`evergreenctl/policies/hipaa.rego`): the base-image allowlist rule used a
-  negative lookahead (`FROM\s+(?!scratch|cgr\.dev|...)`), which neither RE2 nor regorus can compile — under
-  `rego-eval` it surfaced as `EvalError` (fail-closed) instead of ever firing. The rule now extracts each `FROM`
-  line (`regex.find_n`) and enumerates the allowlist with negated `startswith` checks, mirroring BASE-001 in
-  `evergreenctl/src/policy.rs`. Regression test added in `policy_eval.rs` compiling and evaluating the real
-  standalone policy file (unapproved base flagged, multi-stage second stage flagged, scratch/cgr.dev/distroless
-  allowed).
-- **`scripts/rego_evaluate.py` deleted**: the drifted Python shadow evaluator (525 lines) is superseded by the
-  Rust evaluator (1.1.0) and was referenced only by its own tests. `tests/test_roadmap_phases.py` Phase 5/6
-  sections (OCI reference parsing, Rego evaluation) removed with it; Phases 1-4 remain. `scripts/enforce_policy.py`
-  is unaffected and remains the CI backstop. Policy semantics are owned by `evergreenctl policy eval`
+  negative lookahead (`FROM\s+(?!scratch|cgr\.dev|...)`), which neither RE2 nor regorus can compile — under `rego-eval`
+  it surfaced as `EvalError` (fail-closed) instead of ever firing. The rule now extracts each `FROM` line
+  (`regex.find_n`) and enumerates the allowlist with negated `startswith` checks, mirroring BASE-001 in
+  `evergreenctl/src/policy.rs`. Regression test added in `policy_eval.rs` compiling and evaluating the real standalone
+  policy file (unapproved base flagged, multi-stage second stage flagged, scratch/cgr.dev/distroless allowed).
+- **`scripts/rego_evaluate.py` deleted**: the drifted Python shadow evaluator (525 lines) is superseded by the Rust
+  evaluator (1.1.0) and was referenced only by its own tests. `tests/test_roadmap_phases.py` Phase 5/6 sections (OCI
+  reference parsing, Rego evaluation) removed with it; Phases 1-4 remain. `scripts/enforce_policy.py` is unaffected and
+  remains the CI backstop. Policy semantics are owned by `evergreenctl policy eval`
   (`cargo test --manifest-path evergreenctl/Cargo.toml --features rego-eval`).
 
 ### evergreenctl 1.1.0 — Rego evaluation behind `rego-eval` (regorus)

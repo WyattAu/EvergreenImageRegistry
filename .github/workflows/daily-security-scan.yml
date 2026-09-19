@@ -602,6 +602,14 @@ jobs:
           name: compliance-results
           path: /tmp/compliance-results/
 
+      - name: Download compliance results artifact (optional)
+        if: always()
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: compliance-results
+          path: /tmp/compliance-results/
+
       - name: Download base image report
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         continue-on-error: true
@@ -644,10 +652,13 @@ jobs:
           PYEOF
           done > /tmp/report/all-cves.csv
 
-          CRITICAL=$(grep -c "^CRITICAL," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          HIGH=$(grep -c "^HIGH," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          MEDIUM=$(grep -c "^MEDIUM," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
-          LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
+          CRITICAL=$(grep -c "^CRITICAL," /tmp/report/all-cves.csv 2>/dev/null || true)
+          HIGH=$(grep -c "^HIGH," /tmp/report/all-cves.csv 2>/dev/null || true)
+          MEDIUM=$(grep -c "^MEDIUM," /tmp/report/all-cves.csv 2>/dev/null || true)
+          LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null || true)
+          CRITICAL=${CRITICAL:-0}; HIGH=${HIGH:-0}; MEDIUM=${MEDIUM:-0}; LOW=${LOW:-0}
+          CRITICAL=$(echo "$CRITICAL" | head -1 | tr -cd '0-9'); HIGH=$(echo "$HIGH" | head -1 | tr -cd '0-9')
+          MEDIUM=$(echo "$MEDIUM" | head -1 | tr -cd '0-9'); LOW=$(echo "$LOW" | head -1 | tr -cd '0-9')
           
           # Ensure numeric values
           CRITICAL=${CRITICAL:-0}

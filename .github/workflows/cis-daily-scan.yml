@@ -42,6 +42,7 @@ jobs:
 
       - name: Generate XCCDF report
         if: false  # generate_xccdf.sh interface does not match this pipeline yet
+        run: echo "skipped - interface mismatch documented in run_cis_scan.sh usage"
 
       - name: Upload results
         if: always()

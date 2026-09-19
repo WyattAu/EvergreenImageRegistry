@@ -71,10 +71,19 @@ warn[msg] if {
 # ---------------------------------------------------------------------------
 
 # HIPAA-INT-01: Image integrity
+# RE2-safe: the previous form used a negative lookahead
+# (`FROM\s+(?!scratch|cgr\.dev|...)`), which neither RE2 nor regorus can
+# compile — under rego-eval it surfaced as EvalError (fail-closed) instead of
+# firing. Extract each FROM line, then enumerate the allowlist with negated
+# `startswith` checks (mirrors BASE-001 in evergreenctl/src/policy.rs).
 deny[msg] if {
     input.dockerfile
-    regex.match("(?im)^\\s*FROM\\s+(?!scratch|cgr\\.dev|gcr\\.io/distroless|registry\\.access\\.redhat\\.com)", input.dockerfile)
-    msg := "HIPAA §164.312(c): Only approved base images allowed (integrity control)"
+    from_line := regex.find_n("(?im)^\\s*FROM\\s+\\S+", input.dockerfile, -1)[_]
+    not startswith(from_line, "FROM scratch")
+    not startswith(from_line, "FROM cgr.dev")
+    not startswith(from_line, "FROM gcr.io/distroless")
+    not startswith(from_line, "FROM registry.access.redhat.com")
+    msg := sprintf("HIPAA §164.312(c): Only approved base images allowed (integrity control): %s", [from_line])
 }
 
 # HIPAA-INT-02: SBOM for integrity verification

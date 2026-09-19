@@ -1,6 +1,6 @@
 [package]
 name = "evergreenctl"
-version = "1.1.0"
+version = "1.1.1"
 edition = "2021"
 description = "Evergreen image registry management toolchain"
 

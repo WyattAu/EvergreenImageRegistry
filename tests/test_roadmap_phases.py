@@ -7,8 +7,13 @@ Covers:
   Phase 2: Critical-image governance policy
   Phase 3: Supply-chain verification
   Phase 4: Runtime verification
-  Phase 5: OCI reference parsing
-  Phase 6: Rego policy evaluation
+
+Phase 5 (OCI reference parsing) and Phase 6 (Rego policy evaluation) tests
+were removed along with the Python shadow evaluator (scripts/rego_evaluate.py).
+The Rust evaluator (`evergreenctl/src/policy_eval.rs`, CLI:
+`evergreenctl policy eval`) is the source of truth for policy semantics; its
+regression tests live in that crate. Run them with:
+  cargo test --manifest-path evergreenctl/Cargo.toml --features rego-eval
 """
 
 import json
@@ -230,171 +235,8 @@ class TestRuntimeVerification:
 
 
 # ---------------------------------------------------------------------------
-# Phase 5: OCI reference parsing
+# Phase 5/6 tests were removed with scripts/rego_evaluate.py.
+# Policy semantics are owned by the Rust evaluator:
+#   evergreenctl policy eval  (evergreenctl/src/policy_eval.rs)
 # ---------------------------------------------------------------------------
 
-
-class TestOCIReferenceParsing:
-    def test_docker_hub_short(self):
-        from rego_evaluate import parse_oci_reference
-        reg, repo, tag, err = parse_oci_reference("nginx")
-        assert err is None
-        assert reg == "docker.io"
-        assert repo == "library/nginx"
-        assert tag == "latest"
-
-    def test_docker_hub_user(self):
-        from rego_evaluate import parse_oci_reference
-        reg, repo, tag, err = parse_oci_reference("user/repo:v1.0")
-        assert err is None
-        assert reg == "docker.io"
-        assert repo == "user/repo"
-        assert tag == "v1.0"
-
-    def test_ghcr(self):
-        from rego_evaluate import parse_oci_reference
-        reg, repo, tag, err = parse_oci_reference("ghcr.io/org/image:latest")
-        assert err is None
-        assert reg == "ghcr.io"
-        assert repo == "org/image"
-        assert tag == "latest"
-
-    def test_digest_stripped(self):
-        from rego_evaluate import parse_oci_reference
-        reg, repo, tag, err = parse_oci_reference("ghcr.io/org/image:v1@sha256:abc123")
-        assert err is None
-        assert tag == "v1"
-
-    def test_localhost(self):
-        from rego_evaluate import parse_oci_reference
-        reg, repo, tag, err = parse_oci_reference("localhost:5000/myimage:v2")
-        assert err is None
-        assert reg == "localhost:5000"
-        assert repo == "myimage"
-        assert tag == "v2"
-
-
-# ---------------------------------------------------------------------------
-# Phase 6: Rego evaluation
-# ---------------------------------------------------------------------------
-
-from rego_evaluate import (
-    parse_rego,
-    eval_condition,
-    evaluate_policies,
-    POLICY_SOURCES,
-)
-
-
-class TestRegoParser:
-    def test_parse_deny_rule(self):
-        source = '''
-package evergreen.dockerfile
-
-deny[msg] {
-    contains(input.dockerfile, "alpine")
-    msg := "Alpine is banned"
-}
-'''
-        rules = parse_rego(source)
-        assert len(rules) == 1
-        assert rules[0].package == "evergreen.dockerfile"
-        assert "alpine" in rules[0].condition
-        assert rules[0].message == "Alpine is banned"
-
-    def test_parse_multiple_rules(self):
-        source = '''
-package evergreen.dockerfile
-
-deny[msg] {
-    contains(input.dockerfile, "alpine")
-    msg := "Alpine banned"
-}
-
-deny[msg] {
-    contains(input.dockerfile, "ubuntu")
-    msg := "Ubuntu banned"
-}
-'''
-        rules = parse_rego(source)
-        assert len(rules) == 2
-
-
-class TestRegoEvaluator:
-    def test_contains_match(self):
-        assert eval_condition('contains(input.dockerfile, "alpine")', {"dockerfile": "FROM alpine:3.20"})
-
-    def test_contains_no_match(self):
-        assert not eval_condition('contains(input.dockerfile, "alpine")', {"dockerfile": "FROM scratch"})
-
-    def test_not_contains_match(self):
-        assert eval_condition('not contains(input.dockerfile, "USER 65532")', {"dockerfile": "FROM scratch"})
-
-    def test_not_contains_no_match(self):
-        assert not eval_condition('not contains(input.dockerfile, "USER 65532")', {"dockerfile": "FROM scratch\nUSER 65532"})
-
-    def test_regex_match(self):
-        import re as re_mod
-        pattern = "(?i)^\\s*FROM\\s*.*alpine"
-        assert eval_condition(f'regex.match("{pattern}", input.dockerfile)', {"dockerfile": "FROM alpine:3.20"})
-
-
-class TestRegoPolicyIntegration:
-    def test_alpine_detection(self):
-        results = evaluate_policies(
-            dockerfile="FROM alpine:3.20\nRUN apk add curl\n",
-            manifest={"tier": "standard"},
-        )
-        failures = [r for r in results if r.status == "fail"]
-        assert len(failures) > 0
-
-    def test_clean_dockerfile_passes(self):
-        results = evaluate_policies(
-            dockerfile="FROM scratch\nCOPY app /app\nUSER 65532\nENTRYPOINT [\"/app\"]\n",
-            manifest={"tier": "standard"},
-        )
-        failures = [r for r in results if r.status == "fail"]
-        assert len(failures) == 0
-
-    def test_nonroot_violation(self):
-        results = evaluate_policies(
-            dockerfile="FROM nginx\nEXPOSE 80\n",
-            manifest={"tier": "standard"},
-        )
-        failures = [r for r in results if r.status == "fail"]
-        nonroot_fails = [r for r in failures if "non-root" in r.message.lower() or "65532" in r.message]
-        assert len(nonroot_fails) > 0
-
-    def test_sbom_required_for_critical(self):
-        results = evaluate_policies(
-            dockerfile="FROM scratch\nUSER 65532\n",
-            manifest={"tier": "critical"},
-            has_sbom=False,
-        )
-        failures = [r for r in results if r.status == "fail"]
-        sbom_fails = [r for r in failures if "SBOM" in r.message]
-        assert len(sbom_fails) > 0
-
-    def test_sbom_not_required_for_standard(self):
-        results = evaluate_policies(
-            dockerfile="FROM scratch\nUSER 65532\n",
-            manifest={"tier": "standard"},
-            has_sbom=False,
-        )
-        failures = [r for r in results if r.status == "fail"]
-        sbom_fails = [r for r in failures if "SBOM" in r.message]
-        assert len(sbom_fails) == 0
-
-    def test_all_policies_parseable(self):
-        """Every policy source must parse without errors."""
-        for policy_id, source in POLICY_SOURCES.items():
-            rules = parse_rego(source)
-            assert len(rules) > 0, f"Policy {policy_id} parsed to 0 rules"
-
-    def test_unknown_policy_returns_error(self):
-        results = evaluate_policies(
-            dockerfile="FROM scratch",
-            policy_ids=["NONEXISTENT"],
-        )
-        assert len(results) == 1
-        assert results[0].status == "error"

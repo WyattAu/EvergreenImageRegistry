@@ -221,15 +221,25 @@ fn append_rule_output(value: &serde_json::Value, out: &mut Vec<String>) {
         serde_json::Value::Bool(false) | serde_json::Value::Null => {}
         serde_json::Value::Bool(true) => out.push("rule fired".to_string()),
         serde_json::Value::String(message) => out.push(message.clone()),
-        // Sets and multi-value rules serialize as arrays.
+        // Sets and multi-value rules serialize as arrays...
         serde_json::Value::Array(items) => {
             for item in items {
                 append_rule_output(item, out);
             }
         }
         serde_json::Value::Object(map) => {
-            for (_, val) in map {
-                append_rule_output(val, out);
+            // ...but regorus serializes a v1 `deny[msg] if { ... }` partial
+            // set as `{msg: true}` (the keys are the messages), while v0
+            // bundles and `deny contains msg if` produce string arrays.
+            // Accept both shapes: a boolean-`true` value means the key IS
+            // the message; anything else is a nested document to recurse
+            // into.
+            for (key, val) in map {
+                if val == &serde_json::Value::Bool(true) {
+                    out.push(key.clone());
+                } else {
+                    append_rule_output(val, out);
+                }
             }
         }
         other => out.push(other.to_string()),
@@ -362,6 +372,71 @@ ENTRYPOINT [\"/app\"]
         let input = input_for(COMPLIANT_DOCKERFILE);
         let verdict = eval_bundle(&supply_chain_bundle(), &input);
         assert_eq!(verdict, PolicyVerdict::Compliant);
+    }
+
+    #[test]
+    fn test_hipaa_int01_allowlist_is_re2_safe_and_fires() {
+        // Regression: HIPAA-INT-01 (policies/hipaa.rego) used a negative
+        // lookahead — RE2-incompatible, so under rego-eval the rule surfaced
+        // as EvalError (fail-closed) instead of ever firing. The rewritten
+        // rule enumerates the allowlist with negated startswith checks; this
+        // test compiles and evaluates the real standalone policy file.
+        let rule = PolicyRule {
+            id: "HIPAA-INT-01".to_string(),
+            name: "Image integrity".to_string(),
+            description: "HIPAA base-image allowlist (standalone policies/hipaa.rego)".to_string(),
+            severity: crate::policy::PolicySeverity::High,
+            rego_code: include_str!("../policies/hipaa.rego").to_string(),
+            remediation: "Use an approved base image".to_string(),
+            tags: vec![],
+        };
+        const INT01_MSG: &str = "Only approved base images allowed";
+
+        // Unapproved base (alpine) → the allowlist rule must fire.
+        let verdict = eval_rule(&rule, &input_for("FROM alpine:3.20\nUSER 65532\n"));
+        let violations = verdict.violations().expect("unapproved base must violate");
+        assert!(
+            violations.iter().any(|v| v.message.contains(INT01_MSG)),
+            "HIPAA-INT-01 must flag alpine: {violations:?}"
+        );
+
+        // Multi-stage: approved build stage, unapproved final stage → fires.
+        let multi_stage = "\
+FROM cgr.dev/chainguard/wolfi-base AS build
+COPY . .
+RUN make
+FROM alpine:3.20
+COPY --from=build /out /app
+USER 65532
+";
+        let verdict = eval_rule(&rule, &input_for(multi_stage));
+        let violations = verdict
+            .violations()
+            .expect("unapproved final stage must violate");
+        assert!(
+            violations
+                .iter()
+                .any(|v| v.message.contains(INT01_MSG) && v.message.contains("alpine")),
+            "HIPAA-INT-01 must flag the unapproved second stage: {violations:?}"
+        );
+
+        // All-approved bases (scratch exactly, cgr.dev, distroless, ubi) →
+        // the allowlist rule must stay quiet.
+        let approved = "\
+FROM scratch
+COPY app /app
+USER 65532
+";
+        for dockerfile in [approved, "FROM gcr.io/distroless/static\nUSER 65532\n"] {
+            let verdict = eval_rule(&rule, &input_for(dockerfile));
+            assert!(
+                verdict
+                    .violations()
+                    .map(|v| v.iter().all(|v| !v.message.contains(INT01_MSG)))
+                    .unwrap_or(true),
+                "approved base must not violate HIPAA-INT-01: {verdict:?}"
+            );
+        }
     }
 
     #[test]

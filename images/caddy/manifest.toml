@@ -1,6 +1,6 @@
 [metadata]
 name = "caddy"
-version = "2.11.3"
+version = "v2.11.4"
 description = "Caddy - powerful enterprise-ready open source web server"
 vendor = "Caddy"
 source = "https://github.com/caddyserver/caddy"

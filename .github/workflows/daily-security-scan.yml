@@ -152,7 +152,6 @@ jobs:
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           BUILT=0
           PULLED=0
-          FAILED=0
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             REF="${REGISTRY}/${OWNER}/${image}:latest"

@@ -1,6 +1,6 @@
 [metadata]
 name = "opensearch"
-version = "2.12.0"
+version = "3.8.0"
 description = "OpenSearch - community-driven search and analytics engine"
 vendor = "AWS"
 source = "https://github.com/opensearch-project/opensearch"

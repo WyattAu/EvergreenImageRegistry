@@ -196,9 +196,7 @@ def split_ref(ref):
     if "@" in ref:
         name_part, digest = ref.split("@", 1)
     first = name_part.split("/")[0]
-    if ":" in first:  # registry:port/name:tag
-        name, tag = name_part.rsplit(":", 1)
-    elif ":" in name_part:  # name:tag
+    if ":" in first or ":" in name_part:  # registry:port/name:tag
         name, tag = name_part.rsplit(":", 1)
     else:
         name, tag = name_part, "latest"
@@ -211,8 +209,7 @@ def check_registry(ref):
     first = name.split("/")[0]
     if "." not in first:
         name = ("library/" + name) if "/" not in name else name
-    if name.startswith("docker.io/"):
-        name = name[10:]
+    name = name.removeprefix("docker.io/")
     if name.startswith("ghcr.io/"):
         return check_ghcr(name[8:], tag)
     if name.startswith("cgr.dev/"):
@@ -224,8 +221,7 @@ def check_registry(ref):
     if name.startswith("lscr.io/"):
         return check_ghcr("linuxserver/" + name.split("/", 1)[1], tag)
     # docker.io (explicit or bare)
-    if name.startswith("docker.io/"):
-        name = name[10:]
+    name = name.removeprefix("docker.io/")
     status, detail = check_dockerhub(name, tag)
     if status == "DEAD" and digest:
         # a digest HEAD can 404 spuriously via anonymous tokens; trust the tag

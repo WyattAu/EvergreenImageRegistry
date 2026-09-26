@@ -190,42 +190,48 @@ def check_ecr(repo, tag):
     return "UNKNOWN", f"HTTP {code}"
 
 
+def split_ref(ref):
+    """Split image[:tag][@digest] into (repo_incl_registry, tag, digest)."""
+    name_part, digest = ref, None
+    if "@" in ref:
+        name_part, digest = ref.split("@", 1)
+    first = name_part.split("/")[0]
+    if ":" in first:  # registry:port/name:tag
+        name, tag = name_part.rsplit(":", 1)
+    elif ":" in name_part:  # name:tag
+        name, tag = name_part.rsplit(":", 1)
+    else:
+        name, tag = name_part, "latest"
+    return name, tag, digest
+
+
 def check_registry(ref):
-    """Return (status, detail) for image:tag ref."""
-    # normalize bare/dotted refs to docker.io
-    first = ref.split("/")[0]
-    if (
-        "/" == ref[0:1]
-        or ("." not in first and ":" not in first.split("/")[0] and "/" in ref)
-        or ("/" not in ref)
-    ):
-        if "." not in first or "/" not in ref:
-            path = ref.split(":")[0] if ":" in ref else ref
-            path = "library/" + path if "/" not in path else path
-            tag = ref.split(":", 1)[1] if ":" in ref else "latest"
-            return check_dockerhub(path, tag)
-    if ref.startswith("docker.io/"):
-        r = ref[10:]
-        r = "library/" + r if "/" not in r else r
-        return check_dockerhub(r, ref.split(":", 1)[1] if ":" in ref else "latest")
-    if ref.startswith("ghcr.io/"):
-        return check_ghcr(ref[8:], ref.split(":", 1)[1] if ":" in ref else "latest")
-    if ref.startswith("cgr.dev/"):
-        return check_cgr(ref[8:], ref.split(":", 1)[1] if ":" in ref else "latest")
-    if ref.startswith("gcr.io/"):
-        return check_gcr(ref[6:], ref.split(":", 1)[1] if ":" in ref else "latest")
-    if ref.startswith("public.ecr.aws/"):
-        return check_ecr(ref[15:], ref.split(":", 1)[1] if ":" in ref else "latest")
-    if ref.startswith("lscr.io/"):
-        # lscr.io is a ghcr-backed CNAME: linuxserver/<name>
-        path = ref[8:]
-        name = path.split(":")[0]
-        return check_ghcr(
-            f"linuxserver/{name}", ref.split(":", 1)[1] if ":" in ref else "latest"
-        )
-    if ref.startswith("quay.io/"):
-        return "UNKNOWN", "quay unsupported (add if needed)"
-    return "UNKNOWN", f"unhandled registry: {ref.split('/')[0]}"
+    """Return (status, detail) for image[:tag][@digest] ref."""
+    name, tag, digest = split_ref(ref)
+    first = name.split("/")[0]
+    if "." not in first:
+        name = ("library/" + name) if "/" not in name else name
+    if name.startswith("docker.io/"):
+        name = name[10:]
+    if name.startswith("ghcr.io/"):
+        return check_ghcr(name[8:], tag)
+    if name.startswith("cgr.dev/"):
+        return check_cgr(name[8:], tag)
+    if name.startswith("gcr.io/"):
+        return check_gcr(name[7:], tag)
+    if name.startswith("public.ecr.aws/"):
+        return check_ecr(name[15:], tag)
+    if name.startswith("lscr.io/"):
+        return check_ghcr("linuxserver/" + name.split("/", 1)[1], tag)
+    # docker.io (explicit or bare)
+    if name.startswith("docker.io/"):
+        name = name[10:]
+    status, detail = check_dockerhub(name, tag)
+    if status == "DEAD" and digest:
+        # a digest HEAD can 404 spuriously via anonymous tokens; trust the tag
+        # check and only report DEAD if the tag lookup also failed
+        pass
+    return status, detail
 
 
 def parse_dockerfile(path):

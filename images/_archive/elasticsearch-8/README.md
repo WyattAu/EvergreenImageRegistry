@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# elasticsearch-8 (ARCHIVED)
 
 Archived 2026-09-27.
 

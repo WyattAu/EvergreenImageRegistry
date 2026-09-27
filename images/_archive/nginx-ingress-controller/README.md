@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# nginx-ingress-controller (ARCHIVED)
 
 Archived 2026-09-27.
 

@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# kube-proxy (ARCHIVED)
 
 Archived 2026-09-27.
 

@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# etcd-backup (ARCHIVED)
 
 Archived 2026-09-27.
 

@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# hedgedoc (ARCHIVED)
 
 Archived 2026-09-27.
 

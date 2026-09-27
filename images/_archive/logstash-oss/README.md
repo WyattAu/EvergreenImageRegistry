@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# logstash-oss (ARCHIVED)
 
 Archived 2026-09-27.
 

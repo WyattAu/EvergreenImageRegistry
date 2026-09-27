@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# packetbeat (ARCHIVED)
 
 Archived 2026-09-27.
 

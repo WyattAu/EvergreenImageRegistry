@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# heartbeat (ARCHIVED)
 
 Archived 2026-09-27.
 

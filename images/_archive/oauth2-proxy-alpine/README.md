@@ -1,4 +1,4 @@
-# minio-mc (ARCHIVED)
+# oauth2-proxy-alpine (ARCHIVED)
 
 Archived 2026-09-27.
 

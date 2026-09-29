@@ -1,7 +1,7 @@
 [metadata]
 name = "paperless-ngx"
-version = "2.20.15"
-upstream_version = "2.20.14"
+version = "3.1.3"
+upstream_version = "3.1.3"
 description = "Paperless-ngx - document management system"
 vendor = "Paperless-ngx"
 source = "https://github.com/paperless-ngx/paperless-ngx"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://pypi.org/pypi/paperless-ngx/2.20.14"
+url = "https://pypi.org/pypi/paperless-ngx/3.1.3"
 
 [runtime]
 entrypoint = ["paperless"]
@@ -27,7 +27,7 @@ expose = [8000, 9101]
 "org.opencontainers.image.source" = "https://github.com/paperless-ngx/paperless-ngx"
 "org.opencontainers.image.title" = "paperless-ngx"
 "org.opencontainers.image.vendor" = "Paperless-ngx"
-"org.opencontainers.image.version" = "2.20.14"
+"org.opencontainers.image.version" = "3.1.3"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

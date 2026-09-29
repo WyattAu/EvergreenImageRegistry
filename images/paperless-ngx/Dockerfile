@@ -17,7 +17,7 @@
 # "no debian final stage" constraint, recorded for paperless-ngx specifically.
 # =============================================================================
 
-ARG VERSION=2.20.15
+ARG VERSION=3.1.3
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -28,7 +28,7 @@ ARG SHIM_VERSION=v2.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM ghcr.io/paperless-ngx/paperless-ngx:2.20.15@sha256:6c86cad803970ea782683a8e80e7403444c5bf3cf70de63b4d3c8e87500db92f
+FROM ghcr.io/paperless-ngx/paperless-ngx:3.1.3@sha256:aa810a36942c63d4ee70d00eda7236cd3d6acfb7eb3f7987fb568ed14df8817a
 RUN apt-get update && apt-get install -y --no-install-recommends tini && rm -rf /var/lib/apt/lists/*
 
 # Drop in the evergreen health-shim, which wraps the upstream
@@ -51,7 +51,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=120s --retries=5 \
 
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \
-      org.opencontainers.image.version="2.20.15" \
+      org.opencontainers.image.version="3.1.3" \
       org.opencontainers.image.vendor="Paperless-ngx" \
       org.opencontainers.image.source="https://github.com/paperless-ngx/paperless-ngx" \
       evergreen.image.tier="critical" \

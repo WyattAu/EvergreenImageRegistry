@@ -7,7 +7,7 @@
 | Image | `paperless-ngx` |
 | Base | `wolfi-base` |
 | Binary Source | PyPI (pip install) |
-| Version | 2.20.14 |
+| Version | 3.1.3 |
 | Architecture | amd64, arm64 |
 | Size | ~200MB |
 | Classification | Tier 2 - Document Management |
@@ -47,6 +47,8 @@ services:
     environment:
       - PAPERLESS_REDIS=redis://redis:6379
       - PAPERLESS_DBHOST=postgres
+      # Required since v3: must be set explicitly when using postgres/mariadb
+      - PAPERLESS_DBENGINE=postgresql
     read_only: true
 ```
 

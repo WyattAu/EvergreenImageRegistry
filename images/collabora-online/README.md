@@ -4,7 +4,7 @@ collabora-online container image
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 24.04.10.2 |
+| Version | 26.04.1.4.1 |
 | Tier | 2 |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
@@ -14,7 +14,7 @@ collabora-online container image
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/collabora-online:24.04.10.2
+docker pull ghcr.io/wyattau/evergreenimageregistry/collabora-online:26.04.1.4.1
 ```
 
 ## Security

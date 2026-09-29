@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "collabora-online"
-version = "25.04.9.4.1"
+version = "26.04.1.4.1"
 description = "collabora-online container image"
 
 [build]
@@ -22,7 +22,7 @@ expose = [9980, 9101]
 "org.opencontainers.image.source" = "https://github.com/CollaboraOnline/online"
 "org.opencontainers.image.title" = "collabora-online"
 "org.opencontainers.image.vendor" = "Collabora"
-"org.opencontainers.image.version" = "24.04.10.2"
+"org.opencontainers.image.version" = "26.04.1.4.1"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

@@ -3,7 +3,7 @@
 
 [metadata]
 image = "collabora-online"
-version = "24.04.10.2"
+version = "26.04.1.4.1"
 created = "2026-04-22"
 last_verified = ""
 verification_method = "package-manifest"

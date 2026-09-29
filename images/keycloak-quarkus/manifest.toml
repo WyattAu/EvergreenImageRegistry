@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "keycloak-quarkus"
-version = "26.6.1"
+version = "26.7.3"
 description = "keycloak-quarkus container image"
 
 [build]
@@ -23,7 +23,7 @@ expose = [8080, 9101]
 "org.opencontainers.image.source" = "https://github.com/keycloak/keycloak"
 "org.opencontainers.image.title" = "keycloak-quarkus"
 "org.opencontainers.image.vendor" = "Keycloak"
-"org.opencontainers.image.version" = "26.6.1"
+"org.opencontainers.image.version" = "26.7.3"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

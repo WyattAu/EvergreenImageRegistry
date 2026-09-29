@@ -16,19 +16,19 @@
 
 [metadata]
 image = "keycloak-quarkus"
-version = "26.6.1"
+version = "26.7.3"
 created = "2026-04-21T00:00:00Z"
-last_verified = "2026-04-21T00:00:00Z"
+last_verified = "2026-09-29T00:00:00Z"
 verification_method = "download-and-compute"
 verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/keycloak/keycloak/releases/download/26.6.1/keycloak-26.6.1.tar.gz"
-filename = "keycloak-26.6.1.tar.gz"
+url = "https://github.com/keycloak/keycloak/releases/download/26.7.3/keycloak-26.7.3.tar.gz"
+filename = "keycloak-26.7.3.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "77657f30b7e90d70f727712ce1c967f430fd6a5e9f458d32d8c6df0635345f47"
 
 [upstream_checksum]
-url = "https://github.com/keycloak/keycloak/releases/download/26.6.1/checksums.txt"
+url = "https://github.com/keycloak/keycloak/releases/download/26.7.3/keycloak-26.7.3.tar.gz.asc"
 format = "sha256"

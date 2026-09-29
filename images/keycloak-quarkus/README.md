@@ -4,7 +4,7 @@ keycloak-quarkus container image
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 26.6.1 |
+| Version | 26.7.3 |
 | Tier | 2 |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
@@ -14,7 +14,7 @@ keycloak-quarkus container image
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/keycloak-quarkus:26.6.1
+docker pull ghcr.io/wyattau/evergreenimageregistry/keycloak-quarkus:26.7.3
 ```
 
 ## Security

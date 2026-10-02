@@ -1,17 +1,17 @@
 // =============================================================================
-// Evergreenctl — Rego Policy Evaluation (regorus)
+// Evergreenctl — Rego Policy Evaluation (policy-kit adapter)
 // =============================================================================
-// Real Rego evaluation of policy bundles via the `regorus` interpreter
-// (Microsoft's OPA-compatible Rego engine). Gated behind the `rego-eval`
-// feature so the default build stays dependency-light.
+// Generic Rego evaluation (bundle loading, dialect auto-detect, fail-closed
+// aggregation, strict builtin errors, null-stripping) lives in `policy-kit`
+// (crates.io, extracted from this very module). This adapter keeps only the
+// Dockerfile-specific parts: the EIR input shaping (`PolicyInput` → JSON)
+// and the per-rule engine isolation that lets EIR rule bundles reuse
+// package names (`package evergreen.dockerfile` in many rules).
 //
-// This replaces the drifting Python shadow evaluator (scripts/rego_evaluate.py)
-// as the source of truth for bundle semantics: rules are evaluated exactly as
-// written, and any rule the engine cannot compile or evaluate surfaces as a
-// typed `EvalError` — never as a silent pass.
-//
-// Semantics:
-//   - `deny[msg]` and `warn[msg]` outputs are collected as violations.
+// Semantics are unchanged from the 1.1.x in-tree evaluator:
+//   - `deny[msg]` and `warn[msg]` outputs are collected as violations
+//     (v0 string-array form and v1 `{msg: true}` map form both handled by
+//     policy-kit).
 //   - A `default deny = false` that does not fire is not a violation.
 //   - Builtins that fail at runtime (e.g. an invalid regex) produce
 //     `PolicyVerdict::EvalError` (strict builtin errors, fail-closed).
@@ -20,81 +20,37 @@
 //     partially-evaluated bundle can never be reported as Compliant.
 // =============================================================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::policy::{PolicyBundle, PolicyInput, PolicyRule};
 
-/// A single rule violation produced by Rego evaluation.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Violation {
-    /// The policy rule ID (e.g. `DOCKER-SEC-001`).
-    pub rule: String,
-    /// The message produced by the Rego `deny`/`warn` rule.
-    pub message: String,
+pub use policy_kit::{PolicyVerdict, Violation};
+
+/// Build a policy-kit bundle from an EIR rule. The rule ID names the kit
+/// bundle, so every violation it produces is tagged with the rule ID —
+/// exactly the pre-extraction `Violation { rule: rule_id, .. }` shape.
+fn kit_bundle(rule: &PolicyRule) -> policy_kit::PolicyBundle {
+    policy_kit::PolicyBundle::new(rule.id.clone(), rule.rego_code.clone())
 }
 
-/// Verdict of evaluating Rego policy code against an input document.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum PolicyVerdict {
-    /// Every rule evaluated and none fired.
-    Compliant,
-    /// At least one rule fired.
-    Violations(Vec<Violation>),
-    /// The rules could not be compiled or evaluated. Fail-closed: callers
-    /// must treat this as "unknown", never as compliant.
-    EvalError(String),
-}
-
-impl PolicyVerdict {
-    /// True if this verdict is a typed evaluation error.
-    pub fn is_eval_error(&self) -> bool {
-        matches!(self, PolicyVerdict::EvalError(_))
-    }
-
-    /// Violations, if any. `None` for `Compliant` and `EvalError`.
-    pub fn violations(&self) -> Option<&[Violation]> {
-        match self {
-            PolicyVerdict::Violations(v) => Some(v),
-            _ => None,
-        }
-    }
-}
-
-impl std::fmt::Display for PolicyVerdict {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            PolicyVerdict::Compliant => write!(f, "COMPLIANT"),
-            PolicyVerdict::Violations(v) => write!(f, "VIOLATIONS ({})", v.len()),
-            PolicyVerdict::EvalError(_) => write!(f, "EVAL_ERROR"),
-        }
-    }
+/// Serialize the policy input to its JSON document. `None` fields serialize
+/// as `null` and are stripped by policy-kit before evaluation (a JSON null
+/// is *defined* in Rego and would defeat `not input.x`).
+fn input_document(input: &PolicyInput) -> Result<serde_json::Value, String> {
+    serde_json::to_value(input).map_err(|e| format!("failed to serialize policy input: {e}"))
 }
 
 /// Evaluate a single policy rule's `rego_code` against the input.
 pub fn eval_rule(rule: &PolicyRule, input: &PolicyInput) -> PolicyVerdict {
     let input_value = match input_document(input) {
         Ok(value) => value,
-        Err(message) => {
-            return PolicyVerdict::EvalError(format!("failed to serialize policy input: {message}"))
-        }
-    };
-
-    let policy_path = format!("{}.rego", rule.id);
-    let mut engine = match build_engine(&policy_path, &rule.rego_code) {
-        Ok(engine) => engine,
         Err(message) => return PolicyVerdict::EvalError(message),
     };
 
-    engine.set_input(input_value);
-    // Strict builtin errors: a failing builtin (e.g. an invalid regex) is an
-    // EvalError, never a silently-skipped expression. regorus already defaults
-    // to strict; set it explicitly so this stays true across upgrades.
-    engine.set_strict_builtin_errors(true);
-
-    match eval_engine(&mut engine) {
-        Ok(messages) => verdict_from_messages(&rule.id, messages),
-        Err(message) => PolicyVerdict::EvalError(message),
+    let mut engine = policy_kit::PolicyEngine::new();
+    if let Err(error) = engine.add_bundle(kit_bundle(rule)) {
+        return PolicyVerdict::EvalError(format!("failed to compile policy: {error}"));
     }
+
+    engine.evaluate_bundle(&rule.id, &input_value)
 }
 
 /// Evaluate every rule in a bundle against the input.
@@ -131,140 +87,8 @@ pub fn eval_builtins(input: &PolicyInput) -> Vec<(String, PolicyVerdict)> {
 }
 
 // ---------------------------------------------------------------------------
-// Engine plumbing
-// ---------------------------------------------------------------------------
-
-/// Compile a policy source into an engine, auto-detecting Rego dialect.
-///
-/// regorus defaults to Rego v1, where `deny[msg] { ... }` (no `if` keyword)
-/// is a parse error; legacy bundles in this crate use v0 syntax while the
-/// standalone `policies/*.rego` files use `import rego.v1`. Try v1 first,
-/// then retry v0 — the two dialects are mutually exclusive at parse time.
-fn build_engine(policy_path: &str, rego_code: &str) -> Result<regorus::Engine, String> {
-    let mut engine = regorus::Engine::new();
-    if engine
-        .add_policy(policy_path.to_string(), rego_code.to_string())
-        .is_ok()
-    {
-        return Ok(engine);
-    }
-
-    let mut engine = regorus::Engine::new();
-    engine.set_rego_v0(true);
-    engine
-        .add_policy(policy_path.to_string(), rego_code.to_string())
-        .map_err(|e| format!("failed to compile policy: {e}"))?;
-    Ok(engine)
-}
-
-/// Build the Rego input document.
-///
-/// `None` fields are stripped rather than serialized as `null`: in Rego,
-/// `null` is a *defined* value, so `not input.sbom` would be false for a
-/// stripped `None` and the rule would silently never fire.
-fn input_document(input: &PolicyInput) -> Result<regorus::Value, String> {
-    let mut json = serde_json::to_value(input).map_err(|e| format!("serialization failed: {e}"))?;
-    if let serde_json::Value::Object(ref mut map) = json {
-        map.retain(|_, value| !value.is_null());
-    }
-    let json_str = json.to_string();
-    regorus::Value::from_json_str(&json_str).map_err(|e| format!("invalid input document: {e}"))
-}
-
-/// Evaluate `data` and collect all `deny`/`warn` outputs.
-fn eval_engine(engine: &mut regorus::Engine) -> Result<Vec<String>, String> {
-    let results = engine
-        .eval_query("data".to_string(), false)
-        .map_err(|e| format!("evaluation failed: {e}"))?;
-
-    let expression = results
-        .result
-        .first()
-        .and_then(|r| r.expressions.first())
-        .ok_or_else(|| "evaluation returned no expressions".to_string())?;
-
-    let json: serde_json::Value = serde_json::to_value(&expression.value)
-        .map_err(|e| format!("result export failed: {e}"))?;
-
-    let mut messages = Vec::new();
-    collect_rule_outputs(&json, &mut messages);
-    Ok(messages)
-}
-
-/// Recursively collect `deny`/`warn` values from a data document.
-///
-/// Rules live in arbitrary packages, so walk the whole document instead of
-/// hard-coding package names.
-fn collect_rule_outputs(value: &serde_json::Value, out: &mut Vec<String>) {
-    match value {
-        serde_json::Value::Object(map) => {
-            for (key, val) in map {
-                if key == "deny" || key == "warn" {
-                    append_rule_output(val, out);
-                }
-                collect_rule_outputs(val, out);
-            }
-        }
-        serde_json::Value::Array(items) => {
-            for item in items {
-                collect_rule_outputs(item, out);
-            }
-        }
-        _ => {}
-    }
-}
-
-/// Extract violation messages from one rule's output document.
-fn append_rule_output(value: &serde_json::Value, out: &mut Vec<String>) {
-    match value {
-        // `default deny = false` that never fired — not a violation.
-        serde_json::Value::Bool(false) | serde_json::Value::Null => {}
-        serde_json::Value::Bool(true) => out.push("rule fired".to_string()),
-        serde_json::Value::String(message) => out.push(message.clone()),
-        // Sets and multi-value rules serialize as arrays...
-        serde_json::Value::Array(items) => {
-            for item in items {
-                append_rule_output(item, out);
-            }
-        }
-        serde_json::Value::Object(map) => {
-            // ...but regorus serializes a v1 `deny[msg] if { ... }` partial
-            // set as `{msg: true}` (the keys are the messages), while v0
-            // bundles and `deny contains msg if` produce string arrays.
-            // Accept both shapes: a boolean-`true` value means the key IS
-            // the message; anything else is a nested document to recurse
-            // into.
-            for (key, val) in map {
-                if val == &serde_json::Value::Bool(true) {
-                    out.push(key.clone());
-                } else {
-                    append_rule_output(val, out);
-                }
-            }
-        }
-        other => out.push(other.to_string()),
-    }
-}
-
-fn verdict_from_messages(rule_id: &str, mut messages: Vec<String>) -> PolicyVerdict {
-    if messages.is_empty() {
-        return PolicyVerdict::Compliant;
-    }
-    messages.sort();
-    messages.dedup();
-    PolicyVerdict::Violations(
-        messages
-            .into_iter()
-            .map(|message| Violation {
-                rule: rule_id.to_string(),
-                message,
-            })
-            .collect(),
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Tests
+// Tests — the Dockerfile-rule suites, now exercising the policy-kit adapter
+// end to end (these are the same cases that validated the in-tree evaluator).
 // ---------------------------------------------------------------------------
 
 #[cfg(test)]

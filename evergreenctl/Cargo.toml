@@ -6,9 +6,10 @@ description = "Evergreen image registry management toolchain"
 
 [features]
 default = []
-# Real Rego evaluation via the regorus interpreter. Default-off so the
-# constraint-only build stays dependency-light; CI enables it explicitly.
-rego-eval = ["dep:regorus"]
+# Real Rego evaluation via policy-kit (regorus-backed; extracted from this
+# crate's policy_eval module). Default-off so the constraint-only build
+# stays dependency-light; CI enables it explicitly.
+rego-eval = ["dep:policy-kit"]
 
 [dependencies]
 toml = "0.8"
@@ -30,7 +31,7 @@ semver = "1"
 chrono = "0.4"
 rayon = "1.10"
 rusqlite = { version = "0.31", features = ["bundled"] }
-regorus = { version = "0.12", optional = true }
+policy-kit = { version = "0.1", optional = true }
 
 [[bin]]
 name = "evergreenctl"

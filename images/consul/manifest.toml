@@ -1,6 +1,6 @@
 [metadata]
 name = "consul"
-version = "1.18.1"
+version = "v2.0.4"
 description = "Consul - service mesh, service discovery, and configuration"
 vendor = "HashiCorp"
 source = "https://github.com/hashicorp/consul"

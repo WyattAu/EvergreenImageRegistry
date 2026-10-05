@@ -21,6 +21,8 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 
 ENV SHIM_METRICS_ENABLED="true"
 
+USER 65532:65532
+
 EXPOSE 9093 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \

@@ -69,11 +69,11 @@ get_images() {
         for manifest in "$IMAGES_DIR"/*/manifest.toml; do
             [[ -f "$manifest" ]] || continue
             [[ "$manifest" == *"_wip"* || "$manifest" == *"_archive"* ]] && continue
-            
+
             if [[ -n "$TIER_FILTER" ]]; then
                 grep -q "tier = \"$TIER_FILTER\"" "$manifest" || continue
             fi
-            
+
             basename "$(dirname "$manifest")"
         done
     fi
@@ -84,69 +84,69 @@ test_image() {
     local img="$1"
     local df="$IMAGES_DIR/$img/Dockerfile"
     local result_file="$RESULTS_DIR/$img.txt"
-    
+
     # Skip if no Dockerfile
     if [[ ! -f "$df" ]]; then
         echo "SKIP $img (no Dockerfile)" >> "$result_file"
         return 0
     fi
-    
+
     # Skip if only FIPS variant
     if [[ ! -f "$df" ]] && [[ -f "$IMAGES_DIR/$img/Dockerfile.fips" ]]; then
         echo "SKIP $img (FIPS-only)" >> "$result_file"
         return 0
     fi
-    
+
     echo "Testing $img..."
-    
+
     # Step 1: Validate Dockerfile syntax
     if ! grep -q '^FROM ' "$df"; then
         echo "FAIL $img: No FROM instruction" >> "$result_file"
         return 1
     fi
-    
+
     # Step 2: Check for USER directive
     if ! grep -q 'USER 65532\|USER 65534\|USER nobody' "$df"; then
         echo "FAIL $img: No non-root USER directive" >> "$result_file"
         return 1
     fi
-    
+
     # Step 3: Check for HEALTHCHECK
     if ! grep -q 'HEALTHCHECK' "$df" && ! grep -q '^FROM scratch' "$df"; then
         echo "FAIL $img: No HEALTHCHECK" >> "$result_file"
         return 1
     fi
-    
+
     # Step 4: Check for ENTRYPOINT or CMD
     if ! grep -q 'ENTRYPOINT\|CMD' "$df"; then
         echo "FAIL $img: No ENTRYPOINT or CMD" >> "$result_file"
         return 1
     fi
-    
+
     # Step 5: Build the image (optional, requires Docker)
     if command -v docker &>/dev/null; then
         echo "  Building $img..."
         if timeout 300 docker build -t "smoke-test/$img:latest" "$IMAGES_DIR/$img" >/dev/null 2>&1; then
             echo "  Build: PASS"
-            
+
             # Step 6: Run the container
             echo "  Running $img..."
             local container_id
             container_id=$(timeout 30 docker run -d --rm "smoke-test/$img:latest" 2>/dev/null || true)
-            
+
             if [[ -n "$container_id" ]]; then
                 # Wait for container to start
                 sleep 5
-                
+
                 # Check if container is still running
                 if docker ps --format '{{.ID}}' | grep -q "${container_id:0:12}"; then
                     echo "  Run: PASS"
-                    
+
                     # Step 7: Check healthcheck
                     local health
                     health=$(docker inspect --format '{{.State.Health.Status}}' "$container_id" 2>/dev/null || echo "unknown")
                     echo "  Health: $health"
-                    
+
                     # Cleanup
                     docker stop "$container_id" >/dev/null 2>&1 || true
                 else
@@ -155,7 +155,7 @@ test_image() {
             else
                 echo "  Run: Could not start container"
             fi
-            
+
             # Cleanup image
             docker rmi "smoke-test/$img:latest" >/dev/null 2>&1 || true
         else
@@ -166,7 +166,7 @@ test_image() {
     else
         echo "  Docker not available, skipping build test"
     fi
-    
+
     echo "PASS $img" >> "$result_file"
     return 0
 }

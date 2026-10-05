@@ -38,8 +38,12 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Create results directory
+# Create results directory.
+# Clear it first: result files are per-image, so without this a run that tests
+# fewer images (or an image that now passes) inherits the previous run's
+# verdict, and the uploaded artifact reports failures that no longer exist.
 mkdir -p "$RESULTS_DIR"
+rm -f "$RESULTS_DIR"/*.txt
 
 # Colors
 RED='\033[0;31m'

@@ -196,4 +196,3 @@ jobs:
         run: |
           IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/envoy:${{ steps.meta.outputs.version }}-fips"
           cosign sign --yes "${IMAGE_TAG}"
-

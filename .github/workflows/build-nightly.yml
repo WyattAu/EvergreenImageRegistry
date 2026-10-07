@@ -128,6 +128,8 @@ jobs:
   pin-check:
     name: Upstream Pin Check
     runs-on: ubuntu-latest
+    # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
+    continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 30
     continue-on-error: true
     steps:
@@ -143,6 +145,8 @@ jobs:
     name: Performance Regression Check
     needs: [gates]
     runs-on: ubuntu-latest
+    # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
+    continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 30
     continue-on-error: true
     steps:
@@ -218,6 +222,8 @@ jobs:
     name: Binary Type Check
     needs: [gates]
     runs-on: ubuntu-latest
+    # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
+    continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 120
     continue-on-error: true
     steps:

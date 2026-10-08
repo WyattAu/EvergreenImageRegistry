@@ -190,7 +190,9 @@ def check_sbom(image_dir: Path) -> list[str]:
     return []
 
 
-def check_manifest_contract(manifest: dict[str, Any], image_name: str = "") -> list[str]:
+def check_manifest_contract(
+    manifest: dict[str, Any], image_name: str = ""
+) -> list[str]:
     """Validate manifest fields against the critical contract."""
     violations = []
     metadata = manifest.get("metadata", {})

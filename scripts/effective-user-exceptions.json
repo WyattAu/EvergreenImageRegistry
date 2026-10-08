@@ -27,7 +27,8 @@
     "taiga-backend",
     "taiga-protected",
     "typesense",
-    "uptime-kuma"
+    "uptime-kuma",
+    "vault"
   ],
   "tier_c_root_required": [
     "crowdsec",

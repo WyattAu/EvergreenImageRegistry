@@ -10,6 +10,7 @@ user = "70"
 stopsignal = "SIGINT"
 
 [source]
+type = "package-manager"
 url = "https://github.com/chainguard-images/images/tree/main/images/postgres"
 
 [runtime]

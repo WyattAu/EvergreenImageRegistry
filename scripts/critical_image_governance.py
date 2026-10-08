@@ -190,7 +190,7 @@ def check_sbom(image_dir: Path) -> list[str]:
     return []
 
 
-def check_manifest_contract(manifest: dict[str, Any]) -> list[str]:
+def check_manifest_contract(manifest: dict[str, Any], image_name: str = "") -> list[str]:
     """Validate manifest fields against the critical contract."""
     violations = []
     metadata = manifest.get("metadata", {})
@@ -202,10 +202,16 @@ def check_manifest_contract(manifest: dict[str, Any]) -> list[str]:
     if tier != "critical":
         violations.append(f"CC002: Tier is {tier!r}, expected critical")
 
-    # CC008: Stop signal
+    # CC008: Stop signal. SIGTERM is the default; SIGINT is an accepted
+    # exception for postgres-family images — SIGINT is postgres "fast
+    # shutdown" (drops new connections, finishes active ones), while
+    # SIGTERM is "smart shutdown" which can hang indefinitely against
+    # live clients. Deliberate, documented, per-image.
     stopsignal = str(build.get("stopsignal", "")).strip().upper()
+    is_postgres_family = image_name.startswith("postgres")
     if stopsignal and stopsignal != "SIGTERM":
-        violations.append(f"CC008: Stop signal is {stopsignal!r}, expected SIGTERM")
+        if not (is_postgres_family and stopsignal == "SIGINT"):
+            violations.append(f"CC008: Stop signal is {stopsignal!r}, expected SIGTERM")
 
     # CC011: Build type
     build_type = str(source.get("type", "")).strip()
@@ -245,7 +251,7 @@ def validate_critical_image(image_name: str, images_dir: Path) -> dict[str, Any]
 
     # Manifest contract
     if manifest:
-        result["violations"].extend(check_manifest_contract(manifest))
+        result["violations"].extend(check_manifest_contract(manifest, image_dir.name))
     else:
         result["violations"].append("CC001: Cannot validate without manifest")
 

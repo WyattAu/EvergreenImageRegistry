@@ -131,7 +131,6 @@ jobs:
     # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
     continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 30
-    continue-on-error: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Verify all FROM refs resolve
@@ -148,7 +147,6 @@ jobs:
     # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
     continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 30
-    continue-on-error: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Set up Docker Buildx
@@ -225,7 +223,6 @@ jobs:
     # Advisory by default; repo variable flips to blocking (see loop doc iteration 4)
     continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
     timeout-minutes: 120
-    continue-on-error: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Set up Docker Buildx

@@ -117,26 +117,14 @@ jobs:
         run: |
           cargo run --manifest-path evergreenctl/Cargo.toml -- validate images
       
-      - name: Verify C003 compliance
+      - name: Verify critical-image contract (CC001-CC012)
         run: |
-          python3 -c "
-          from pathlib import Path
-          passed = 0
-          failed = 0
-          for df in Path('images').glob('*/Dockerfile'):
-              if '_wip' in str(df) or '_archive' in str(df):
-                  continue
-              content = df.read_text()
-              if any(u in content for u in ['USER 65532', 'USER 65534', 'USER nobody']):
-                  passed += 1
-              else:
-                  failed += 1
-                  print(f'FAIL: {df.parent.name}')
-          print(f'C003: {passed}/{passed+failed} PASS')
-          if failed > 0:
-              exit(1)
-          "
-      
+          # Single source of truth: scripts/critical_image_governance.py
+          # (evidence-backed CC003 via effective-user-exceptions.json).
+          # Replaces four divergent text-grep implementations that kept
+          # this job permanently red — the last one is retired here.
+          python3 scripts/critical_image_governance.py
+
       - name: Validate wolfi variants
         run: |
           echo "Validating all wolfi variants..."

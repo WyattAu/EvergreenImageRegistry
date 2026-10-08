@@ -34,6 +34,20 @@ from typing import Any
 # ---------------------------------------------------------------------------
 
 BANNED_FINAL_BASES = {"alpine", "debian-slim", "ubuntu", "centos"}
+
+# Images allowed to START as root: Tier A (upstream entrypoints drop
+# privileges at runtime) and Tier C (root required by function).
+# Source of truth: scripts/effective-user-exceptions.json, backed by the
+# registry-config + runtime audit (.docs/eir-non-root-audit.md in SIS).
+_exceptions_path = Path(__file__).parent / "effective-user-exceptions.json"
+_ROOT_START_EXCEPTIONS: set[str] = set()
+_INHERITED_NONROOT: set[str] = set()
+if _exceptions_path.exists():
+    _data = json.loads(_exceptions_path.read_text())
+    _ROOT_START_EXCEPTIONS = set(_data.get("tier_a_upstream_init", [])) | set(
+        _data.get("tier_c_root_required", [])
+    )
+    _INHERITED_NONROOT = set(_data.get("inherited_nonroot", {}))
 ALLOWED_BASES_PREFIXES = ("scratch", "cgr.dev/", "gcr.io/distroless", "ghcr.io/")
 BANNED_ENTRYPOINT_SHELLS = {"sh", "bash", "/bin/sh", "/bin/bash"}
 
@@ -106,9 +120,18 @@ def check_dockerfile(image_dir: Path, manifest: dict[str, Any] | None) -> list[s
 
     content = dockerfile.read_text()
 
-    # CC003: Non-root
-    if "USER 65532" not in content:
-        violations.append("CC003: No USER 65532 in Dockerfile")
+    # CC003: Non-root. A Dockerfile USER directive satisfies this; so does
+    # a documented root-start exception (upstream entrypoints that drop
+    # privileges at runtime, or host agents that require root). Images
+    # with neither are violations — that is the signal the old text grep
+    # buried under 58 false positives.
+    has_user_directive = "USER 65532" in content
+    root_start_exception = image_dir.name in _ROOT_START_EXCEPTIONS
+    inherited_nonroot = image_dir.name in _INHERITED_NONROOT
+    if not (has_user_directive or root_start_exception or inherited_nonroot):
+        violations.append(
+            "CC003: No USER 65532, no root-start exception, no inherited non-root evidence"
+        )
 
     # CC004: HEALTHCHECK
     if "FROM scratch" not in content and "HEALTHCHECK" not in content:

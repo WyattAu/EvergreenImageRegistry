@@ -67,9 +67,14 @@ jobs:
               errors="$errors No FROM"
             fi
             
-            # Check USER
+            # Check USER — exempt documented root-start/inherited-nonroot
+            # images (scripts/effective-user-exceptions.json; audit:
+            # .docs/eir-non-root-audit.md). A bare Dockerfile grep flagged
+            # 58 images of which 23 run non-root via inheritance.
             if ! echo "$content" | grep -q "USER 65532\|USER 65534\|USER nobody"; then
-              errors="$errors No USER"
+              if ! grep -qE "\"$name\"" scripts/effective-user-exceptions.json; then
+                errors="$errors No USER"
+              fi
             fi
             
             # Check HEALTHCHECK (skip scratch)
@@ -147,7 +152,9 @@ jobs:
               errors="$errors No FROM"
             fi
             if ! echo "$content" | grep -q "USER 65532\|USER 65534\|USER nobody"; then
-              errors="$errors No USER"
+              if ! grep -qE "\"$name\"" scripts/effective-user-exceptions.json; then
+                errors="$errors No USER"
+              fi
             fi
             if ! echo "$content" | grep -q "HEALTHCHECK"; then
               errors="$errors No HEALTHCHECK"

@@ -139,7 +139,7 @@ test_image() {
             eff_user=$(docker image inspect "smoke-test/$img:latest" --format '{{.Config.User}}' 2>/dev/null || echo "?")
             if [[ -z "$eff_user" ]]; then
                 echo "INFO $img: starts as root (no USER in final config; entrypoint may drop privileges)" >> "$result_file"
-                echo "  User: root (config)" 
+                echo "  User: root (config)"
             else
                 echo "OK $img: effective user '$eff_user'" >> "$result_file"
                 echo "  User: $eff_user"
@@ -183,7 +183,12 @@ test_image() {
         echo "  Docker not available, skipping build test"
     fi
 
+    # "PASS" for the summary counter; "OK"/"INFO" lines carry the
+    # effective-user verdict written during the build step above.
     echo "PASS $img" >> "$result_file"
+    if ! grep -qE '^(OK|INFO) '"$img" "$result_file" 2>/dev/null; then
+        echo "INFO $img: no user inspection recorded (docker unavailable)" >> "$result_file"
+    fi
     return 0
 }
 

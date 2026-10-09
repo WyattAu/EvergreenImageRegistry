@@ -251,6 +251,13 @@ jobs:
     if: needs.bump.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Advisory: PR creation needs the repository setting "Allow GitHub
+    # Actions to create and approve pull requests". While that is off, this
+    # job hard-failed, which kept the commit's check suite permanently red
+    # and — because run conclusions track the suite — made every build-nightly
+    # run report `failure` even with 25/25 jobs green. The bumps are still
+    # computed and logged; only the PR push is best-effort.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
@@ -282,6 +289,16 @@ jobs:
               else:
                   print(f"Failed: {image}: {result.stderr}")
           PYEOF
+
+      - name: Report PR outcome and remediation
+        if: always()
+        run: |
+          echo "Bumps computed above are authoritative; the PR step is advisory."
+          echo "If no PR was opened, enable:"
+          echo "  Settings -> Actions -> General -> Workflow permissions"
+          echo "  -> 'Allow GitHub Actions to create and approve pull requests'"
+          gh pr list --head auto-bump/versions --state open --json number,url \
+            || echo "PR lookup unavailable (expected without pull-requests: write)"
 
       - name: Generate changelog
         run: |

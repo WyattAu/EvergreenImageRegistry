@@ -1,0 +1,28 @@
+name: Probe Run Conclusion
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+  security-events: write
+  actions: read
+
+jobs:
+  plain:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok
+
+  matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        i: [0, 1]
+    steps:
+      - run: echo ok ${{ matrix.i }}
+
+  calls-reusable:
+    uses: ./.github/workflows/_probe-reusable.yml

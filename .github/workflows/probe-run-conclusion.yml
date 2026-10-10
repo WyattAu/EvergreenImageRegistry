@@ -2,6 +2,21 @@ name: Probe Run Conclusion
 
 on:
   workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Build only this tier (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - all
+          - critical
+          - standard
+          - community
+      sign:
+        description: 'Sign images with Cosign'
+        required: false
+        type: string
+        default: 'true'
 
 permissions:
   contents: read

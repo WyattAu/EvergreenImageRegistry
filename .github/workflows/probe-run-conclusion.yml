@@ -11,18 +11,36 @@ permissions:
   actions: read
 
 jobs:
-  plain:
+  discover:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
     steps:
-      - run: echo ok
+      - id: gen
+        run: echo 'matrix={"batch":["a","b"]}' >> "$GITHUB_OUTPUT"
 
-  matrix:
+  gated:
+    needs: [discover]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        i: [0, 1]
     steps:
-      - run: echo ok ${{ matrix.i }}
+      - run: echo gated ok
+
+  advisory-style:
+    # Mirrors the nightly's advisory gates: job-level continue-on-error
+    # expression, evaluating to false.
+    continue-on-error: ${{ vars.ADVISORY_GATES_BLOCKING != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo advisory-style ok
 
   calls-reusable:
+    needs: [discover]
     uses: ./.github/workflows/_probe-reusable.yml
+
+  builds:
+    needs: [discover]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+    steps:
+      - run: echo build ${{ matrix.batch }}

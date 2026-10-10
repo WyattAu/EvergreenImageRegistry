@@ -117,7 +117,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install ruff
-        run: pip install ruff
+        # Pinned: unpinned installs tracked a ruff release that introduced
+        # new rule families (UP017, ...), breaking lint on untouched code.
+        # Bump deliberately, with the findings fixed, never by drift.
+        run: pip install ruff==0.15.12
       - name: Run ruff check
         run: ruff check scripts/ generate_manifests.py
       - name: Run ruff format check

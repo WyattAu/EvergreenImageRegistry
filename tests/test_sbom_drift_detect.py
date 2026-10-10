@@ -76,13 +76,17 @@ class TestExtractDockerfilePackages:
 class TestExtractSbomPackages:
     def test_reads_sbom(self, tmp_path):
         sbom = tmp_path / "sbom.spdx.json"
-        sbom.write_text(json.dumps({
-            "packages": [
-                {"name": "curl", "primaryPackagePurpose": "LIBRARY"},
-                {"name": "wolfi-base", "primaryPackagePurpose": "CONTAINER"},
-                {"name": "git"},
-            ]
-        }))
+        sbom.write_text(
+            json.dumps(
+                {
+                    "packages": [
+                        {"name": "curl", "primaryPackagePurpose": "LIBRARY"},
+                        {"name": "wolfi-base", "primaryPackagePurpose": "CONTAINER"},
+                        {"name": "git"},
+                    ]
+                }
+            )
+        )
         pkgs = extract_sbom_packages(tmp_path)
         assert "curl" in pkgs
         assert "git" in pkgs

@@ -1,4 +1,3 @@
-
 from scripts.enforce_policy import (
     build_json_output,
     get_effective_policy,
@@ -41,18 +40,14 @@ class TestParseDockerfile:
     def test_package_manager_detected(self, tmp_path):
         df = tmp_path / "Dockerfile"
         df.write_text(
-            "FROM debian:bookworm-slim\n"
-            "RUN apt-get update && apt-get install -y curl\n"
+            "FROM debian:bookworm-slim\nRUN apt-get update && apt-get install -y curl\n"
         )
         result = parse_dockerfile(tmp_path)
         assert result["has_package_manager"] is True
 
     def test_shell_detected(self, tmp_path):
         df = tmp_path / "Dockerfile"
-        df.write_text(
-            "FROM debian:bookworm-slim\n"
-            "COPY target/bin/sh /bin/sh\n"
-        )
+        df.write_text("FROM debian:bookworm-slim\nCOPY target/bin/sh /bin/sh\n")
         result = parse_dockerfile(tmp_path)
         assert result["has_shell"] is True
 

@@ -15,7 +15,9 @@ def test_normalize_legacy_tiers():
 
 
 def test_from_lines_classify_scratch_and_digest():
-    result = _from_lines("FROM scratch\nFROM wolfi:latest AS builder\nFROM wolfi@sha256:" + "a" * 64)
+    result = _from_lines(
+        "FROM scratch\nFROM wolfi:latest AS builder\nFROM wolfi@sha256:" + "a" * 64
+    )
     assert result[0]["pinned"] is True
     assert result[1]["pinned"] is False
     assert result[2]["pinned"] is True
@@ -31,13 +33,22 @@ def test_inventory_uses_active_directories():
 
 def test_inventory_counts_are_consistent():
     report = scan()
-    for key in ("with_sbom", "with_valid_sbom", "with_user", "with_healthcheck", "all_from_pinned"):
+    for key in (
+        "with_sbom",
+        "with_valid_sbom",
+        "with_user",
+        "with_healthcheck",
+        "all_from_pinned",
+    ):
         assert 0 <= report[key] <= report["total_images"]
     assert report["with_valid_sbom"] <= report["with_sbom"]
     assert report["critical_from_pinned"] <= report["critical_total"]
     assert report["standard_unpinned"] <= report["total_images"]
     assert report["critical_unpinned"] == len(report["critical_unpinned_images"])
-    assert all(item["unpinned_from"] == [] or item["all_from_pinned"] is False for item in report["images"])
+    assert all(
+        item["unpinned_from"] == [] or item["all_from_pinned"] is False
+        for item in report["images"]
+    )
     assert report["tier_conflicts"] == 0
     assert report["invalid_tiers"] == 0
 

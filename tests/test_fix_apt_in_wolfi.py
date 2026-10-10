@@ -13,7 +13,12 @@ class TestFindLastFromLine:
         assert find_last_from_line(lines) == 0
 
     def test_multistage(self):
-        lines = ["FROM builder AS build\n", "RUN make\n", "FROM scratch\n", "COPY --from=build /out /\n"]
+        lines = [
+            "FROM builder AS build\n",
+            "RUN make\n",
+            "FROM scratch\n",
+            "COPY --from=build /out /\n",
+        ]
         assert find_last_from_line(lines) == 2
 
     def test_no_from(self):
@@ -22,10 +27,18 @@ class TestFindLastFromLine:
 
 class TestClassifyComplexity:
     def test_simple(self):
-        assert classify_complexity("RUN apt-get update && apt-get install -y curl") == "simple"
+        assert (
+            classify_complexity("RUN apt-get update && apt-get install -y curl")
+            == "simple"
+        )
 
     def test_purge_pattern(self):
-        assert classify_complexity("RUN apt-get update && apt-get install -y curl && apt-get purge -y apt") == "purge_pattern"
+        assert (
+            classify_complexity(
+                "RUN apt-get update && apt-get install -y curl && apt-get purge -y apt"
+            )
+            == "purge_pattern"
+        )
 
     def test_complex_repo(self):
         text = "RUN apt-key adv --keyserver keyserver.ubuntu.com && echo deb http://repo > /etc/apt/sources.list && apt-get install -y pkg"

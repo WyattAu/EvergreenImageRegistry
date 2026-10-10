@@ -34,11 +34,13 @@ def test_worklist_is_sorted_and_actionable():
 
 
 def test_empty_worklist_is_stable():
-    result = build_worklist({
-        "schema_version": 3,
-        "critical_total": 0,
-        "critical_from_pinned": 0,
-        "images": [],
-    })
+    result = build_worklist(
+        {
+            "schema_version": 3,
+            "critical_total": 0,
+            "critical_from_pinned": 0,
+            "images": [],
+        }
+    )
     assert result["entries"] == []
     assert result["unresolved_entries"] == 0

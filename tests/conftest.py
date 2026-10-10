@@ -21,10 +21,11 @@ def tmp_image_dir(tmp_path):
 def clear_precommit_globals():
     """Clear pre_commit_validator mutable globals before each test."""
     import sys
+
     if "scripts.pre_commit_validator" in sys.modules:
         mod = sys.modules["scripts.pre_commit_validator"]
-        if hasattr(mod, 'ERRORS'):
+        if hasattr(mod, "ERRORS"):
             mod.ERRORS.clear()
-        if hasattr(mod, 'WARNINGS'):
+        if hasattr(mod, "WARNINGS"):
             mod.WARNINGS.clear()
     yield

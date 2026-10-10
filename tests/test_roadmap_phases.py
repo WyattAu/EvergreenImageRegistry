@@ -21,19 +21,14 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Phase 1: Manifest validation
 # ---------------------------------------------------------------------------
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
-from validate_manifest import (
+from validate_manifest import (  # noqa: E402 -- scripts/ is not an importable package
     normalize_tier,
     validate_manifest,
-    load_and_validate,
-    LEGACY_TIER_MAP,
-    VALID_TIERS,
 )
 
 
@@ -57,8 +52,17 @@ class TestNormalizeTier:
 class TestManifestValidation:
     def test_valid_manifest(self):
         data = {
-            "metadata": {"name": "test", "version": "1.0", "tier": "critical", "description": "Test"},
-            "build": {"base": "scratch", "user": "65532:65532", "stopsignal": "SIGTERM"},
+            "metadata": {
+                "name": "test",
+                "version": "1.0",
+                "tier": "critical",
+                "description": "Test",
+            },
+            "build": {
+                "base": "scratch",
+                "user": "65532:65532",
+                "stopsignal": "SIGTERM",
+            },
             "source": {"type": "binary-release", "url": "https://example.com/app"},
             "runtime": {"entrypoint": ["/app"]},
         }
@@ -75,7 +79,11 @@ class TestManifestValidation:
     def test_missing_required_metadata_fields(self):
         data = {
             "metadata": {"name": "test"},
-            "build": {"base": "scratch", "user": "65532:65532", "stopsignal": "SIGTERM"},
+            "build": {
+                "base": "scratch",
+                "user": "65532:65532",
+                "stopsignal": "SIGTERM",
+            },
             "source": {"type": "binary-release", "url": "https://example.com"},
             "runtime": {"entrypoint": ["/app"]},
         }
@@ -85,8 +93,17 @@ class TestManifestValidation:
 
     def test_banned_base_image(self):
         data = {
-            "metadata": {"name": "test", "version": "1.0", "tier": "standard", "description": "Test"},
-            "build": {"base": "alpine:3.20", "user": "65532:65532", "stopsignal": "SIGTERM"},
+            "metadata": {
+                "name": "test",
+                "version": "1.0",
+                "tier": "standard",
+                "description": "Test",
+            },
+            "build": {
+                "base": "alpine:3.20",
+                "user": "65532:65532",
+                "stopsignal": "SIGTERM",
+            },
             "source": {"type": "package-manager", "url": "https://example.com"},
             "runtime": {"entrypoint": ["/app"]},
         }
@@ -96,8 +113,17 @@ class TestManifestValidation:
 
     def test_label_drift_detection(self):
         data = {
-            "metadata": {"name": "test", "version": "1.0", "tier": "critical", "description": "Test"},
-            "build": {"base": "scratch", "user": "65532:65532", "stopsignal": "SIGTERM"},
+            "metadata": {
+                "name": "test",
+                "version": "1.0",
+                "tier": "critical",
+                "description": "Test",
+            },
+            "build": {
+                "base": "scratch",
+                "user": "65532:65532",
+                "stopsignal": "SIGTERM",
+            },
             "source": {"type": "binary-release", "url": "https://example.com"},
             "runtime": {"entrypoint": ["/app"]},
             "labels": {"evergreen.image.tier": "standard"},
@@ -111,8 +137,7 @@ class TestManifestValidation:
 # Phase 2: Critical image governance
 # ---------------------------------------------------------------------------
 
-from critical_image_governance import (
-    validate_critical_image,
+from critical_image_governance import (  # noqa: E402 -- scripts/ is not an importable package
     discover_critical_images,
     BANNED_FINAL_BASES,
 )
@@ -138,10 +163,9 @@ class TestCriticalGovernance:
 # Phase 3: Supply-chain verification
 # ---------------------------------------------------------------------------
 
-from verify_supply_chain import (
+from verify_supply_chain import (  # noqa: E402 -- scripts/ is not an importable package
     check_sbom_binding,
     check_digest_pinning,
-    check_build_reproducibility,
 )
 
 
@@ -176,14 +200,18 @@ class TestSupplyChain:
     def test_scratch_not_checked(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             img_dir = Path(tmpdir)
-            (img_dir / "Dockerfile").write_text("FROM scratch\nCOPY app /app\nUSER 65532\n")
+            (img_dir / "Dockerfile").write_text(
+                "FROM scratch\nCOPY app /app\nUSER 65532\n"
+            )
             violations = check_digest_pinning(img_dir)
             assert len(violations) == 0
 
     def test_variable_ref_not_checked(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             img_dir = Path(tmpdir)
-            (img_dir / "Dockerfile").write_text("FROM ghcr.io/x/shim:${V}\nUSER 65532\n")
+            (img_dir / "Dockerfile").write_text(
+                "FROM ghcr.io/x/shim:${V}\nUSER 65532\n"
+            )
             violations = check_digest_pinning(img_dir)
             assert len(violations) == 0
 
@@ -192,7 +220,7 @@ class TestSupplyChain:
 # Phase 4: Runtime verification
 # ---------------------------------------------------------------------------
 
-from verify_runtime import (
+from verify_runtime import (  # noqa: E402 -- scripts/ is not an importable package
     check_nonroot,
     check_healthcheck,
     check_stop_signal,
@@ -216,7 +244,13 @@ class TestRuntimeVerification:
         assert v["code"] == "RT002"
 
     def test_healthcheck_present(self):
-        assert check_healthcheck("FROM nginx\nHEALTHCHECK CMD curl -f http://localhost/\n", is_scratch=False) is None
+        assert (
+            check_healthcheck(
+                "FROM nginx\nHEALTHCHECK CMD curl -f http://localhost/\n",
+                is_scratch=False,
+            )
+            is None
+        )
 
     def test_stop_signal_sigterm(self):
         manifest = {"build": {"stopsignal": "SIGTERM"}}
@@ -239,4 +273,3 @@ class TestRuntimeVerification:
 # Policy semantics are owned by the Rust evaluator:
 #   evergreenctl policy eval  (evergreenctl/src/policy_eval.rs)
 # ---------------------------------------------------------------------------
-

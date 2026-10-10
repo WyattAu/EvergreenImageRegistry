@@ -62,7 +62,9 @@ class TestParseManifest:
         # tomllib raises an error on empty TOML
         with __import__("contextlib").suppress(Exception):
             parse_manifest(str(f))
-  # expected
+
+
+# expected
 
 
 class TestGetLatestGithubRelease:
@@ -70,9 +72,16 @@ class TestGetLatestGithubRelease:
     def test_successful_fetch(self, mock_urlopen):
         class FakeResp:
             def read(self):
-                return json.dumps({"tag_name": "v1.2.3", "html_url": "https://github.com/o/r/releases/v1.2.3"}).encode()
+                return json.dumps(
+                    {
+                        "tag_name": "v1.2.3",
+                        "html_url": "https://github.com/o/r/releases/v1.2.3",
+                    }
+                ).encode()
+
             def __enter__(self):
                 return self
+
             def __exit__(self, *a):
                 pass
 
@@ -84,7 +93,10 @@ class TestGetLatestGithubRelease:
     @patch("scripts.check_upstream_versions.urllib.request.urlopen")
     def test_404_returns_none(self, mock_urlopen):
         import urllib.error
-        mock_urlopen.side_effect = urllib.error.HTTPError("url", 404, "Not Found", {}, None)
+
+        mock_urlopen.side_effect = urllib.error.HTTPError(
+            "url", 404, "Not Found", {}, None
+        )
         tag, url = get_latest_github_release("owner/repo")
         assert tag is None
         assert url is None

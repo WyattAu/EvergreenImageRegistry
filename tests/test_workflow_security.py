@@ -24,7 +24,10 @@ def test_push_lint_gate_is_blocking():
 def test_cis_shell_and_package_checks_are_blocking():
     text = _workflow("cis-gate.yml")
     assert "CIS 4.4.3 — No shell in final stage\n        continue-on-error" not in text
-    assert "CIS 4.4.3 — No package manager in final stage\n        continue-on-error" not in text
+    assert (
+        "CIS 4.4.3 — No package manager in final stage\n        continue-on-error"
+        not in text
+    )
     assert "CIS 4.4.3 FAIL: Shell installed in final stage" in text
     assert "CIS 4.4.3 FAIL: Package manager used in final stage" in text
 
@@ -41,7 +44,10 @@ def test_reusable_build_fails_on_batch_or_attestation_failures():
     text = _workflow("_build-reusable.yml")
     assert "::error::${FAILED} image(s) failed to build" in text
     assert "All ${FAILED} images failed" not in text
-    assert "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} failed" in text
+    assert (
+        "Sign/Attest: ${SIGNED} signed, ${ATTESTED} SLSA attested, ${FAILED} failed"
+        in text
+    )
     # Attest ops are intentionally non-fatal (images are pushed; the
     # Compliance Scan is the enforcement layer) but must still be surfaced.
     assert "::warning::${FAILED} image attestation operation(s) failed" in text
@@ -50,14 +56,19 @@ def test_reusable_build_fails_on_batch_or_attestation_failures():
 
 def test_daily_security_scan_does_not_accept_missing_scan_results():
     text = _workflow("daily-security-scan.yml")
-    assert 'could not pull for SBOM generation' in text
-    assert 'Failed to generate SBOM for ${image}' in text
-    assert 'trivy image \\\n              --severity CRITICAL,HIGH,MEDIUM,LOW \\\n              --ignore-unfixed=false \\\n              --format json \\\n              --output "/tmp/trivy-results/${SAFE}.json" \\\n              "$ref" 2>/dev/null || true' not in text
+    assert "could not pull for SBOM generation" in text
+    assert "Failed to generate SBOM for ${image}" in text
+    assert (
+        'trivy image \\\n              --severity CRITICAL,HIGH,MEDIUM,LOW \\\n              --ignore-unfixed=false \\\n              --format json \\\n              --output "/tmp/trivy-results/${SAFE}.json" \\\n              "$ref" 2>/dev/null || true'
+        not in text
+    )
 
 
 def test_compliance_scan_supply_chain_verification_is_blocking():
     text = _workflow("compliance-scan.yml")
-    assert "Verify supply chain\n        id: supply\n        continue-on-error" not in text
+    assert (
+        "Verify supply chain\n        id: supply\n        continue-on-error" not in text
+    )
     assert "SPDX attestation verification failed" in text
     assert "CIS no-SUID check failed" in text
 

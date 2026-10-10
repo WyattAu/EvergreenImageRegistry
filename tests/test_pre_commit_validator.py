@@ -1,4 +1,3 @@
-
 from scripts.pre_commit_validator import validate_dockerfile
 
 

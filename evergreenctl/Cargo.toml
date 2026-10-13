@@ -12,7 +12,7 @@ default = []
 rego-eval = ["dep:policy-kit"]
 
 [dependencies]
-toml = "0.8"
+toml = "1.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }

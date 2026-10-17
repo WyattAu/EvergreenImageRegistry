@@ -16,7 +16,7 @@
 
 [metadata]
 image = "node-exporter"
-version = "1.11.1"
+version = "v1.12.1"
 created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-20"
 verification_method = "download-verify"
@@ -27,7 +27,7 @@ url = "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node
 filename = "node_exporter-1.8.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING_VERSION_UPDATE_1.11.1"
+expected_sha256 = "NEEDS_UPDATE"
 
 [upstream_checksum]
 url = "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/sha256sums.txt"

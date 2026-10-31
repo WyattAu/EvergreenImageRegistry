@@ -3,9 +3,9 @@
 | **PostgreSQL 16** | ✅ Chainguard wolfi repack, non-root (UID 70)    | ✅ Wolfi, distroless, non-root | ❌ No pre-built PG image (build from ubi) | ✅ Debian, UID 1001 | ✅ Debian, root (drops to `postgres` UID 999) | EIR uses Chainguard postgres as base; gets wolfi minimalism without maintaining PG from source |
 | **MariaDB**       | ✅ Chainguard wolfi repack, non-root (UID 65532) | ✅ Wolfi, distroless, non-root | ❌ No pre-built                           | ✅ Debian, UID 1001 | ✅ Debian, root (drops to `mysql` UID 999)    | EIR uses Chainguard mariadb; already non-root by default                                       |
 | **Nginx**   | ✅ wolfi-base (apk-install), non-root (UID 65532)  | ✅ Wolfi, distroless | ❌ (build from ubi) | ✅ Debian | ✅ Debian, root (drops to `nginx` UID 101) | EIR installs nginx via apk on wolfi-base; balanced minimalism |
-| **HAProxy** | ✅ Upstream repack                                 | ✅ Wolfi             | ❌                  | ✅        | ✅ Debian                                  |;                                                              |
-| **Node Exporter** | ✅ Upstream repack                                   | ✅ Wolfi             | ❌          | ❌        | ✅ Alpine/busybox, non-root            |;                                             |
-| **Traefik**       | ~95 MB (scratch)     | ~100 MB    | ~165 MB (Alpine) |;       | **-42%**              |
-| **Prometheus**    | ~130 MB (scratch)    | ~140 MB    | ~235 MB (Alpine) |;       | **-45%**              |
-| **Alertmanager**  | ~55 MB (scratch)     | ~60 MB     | ~65 MB (Alpine)  |;       | **-15%**              |
+| **HAProxy** | ✅ Upstream repack                                 | ✅ Wolfi             | ❌                  | ✅        | ✅ Debian                                  | - |
+| **Node Exporter** | ✅ Upstream repack                                   | ✅ Wolfi             | ❌          | ❌        | ✅ Alpine/busybox, non-root            | - |
+| **Traefik**       | ~95 MB (scratch)     | ~100 MB    | ~165 MB (Alpine) | - | **-42%**              |
+| **Prometheus**    | ~130 MB (scratch)    | ~140 MB    | ~235 MB (Alpine) | - | **-45%**              |
+| **Alertmanager**  | ~55 MB (scratch)     | ~60 MB     | ~65 MB (Alpine)  | - | **-15%**              |
 | **Health shim as PID 1 supervisor**     | Signal forwarding, startup probe, liveness/readiness probes, metrics; all in a ~4 MB Go binary. Unique approach.                 |

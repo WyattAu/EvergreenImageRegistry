@@ -66,7 +66,7 @@ Phase 6: SIS Migration Finish
 **Problem:** `validate_entrypoint_pattern.py` reports mariadb and postgresql-16 as missing ENTRYPOINT. These are
 Chainguard repacks that inherit the upstream's ENTRYPOINT.
 
-**Fix:** Add `chainguard-repack` exemption pattern. Images that `FROM cgr.dev/chainguard/*` inherit upstream ENTRYPOINT : this is valid.
+**Fix:** Add `chainguard-repack` exemption pattern. Images that `FROM cgr.dev/chainguard/*` inherit upstream ENTRYPOINT: this is valid.
 
 ### 1.2 Fix smoke test step in report job
 

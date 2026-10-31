@@ -570,7 +570,7 @@ operations.
 
 #### Problem Analysis
 
-XDP (eXpress Data Path) enables programmable packet processing at the earliest possible point in the Linux network stack : before SKB allocation. XDP is less invasive than DPDK (no hugepages, no dedicated NICs) but provides significant
+XDP (eXpress Data Path) enables programmable packet processing at the earliest possible point in the Linux network stack: before SKB allocation. XDP is less invasive than DPDK (no hugepages, no dedicated NICs) but provides significant
 latency reduction for filtering and routing.
 
 **XDP use cases in the registry:**

@@ -6,9 +6,9 @@
     OPA/RE2 nor regorus can evaluate; the rule could never have fired. New form flags each unpinned non-scratch `FROM`
 - **read-only-rootfs label**: 100% (997/997); `evergreen.security.read-only-rootfs="true"`
 - **seccomp label**: 100% (997/997); `evergreen.security.seccomp="runtime-default"`
-| R15          | - | - | Regression fixes, chmod arg order       |
-| R16          | - | - | addgroup arg order (35 images)          |
-| R17          | - | - | 50 dewhitespace'd RUN/COPY, missing git |
+| R15          |;          |;             | Regression fixes, chmod arg order       |
+| R16          |;          |;             | addgroup arg order (35 images)          |
+| R17          |;          |;             | 50 dewhitespace'd RUN/COPY, missing git |
 - **Round 15 (0b942149):** 27 files; 2 elasticsearch user creation, 1 elasticsearch-exporter chmod, 24 chmod arg order
 - **Option B (44ae9637):** 14 files; CI timeout 180→360min, per-image 15min cap, 13 version updates via GitHub API
 - **Round 16 (c10a6456):** 37 files; 35 addgroup argument order, 1 git-secrets curl, 1 pip-audit

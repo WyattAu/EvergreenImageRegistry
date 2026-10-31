@@ -1,3 +1,3 @@
-| debian-lib | 0     | - |
-| debian-php | 0     | - |
-| versioned  | 0     | - |
+| debian-lib | 0     |;                             |
+| debian-php | 0     |;                             |
+| versioned  | 0     |;                             |

@@ -1,4 +1,4 @@
-| 1        | `scratch`         | - | none  | none     | 0 MB    | Static binary, zero runtime deps      |
+| 1        | `scratch`         |;                                             | none  | none     | 0 MB    | Static binary, zero runtime deps      |
 #### wolfi First: Including FIPS
 | Jenkins    | 3    | scratch     | Static Go binary; even though Tier 3, scratch works |
 | Grafana    | 3    | wolfi       | Needs glibc; falls to wolfi                         |

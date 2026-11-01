@@ -130,10 +130,12 @@ jobs:
             echo "No changes to commit"
             echo "has_changes=false" >> "$GITHUB_ENV"
           else
-            {
-              echo "has_changes=true"
-              echo "=== Changed files ==="
-            } >> "$GITHUB_ENV"
+            # GITHUB_ENV parses LINE-BY-LINE: a second line here becomes an
+            # env entry with an empty name ("Value cannot be null. Parameter
+            # 'name'"). Only single-line NAME=VALUE pairs go to the env
+            # file; banners go to stdout.
+            echo "has_changes=true" >> "$GITHUB_ENV"
+            echo "=== Changed files ==="
             git diff --stat
 
             CHANGED_IMAGES=$(git diff --name-only | grep -oP '^images/\K[^/]+' | sort -u)

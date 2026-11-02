@@ -56,7 +56,10 @@ jobs:
               # Check if image downloads a Go or Rust binary
               if grep -qE 'github\.com/.*releases/download|rust-lang\.org/dist|golang\.org/dl/' \
                   "images/${MANUAL_IMAGE}/Dockerfile" 2>/dev/null; then
-                MATRIX='[{"image":"'"${MANUAL_IMAGE}"'"}]'
+                # strategy.matrix needs an OBJECT of dimensions, not an array —
+                # an array expands to zero combinations and fails the run with
+                # no visible job (the "phantom failure").
+                MATRIX='{"image":["'"${MANUAL_IMAGE}"'"]}'
                 TOTAL=1
               else
                 echo "::warning::${MANUAL_IMAGE} does not appear to be a Go/Rust binary-download image"
@@ -80,15 +83,15 @@ jobs:
             done
             TOTAL=${#IMGS[@]}
             if [[ $TOTAL -eq 0 ]]; then
-              MATRIX="[]"
+              MATRIX='{"image":[]}'
             else
-              # Build JSON array
-              JSON="["
+              # Build the matrix OBJECT: {"image":["a","b",...]}
+              JSON='{"image":['
               for i in "${!IMGS[@]}"; do
                 [[ $i -gt 0 ]] && JSON+=","
-                JSON+='{"image":"'"${IMGS[$i]}"'"}'
+                JSON+='"'"${IMGS[$i]}"'"'
               done
-              JSON+="]"
+              JSON+=']}'
               MATRIX="$JSON"
             fi
           fi

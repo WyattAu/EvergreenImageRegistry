@@ -17,7 +17,7 @@ Evergreen Image Registry Team
 ### Context
 
 The Evergreen Image Registry contains 986 container images. 333 use `FROM scratch` (static binaries), and 426 have
-`HEALTHCHECK NONE`. Scratch images have no shell, so standard `HEALTHCHECK CMD` instructions that rely on `/bin/sh` fail
+`HEALTHCHECK NONE`. Scratch images have no shell, so standard `HEALTHCHECK CMD`instructions that rely on`/bin/sh` fail
 at runtime. Database and proxy images need health probes, metrics, and process management; but adding a shell violates
 Pillar I (Security & Minimalism).
 
@@ -30,7 +30,7 @@ Embed the health-shim binary as PID 1 in all scratch-based images that serve net
 
 **How it works:**
 
-```
+```text
 FROM scratch
 
 /app/health-shim (Rust, ~300KB)    ← Entry point (PID 1)
@@ -71,7 +71,7 @@ READY_CMD="redis-cli ping"             # Readiness check
 | ------------------ | --------------------------------------------- | --------- | -------- |
 | L1: PID monitoring | Is child process alive?                       | <1ms      | Basic    |
 | L2: TCP socket     | Is the service port open?                     | ~1ms      | Medium   |
-| L3: CLI exec       | Does `pg_isready` / `redis-cli ping` succeed? | ~10-100ms | High     |
+| L3: CLI exec       | Does `pg_isready`/`redis-cli ping` succeed? | ~10-100ms | High     |
 | L4: HTTP probe     | Does `/metrics` return 200?                   | ~50-200ms | Highest  |
 
 ### Consequences

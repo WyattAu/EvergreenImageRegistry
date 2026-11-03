@@ -225,7 +225,7 @@ Actions:
 4. Verify both sites serve identical content
 5. Add link-checking CI job that validates all doc links
 
-**Success:** Both https://wyattau.github.io/EvergreenImageRegistry/ and Cloudflare Pages serve docs.
+**Success:** Both <https://wyattau.github.io/EvergreenImageRegistry/> and Cloudflare Pages serve docs.
 
 ### Phase 111: Documentation hardening (Week 8-9)
 

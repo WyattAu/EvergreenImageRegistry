@@ -20,7 +20,7 @@ requests to public repos work fine, but an invalid token for a repo you lack acc
 
 ### Symptom
 
-```
+```text
 curl: (22) The requested URL returned error: 404
 ```
 
@@ -64,17 +64,17 @@ grep -rn 'curl.*-H.*Authorization.*token.*\${GITHUB_TOKEN}' images/*/Dockerfile 
 
 ---
 
-## Problem 2: Bash Brace Expansion `{{ }}` in `/bin/sh`
+## Problem 2: Bash Brace Expansion `{{ }}`in`/bin/sh`
 
 **Severity:** HIGH | **Affected:** 0 remaining (fixed in 5 files) | **Status:** FIXED
 
 ### Root Cause
 
-Debian uses `dash` as `/bin/sh`, which does NOT support bash brace expansion (`{{ }}`). Several Dockerfiles used
-`{{ echo ...; echo ...; }} || true` for placeholder creation. The `{{ }}` is treated as literal `{` characters by dash,
+Debian uses `dash`as`/bin/sh`, which does NOT support bash brace expansion (`{{ }}`). Several Dockerfiles used
+`{{ echo ...; echo ...; }} || true`for placeholder creation. The`{{ }}`is treated as literal`{` characters by dash,
 producing:
 
-```
+```text
 /bin/sh: 1: {{: not found
 /bin/sh: 1: }}: not found
 ```
@@ -108,10 +108,10 @@ fi || true
 ### Root Cause
 
 BuildKit evaluates `COPY --from=stage /path/with/${VAR} /dest` source paths during the solve phase, BEFORE the source
-stage's `RUN` commands complete. If the source path is created inside a `RUN` step (not in the base image or a cached
+stage's `RUN`commands complete. If the source path is created inside a`RUN` step (not in the base image or a cached
 layer), the COPY will fail with:
 
-```
+```text
 ERROR: failed to calculate checksum of ref ...: "/path/with/version": not found
 ```
 
@@ -119,7 +119,7 @@ This happens even if the RUN succeeds and the directory demonstrably exists (ver
 
 ### Symptom
 
-```
+```text
 #N DONE 0.3s          <-- RUN succeeded
 #N+1 ERROR: failed to calculate checksum of ref ...: "/opt/foo-1.0": not found
 ```
@@ -164,17 +164,17 @@ caught during the full critical tier build push phase.
 
 ### Root Cause
 
-Go 1.24+ introduced the `tool` directive in `go.mod`. Many Go projects have updated their `go.mod` to require Go 1.25+,
-but the `golang:1.24-bookworm` base image only ships Go 1.24.13. When `GOTOOLCHAIN=local` (default), the build fails
+Go 1.24+ introduced the `tool`directive in`go.mod`. Many Go projects have updated their `go.mod` to require Go 1.25+,
+but the `golang:1.24-bookworm`base image only ships Go 1.24.13. When`GOTOOLCHAIN=local` (default), the build fails
 with:
 
-```
+```text
 go: go.mod requires go >= 1.25.0 (running go 1.24.13; GOTOOLCHAIN=local)
 ```
 
 ### Fix
 
-Add `ENV GOTOOLCHAIN=auto` before the `go build` step. This lets Go automatically download the required toolchain
+Add `ENV GOTOOLCHAIN=auto`before the`go build` step. This lets Go automatically download the required toolchain
 version.
 
 **Before:**
@@ -195,23 +195,23 @@ RUN go build -o /app ./cmd/app
 ### Note
 
 This adds ~200MB download time on first build. For multi-arch builds with QEMU, the arm64 toolchain download may
-timeout. Consider setting `multiarch = false` in `manifest.toml` for Go source builds.
+timeout. Consider setting `multiarch = false`in`manifest.toml` for Go source builds.
 
 ### Affected Images
 
-16 images with `FROM golang` but no `GOTOOLCHAIN`: badger, ct-log, dex, fail2ban-exporter, govulncheck, health-checks,
+16 images with `FROM golang`but no`GOTOOLCHAIN`: badger, ct-log, dex, fail2ban-exporter, govulncheck, health-checks,
 health-shim, linguist-go, nginx-ingress-controller, nutsdb, perscache, rate-limiter, rdns-server, scratch-go, ulogger,
 wireguard
 
 ---
 
-## Problem 5: `PLACEHOLDER_SHA` with `|| exit 1`
+## Problem 5: `PLACEHOLDER_SHA`with`|| exit 1`
 
 **Severity:** MEDIUM | **Affected:** 0 remaining (fixed in 7 images) | **Status**: FIXED
 
 ### Root Cause
 
-`PLACEHOLDER_SHA` is a sentinel value that will NEVER match the actual file hash. When used with `|| exit 1`, the build
+`PLACEHOLDER_SHA`is a sentinel value that will NEVER match the actual file hash. When used with`|| exit 1`, the build
 is guaranteed to fail at the checksum step:
 
 ```dockerfile
@@ -220,7 +220,7 @@ echo "PLACEHOLDER_SHA  /file.tar.gz" | sha256sum -c || exit 1  # ALWAYS FAILS
 
 ### Fix
 
-Always use `|| true` with `PLACEHOLDER_SHA`:
+Always use `|| true`with`PLACEHOLDER_SHA`:
 
 ```dockerfile
 echo "PLACEHOLDER_SHA  /file.tar.gz" | sha256sum -c || true  # Non-blocking
@@ -285,7 +285,7 @@ fails with `exit code: 255`.
 
 ### Fix
 
-Set `multiarch = false` in `manifest.toml` for images that compile from source:
+Set `multiarch = false`in`manifest.toml` for images that compile from source:
 
 ```toml
 [build]
@@ -302,15 +302,15 @@ This limits the build to amd64 only, avoiding QEMU entirely for that image.
 
 ### Root Cause
 
-wolfi does not ship curl. Its `locked_config.json` has no curl entry and `wolfi-dev/os` returns 404 for the curl
+wolfi does not ship curl. Its `locked_config.json`has no curl entry and`wolfi-dev/os` returns 404 for the curl
 package. wolfi-base includes busybox which provides `wget` only.
 
-Dockerfiles that used `curl -fsSL` in wolfi stages, or `apk add curl || true`, would either fail silently (the `|| true`
+Dockerfiles that used `curl -fsSL`in wolfi stages, or`apk add curl || true`, would either fail silently (the `|| true`
 swallows the error, curl never installed = runtime broken) or fail outright.
 
 ### Symptom
 
-```
+```text
 ERROR: unable to select packages: curl (no such package)
 ```
 
@@ -318,14 +318,14 @@ Or silent: build succeeds but `curl` not available at runtime.
 
 ### Fix
 
-Replace all `curl` usage with `wget` equivalents in wolfi stages:
+Replace all `curl`usage with`wget` equivalents in wolfi stages:
 
 | curl pattern                                          | wget equivalent                                         |
 | ----------------------------------------------------- | ------------------------------------------------------- |
-| `curl -fsSL <url> -o /path`                           | `wget -qO /path <url>`                                  |
-| `curl -fsSL <url>` (stdout)                           | `wget -qO- <url>`                                       |
-| `curl -fsSL <url> \| tar ...`                         | `wget -qO- <url> \| tar ...`                            |
-| `HEALTHCHECK CMD curl -f http://localhost:8080/livez` | `HEALTHCHECK CMD wget -qO- http://localhost:8080/livez` |
+| `curl -fsSL <url> -o /path`|`wget -qO /path <url>`                                  |
+| `curl -fsSL <url>`(stdout)                           |`wget -qO- <url>`                                       |
+| `curl -fsSL <url> \| tar ...`|`wget -qO- <url> \| tar ...`                            |
+| `HEALTHCHECK CMD curl -f <http://localhost:8080/livez`|`HEALTHCHECK> CMD wget -qO- <http://localhost:8080/livez`> |
 
 For HEALTHCHECK: `wget -qO-` exits 0 on HTTP 2xx, 1 on error (matches curl -f behavior).
 
@@ -355,13 +355,13 @@ Remove unused `ARG GITHUB_TOKEN` declarations entirely. Only declare it when act
 Dockerfiles referenced external base images by tags that were deleted, renamed, or never existed on the upstream
 registry. This causes `docker build` to fail with:
 
-```
+```text
 unauthorized: authentication required
 ```
 
 or
 
-```
+```text
 manifest unknown
 ```
 
@@ -384,7 +384,7 @@ likely caused by a copy-paste error from a multi-line checksum file.
 
 ### Symptom
 
-```
+```text
 sha256sum: 'PLACEHOLDER_SHA': improperly formatted SHA256 checksum
 ```
 
@@ -417,17 +417,17 @@ RUN apt-get update ; \
     apt-get install -y foo
 ```
 
-The `;` before `\` works. But:
+The `;`before`\` works. But:
 
 ```dockerfile
 RUN apt-get update; true \
     apt-get install -y foo
 ```
 
-The `true \` makes the shell interpret `true` as the command (no backslash continuation), and the next line
+The `true \`makes the shell interpret`true` as the command (no backslash continuation), and the next line
 `apt-get install` is parsed as a Dockerfile instruction, failing with:
 
-```
+```text
 unknown instruction: APT-GET
 ```
 
@@ -445,7 +445,7 @@ RUN some-command; true 2>/dev/null
     next-command
 ```
 
-Missing `\` causes `next-command` to be parsed as a Dockerfile instruction.
+Missing `\`causes`next-command` to be parsed as a Dockerfile instruction.
 
 **Pattern C: Comment eating continuation**
 
@@ -455,14 +455,14 @@ RUN echo "extracting JDK" && \
     tar -xzf jdk.tar.gz
 ```
 
-The `#` makes everything after it a comment, INCLUDING the trailing `\`. The next line `tar -xzf` is silently discarded.
+The `#`makes everything after it a comment, INCLUDING the trailing`\`. The next line `tar -xzf` is silently discarded.
 The JDK is never extracted.
 
 ### Fix
 
 - Backslash `\` MUST be the last non-whitespace character on the line
-- NEVER put `; true` or `2>/dev/null` at the end of a line without `\`
-- NEVER use inline `# comments` in multi-line RUN blocks (put comments on their own lines or use `echo` statements)
+- NEVER put `; true`or`2>/dev/null`at the end of a line without`\`
+- NEVER use inline `# comments`in multi-line RUN blocks (put comments on their own lines or use`echo` statements)
 - Consider using heredoc (`<<'EOF'`) for complex multi-line scripts
 
 ### Affected Images
@@ -567,12 +567,12 @@ Trade-off: loses multi-arch support (tarball is single-arch). Future multi-arch 
 
 ### Root Cause
 
-The build step used `set -e` and `exit 1` on failure, causing the entire matrix to abort when any single image failed.
+The build step used `set -e`and`exit 1` on failure, causing the entire matrix to abort when any single image failed.
 With 861 standard images, even a 10% failure rate would stop 800+ successful builds from being pushed.
 
 ### Fix
 
-Changed to `::warning::` annotation (non-blocking) and `if: always()` on push/sign steps:
+Changed to `::warning::`annotation (non-blocking) and`if: always()` on push/sign steps:
 
 ```yaml
 - name: Build

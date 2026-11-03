@@ -38,11 +38,11 @@ HFT-specific metadata.
 
 All HFT labels follow the pattern:
 
-```
+```text
 evergreen.hft.<category>.<field>
 ```
 
-Where `<category>` is one of: `init`, `startup`, `cpu`, `numa`, `dpdk`, `xdp`, `deploy`, `readiness`, `scheduler`,
+Where `<category>`is one of:`init`, `startup`, `cpu`, `numa`, `dpdk`, `xdp`, `deploy`, `readiness`, `scheduler`,
 `net`.
 
 #### Label Schema
@@ -51,16 +51,16 @@ Where `<category>` is one of: `init`, `startup`, `cpu`, `numa`, `dpdk`, `xdp`, `
 
 | Label                            | Type    | Valid Values                     | Default | Tiers | Description                          |
 | -------------------------------- | ------- | -------------------------------- | ------- | ----- | ------------------------------------ |
-| `evergreen.hft.init`             | enum    | `tini`, `signal-forward`, `none` | `none`  | 1, 2  | PID 1 init system for the image      |
-| `evergreen.hft.init-version`     | string  | Semver (e.g. `0.19.0`)           | -       | 1     | tini version when init=tini          |
-| `evergreen.hft.shutdown-timeout` | integer | `1`-`30`                         | `3`     | 1, 2  | Graceful shutdown timeout in seconds |
+| `evergreen.hft.init`| enum    |`tini`, `signal-forward`, `none`|`none`  | 1, 2  | PID 1 init system for the image      |
+| `evergreen.hft.init-version`| string  | Semver (e.g.`0.19.0`)           | -       | 1     | tini version when init=tini          |
+| `evergreen.hft.shutdown-timeout`| integer |`1`-`30`|`3`     | 1, 2  | Graceful shutdown timeout in seconds |
 
 ##### Startup Optimization
 
 | Label                           | Type    | Valid Values          | Default | Tiers | Description                          |
 | ------------------------------- | ------- | --------------------- | ------- | ----- | ------------------------------------ |
-| `evergreen.hft.startup-timeout` | integer | `10`-`30000`          | -       | 1, 2  | Maximum startup time in milliseconds |
-| `evergreen.hft.startup-mode`    | enum    | `hot`, `warm`, `cold` | -       | 1, 2  | Startup latency classification       |
+| `evergreen.hft.startup-timeout`| integer |`10`-`30000`          | -       | 1, 2  | Maximum startup time in milliseconds |
+| `evergreen.hft.startup-mode`| enum    |`hot`, `warm`, `cold` | -       | 1, 2  | Startup latency classification       |
 
 Startup mode thresholds:
 
@@ -73,44 +73,44 @@ Startup mode thresholds:
 | Label                          | Type    | Valid Values                             | Default  | Tiers | Description                  |
 | ------------------------------ | ------- | ---------------------------------------- | -------- | ----- | ---------------------------- |
 | `evergreen.hft.cpuset`         | string  | Docker cpuset format (`0`, `0-1`, `0,2`) | -        | 1     | Required CPU cores           |
-| `evergreen.hft.cpu-shares`     | integer | `0`-`8192`                               | `1024`   | 1, 2  | CFS relative weight          |
+| `evergreen.hft.cpu-shares`| integer |`0`-`8192`|`1024`   | 1, 2  | CFS relative weight          |
 | `evergreen.hft.cpu-quota`      | integer | microseconds                             | -        | 1     | CFS quota per period         |
-| `evergreen.hft.cpu-period`     | integer | microseconds                             | `100000` | 1     | CFS scheduling period        |
+| `evergreen.hft.cpu-period`| integer | microseconds                             |`100000` | 1     | CFS scheduling period        |
 | `evergreen.hft.cpu-rt-runtime` | integer | microseconds                             | -        | 1     | Real-time runtime per period |
-| `evergreen.hft.cpu-rt-period`  | integer | microseconds                             | `100000` | 1     | Real-time scheduling period  |
+| `evergreen.hft.cpu-rt-period`| integer | microseconds                             |`100000` | 1     | Real-time scheduling period  |
 
 ##### NUMA Awareness
 
 | Label                       | Type    | Valid Values                      | Default | Tiers | Description                   |
 | --------------------------- | ------- | --------------------------------- | ------- | ----- | ----------------------------- |
 | `evergreen.hft.numa-node`   | integer | NUMA node index                   | -       | 1     | Preferred NUMA node           |
-| `evergreen.hft.numa-policy` | enum    | `bind`, `preferred`, `interleave` | -       | 1     | NUMA memory allocation policy |
+| `evergreen.hft.numa-policy`| enum    |`bind`, `preferred`, `interleave` | -       | 1     | NUMA memory allocation policy |
 
 ##### Kernel Bypass: DPDK
 
 | Label                          | Type | Valid Values                  | Default | Tiers                      | Description                 |
 | ------------------------------ | ---- | ----------------------------- | ------- | -------------------------- | --------------------------- |
-| `evergreen.hft.dpdk-capable`   | enum | `true`, `false`, `partial`    | `false` | 1                          | Whether image supports DPDK |
-| `evergreen.hft.dpdk-driver`    | enum | `vfio-pci`, `uio_pci_generic` | -       | 1                          | Required DPDK driver        |
-| `evergreen.hft.dpdk-hugepages` | enum | `1GB`, `2GB`                  | -       | 1                          | Required hugepage size      |
-| `evergreen.hft.dpdk-numa`      | enum | `strict`, `preferred`, `none` | `none`  | NUMA requirements for DPDK |
+| `evergreen.hft.dpdk-capable`| enum |`true`, `false`, `partial`|`false` | 1                          | Whether image supports DPDK |
+| `evergreen.hft.dpdk-driver`| enum |`vfio-pci`, `uio_pci_generic` | -       | 1                          | Required DPDK driver        |
+| `evergreen.hft.dpdk-hugepages`| enum |`1GB`, `2GB`                  | -       | 1                          | Required hugepage size      |
+| `evergreen.hft.dpdk-numa`| enum |`strict`, `preferred`, `none`|`none`  | 1                          | NUMA requirements for DPDK |
 
 ##### Kernel Bypass: XDP
 
 | Label                        | Type    | Valid Values          | Default | Tiers | Description                                             |
 | ---------------------------- | ------- | --------------------- | ------- | ----- | ------------------------------------------------------- |
-| `evergreen.hft.xdp-capable`  | boolean | `true`, `false`       | `false` | 1     | Whether image supports XDP                              |
-| `evergreen.hft.xdp-mode`     | enum    | `native`, `skb`, `hw` | -       | 1     | Supported XDP hook mode                                 |
+| `evergreen.hft.xdp-capable`| boolean |`true`, `false`|`false` | 1     | Whether image supports XDP                              |
+| `evergreen.hft.xdp-mode`| enum    |`native`, `skb`, `hw` | -       | 1     | Supported XDP hook mode                                 |
 | `evergreen.hft.xdp-program`  | string  | File path             | -       | 1     | Path to bundled BPF program                             |
-| `evergreen.hft.xdp-features` | string  | Comma-separated list  | -       | 1     | Required XDP features: `redirect`, `drop`, `tx`, `pass` |
+| `evergreen.hft.xdp-features`| string  | Comma-separated list  | -       | 1     | Required XDP features:`redirect`, `drop`, `tx`, `pass` |
 
 ##### Atomic Deployment
 
 | Label                           | Type    | Valid Values                        | Default   | Tiers | Description                        |
 | ------------------------------- | ------- | ----------------------------------- | --------- | ----- | ---------------------------------- |
-| `evergreen.hft.deploy-strategy` | enum    | `blue-green`, `rolling`, `recreate` | `rolling` | 1, 2  | Deployment strategy                |
-| `evergreen.hft.max-unavailable` | integer | `0`-`100`                           | `0`       | 1, 2  | Max unavailable pods during update |
-| `evergreen.hft.max-surge`       | string  | integer or `N%`                     | `25%`     | 1, 2  | Max surge pods during update       |
+| `evergreen.hft.deploy-strategy`| enum    |`blue-green`, `rolling`, `recreate`|`rolling` | 1, 2  | Deployment strategy                |
+| `evergreen.hft.max-unavailable`| integer |`0`-`100`|`0`       | 1, 2  | Max unavailable pods during update |
+| `evergreen.hft.max-surge`| string  | integer or`N%`|`25%`     | 1, 2  | Max surge pods during update       |
 | `evergreen.hft.ordered-startup` | integer | positive integer                    | -         | 1, 2  | Startup order in dependency chain  |
 
 ##### Readiness & Draining
@@ -118,10 +118,10 @@ Startup mode thresholds:
 | Label                            | Type    | Valid Values                             | Default | Tiers | Description                         |
 | -------------------------------- | ------- | ---------------------------------------- | ------- | ----- | ----------------------------------- |
 | `evergreen.hft.pre-stop-cmd`     | string  | Shell command                            | -       | 1     | Pre-stop lifecycle hook command     |
-| `evergreen.hft.pre-stop-timeout` | integer | seconds                                  | `2`     | 1     | Max time for pre-stop hook          |
-| `evergreen.hft.drain-timeout`    | integer | seconds                                  | `3`     | 1     | Max time for connection draining    |
-| `evergreen.hft.deregister`       | enum    | `consul`, `k8s-endpoint`, `http`, `none` | `none`  | 1     | Load balancer deregistration method |
-| `evergreen.hft.readiness-level`  | integer | `0`-`5`                                  | -       | 1     | Runtime readiness state             |
+| `evergreen.hft.pre-stop-timeout`| integer | seconds                                  |`2`     | 1     | Max time for pre-stop hook          |
+| `evergreen.hft.drain-timeout`| integer | seconds                                  |`3`     | 1     | Max time for connection draining    |
+| `evergreen.hft.deregister`| enum    |`consul`, `k8s-endpoint`, `http`, `none`|`none`  | 1     | Load balancer deregistration method |
+| `evergreen.hft.readiness-level`| integer |`0`-`5`                                  | -       | 1     | Runtime readiness state             |
 | `evergreen.hft.warmup-requests`  | integer | positive integer                         | -       | 1     | Requests before full readiness      |
 | `evergreen.hft.warmup-duration`  | string  | Go duration (`2s`, `500ms`)              | -       | 1     | Duration before full readiness      |
 
@@ -138,12 +138,12 @@ Readiness levels:
 
 | Label                           | Type    | Valid Values                            | Default       | Tiers | Description                         |
 | ------------------------------- | ------- | --------------------------------------- | ------------- | ----- | ----------------------------------- |
-| `evergreen.hft.scheduler`       | enum    | `SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER` | `SCHED_OTHER` | 1     | Linux scheduling policy             |
-| `evergreen.hft.rt-priority`     | integer | `1`-`99`                                | -             | 1     | Real-time priority (1=min, 99=max)  |
-| `evergreen.hft.cpu-isolation`   | boolean | `true`, `false`                         | `false`       | 1     | Requires CPU isolation (isolcpus)   |
-| `evergreen.hft.irq-isolated`    | boolean | `true`, `false`                         | `false`       | 1     | Requires IRQ steering away          |
-| `evergreen.hft.net-ns-mode`     | enum    | `host`, `bridge`, `none`                | `bridge`      | 1, 2  | Network namespace mode              |
-| `evergreen.hft.net-ns-required` | boolean | `true`, `false`                         | `false`       | 1     | Specific network namespace required |
+| `evergreen.hft.scheduler`| enum    |`SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER`|`SCHED_OTHER` | 1     | Linux scheduling policy             |
+| `evergreen.hft.rt-priority`| integer |`1`-`99`                                | -             | 1     | Real-time priority (1=min, 99=max)  |
+| `evergreen.hft.cpu-isolation`| boolean |`true`, `false`|`false`       | 1     | Requires CPU isolation (isolcpus)   |
+| `evergreen.hft.irq-isolated`| boolean |`true`, `false`|`false`       | 1     | Requires IRQ steering away          |
+| `evergreen.hft.net-ns-mode`| enum    |`host`, `bridge`, `none`|`bridge`      | 1, 2  | Network namespace mode              |
+| `evergreen.hft.net-ns-required`| boolean |`true`, `false`|`false`       | 1     | Specific network namespace required |
 
 ##### SCHED_FIFO Priority Guide
 
@@ -167,14 +167,14 @@ Readiness levels:
 
 #### Label Validation Rules
 
-1. `evergreen.hft.rt-priority` is only valid when `evergreen.hft.scheduler` is `SCHED_FIFO` or `SCHED_RR`
+1. `evergreen.hft.rt-priority`is only valid when`evergreen.hft.scheduler`is`SCHED_FIFO`or`SCHED_RR`
 2. `evergreen.hft.cpuset` format must match Docker cpuset syntax: single (`0`), range (`0-3`), or list (`0,2,4`)
-3. `evergreen.hft.cpu-rt-runtime` must be less than `evergreen.hft.cpu-rt-period`
-4. `evergreen.hft.shutdown-timeout` must be greater than `evergreen.hft.pre-stop-timeout`
+3. `evergreen.hft.cpu-rt-runtime`must be less than`evergreen.hft.cpu-rt-period`
+4. `evergreen.hft.shutdown-timeout`must be greater than`evergreen.hft.pre-stop-timeout`
 5. `evergreen.hft.numa-node` must be a non-negative integer
-6. `evergreen.hft.dpdk-*` labels are only valid when `evergreen.hft.dpdk-capable` is `true` or `partial`
-7. `evergreen.hft.xdp-*` labels are only valid when `evergreen.hft.xdp-capable` is `true`
-8. `evergreen.hft.startup-mode` must match `evergreen.hft.startup-timeout` threshold ranges
+6. `evergreen.hft.dpdk-*`labels are only valid when`evergreen.hft.dpdk-capable`is`true`or`partial`
+7. `evergreen.hft.xdp-*`labels are only valid when`evergreen.hft.xdp-capable`is`true`
+8. `evergreen.hft.startup-mode`must match`evergreen.hft.startup-timeout` threshold ranges
 
 ### Consequences
 
@@ -212,7 +212,7 @@ Readiness levels:
 | --------------------- | -------------- | ---------------------------------- |
 | OCI Image Spec        | Image Manifest | Labels in `config.Labels`          |
 | OCI Distribution Spec | Manifest       | Labels are immutable per digest    |
-| Docker Engine         | Labels         | `--label` flag, `org.label-schema` |
+| Docker Engine         | Labels         | `--label`flag,`org.label-schema` |
 | Kubernetes            | Pod Spec       | Node affinity, resource limits     |
 
 ### Related Yellow Papers

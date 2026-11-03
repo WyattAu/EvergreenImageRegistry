@@ -59,11 +59,11 @@ images.
 
 | ID    | Task                                                 | Description                                                                                                                                                         | Verification                                          | Effort |
 | ----- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------ |
-| 117.1 | **Merge signing into `_build-reusable.yml`**         | After each `docker push`, run `cosign sign --keyless` on the pushed digest. Replace the standalone `sign-images.yml` workflow with an inline step in the build job. | `cosign verify` on 10 sample images returns ✅        | 3 days |
-| 117.2 | **Merge SLSA provenance into `_build-reusable.yml`** | Generate SLSA v1 provenance attestation using `slsa-github-generator` after each build. Attach as cosign attestation.                                               | `cosign download attestation` shows SLSA v1 predicate | 3 days |
+| 117.1 | **Merge signing into `_build-reusable.yml`**         | After each `docker push`, run `cosign sign --keyless`on the pushed digest. Replace the standalone`sign-images.yml`workflow with an inline step in the build job. |`cosign verify` on 10 sample images returns ✅        | 3 days |
+| 117.2 | **Merge SLSA provenance into `_build-reusable.yml`** | Generate SLSA v1 provenance attestation using `slsa-github-generator`after each build. Attach as cosign attestation.                                               |`cosign download attestation` shows SLSA v1 predicate | 3 days |
 | 117.3 | **Add provenance verification job**                  | Post-build job that verifies SLSA provenance for all built images. Fails CI if provenance is missing.                                                               | CI job runs and passes on nightly build               | 1 day  |
-| 117.4 | **Remove standalone signing workflows**              | Delete `sign-images.yml`, `slsa-provenance.yml` (standalone), `sbom-attestation.yml` (standalone). Their logic is now inline.                                       | No orphaned workflows; no duplicate runs              | 1 day  |
-| 117.5 | **Document verification process**                    | Add `docs/verifying-images.md` with `cosign verify` and `cosign verify-attestation` commands for users.                                                             | Documentation published; CI links to it               | 1 day  |
+| 117.4 | **Remove standalone signing workflows**              | Delete `sign-images.yml`, `slsa-provenance.yml`(standalone),`sbom-attestation.yml` (standalone). Their logic is now inline.                                       | No orphaned workflows; no duplicate runs              | 1 day  |
+| 117.5 | **Document verification process**                    | Add `docs/verifying-images.md`with`cosign verify`and`cosign verify-attestation` commands for users.                                                             | Documentation published; CI links to it               | 1 day  |
 
 #### Success Criteria
 
@@ -87,9 +87,9 @@ images.
 | ID    | Task                                   | Description                                                                                                            | Verification                                          | Effort   |
 | ----- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | -------- |
 | 118.1 | **Add Syft to build runner**           | Install Syft in the CI runner as a post-build step. Generate SBOM from the built image (not from Dockerfile analysis). | `syft` binary available in CI                         | 0.5 days |
-| 118.2 | **Generate SPDX per image**            | After `docker push`, run `syft scan -o spdx-json` on the pushed image. Save as cosign attestation.                     | `cosign verify-attestation --type spdxjson` succeeds  | 1 day    |
-| 118.3 | **Generate CycloneDX per image**       | After `docker push`, run `syft scan -o cyclonedx-json` on the pushed image. Save as cosign attestation.                | `cosign verify-attestation --type cyclonedx` succeeds | 1 day    |
-| 118.4 | **Auto-update `sbom.spdx.json` files** | During build, commit updated SBOMs back to the repo via auto-bump bot. Keeps `images/<name>/sbom.spdx.json` fresh.     | SBOM files have current build date                    | 2 days   |
+| 118.2 | **Generate SPDX per image**            | After `docker push`, run `syft scan -o spdx-json`on the pushed image. Save as cosign attestation.                     |`cosign verify-attestation --type spdxjson` succeeds  | 1 day    |
+| 118.3 | **Generate CycloneDX per image**       | After `docker push`, run `syft scan -o cyclonedx-json`on the pushed image. Save as cosign attestation.                |`cosign verify-attestation --type cyclonedx` succeeds | 1 day    |
+| 118.4 | **Auto-update `sbom.spdx.json`files** | During build, commit updated SBOMs back to the repo via auto-bump bot. Keeps`images/<name>/sbom.spdx.json` fresh.     | SBOM files have current build date                    | 2 days   |
 | 118.5 | **Add SBOM validation gate**           | Lint job that validates all `sbom.spdx.json` files are valid SPDX 2.3 and less than 30 days old.                       | Lint fails if any SBOM is stale/invalid               | 1 day    |
 | 118.6 | **Remove stale SBOMs**                 | Delete the 714 hand-written/templated SBOM files. They will be auto-generated going forward.                           | Only auto-generated SBOMs exist                       | 0.5 days |
 | 118.7 | **Add SBOM diff job**                  | Compare SBOM between consecutive builds. Alert on new packages or removed packages.                                    | CI job runs and reports SBOM diffs                    | 2 days   |
@@ -97,7 +97,7 @@ images.
 #### Success Criteria
 
 - [ ] Every built image has both SPDX and CycloneDX SBOMs as cosign attestations
-- [ ] `cosign verify-attestation --type spdxjson` and `--type cyclonedx` both succeed
+- [ ] `cosign verify-attestation --type spdxjson`and`--type cyclonedx` both succeed
 - [ ] `images/<name>/sbom.spdx.json` files are auto-generated, not hand-written
 - [ ] SBOM staleness check in lint pipeline
 - [ ] SBOM diff alerts on package changes between builds
@@ -135,7 +135,7 @@ Not all 708 images can or should be hardened. Focus on the **101 critical tier**
 | **Binary download → scratch** | Go/Rust static binaries (prometheus, traefik, grafana, etc.) | Download upstream binary, copy to scratch, USER 65532         |
 | **Chainguard repack**         | Complex apps needing glibc (postgresql, mariadb)             | `FROM cgr.dev/chainguard/<app>` + COPY shim + non-root        |
 | **Source build → scratch**    | C/C++ apps with static linking (redis)                       | Clone source, compile static, copy to scratch                 |
-| **Wolfi apk-install**         | Apps needing shared libs but no full distro (nginx)          | `FROM cgr.dev/chainguard/wolfi-base` + `apk add` + USER 65532 |
+| **Wolfi apk-install**         | Apps needing shared libs but no full distro (nginx)          | `FROM cgr.dev/chainguard/wolfi-base`+`apk add` + USER 65532 |
 | **Multi-stage distillation**  | Java apps (keycloak, elasticsearch)                          | FROM upstream → extract JRE + app → copy to wolfi-base        |
 
 #### Tasks
@@ -153,7 +153,7 @@ Not all 708 images can or should be hardened. Focus on the **101 critical tier**
 
 #### Success Criteria
 
-- [ ] 50+ images are `FROM scratch` or `FROM cgr.dev/chainguard/wolfi-base`
+- [ ] 50+ images are `FROM scratch`or`FROM cgr.dev/chainguard/wolfi-base`
 - [ ] 50+ images have `USER 65532:65532` (or app-specific non-root UID)
 - [ ] 50+ images have no shell in final stage
 - [ ] 50+ images pass runtime smoke tests (HTTP/TCP/metrics)
@@ -295,7 +295,7 @@ Not all 708 images can or should be hardened. Focus on the **101 critical tier**
 
 ## Phase Dependency Graph
 
-```
+```text
 Layer 1: Foundation
 ┌─────────────────────────────────────────┐
 │  P117: Signing & Provenance (2 weeks)   │

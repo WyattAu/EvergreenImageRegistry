@@ -1,7 +1,7 @@
 # Evergreen Image Registry - Comprehensive Image Audit Report
 
 **Generated:** 2026-08-19
-**Scope:** All images in `images/` (excluding `_wip/` and `_archive/`)
+**Scope:** All images in `images/`(excluding`_wip/`and`_archive/`)
 **Total Images Audited:** 798
 **Current Registry Version:** v35.0.0
 
@@ -89,7 +89,7 @@ All percentages calculated against 785 Dockerfiles.
 
 ## 5. Build Types
 
-Build type extracted from `type = ` field in `manifest.toml` across 798 images.
+Build type extracted from the `type` field in `manifest.toml` across 798 images.
 
 | Build Type      | Count |   Pct |
 | --------------- | ----: | ----: |
@@ -110,7 +110,7 @@ Build type extracted from `type = ` field in `manifest.toml` across 798 images.
 
 ## 6. Tier Distribution
 
-Tier extracted from `tier = ` field in `manifest.toml`. All 798 manifests have a tier assignment.
+Tier extracted from the `tier` field in `manifest.toml`. All 798 manifests have a tier assignment.
 
 | Tier     | Count |   Pct | Description                                   |
 | -------- | ----: | ----: | --------------------------------------------- |

@@ -14,6 +14,7 @@
 ## Why WIP
 
 NewsBlur is a full-stack Django application requiring multiple external services:
+
 - PostgreSQL (database)
 - Redis (task queue/caching)
 - MongoDB (data store)

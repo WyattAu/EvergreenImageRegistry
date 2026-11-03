@@ -68,7 +68,7 @@ RUN EXPECTED_SHA256="abc123..." && \
 
 Each image directory will contain a `CHECKSUMS` file:
 
-```
+```text
 # CHECKSUMS for nginx
 # Generated: 2026-04-19
 # Source: https://nginx.org/download/

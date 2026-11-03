@@ -63,10 +63,10 @@
 | **CVE Scanning**          | Built-in. Wolfi Security Advisories (WSA) database. Trivy/gatekeeper integration.                                                                                                                                                                                         |
 | **C Compatibility**       | Limited. musl libc has differences from glibc (e.g., `strptime` locale support, resolver behavior). Static C binaries work well.                                                                                                                                          |
 | **C++ Compatibility**     | Limited. musl's libstdc++ support is partial. Complex C++ apps (Boost, Qt) often need glibc. Static linking of C++ works but produces larger binaries.                                                                                                                    |
-| **Rust Compatibility**    | Excellent. Rust targets `x86_64-unknown-linux-musl` natively. `static-musl` target produces fully static binaries. Most Rust crates work on musl without modification.                                                                                                    |
+| **Rust Compatibility**    | Excellent. Rust targets `x86_64-unknown-linux-musl`natively.`static-musl` target produces fully static binaries. Most Rust crates work on musl without modification.                                                                                                    |
 | **Static Binary Support** | Yes. Primary use case. Most Wolfi images contain a single static binary + ca-certificates.                                                                                                                                                                                |
 | **Key Constraints**       | 1) Production images require paid subscription. 2) No shell in images by default (debugging harder). 3) musl libc incompatibilities for glibc-dependent apps. 4) Package count limited (~3000 vs Debian's ~60,000). 5) Not all upstream projects build cleanly with musl. |
-| **Key URLs**              | https://github.com/chainguard-dev/melange, https://github.com/chainguard-dev/apko, https://wolfi.dev                                                                                                                                                                      |
+| **Key URLs**              | <https://github.com/chainguard-dev/melange> <https://github.com/chainguard-dev/apko> <https://wolfi.dev>                                                                                                                                                                      |
 
 #### 2. Google Distroless
 
@@ -94,7 +94,7 @@
 | **Rust Compatibility**    | Excellent via `distroless/static-debian12`. Rust static binaries run on any distroless image.                                                                                                                                  |
 | **Static Binary Support** | Yes. `distroless/static` is an empty image (scratch + ca-certs + tzdata).                                                                                                                                                      |
 | **Key Constraints**       | 1) No shell. Debugging requires `kubectl exec` with a shell image. 2) Limited to pre-built language images. 3) No general-purpose base. 4) glibc variant images are larger. 5) Package versions controlled by Google, not you. |
-| **Key URLs**              | https://github.com/GoogleContainerTools/distroless, https://github.com/GoogleContainerTools/kaniko                                                                                                                             |
+| **Key URLs**              | <https://github.com/GoogleContainerTools/distroless> <https://github.com/GoogleContainerTools/kaniko>                                                                                                                             |
 
 #### 3. Alpine Linux
 
@@ -119,10 +119,10 @@
 | **CVE Scanning**          | Alpine Security Advisories (ASA). No built-in scanning.                                                                                                                                                                                                                |
 | **C Compatibility**       | Limited. musl differences from glibc. Static C works well. Dynamic linking to glibc-only libs fails.                                                                                                                                                                   |
 | **C++ Compatibility**     | Limited. Same musl issues as Wolfi. Many C++ frameworks require glibc.                                                                                                                                                                                                 |
-| **Rust Compatibility**    | Excellent. `x86_64-unknown-linux-musl` target is well-tested. `alpine` is the most common Rust CI base.                                                                                                                                                                |
+| **Rust Compatibility**    | Excellent. `x86_64-unknown-linux-musl`target is well-tested.`alpine` is the most common Rust CI base.                                                                                                                                                                |
 | **Static Binary Support** | Yes. Primary use case.                                                                                                                                                                                                                                                 |
-| **Key Constraints**       | 1) musl libc (glibc incompatibilities). 2) No built-in SBOM or signing. 3) `apk add` available at build time only in most images. 4) No shell in `scratch` variant. 5) OpenSSL replaced with LibreSSL (API differences). 6) `getaddrinfo` behavior differs from glibc. |
-| **Key URLs**              | https://github.com/alpine/docker-alpine, https://alpinelinux.org                                                                                                                                                                                                       |
+| **Key Constraints**       | 1) musl libc (glibc incompatibilities). 2) No built-in SBOM or signing. 3) `apk add`available at build time only in most images. 4) No shell in`scratch`variant. 5) OpenSSL replaced with LibreSSL (API differences). 6)`getaddrinfo` behavior differs from glibc. |
+| **Key URLs**              | <https://github.com/alpine/docker-alpine> <https://alpinelinux.org>                                                                                                                                                                                                       |
 
 #### 4. Red Hat UBI
 
@@ -147,10 +147,10 @@
 | **CVE Scanning**          | Red Hat Security Advisories (RHSA). Built-in with subscription.                                                                                                                                                                                       |
 | **C Compatibility**       | Excellent. Full glibc. All C libraries available. ABI-stable.                                                                                                                                                                                         |
 | **C++ Compatibility**     | Excellent. Full libstdc++. Boost, Qt, and all major C++ frameworks available in repos.                                                                                                                                                                |
-| **Rust Compatibility**    | Good. `x86_64-unknown-linux-gnu` target. System OpenSSL (not BoringSSL). May need `pkg-config` and dev packages at build time.                                                                                                                        |
+| **Rust Compatibility**    | Good. `x86_64-unknown-linux-gnu`target. System OpenSSL (not BoringSSL). May need`pkg-config` and dev packages at build time.                                                                                                                        |
 | **Static Binary Support** | Possible but not idiomatic. RPM-based system assumes dynamic linking.                                                                                                                                                                                 |
 | **Key Constraints**       | 1) Larger images (glibc overhead). 2) RPM ecosystem (steeper learning curve than apk/dpkg). 3) No built-in SBOM/signing for public images. 4) Enterprise focus (some packages require subscription). 5) Slower update cadence than community distros. |
-| **Key URLs**              | https://catalog.redhat.com/software/containers/ubi, https://github.com/redhat-developer/docker-images                                                                                                                                                 |
+| **Key URLs**              | <https://catalog.redhat.com/software/containers/ubi> <https://github.com/redhat-developer/docker-images>                                                                                                                                                 |
 
 #### 5. NixOS/Nixpkgs
 
@@ -168,7 +168,7 @@
 | **Typical Image Size**    | Minimal: ~20 MB, Full service: 100-500 MB+ (depends on closure size)                                                                                                                                                                                                                                                                                   |
 | **License**               | LGPL-2.1                                                                                                                                                                                                                                                                                                                                               |
 | **Governance**            | Community (NixOS Foundation). Large contributor base (~5000+).                                                                                                                                                                                                                                                                                         |
-| **OCI Compliant**         | Yes (via `pkgs.dockerTools.buildImage` or `pkgs.ociTools`)                                                                                                                                                                                                                                                                                             |
+| **OCI Compliant**         | Yes (via `pkgs.dockerTools.buildImage`or`pkgs.ociTools`)                                                                                                                                                                                                                                                                                             |
 | **SLSA Level**            | L2 achievable. Nix builds are hermetic and reproducible. External provenance signing needed for L3.                                                                                                                                                                                                                                                    |
 | **Sigstore/Cosign**       | Not built-in. Can be integrated into Nix derivations.                                                                                                                                                                                                                                                                                                  |
 | **in-toto**               | Not built-in. Community tools exist.                                                                                                                                                                                                                                                                                                                   |
@@ -176,9 +176,9 @@
 | **C Compatibility**       | Excellent. Full glibc. All C libraries available as Nix derivations. Static C possible via `pkgsStatic`.                                                                                                                                                                                                                                               |
 | **C++ Compatibility**     | Excellent. Full C++ toolchain. All major frameworks available. `pkgsStatic` for static C++.                                                                                                                                                                                                                                                            |
 | **Rust Compatibility**    | Excellent. `pkgs.rustc`, `pkgs.cargo`, `naersk`, `crane` (Nix-based Rust build helper). Cross-compilation well-supported.                                                                                                                                                                                                                              |
-| **Static Binary Support** | Yes. `pkgsStatic` produces statically linked packages. `pkgsMusl` for musl-based static builds.                                                                                                                                                                                                                                                        |
+| **Static Binary Support** | Yes. `pkgsStatic`produces statically linked packages.`pkgsMusl` for musl-based static builds.                                                                                                                                                                                                                                                        |
 | **Key Constraints**       | 1) Steep learning curve (Nix language is unique). 2) Image sizes can be large (Nix store model). 3) No standard Dockerfiles (must write Nix expressions). 4) Debugging images requires Nix knowledge. 5) CI/CD integration requires Nix installation. 6) Large closure sizes for complex applications. 7) Nix language is Haskell-based, not Rust/C++. |
-| **Key URLs**              | https://github.com/NixOS/nixpkgs, https://nixos.org, https://nix.dev                                                                                                                                                                                                                                                                                   |
+| **Key URLs**              | <https://github.com/NixOS/nixpkgs> <https://nixos.org> <https://nix.dev>                                                                                                                                                                                                                                                                                   |
 
 #### 6. CBL-Mariner (Azure Linux)
 
@@ -206,7 +206,7 @@
 | **Rust Compatibility**    | Good. glibc-based. Standard Rust targets.                                                                                                                                         |
 | **Static Binary Support** | Possible but not idiomatic. RPM-based system.                                                                                                                                     |
 | **Key Constraints**       | 1) Microsoft-controlled. 2) Limited community adoption outside Azure. 3) Smaller package set than Debian/RHEL. 4) Documentation gaps. 5) Designed for Azure, not general-purpose. |
-| **Key URLs**              | https://github.com/microsoft/CBL-Mariner                                                                                                                                          |
+| **Key URLs**              | <https://github.com/microsoft/CBL-Mariner>                                                                                                                                          |
 
 #### 7. Debian Minbase / Reproducible Builds
 
@@ -231,10 +231,10 @@
 | **CVE Scanning**          | Debian Security Advisories (DSA). Debian Security Tracker. External scanning recommended.                                                                                                                              |
 | **C Compatibility**       | Excellent. Reference glibc implementation. All C libraries available.                                                                                                                                                  |
 | **C++ Compatibility**     | Excellent. Reference platform for C++ development. All frameworks available.                                                                                                                                           |
-| **Rust Compatibility**    | Excellent. Most Rust CI uses `debian:bookworm` or `ubuntu`. Full OpenSSL support.                                                                                                                                      |
-| **Static Binary Support** | Possible. `apt install libc6-dev` + build with `-static`. Not idiomatic.                                                                                                                                               |
+| **Rust Compatibility**    | Excellent. Most Rust CI uses `debian:bookworm`or`ubuntu`. Full OpenSSL support.                                                                                                                                      |
+| **Static Binary Support** | Possible. `apt install libc6-dev`+ build with`-static`. Not idiomatic.                                                                                                                                               |
 | **Key Constraints**       | 1) Larger images (glibc overhead). 2) Slower update cycle (2-year stable release). 3) No built-in signing/SBOM. 4) Reproducibility at package level, not image level. 5) Multi-stage builds needed for minimal images. |
-| **Key URLs**              | https://reproducible-builds.org, https://hub.docker.com/_/debian                                                                                                                                                       |
+| **Key URLs**              | <https://reproducible-builds.org> <https://hub.docker.com/_/debian>                                                                                                                                                       |
 
 #### 8. Fedora Minimal / Bootc
 
@@ -262,7 +262,7 @@
 | **Rust Compatibility**    | Excellent. Fedora often ships latest Rust version. System OpenSSL. `bootc` is written in Rust.                                                                                |
 | **Static Binary Support** | Possible but not idiomatic.                                                                                                                                                   |
 | **Key Constraints**       | 1) Rolling release (fast updates = more change). 2) Larger images. 3) Bootc is new and evolving. 4) No built-in signing/SBOM. 5) Less stable than Debian/RHEL for production. |
-| **Key URLs**              | https://github.com/cgwalters/bootc, https://docs.fedoraproject.org                                                                                                            |
+| **Key URLs**              | <https://github.com/cgwalters/bootc> <https://docs.fedoraproject.org>                                                                                                            |
 
 #### 9. Cloud Native Buildpacks (CNB / Paketo)
 
@@ -290,7 +290,7 @@
 | **Rust Compatibility**    | Poor. No Rust buildpacks. Must use custom buildpack.                                                                                                                                                                                                                    |
 | **Static Binary Support** | Limited. Buildpacks assume dynamic linking. Custom buildpacks can do static.                                                                                                                                                                                            |
 | **Key Constraints**       | 1) Language support limited to popular runtimes (Java, Node, Python, Go, .NET). 2) No C/C++/Rust support. 3) "Magic" build process (less control). 4) Buildpack version pinning needed for reproducibility. 5) Custom buildpacks required for non-mainstream languages. |
-| **Key URLs**              | https://buildpacks.io, https://paketo.io                                                                                                                                                                                                                                |
+| **Key URLs**              | <https://buildpacks.io> <https://paketo.io>                                                                                                                                                                                                                                |
 
 #### 10. Bazel rules_oci
 
@@ -310,7 +310,7 @@
 | **Governance**            | Community. Bazel ecosystem maintained by various orgs (Google, Aspect, etc.).                                                                                                                                                                    |
 | **OCI Compliant**         | Yes. Produces standard OCI manifests, configs, and image indices.                                                                                                                                                                                |
 | **SLSA Level**            | L2-L3 achievable. Bazel's hermeticity provides strong provenance. External signing needed.                                                                                                                                                       |
-| **Sigstore/Cosign**       | Yes (via `rules_oci` cosign integration or `rules_signing`).                                                                                                                                                                                     |
+| **Sigstore/Cosign**       | Yes (via `rules_oci`cosign integration or`rules_signing`).                                                                                                                                                                                     |
 | **in-toto**               | Via external rules. Not built-in.                                                                                                                                                                                                                |
 | **CVE Scanning**          | External. `rules_oci` produces deterministic images that can be scanned.                                                                                                                                                                         |
 | **C Compatibility**       | Excellent. Bazel has first-class C/C++ support (`rules_cc`). Builds C with Clang or GCC.                                                                                                                                                         |
@@ -318,7 +318,7 @@
 | **Rust Compatibility**    | Good. `rules_rust` provides Rust toolchain for Bazel. Cross-compilation supported.                                                                                                                                                               |
 | **Static Binary Support** | Yes. Linker flags controlled via Bazel `linkopts`.                                                                                                                                                                                               |
 | **Key Constraints**       | 1) Bazel learning curve. 2) Requires Bazel installation in CI. 3) Starlark DSL, not Rust/C++. 4) Complex setup for mixed-language projects. 5) Larger organizations tend to have custom Bazel rules. 6) Build graph can be opaque for debugging. |
-| **Key URLs**              | https://github.com/bazel-contrib/rules_oci, https://bazel.build                                                                                                                                                                                  |
+| **Key URLs**              | <https://github.com/bazel-contrib/rules_oci> <https://bazel.build>                                                                                                                                                                                  |
 
 #### 11. Buildah
 
@@ -343,10 +343,10 @@
 | **CVE Scanning**          | External. Can integrate with Trivy.                                                                                                                                                             |
 | **C Compatibility**       | Excellent. Can install any C toolchain via package manager.                                                                                                                                     |
 | **C++ Compatibility**     | Excellent. Can install any C++ toolchain.                                                                                                                                                       |
-| **Rust Compatibility**    | Good. Install Rust via `RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh`.                                                                                                   |
+| **Rust Compatibility**    | Good. Install Rust via `RUN curl --proto '=https' --tlsv1.2 -sSf <https://sh.rustup.rs> \| sh`.                                                                                                   |
 | **Static Binary Support** | Yes. COPY pre-built static binary into image.                                                                                                                                                   |
 | **Key Constraints**       | 1) No hermetic builds (RUN steps are non-deterministic). 2) No SBOM/signing. 3) Containerfile syntax only (no declarative config). 4) No content-addressed layers. 5) Go-native (not Rust/C++). |
-| **Key URLs**              | https://github.com/containers/buildah                                                                                                                                                           |
+| **Key URLs**              | <https://github.com/containers/buildah>                                                                                                                                                           |
 
 #### 12. Earthly (Note: Unmaintained)
 
@@ -374,7 +374,7 @@
 | **Rust Compatibility**    | Good.                                                                                                  |
 | **Static Binary Support** | Yes.                                                                                                   |
 | **Key Constraints**       | 1) **UNMAINTAINED as of July 2025.** 2) BSL license for enterprise features. 3) No community momentum. |
-| **Key URLs**              | https://github.com/earthly/earthly                                                                     |
+| **Key URLs**              | <https://github.com/earthly/earthly>                                                                     |
 
 #### 13. ko
 
@@ -388,7 +388,7 @@
 | **libc**                  | musl (via Go's static build)                                                                                                                              |
 | **Reproducibility**       | Good. Same Go source + same Go version = identical binary. Go builds are reproducible with `GOFLAGS=-trimpath -ldflags=-buildid=`.                        |
 | **SBOM Support**          | SPDX via Syft. Generated as OCI attestation.                                                                                                              |
-| **Multi-arch**            | Yes (via `--platform` or `KO_DOCKER_PLATFORMS`)                                                                                                           |
+| **Multi-arch**            | Yes (via `--platform`or`KO_DOCKER_PLATFORMS`)                                                                                                           |
 | **Typical Image Size**    | 5-50 MB (single Go binary + ca-certs)                                                                                                                     |
 | **License**               | Apache-2.0                                                                                                                                                |
 | **Governance**            | CNCF (sandbox project). Go community maintained.                                                                                                          |
@@ -402,7 +402,7 @@
 | **Rust Compatibility**    | None. Go-only tool.                                                                                                                                       |
 | **Static Binary Support** | Yes (Go is always static in ko images).                                                                                                                   |
 | **Key Constraints**       | 1) **Go only.** No C, C++, Rust, Python, Java, or other languages. 2) Limited to Go applications. 3) No package manager in images. 4) No shell in images. |
-| **Key URLs**              | https://github.com/ko-build/ko                                                                                                                            |
+| **Key URLs**              | <https://github.com/ko-build/ko>                                                                                                                            |
 
 #### 14. Zarf
 
@@ -430,7 +430,7 @@
 | **Rust Compatibility**    | N/A.                                                                                                                                                |
 | **Static Binary Support** | N/A.                                                                                                                                                |
 | **Key Constraints**       | 1) **Not an image builder.** Packages existing images for air-gapped deployment. 2) Defense-focused use case. 3) Does not solve image construction. |
-| **Key URLs**              | https://github.com/defenseunicorns/zarf                                                                                                             |
+| **Key URLs**              | <https://github.com/defenseunicorns/zarf>                                                                                                             |
 
 ### Cross-Ecosystem Comparison Matrices
 
@@ -501,7 +501,7 @@
 
 ### Standards Compliance Requirements for EIR
 
-```
+```text
 MUST (Phase 1):
   - OCI Image Spec v1.1.1 compliant images
   - SPDX 2.3 SBOM for every image
@@ -600,7 +600,7 @@ Given the language preference:
 
 ### Key Tradeoffs
 
-```
+```text
 Maximum Security (Wolfi)          Maximum Reproducibility (Nix)
   musl libc (C++ pain)              Nix DSL (steep curve)
   Corporate (not fully open)        Large images
@@ -623,7 +623,7 @@ multiple systems:
 
 #### Build Pipeline
 
-```
+```text
 Source Code (git)
     |
     v
@@ -678,7 +678,7 @@ GHCR (ghcr.io/wyattau/)
 
 ### Phase Migration Plan
 
-```
+```text
 Phase 1 (Current - Complete):
   Fix Dockerfiles, add trivy scanning, add syft SBOM, pin digests
 

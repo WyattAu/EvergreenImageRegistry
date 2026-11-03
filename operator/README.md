@@ -9,7 +9,7 @@ Kubernetes operator for the Evergreen Image Registry. Provides:
 
 ## Architecture
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                    Evergreen Operator                     │
 ├──────────────────────────────────────────────────────────┤
@@ -76,15 +76,18 @@ metadata:
 spec:
   scope: namespace  # namespace | cluster
   rules:
+
     - id: FIPS-001
       severity: critical
       enforce: true
+
     - id: SIZE-001
       severity: medium
       enforce: true
       config:
         maxSizeMB: 500
   exemptions:
+
     - image: custom-app
       reason: "Legacy app, migrating to EIR"
 ```
@@ -118,11 +121,13 @@ status:
 
 ```bash
 # Install via Helm
+
 helm install evergreen-operator ./operator \
   --namespace evergreen-system \
   --create-namespace
 
 # Or install from GitHub
+
 helm install evergreen-operator \
   oci://ghcr.io/wyattau/evergreenimageregistry/operator \
   --version 0.1.0
@@ -134,6 +139,7 @@ helm install evergreen-operator \
 
 1. Operator watches `EvergreenImage` resources
 2. On new version detected (via registry webhook or polling):
+
    - Validates new image passes constraint engine
    - Generates SBOM if missing
    - Updates Deployment image tag
@@ -157,6 +163,7 @@ helm install evergreen-operator \
 ## RBAC
 
 The operator requires:
+
 - `get`, `list`, `watch` on Deployments, DaemonSets, StatefulSets
 - `update` on Deployments (for image updates)
 - `create`, `update`, `delete` on EvergreenImage/EvergreenPolicy/EvergreenDrift CRDs

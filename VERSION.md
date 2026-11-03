@@ -19,7 +19,7 @@
 
 All 4 supply chain artifacts verified on `nginx:latest`:
 
-```
+```text
 ✅ Cosign signature: cosign verify → passes
 ✅ SPDX SBOM: cosign verify-attestation --type spdxjson → passes
 ✅ CycloneDX SBOM: cosign verify-attestation --type cyclonedx → passes

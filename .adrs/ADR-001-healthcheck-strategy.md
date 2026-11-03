@@ -24,13 +24,13 @@ HEALTHCHECK CMD nginx -v
 
 Docker interprets shell-form HEALTHCHECK as:
 
-```
+```text
 /bin/sh -c "nginx -v"
 ```
 
-Since `FROM scratch` and `gcr.io/distroless/*` contain no `/bin/sh`, **every HEALTHCHECK fails** with:
+Since `FROM scratch`and`gcr.io/distroless/*`contain no`/bin/sh`, **every HEALTHCHECK fails** with:
 
-```
+```text
 OCI runtime exec failed: exec: "/bin/sh": stat /bin/sh: no such file or directory
 ```
 
@@ -65,8 +65,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 | ------------------------------- | --------------------- | ------------------------------------------------------------ |
 | A: Scratch (static binary)      | Binary version check  | `CMD ["/binary", "--version"]`                               |
 | B: Distroless (glibc binary)    | Binary version check  | `CMD ["/binary", "--version"]`                               |
-| C: Wolfi (has shell)            | curl-based HTTP check | `CMD ["/usr/bin/curl", "-sf", "http://localhost:PORT/path"]` |
-| D: Debian-slim (has shell+curl) | curl-based HTTP check | `CMD curl -sf http://localhost:PORT/path \|\| exit 1`        |
+| C: Wolfi (has shell)            | curl-based HTTP check | `CMD ["/usr/bin/curl", "-sf", "<http://localhost:PORT/path>"]` |
+| D: Debian-slim (has shell+curl) | curl-based HTTP check | `CMD curl -sf <http://localhost:PORT/path> \|\| exit 1`        |
 | E: Official (varies)            | curl-based or none    | Per-image decision                                           |
 
 ### Consequences
@@ -86,7 +86,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 **Risks:**
 
-- Some binaries may not have a `--version` flag; need alternative (e.g., `--help`, `-V`)
+- Some binaries may not have a `--version`flag; need alternative (e.g.,`--help`, `-V`)
 - Some binaries may return non-zero exit code on `--version`; need testing
 
 ### Alternatives Considered
@@ -156,14 +156,14 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 ### Addendum: HEALTHCHECK in Scratch Images (2026-05-18)
 
-Images with `FROM scratch` as the final stage have no shell (`/bin/sh`) and no `curl` or `wget` binary. This means:
+Images with `FROM scratch` as the final stage have no shell (`/bin/sh`) and no `curl`or`wget` binary. This means:
 
-- `HEALTHCHECK CMD curl -sf http://localhost:8080/` will ALWAYS FAIL (no shell to interpret CMD-SHELL)
-- `HEALTHCHECK CMD wget -qO- http://localhost:8080/` will ALWAYS FAIL (same reason)
+- `HEALTHCHECK CMD curl -sf <http://localhost:8080/`> will ALWAYS FAIL (no shell to interpret CMD-SHELL)
+- `HEALTHCHECK CMD wget -qO- <http://localhost:8080/`> will ALWAYS FAIL (same reason)
 
 **Mandatory rules for scratch images:**
 
-1. If the image includes the `health-checks` static binary (copied from the `images/health-checks/` build), use exec
+1. If the image includes the `health-checks`static binary (copied from the`images/health-checks/` build), use exec
    form:
 
    ```dockerfile

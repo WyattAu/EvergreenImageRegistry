@@ -47,11 +47,11 @@ FROM debian:bookworm AS final
 
 ## 2. Multi-Stage Build Rules
 
-Every image MUST use a multi-stage build. At minimum: a `downloader` (or `builder`) stage and a `final` stage.
+Every image MUST use a multi-stage build. At minimum: a `downloader`(or`builder`) stage and a `final` stage.
 
 ### BuildKit COPY EVAL Bug
 
-BuildKit evaluates `COPY --from=stage /path/file` source paths during the **solve phase**, BEFORE the `RUN` instruction
+BuildKit evaluates `COPY --from=stage /path/file`source paths during the **solve phase**, BEFORE the`RUN` instruction
 that creates the file has completed. This means:
 
 - For **directory** references: the directory MUST exist before the RUN that populates it. Use `RUN mkdir -p /dir` in a
@@ -88,7 +88,7 @@ COPY --from=downloader /usr/local/bin/mybin /usr/local/bin/mybin
 # FAILS: /usr/local/bin/mybin does not exist when BuildKit evaluates the COPY source
 ```
 
-### DO NOT
+### DO NOT (placeholder COPY across unrelated stages)
 
 ```dockerfile
 FROM debian:bookworm AS downloader
@@ -109,7 +109,7 @@ Every downloaded artifact MUST be verified with a SHA256 checksum. Reference: AD
 ### PLACEHOLDER_SHA Pattern
 
 During initial image authoring, when the real checksum is not yet known, use a placeholder. The placeholder value MUST
-be followed by `|| true` so that the intentional mismatch does not abort the build. MUST NOT use `|| exit 1`.
+be followed by `|| true`so that the intentional mismatch does not abort the build. MUST NOT use`|| exit 1`.
 
 ### Corrupted Checksums
 
@@ -148,7 +148,7 @@ RUN curl -fsSL -o /tmp/mybin.tar.gz "https://example.com/mybin-v1.0.0.tar.gz" &&
 # and obscures the intent that this is a deliberate placeholder
 ```
 
-### DO NOT
+### DO NOT (redundant exit 1 on deliberate checksum placeholders)
 
 ```dockerfile
 RUN curl -fsSL -o /tmp/mybin.tar.gz "https://example.com/mybin-v1.0.0.tar.gz" && \
@@ -160,17 +160,17 @@ RUN curl -fsSL -o /tmp/mybin.tar.gz "https://example.com/mybin-v1.0.0.tar.gz" &&
 
 ## 4. wolfi-Specific Rules
 
-wolfi has NO `curl` package (confirmed via `locked_config.json`). busybox provides `wget` only.
+wolfi has NO `curl`package (confirmed via`locked_config.json`). busybox provides `wget` only.
 
 ### wget Substitutions
 
-MUST use `wget` instead of `curl` in all wolfi contexts:
+MUST use `wget`instead of`curl` in all wolfi contexts:
 
 | Purpose            | curl (banned on wolfi)                     | wget (required on wolfi)                  |
 | ------------------ | ------------------------------------------ | ----------------------------------------- |
-| Download to file   | `curl -fsSL -o /path URL`                  | `wget -qO /path URL`                      |
-| Download to stdout | `curl -fsSL URL`                           | `wget -qO- URL`                           |
-| Healthcheck probe  | `curl -fsSL http://localhost:8080/healthz` | `wget -qO- http://localhost:8080/healthz` |
+| Download to file   | `curl -fsSL -o /path URL`|`wget -qO /path URL`                      |
+| Download to stdout | `curl -fsSL URL`|`wget -qO- URL`                           |
+| Healthcheck probe  | `curl -fsSL <http://localhost:8080/healthz`|`wget> -qO- <http://localhost:8080/healthz`> |
 
 ### DO
 
@@ -203,7 +203,7 @@ from source on wolfi.
 
 ### ca-certificates
 
-`ca-certificates` is not guaranteed to be present in `wolfi-base`. MUST install explicitly:
+`ca-certificates`is not guaranteed to be present in`wolfi-base`. MUST install explicitly:
 
 ```dockerfile
 RUN apk add --no-cache ca-certificates
@@ -213,7 +213,7 @@ RUN apk add --no-cache ca-certificates
 
 ## 5. GITHUB_TOKEN Rules
 
-`${{ secrets.GITHUB_TOKEN }}` is scoped to the current repository only. It authenticates as the `GITHUB_TOKEN` app with
+`${{ secrets.GITHUB_TOKEN }}`is scoped to the current repository only. It authenticates as the`GITHUB_TOKEN` app with
 read access limited to the repo where the workflow runs.
 
 ### DO -- Public Release (No Auth Needed)
@@ -256,7 +256,7 @@ ARG GITHUB_TOKEN
 
 ## 6. Shell Compatibility Rules
 
-Debian uses `dash` as `/bin/sh`. All `RUN` commands execute under `/bin/sh` unless `RUN ["/bin/bash", "-c", "..."]` is
+Debian uses `dash`as`/bin/sh`. All `RUN`commands execute under`/bin/sh`unless`RUN ["/bin/bash", "-c", "..."]` is
 used. The following bash-only constructs MUST NOT appear in unqualified RUN instructions.
 
 ### Banned Bash-Only Syntax
@@ -264,9 +264,9 @@ used. The following bash-only constructs MUST NOT appear in unqualified RUN inst
 | Construct       | Example              | Why it fails on dash       |
 | --------------- | -------------------- | -------------------------- |
 | Brace expansion | `echo {a,b,c}`       | No brace expansion in dash |
-| `[[ ]]`         | `[[ -f /tmp/file ]]` | No `[[` in dash            |
+| `[[ ]]`|`[[ -f /tmp/file ]]`| No`[[` in dash            |
 | Arrays          | `arr=(a b c)`        | No arrays in dash          |
-| `&>` redirect   | `cmd &>/dev/null`    | Not recognized by dash     |
+| `&>`redirect   |`cmd &>/dev/null`    | Not recognized by dash     |
 | Here-strings    | `cmd <<< "input"`    | Not recognized by dash     |
 
 ### DO
@@ -289,7 +289,7 @@ RUN if [[ -f /tmp/file ]]; then echo "exists"; fi && \
 Backslash `\` MUST be the last character on the line (no trailing whitespace, no trailing comment, no trailing
 semicolon).
 
-### DO
+### DO (multi-line RUN with backslash continuations)
 
 ```dockerfile
 RUN apt-get update && \
@@ -299,7 +299,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 ```
 
-### DO NOT
+### DO NOT (broken RUN line continuations)
 
 ```dockerfile
 RUN apt-get update && \
@@ -344,7 +344,7 @@ FROM golang:1.24 AS builder
 ### multiarch in manifest.toml
 
 Go source builds with `multiarch = true` will attempt QEMU-emulated arm64 builds. Go 1.25 toolchain bootstrap under QEMU
-exits with code 255. MUST set `multiarch = false` in `manifest.toml` for all Go source builds.
+exits with code 255. MUST set `multiarch = false`in`manifest.toml` for all Go source builds.
 
 ### GONOSUMCHECK
 
@@ -433,7 +433,7 @@ The instruction order within the final stage MUST be:
 2. `LABEL` (metadata, maintainer, evergreen.\* labels)
 3. `EXPOSE`
 4. `WORKDIR`
-5. `COPY` / `RUN` (installation)
+5. `COPY`/`RUN` (installation)
 6. `HEALTHCHECK`
 7. `USER`
 8. `ENTRYPOINT`
@@ -442,7 +442,7 @@ The instruction order within the final stage MUST be:
 
 ### USER
 
-All images MUST run as a non-root user. The standard is `USER 65532:65532` (the `nonroot` UID/GID from the OpenShift SCC
+All images MUST run as a non-root user. The standard is `USER 65532:65532`(the`nonroot` UID/GID from the OpenShift SCC
 range). A single `USER` instruction MUST appear in the final stage.
 
 ### HEALTHCHECK
@@ -458,10 +458,10 @@ Parameter constraints:
 
 | Parameter        | Required Value |
 | ---------------- | -------------- |
-| `--interval`     | `30s`          |
-| `--timeout`      | `5s`           |
-| `--retries`      | `3`            |
-| `--start-period` | `10s`          |
+| `--interval`|`30s`          |
+| `--timeout`|`5s`           |
+| `--retries`|`3`            |
+| `--start-period`|`10s`          |
 
 ### Formatting
 
@@ -582,7 +582,7 @@ COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 
 ## 13. Configurable Runtime UID (C028)
 
-Every image MUST support `APP_UID` and `APP_GID` environment variables for runtime UID override. Default: 65532:65532.
+Every image MUST support `APP_UID`and`APP_GID` environment variables for runtime UID override. Default: 65532:65532.
 
 ### DO
 

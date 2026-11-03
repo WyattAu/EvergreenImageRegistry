@@ -41,9 +41,9 @@ All images with HTTP capability serve observability on **port 9101** with these 
 | Endpoint    | Purpose                            | K8s Probe        | Response           |
 | ----------- | ---------------------------------- | ---------------- | ------------------ |
 | `/metrics`  | Prometheus/OpenMetrics text format | - | 200 + metrics body |
-| `/livez`    | Liveness; process is alive        | `livenessProbe`  | 200 if alive       |
-| `/readyz`   | Readiness; accepting traffic      | `readinessProbe` | 200 if ready       |
-| `/startupz` | Startup; initialization complete  | `startupProbe`   | 200 if started     |
+| `/livez`| Liveness; process is alive        |`livenessProbe`  | 200 if alive       |
+| `/readyz`| Readiness; accepting traffic      |`readinessProbe` | 200 if ready       |
+| `/startupz`| Startup; initialization complete  |`startupProbe`   | 200 if started     |
 
 **Port 9101 chosen over 9090:**
 
@@ -52,7 +52,7 @@ All images with HTTP capability serve observability on **port 9101** with these 
 
 #### 2. mTLS Strategy: Native First, ztunnel Fallback
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │ Decision Tree                                           │
 │                                                         │
@@ -83,8 +83,8 @@ All images with HTTP capability serve observability on **port 9101** with these 
 
 | Language                   | Framework                             | Output                              | Configuration                 |
 | -------------------------- | ------------------------------------- | ----------------------------------- | ----------------------------- |
-| Go (540 images)            | `log/slog` (stdlib, Go 1.21+)         | JSON to stdout, one object per line | `EVERGREEN_LOG_LEVEL` ENV var |
-| Rust (~50 images)          | `tracing` + `tracing-subscriber` JSON | JSON to stdout, one event per line  | `RUST_LOG` ENV var            |
+| Go (540 images)            | `log/slog`(stdlib, Go 1.21+)         | JSON to stdout, one object per line |`EVERGREEN_LOG_LEVEL` ENV var |
+| Rust (~50 images)          | `tracing`+`tracing-subscriber`JSON | JSON to stdout, one event per line  |`RUST_LOG` ENV var            |
 | Package-based (470 images) | Native application format             | Native to stdout                    | Application-native ENV vars   |
 
 **Rules:**

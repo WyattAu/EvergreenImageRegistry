@@ -16,12 +16,12 @@ Evergreen Image Registry Team
 
 ### Context
 
-Shim binaries must run in `FROM scratch` and `FROM cgr.dev/chainguard/wolfi-base` images. These images have no glibc, no
+Shim binaries must run in `FROM scratch`and`FROM cgr.dev/chainguard/wolfi-base` images. These images have no glibc, no
 dynamic linker, and no shared libraries. Statically linked binaries are the only option for scratch images.
 
 The registry's base image hierarchy is:
 
-```
+```text
 scratch (static binaries: Go, Rust, C)
   → wolfi-base (Chainguard: glibc + CA certs)
     → distroless (Google: language-specific runtimes)
@@ -31,7 +31,7 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos.
 
 ### Decision
 
-Build all shim binaries with musl static linking using the `x86_64-unknown-linux-musl` and `aarch64-unknown-linux-musl`
+Build all shim binaries with musl static linking using the `x86_64-unknown-linux-musl`and`aarch64-unknown-linux-musl`
 targets.
 
 **Build command:**

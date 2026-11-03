@@ -28,7 +28,7 @@ Minimalism).
 - ~2MB statically compiled Go binary
 - Wraps CLI health checks (`pg_isready`, `redis-cli ping`)
 - Runs as PID > 1 alongside the application
-- Requires `--init` flag or `shareProcessNamespace: true`
+- Requires `--init`flag or`shareProcessNamespace: true`
 - Only wired into 2 images out of ~150 that need it
 
 **Limitations of current approach:**
@@ -80,7 +80,7 @@ Replace the Go health-shim with a Rust implementation:
 
 #### 2. Health-shim IS the Entry point (PID 1)
 
-```
+```text
 ┌─────────────────────────────────────┐
 │  FROM scratch                       │
 │                                     │
@@ -124,7 +124,7 @@ For database and proxy images, use a layered approach:
 | ---------------------- | --------------------------------------------- | --------- | -------- |
 | **L1: PID monitoring** | Is child process alive?                       | <1ms      | Basic    |
 | **L2: TCP socket**     | Is the service port open?                     | ~1ms      | Medium   |
-| **L3: CLI exec**       | Does `pg_isready` / `redis-cli ping` succeed? | ~10-100ms | High     |
+| **L3: CLI exec**       | Does `pg_isready`/`redis-cli ping` succeed? | ~10-100ms | High     |
 | **L4: HTTP probe**     | Does `/metrics` return 200?                   | ~50-200ms | Highest  |
 
 **Configuration via env vars:**

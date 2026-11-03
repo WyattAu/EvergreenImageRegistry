@@ -11,12 +11,12 @@ The pipeline is composed of four GitHub Actions workflow files:
 
 | Workflow              | Trigger                       | Purpose                                    |
 | --------------------- | ----------------------------- | ------------------------------------------ |
-| `build-on-push.yml`   | Push to `main`, PRs to `main` | Incremental build of changed images        |
-| `build-nightly.yml`   | Cron `0 3 * * *` (03:00 UTC)  | Full rebuild of all images                 |
-| `build-on-demand.yml` | `workflow_dispatch`           | Manual builds with configurable parameters |
+| `build-on-push.yml`| Push to`main`, PRs to `main` | Incremental build of changed images        |
+| `build-nightly.yml`| Cron`0 3 * * *` (03:00 UTC)  | Full rebuild of all images                 |
+| `build-on-demand.yml`|`workflow_dispatch`           | Manual builds with configurable parameters |
 | `_build-reusable.yml` | Called by the three above     | Shared build, push, and sign logic         |
 
-The build graph is manifest-driven. Each image under `images/<name>/` has a `manifest.toml` declaring its tier, version,
+The build graph is manifest-driven. Each image under `images/<name>/`has a`manifest.toml` declaring its tier, version,
 and build configuration. The top-level `manifest.toml` defines global settings (batch size, timeouts, tier defaults,
 builder configuration).
 
@@ -25,7 +25,7 @@ Image discovery is handled by `scripts/discover-images.sh`, which supports four 
 | Mode      | Argument                                            | Description                                   |
 | --------- | --------------------------------------------------- | --------------------------------------------- |
 | `changed` | (none)                                              | Images whose files changed in the last commit |
-| `tier`    | `critical`, `standard`, `community`, `experimental` | All images in a tier                          |
+| `tier`|`critical`, `standard`, `community`, `experimental` | All images in a tier                          |
 | `images`  | Comma-separated names                               | Specific images by name                       |
 | `all`     | (none)                                              | Every image with a Dockerfile                 |
 
@@ -40,7 +40,7 @@ The script outputs a JSON matrix consumed by GitHub Actions:
 }
 ```
 
-Batch size is controlled by `build.batch_size` in the top-level `manifest.toml` (default: 50). The matrix uses
+Batch size is controlled by `build.batch_size`in the top-level`manifest.toml` (default: 50). The matrix uses
 `fail-fast: false` so one failing image does not abort the entire batch.
 
 ---
@@ -74,7 +74,7 @@ nightly builds with warn-not-fail.
 
 ### Tier Assignment
 
-Tier is declared per-image in `images/<name>/manifest.toml` under the `[metadata]` section:
+Tier is declared per-image in `images/<name>/manifest.toml`under the`[metadata]` section:
 
 ```toml
 [metadata]
@@ -87,7 +87,7 @@ There is no central list of images per tier. The tier for each image is resolved
 
 ### Legacy Tier Mapping
 
-Older manifests may use numeric tier values. The `resolve_tier()` function in `scripts/discover-images.sh` maps these to
+Older manifests may use numeric tier values. The `resolve_tier()`function in`scripts/discover-images.sh` maps these to
 semantic names:
 
 ```bash
@@ -96,7 +96,7 @@ semantic names:
 "3" -> "community"
 ```
 
-If a manifest has no `tier` field, the default is `"standard"`.
+If a manifest has no `tier`field, the default is`"standard"`.
 
 ---
 
@@ -126,7 +126,7 @@ on:
 
 ### Behavior
 
-1. **Discover** -- Runs `scripts/discover-images.sh changed` with `fetch-depth: 2` to compare against `HEAD~1`. If only
+1. **Discover** -- Runs `scripts/discover-images.sh changed`with`fetch-depth: 2`to compare against`HEAD~1`. If only
    shared infrastructure (scripts/, manifest.toml, CI workflows) changed but no specific image files, falls back to
    building critical tier only.
 2. **Lint** -- Runs hadolint on changed Dockerfiles with `continue-on-error: true`. Failures are warnings, not gates.
@@ -187,10 +187,10 @@ higher tiers:
 
 ### Report
 
-The `report` job runs with `if: always()` and produces a markdown summary table with per-tier image counts and build
+The `report`job runs with`if: always()` and produces a markdown summary table with per-tier image counts and build
 results:
 
-```
+```text
 | Tier      | Images | Build     |
 |-----------|--------|-----------|
 | Gates     | -      | success   |
@@ -216,18 +216,18 @@ results:
 
 | Input       | Type    | Default    | Description                              |
 | ----------- | ------- | ---------- | ---------------------------------------- |
-| `mode`      | choice  | (required) | `tier`, `images`, or `changed`           |
+| `mode`| choice  | (required) |`tier`, `images`, or `changed`           |
 | `filter`    | string  | (empty)    | Tier name or comma-separated image names |
-| `sign`      | boolean | `false`    | Sign images with Cosign                  |
-| `multiarch` | boolean | `true`     | Build for amd64+arm64                    |
-| `push`      | boolean | `true`     | Push to registry                         |
+| `sign`| boolean |`false`    | Sign images with Cosign                  |
+| `multiarch`| boolean |`true`     | Build for amd64+arm64                    |
+| `push`| boolean |`true`     | Push to registry                         |
 | `tag`       | string  | commit SHA | Custom tag override                      |
 
 ### Validation
 
 The `validate` job checks inputs before proceeding:
 
-- `tier` mode: filter must be `critical`, `standard`, `community`, or `experimental`.
+- `tier`mode: filter must be`critical`, `standard`, `community`, or `experimental`.
 - `images` mode: filter must be non-empty (comma-separated image names).
 - `changed` mode: no filter required.
 
@@ -243,7 +243,7 @@ Invalid inputs produce an `::error::` annotation and fail the workflow.
 
 ### Downstream Tier Label
 
-The tier label passed to the reusable workflow is `demand-<mode>` (e.g., `demand-tier`, `demand-images`) for reporting
+The tier label passed to the reusable workflow is `demand-<mode>`(e.g.,`demand-tier`, `demand-images`) for reporting
 purposes.
 
 ---
@@ -412,9 +412,9 @@ Key flags:
 - `--no-cache` -- Ensures fully clean builds for reproducibility. Nightly rebuilds must not be affected by stale cache
   layers.
 - `--output type=docker,dest=...` -- Produces a tarball instead of loading into local Docker daemon.
-- `--build-arg GITHUB_TOKEN` -- Passed for same-repo file downloads only (e.g., `COPY` from the same repository). Must
+- `--build-arg GITHUB_TOKEN`-- Passed for same-repo file downloads only (e.g.,`COPY` from the same repository). Must
   not be used for cross-repo downloads (see Section 10).
-- `--label org.opencontainers.image.source` / `revision` -- OCI standard labels for traceability.
+- `--label org.opencontainers.image.source`/`revision` -- OCI standard labels for traceability.
 
 ### Build Arguments
 
@@ -422,8 +422,8 @@ Key flags:
 | -------------- | ---------------------- | ------------------------------------------------------- |
 | `BUILD_DATE`   | Tag value              | Build timestamp for OCI labels                          |
 | `VCS_REF`      | Tag value              | Git reference for OCI labels                            |
-| `TARGETARCH`   | Always `amd64`         | Target architecture for `ARG TARGETARCH` in Dockerfiles |
-| `GITHUB_TOKEN` | `secrets.GITHUB_TOKEN` | Auth for same-repo downloads                            |
+| `TARGETARCH`| Always`amd64`| Target architecture for`ARG TARGETARCH` in Dockerfiles |
+| `GITHUB_TOKEN`|`secrets.GITHUB_TOKEN` | Auth for same-repo downloads                            |
 
 ### Reproducibility
 
@@ -440,8 +440,8 @@ This ensures consistent timestamps across layers for reproducible builds.
 
 Multi-arch is controlled at two levels:
 
-1. **Workflow level:** The `multiarch` input to `_build-reusable.yml` (set by the calling workflow based on tier).
-2. **Per-image level:** The `multiarch` field in `images/<name>/manifest.toml`.
+1. **Workflow level:** The `multiarch`input to`_build-reusable.yml` (set by the calling workflow based on tier).
+2. **Per-image level:** The `multiarch`field in`images/<name>/manifest.toml`.
 
 Images that should not build multi-arch include Go source builds (QEMU emulation timeout), Rust source builds, and
 images with architecture-specific dependencies. For these images, set `multiarch = false` in the per-image manifest.
@@ -453,8 +453,8 @@ improvement (see Section 12).
 
 | Timeout         | Value                 | Scope                                          |
 | --------------- | --------------------- | ---------------------------------------------- |
-| Per-image build | 900 seconds (15 min)  | `timeout` wrapper around `docker buildx build` |
-| Per-image push  | 300 seconds (5 min)   | `timeout` wrapper around `docker push`         |
+| Per-image build | 900 seconds (15 min)  | `timeout`wrapper around`docker buildx build` |
+| Per-image push  | 300 seconds (5 min)   | `timeout`wrapper around`docker push`         |
 | Batch job       | 360 minutes (6 hours) | `timeout-minutes` on the job                   |
 | Sign job        | 30 minutes            | `timeout-minutes` on the sign job              |
 
@@ -470,7 +470,7 @@ wolfi_mb = 200
 debian_slim_mb = 200
 ```
 
-Exceeding the limit emits an `::error::` annotation. The check uses `continue-on-error: true` so it warns without
+Exceeding the limit emits an `::error::`annotation. The check uses`continue-on-error: true` so it warns without
 blocking.
 
 ### Build Cache
@@ -635,25 +635,25 @@ expose = [80, 443, 9101]
 
 | Field              | Section      | Required | Description                                                                    |
 | ------------------ | ------------ | -------- | ------------------------------------------------------------------------------ |
-| `name`             | `[metadata]` | Yes      | Image name (must match directory name)                                         |
-| `version`          | `[metadata]` | Yes      | Semantic version                                                               |
-| `tier`             | `[metadata]` | No       | `critical`, `standard`, `community`, or `experimental`. Defaults to `standard` |
-| `description`      | `[metadata]` | No       | Human-readable description                                                     |
-| `vendor`           | `[metadata]` | No       | Upstream vendor name                                                           |
-| `source`           | `[metadata]` | No       | Upstream source URL                                                            |
-| `license`          | `[metadata]` | No       | SPDX license identifier                                                        |
-| `upstream_version` | `[metadata]` | No       | Exact upstream version for version tracking                                    |
-| `base`             | `[build]`    | No       | Base image reference                                                           |
-| `user`             | `[build]`    | No       | UID:GID for the runtime user                                                   |
-| `stopsignal`       | `[build]`    | No       | Container stop signal                                                          |
-| `entrypoint`       | `[runtime]`  | No       | Container entrypoint                                                           |
-| `cmd`              | `[runtime]`  | No       | Container default command                                                      |
-| `expose`           | `[ports]`    | No       | List of exposed ports                                                          |
-| `multiarch`        | `[build]`    | No       | Override multi-arch for this image                                             |
+| `name`|`[metadata]` | Yes      | Image name (must match directory name)                                         |
+| `version`|`[metadata]` | Yes      | Semantic version                                                               |
+| `tier`|`[metadata]`| No       |`critical`, `standard`, `community`, or `experimental`. Defaults to `standard` |
+| `description`|`[metadata]` | No       | Human-readable description                                                     |
+| `vendor`|`[metadata]` | No       | Upstream vendor name                                                           |
+| `source`|`[metadata]` | No       | Upstream source URL                                                            |
+| `license`|`[metadata]` | No       | SPDX license identifier                                                        |
+| `upstream_version`|`[metadata]` | No       | Exact upstream version for version tracking                                    |
+| `base`|`[build]`    | No       | Base image reference                                                           |
+| `user`|`[build]`    | No       | UID:GID for the runtime user                                                   |
+| `stopsignal`|`[build]`    | No       | Container stop signal                                                          |
+| `entrypoint`|`[runtime]`  | No       | Container entrypoint                                                           |
+| `cmd`|`[runtime]`  | No       | Container default command                                                      |
+| `expose`|`[ports]`    | No       | List of exposed ports                                                          |
+| `multiarch`|`[build]`    | No       | Override multi-arch for this image                                             |
 
 ### Multi-Arch Overrides
 
-Set `multiarch = false` in the `[build]` section of a per-image manifest to disable multi-arch builds for that specific
+Set `multiarch = false`in the`[build]` section of a per-image manifest to disable multi-arch builds for that specific
 image. Use this for:
 
 - Go source builds that timeout under QEMU emulation.
@@ -678,7 +678,7 @@ and the push step loads it with `docker load` instead of rebuilding.
 
 ### GITHUB_TOKEN 404 on Cross-Repo Downloads
 
-**Error:** `404 Not Found` when a Dockerfile uses `COPY` or `ADD` to download from a different repository.
+**Error:** `404 Not Found`when a Dockerfile uses`COPY`or`ADD` to download from a different repository.
 
 **Cause:** `GITHUB_TOKEN` only has access to the current repository. Cross-repo downloads fail with 404.
 
@@ -693,7 +693,7 @@ argument for those specific downloads.
 
 **Cause:** wolfi minimal images do not include curl by default.
 
-**Remedy:** Use `wget` instead of `curl` in Dockerfiles.
+**Remedy:** Use `wget`instead of`curl` in Dockerfiles.
 
 **Reference:** `dockerfile-standards.md` Section 4.
 
@@ -710,7 +710,7 @@ invokes BuildKit.
 
 **Cause:** Too many slow-building images in a single batch.
 
-**Remedy:** Reduce `build.batch_size` in `manifest.toml`. Check per-image build times in the Actions log. Images
+**Remedy:** Reduce `build.batch_size`in`manifest.toml`. Check per-image build times in the Actions log. Images
 exceeding 15 minutes should be investigated for optimization (smaller base, fewer layers, pre-built binaries).
 
 ### Rate Limiting
@@ -738,7 +738,7 @@ occurs more frequently, reduce this value in `manifest.toml`.
 
 ### Actions Dashboard
 
-All build runs are visible at: `https://github.com/WyattAu/EvergreenImageRegistry/actions`
+All build runs are visible at: `<https://github.com/WyattAu/EvergreenImageRegistry/actions`>
 
 ### Annotations
 
@@ -800,7 +800,7 @@ registry) as a scanning step between build and push.
 
 ### Image Promotion Pipeline
 
-Automated promotion path: `community` -> `standard` -> `critical`. This would require:
+Automated promotion path: `community`->`standard`->`critical`. This would require:
 
 1. Automated quality gates (build success rate, CVE scan, SBOM completeness).
 2. A promotion workflow that updates the `tier` field in per-image manifests.

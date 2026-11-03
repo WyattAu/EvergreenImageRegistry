@@ -39,21 +39,21 @@ This caused several problems:
 Base image selection is **decoupled from operational tier**. Every image uses the most secure base image that supports
 its workload:
 
-```
+```text
 scratch → wolfi → RHEL UBI micro → RHEL UBI minimal → RHEL UBI standard
 ```
 
 | Priority | Base Image        | Registry                                      | libc  | Pkg Mgr  | Size    | Use When                              |
 | -------- | ----------------- | --------------------------------------------- | ----- | -------- | ------- | ------------------------------------- |
 | 1        | `scratch`         | - | none  | none     | 0 MB    | Static binary, zero runtime deps      |
-| 2        | `wolfi`           | `cgr.dev/chainguard/wolfi-base`               | musl  | apk      | ~5 MB   | Dynamic linking, shell for entrypoint |
+| 2        | `wolfi`|`cgr.dev/chainguard/wolfi-base`               | musl  | apk      | ~5 MB   | Dynamic linking, shell for entrypoint |
 | 3        | RHEL UBI micro    | `registry.access.redhat.com/ubi9/ubi-micro`   | glibc | microdnf | ~30 MB  | glibc required, FIPS crypto           |
 | 4        | RHEL UBI minimal  | `registry.access.redhat.com/ubi9/ubi-minimal` | glibc | dnf      | ~90 MB  | Packages not in UBI micro             |
 | 5        | RHEL UBI standard | `registry.access.redhat.com/ubi9/ubi`         | glibc | dnf      | ~210 MB | Complex deps, last resort             |
 
 #### Decision Tree
 
-```
+```text
 Can the workload run as a static binary with zero deps?
   YES → scratch
   NO  → Does the build copy compiled artifacts between stages?
@@ -99,7 +99,7 @@ a musl-based final stage (wolfi, scratch) will fail at runtime. This applies to:
 - Python packages with C extensions (psycopg2, Pillow, cryptography, lxml) built via `pip install` in debian and copied
   to wolfi
 - Node.js native modules compiled against glibc
-- Rust binaries built with `x86_64-unknown-linux-gnu` target (not `musl`)
+- Rust binaries built with `x86_64-unknown-linux-gnu`target (not`musl`)
 
 **For Python images specifically:** Build the virtual environment inside a wolfi builder stage so C extensions compile
 against musl. If musl wheels are not available on PyPI and source compilation fails, fall back to UBI minimal as the

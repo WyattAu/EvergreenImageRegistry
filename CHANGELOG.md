@@ -33,8 +33,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
     a silent pass; a bundle with any rule error reports `EvalError` for the whole bundle.
   - `policy.rs` was an orphan module (declared nowhere, so never compiled); it is now wired into the crate root and a
     `EvergreenError::PolicyError` variant was added for it.
-  - Rego dialect auto-detection per rule: regorus v1 (default) first, v0 fallback; both the generated v0 bundles and
-    the standalone `import rego.v1` files evaluate.
+  - Rego dialect auto-detection per rule: regorus v1 (default) first, v0 fallback; both the generated v0 bundles and the
+    standalone `import rego.v1` files evaluate.
   - CLI: `evergreenctl policy eval --dockerfile <path> [--format text|json]`. Exit codes: 0 compliant, 1 eval error, 2
     violations (CI-gateable).
 - **Anchor bug fix** (`(?i)^` → `(?im)^`): `^` without `(?m)` only matched line 1, so a banned `alpine`/`debian-slim`
@@ -116,9 +116,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 | Round        | Pass Rate  | Images        | Key Changes                             |
 | ------------ | ---------- | ------------- | --------------------------------------- |
 | R14 baseline | 82.1%      | 750/913       | Starting point                          |
-| R15          | - |;             | Regression fixes, chmod arg order       |
-| R16          | - |;             | addgroup arg order (35 images)          |
-| R17          | - |;             | 50 dewhitespace'd RUN/COPY, missing git |
+| R15          | -          | ;             | Regression fixes, chmod arg order       |
+| R16          | -          | ;             | addgroup arg order (35 images)          |
+| R17          | -          | ;             | 50 dewhitespace'd RUN/COPY, missing git |
 | R18          | 99.6%      | 548/550\*     | 5 missing git clone fixes (\*partial)   |
 | R19          | 99.9%      | 1012/1013     | Version URL fixes, structural repairs   |
 | R20          | 99.9%      | 1012/1013     | 53 version updates (no regressions)     |
@@ -128,8 +128,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - **Round 15 (0b942149):** 27 files; 2 elasticsearch user creation, 1 elasticsearch-exporter chmod, 24 chmod arg order
   bugs
-- **Option B (44ae9637):** 14 files; CI timeout 180→360min, per-image 15min cap, 13 version updates via GitHub API
-  audit
+- **Option B (44ae9637):** 14 files; CI timeout 180→360min, per-image 15min cap, 13 version updates via GitHub API audit
 - **Round 16 (c10a6456):** 37 files; 35 addgroup argument order, 1 git-secrets curl, 1 pip-audit
 - **Round 17 (11d33f3d):** 53 files; 50 dewhitespace'd indented Dockerfile instructions, 7 unterminated quotes, 2
   double-&&, 4 missing git, 2 broken placeholders

@@ -23,8 +23,8 @@
 
 ### CONFLICT-001: NIST SP 800-190 vs CIS Docker Benchmark
 
-| Aspect             | NIST SP 800-190 | CIS Docker       | Resolution                                                                     |
-| ------------------ | --------------- | ---------------- | ------------------------------------------------------------------------------ |
+| Aspect             | NIST SP 800-190 | CIS Docker       | Resolution                                                                    |
+| ------------------ | --------------- | ---------------- | ----------------------------------------------------------------------------- |
 | Base image         | Minimal         | Updated          | CIS: prefer updated; **Implemented via universal preference order (ADR-007)** |
 | CVE tolerance      | 0 critical      | Updated priority | NIST: 0 critical; **C007: Zero Critical/High CVEs**                           |
 | Privilege dropping | Recommended     | Required         | Use most restrictive: CIS; **C001: Non-root UID 65532**                       |
@@ -48,8 +48,8 @@
 | Aspect         | Minimal Size | Full Hardening | Resolution                               |
 | -------------- | ------------ | -------------- | ---------------------------------------- |
 | Base image     | scratch      | distroless     | **Universal preference order (ADR-007)** |
-| Static linking | Yes          | Recommended    | Both: preferred; **C005**               |
-| Debug symbols  | No           | Explicit       | Both: stripped; **C006**                |
+| Static linking | Yes          | Recommended    | Both: preferred; **C005**                |
+| Debug symbols  | No           | Explicit       | Both: stripped; **C006**                 |
 
 **Resolution Documented:** [ADR-005](.adrs/ADR-005-military-compliance-framework.md) **Implemented In:**
 [REQUIREMENTS.md](.specs/00_requirements/requirements.md) Part I §1.1 (Preference Order), Part IV §4.2 (Size Limits)

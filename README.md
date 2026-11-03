@@ -119,7 +119,7 @@ Reference material for regulated environments:
 
 All images follow a layered base hierarchy designed for minimal attack surface:
 
-```
+```text
 scratch (static binaries)
   > wolfi-base (Chainguard Wolfi -- glibc + CA certs)
     > distroless (Google Distroless -- language-specific runtimes)

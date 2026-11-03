@@ -105,15 +105,15 @@ Before writing any Dockerfile, read these documents in order:
    - Use the approved base image hierarchy (scratch > wolfi > RHEL UBI). debian-slim and Alpine are banned.
    - Multi-stage build with debian:bookworm downloader and scratch/wolfi final stage.
    - Verify all downloaded artifacts with SHA256 checksums.
-   - Use `wget` (not `curl`) in wolfi stages.
-   - Add `RUN mkdir -p` and `RUN touch` placeholders before any multi-stage COPY.
+   - Use `wget`(not`curl`) in wolfi stages.
+   - Add `RUN mkdir -p`and`RUN touch` placeholders before any multi-stage COPY.
    - Include the health-shim binary as PID 1 for scratch images.
 
 4. **Add the `manifest.toml`:** Declare the image tier, version, and build configuration. See the pipeline guide for the
    per-image manifest schema.
 
 5. **Add the `README.md`:** Create a comprehensive README for your image, following the structure of the existing image
-   READMEs. Include a working `docker-compose.yml` and a `.env.template`.
+   READMEs. Include a working `docker-compose.yml`and a`.env.template`.
 
 6. **Add a `.dockerignore` file.**
 
@@ -224,7 +224,7 @@ evergreenctl audit images/
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-```
+```text
 feat: Add new minimal image for Nginx
 fix: Correct health-check endpoint for Redis
 docs: Update contributing guide
@@ -247,14 +247,14 @@ chore: Update base image to latest wolfi
 - Follow `rustfmt` defaults.
 - Run `cargo clippy` before committing.
 - Use `#[derive(Deserialize)]` for config structs.
-- Handle errors with `anyhow::Result` or `thiserror`.
+- Handle errors with `anyhow::Result`or`thiserror`.
 
 ### Python (scripts, tests)
 
 - Follow `ruff` lint rules.
 - Use type hints for all function signatures.
 - Maximum line length: 100 characters.
-- Use `pathlib.Path` over `os.path`.
+- Use `pathlib.Path`over`os.path`.
 
 ### Markdown
 
@@ -267,7 +267,7 @@ chore: Update base image to latest wolfi
 
 If your image fails in CI, consult [Common Problems](docs/common-problems.md) first. The most frequent causes are:
 
-- **BuildKit COPY eval failure**; Missing `mkdir -p` / `touch` placeholder before COPY (Problem 3)
+- **BuildKit COPY eval failure**; Missing `mkdir -p`/`touch` placeholder before COPY (Problem 3)
 - **wolfi curl not found**; Use `wget` instead (Problem 9)
 - **GITHUB_TOKEN 404**; Remove auth headers for cross-repo downloads (Problem 1)
 - **Checksum mismatch**; Verify SHA256 is exactly 64 hex chars (Problem 12)

@@ -22,7 +22,7 @@ API on port 2375 and enforces ACLs that restrict which Docker API endpoints are 
 
 ## Architecture
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                    Docker Host                           │
 │                                                          │
@@ -57,7 +57,7 @@ API on port 2375 and enforces ACLs that restrict which Docker API endpoints are 
 | `EVENTS`     | Stream Docker daemon events                           | 0       |
 | `INFO`       | Access Docker system info                             | 0       |
 
-Set to `1` to allow, `0` to deny.
+Set to `1`to allow,`0` to deny.
 
 ## When to Use
 
@@ -72,7 +72,7 @@ Set to `1` to allow, `0` to deny.
 ## When NOT to Use
 
 - **Single-user development environments**; direct socket mount is simpler
-- **Containers that need `EXEC` access**; the proxy cannot fully replicate `docker exec` semantics
+- **Containers that need `EXEC`access**; the proxy cannot fully replicate`docker exec` semantics
 - **Performance-critical workloads**; the HTTP proxy adds ~1ms latency per API call
 
 ## Implementation with Evergreen
@@ -137,7 +137,7 @@ services:
 - [ ] `cap_drop: ALL` on proxy container
 - [ ] `read_only: true` on proxy container
 - [ ] `no-new-privileges: true` on proxy container
-- [ ] Port 2375 bound to `127.0.0.1` only (not `0.0.0.0`)
+- [ ] Port 2375 bound to `127.0.0.1`only (not`0.0.0.0`)
 - [ ] ACLs set to minimum required permissions
 - [ ] Health check configured for automatic recovery
 - [ ] Consumer containers use `depends_on` with health condition

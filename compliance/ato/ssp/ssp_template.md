@@ -45,7 +45,7 @@ for deployment in environments requiring high security posture including militar
 
 ### 2.1 Container Registry Architecture
 
-```
+```text
 Source (Git)
     |
     v

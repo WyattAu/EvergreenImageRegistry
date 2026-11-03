@@ -28,7 +28,7 @@
 | **CI lint failing**                | 🔴 P0    | Blocks all merges, blocks nightly builds                    |
 | **Build-on-push failing**          | 🔴 P0    | No CI builds running                                        |
 | **Publish immutable tags failing** | 🔴 P0    | No version tags published                                   |
-| **13 stub images**                 | 🟡 P1    | scratch/wolfi base but no app binary; clutter              |
+| **13 stub images**                 | 🟡 P1    | scratch/wolfi base but no app binary; clutter               |
 | **323 Docker Hub deps**            | 🟡 P1    | Rate limit risk in batch builds                             |
 | **305 archived images**            | 🟡 P2    | Each needs manual upstream lookup                           |
 | **Smoke test step broken**         | 🟡 P1    | References unresolved variable in report job                |
@@ -39,7 +39,7 @@
 
 ## Phase Priority Order
 
-```
+```text
 Phase 1: Fix CI (BLOCKING)
     ↓
 Phase 2: Validate Pipeline (signing/SBOM/SLSA actually works)
@@ -66,11 +66,12 @@ Phase 6: SIS Migration Finish
 **Problem:** `validate_entrypoint_pattern.py` reports mariadb and postgresql-16 as missing ENTRYPOINT. These are
 Chainguard repacks that inherit the upstream's ENTRYPOINT.
 
-**Fix:** Add `chainguard-repack` exemption pattern. Images that `FROM cgr.dev/chainguard/*` inherit upstream ENTRYPOINT: this is valid.
+**Fix:** Add `chainguard-repack`exemption pattern. Images that`FROM cgr.dev/chainguard/*` inherit upstream ENTRYPOINT:
+this is valid.
 
 ### 1.2 Fix smoke test step in report job
 
-**Problem:** The `report` job in `_build-reusable.yml` has a smoke test step that references `${{ matrix.images }}` and
+**Problem:** The `report`job in`_build-reusable.yml`has a smoke test step that references`${{ matrix.images }}` and
 `${{ steps.resolve-tag.outputs.TAG }}`, but these are only available in the `build` job (matrix strategy). The report
 job doesn't have matrix context.
 
@@ -195,7 +196,7 @@ Focus on images actually used in SIS deployments:
 | rabbitmq    | Repack           | Chainguard repack if available, else wolfi-base | Medium   |
 | cloudflared | Repack           | Binary download → scratch (Go binary)           | Medium   |
 | mosquitto   | Repack           | wolfi-base + apk                                | Medium   |
-| n8n         | Repack           | Needs Node.js runtime; use distroless nodejs   | Low      |
+| n8n         | Repack           | Needs Node.js runtime; use distroless nodejs    | Low      |
 
 ### Hardening Process (Per Image)
 

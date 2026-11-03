@@ -14,6 +14,7 @@
 ## Why WIP
 
 Feedbin is a Ruby on Rails application composed of 12+ containers including:
+
 - PostgreSQL
 - Redis
 - Sidekiq workers

@@ -62,8 +62,8 @@ Images must be stable, performant, and behave predictably in orchestrated enviro
 
 ### 3.1. Mandatory Health Probes
 
-Every image MUST provide a health check mechanism. Images with HTTP endpoints MUST expose `/livez` and `/readyz` probes
-on port 9101 (via the health-shim sidecar or natively). Images built `FROM scratch` or `distroless` that lack a shell
+Every image MUST provide a health check mechanism. Images with HTTP endpoints MUST expose `/livez`and`/readyz` probes
+on port 9101 (via the health-shim sidecar or natively). Images built `FROM scratch`or`distroless` that lack a shell
 MUST use `HEALTHCHECK NONE` in the Dockerfile, with health verification delegated to the orchestrator (Kubernetes probes
 or health-shim sidecar). This approach follows ADR-006.
 
@@ -134,7 +134,7 @@ Each image directory MUST contain a `README.md` file that includes:
 
 ### 5.2. Adherence to Licensing
 
-The repository MUST contain a `LICENSE` file for the `Dockerfile`s and associated scripts. The license of the packaged
+The repository MUST contain a `LICENSE`file for the`Dockerfile`s and associated scripts. The license of the packaged
 upstream software MUST be respected and acknowledged in the image's documentation.
 
 ## 6. Pillar V: Structural Integrity
@@ -146,7 +146,7 @@ Images must be complete, self-consistent, and compatible with their runtime envi
 Every image published to the registry MUST contain a functional application binary or runtime that provides the
 advertised service. Specifically:
 
-1. The `ENTRYPOINT` or `CMD` MUST invoke the actual application (not `sleep`, `true`, `echo`, or a placeholder script).
+1. The `ENTRYPOINT`or`CMD`MUST invoke the actual application (not`sleep`, `true`, `echo`, or a placeholder script).
 2. The image MUST be built from a verified upstream binary, a compiled source, or a package manager install -- not left
    as an empty stub.
 3. Images that cannot meet this bar MUST be placed under `images/_wip/<name>/` (underscore prefix, excluded from CI)
@@ -167,7 +167,7 @@ All compiled artifacts copied between build stages MUST use the same libc family
 
 **Decision tree for Python images:**
 
-```
+```text
 Does the image pip install packages with C extensions (psycopg2, Pillow, cryptography, lxml, etc.)?
   YES -> Build the venv inside a wolfi builder stage (pip compiles against musl).
         If musl compilation fails, fall back to UBI minimal as final stage.
@@ -176,7 +176,7 @@ Does the image pip install packages with C extensions (psycopg2, Pillow, cryptog
 
 ### 6.3. Configurable Runtime UID (C028)
 
-Every image MUST support runtime UID/GID override via `APP_UID` and `APP_GID` environment variables. The default MUST be
+Every image MUST support runtime UID/GID override via `APP_UID`and`APP_GID` environment variables. The default MUST be
 65532:65532.
 
 The Dockerfile MUST declare:
@@ -187,13 +187,13 @@ ARG APP_GID=65532
 ```
 
 The user/group MUST be created at build time with the default UID. The image entrypoint MUST detect at runtime if
-`APP_UID` or `APP_GID` differ from the build-time defaults and, if so, re-create the user/group and perform `chown` on
+`APP_UID`or`APP_GID`differ from the build-time defaults and, if so, re-create the user/group and perform`chown` on
 application data directories before dropping privileges with `su-exec`.
 
 This ensures compatibility with orchestrators that require specific UIDs for volume mount permissions, while maintaining
 65532 as the secure default.
 
-For images built `FROM scratch` that cannot include `su-exec`, the entrypoint MUST log a clear warning if the configured
+For images built `FROM scratch`that cannot include`su-exec`, the entrypoint MUST log a clear warning if the configured
 UID does not match the build-time UID, and the orchestrator MUST handle UID mapping externally.
 
 ### 6.4. Initialization for Data Services (C029)
@@ -205,7 +205,7 @@ Images for data services (databases, message queues, key-value stores, caches) M
    variables, and configuration rendering. This mode works with plain `docker run`.
 
 2. **Binary-only mode:** The image exposes the raw application binary without initialization logic, for use with
-   orchestrators that provide their own init containers. This is achieved by overriding `CMD` or `ENTRYPOINT` at
+   orchestrators that provide their own init containers. This is achieved by overriding `CMD`or`ENTRYPOINT` at
    runtime.
 
 The default behavior MUST be self-contained mode (upstream entrypoint). Critical tier data service images MUST implement

@@ -33,7 +33,7 @@ Implement a dual-mode event system using Tokio broadcast channels (in-process) w
 
 **Architecture:**
 
-```
+```text
 ┌──────────────────────────────────────────────────┐
 │  Pod                                            │
 │                                                 │

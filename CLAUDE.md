@@ -11,7 +11,7 @@ Version: v35.0.0, Phase 142 (differentiation moat complete)
 
 ## Repository Structure
 
-```
+```text
 images/<name>/
   Dockerfile          # Multi-stage build (builder → scratch/wolfi)
   Dockerfile.fips     # FIPS 140-2/3 variant (26 implemented, 30 planned)
@@ -22,7 +22,7 @@ images/<name>/
   .dockerignore       # Build context exclusions
 ```
 
-~778 active image directories under `images/` (780 total dirs, 20 in `_wip/`, 231 in `_archive/`).
+~778 active image directories under `images/`(780 total dirs, 20 in`_wip/`, 231 in `_archive/`).
 
 ## Image Standards (5 Pillars)
 
@@ -45,7 +45,7 @@ images/<name>/
 
 ## Base Image Hierarchy
 
-```
+```text
 scratch (static binaries: Go, Rust, C)
   → wolfi-base (Chainguard: glibc + CA certs)
     → distroless (Google: language-specific runtimes)
@@ -56,12 +56,14 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 ## Key Tools
 
 ### Core Tooling
+
 - **evergreenctl** (Rust): Image verification, drift detection, Dockerfile generation (20+ subcommands, 20 constraints)
 - **health-shim** (Go): TCP/HTTP health probes for distroless images
 - **pre-commit hooks**: 13 hooks (hadolint, constraints, no-alpine, trailing-whitespace, prettier, markdownlint, yamllint, etc.)
 - **pre-push gate**: 17+ quality checks (Rust tests, clippy, fmt, Python, shell, manifests, SBOMs, drift, constraints, workflow YAML, action SHA pinning, cargo audit, release build, Go vet/test, FIPS, performance regression)
 
 ### SBOM & Supply Chain
+
 - **batch_generate_all_sboms.sh**: Full registry SBOM generator (all 798 images, parallel, retry)
 - **generate_sbom_attestation.sh**: SBOM attestation signer (in-toto + cosign)
 - **sbom_diff.py**: SBOM dependency graph diffing tool (version delta tracking)
@@ -69,6 +71,7 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 - **sbom_coverage_report.py**: SBOM coverage metrics + dashboard generator
 
 ### Compliance & Security
+
 - **generate_runtime_policy.py**: Runtime policy generator (Seccomp/AppArmor/NetworkPolicy/PSS from SBOM)
 - **compliance/cis/generate_xccdf.sh**: SCAP/XCCDF evidence packager for auditors
 - **vuln_sla_alert.py**: CVE SLA breach alerting with Slack/PagerDuty
@@ -77,12 +80,14 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 - **scanning_marketplace.py**: Multi-scanner consensus (Trivy + Grype)
 
 ### Kubernetes & Deployment
+
 - **generate_helm_charts.sh**: Per-image Helm chart generator from library template
 - **multi_cloud_auth.sh**: AWS IRSA / GCP Workload Identity / Azure Workload Identity setup
 - **generate_arm_variants.sh**: ARM32/ARM64 edge variant builder
 - **generate_offline_sboms.sh**: Air-gapped SBOM pre-generation
 
 ### Performance & Monitoring
+
 - **build_performance_baselines.py**: Performance baseline builder (build time, size, layers)
 - **export_metrics.py**: Prometheus metrics exporter (HTTP server or one-shot)
 
@@ -90,8 +95,8 @@ BANNED for final stage: debian-slim, alpine, ubuntu, centos
 
 40 active GitHub Actions workflows (all valid YAML, all SHA-pinned, 2 disabled):
 
-- **Build:** `build-on-push.yml` / `build-nightly.yml` / `build-on-demand.yml` / `_build-reusable.yml` (core build+push+sign)
-- **Supply chain:** `slsa-provenance.yml` (L2), `slsa-provenance-l3.yml` (L3 with hermetic builds), `sbom-attestation.yml`, `sbom-validation.yml`
+- **Build:** `build-on-push.yml`/`build-nightly.yml`/`build-on-demand.yml`/`_build-reusable.yml` (core build+push+sign)
+- **Supply chain:** `slsa-provenance.yml`(L2),`slsa-provenance-l3.yml`(L3 with hermetic builds),`sbom-attestation.yml`, `sbom-validation.yml`
 - **Compliance:** `cis-gate.yml`, `compliance-scan.yml`, `compliance-metrics.yml`
 - **Security:** `daily-security-scan.yml`, `nightly-scan.yml`, `vuln-sla-monitor.yml`, `cve-sla-monitor.yml`
 - **FIPS:** `fips-build-push.yml` (build+sign FIPS variants)
@@ -126,12 +131,13 @@ All GitHub Actions pinned to commit SHA (supply chain security).
 ### Rust (evergreenctl)
 
 31 modules with trait-based constraint system + policy engine:
+
 - `validate_parallel.rs`; 20-constraint engine (C001-C020), no repack exemptions
 - `policy.rs`; OPA/Rego policy-as-code engine (13 built-in policies + 3 compliance bundles)
 
 ### Kubernetes Operator
 
-```
+```text
 operator/
   main.go                    # Entry point
   Dockerfile                 # Container image (distroless)
@@ -152,6 +158,7 @@ CRDs: `EvergreenImage`, `EvergreenPolicy`, `EvergreenDrift`
 ### Policy Engine (OPA/Rego)
 
 13 built-in Rego policies + 3 compliance bundles:
+
 - Dockerfile Security: Alpine/debian-slim/root detection
 - Supply Chain: SBOM, digest pinning, secrets
 - Base Image: Approved base image allowlist
@@ -178,49 +185,61 @@ Library chart + 87 per-image charts published to GHCR OCI registry.
 
 ```bash
 # SBOM generation
+
 ./scripts/batch_generate_all_sboms.sh --parallel 4
 python3 scripts/sbom_coverage_report.py --dashboard docs/sbom-coverage.md
 
 # SBOM analysis
+
 python3 scripts/sbom_diff.py --old v1.json --new v2.json
 python3 scripts/sbom_dependency_graph.py --shared --package openssl
 
 # Compliance
+
 python3 scripts/generate_soc2_evidence.py --gap-analysis
 ./compliance/cis/generate_xccdf.sh --all
 python3 scripts/vuln_sla_alert.py --check --slack $WEBHOOK
 
 # Policy
+
 python3 scripts/policy_test_framework.py --test
 python3 scripts/generate_runtime_policy.py --image redis --type all
 
 # Helm
+
 ./scripts/generate_helm_charts.sh --tier1 --publish
 helm install redis oci://ghcr.io/wyattau/evergreenimageregistry/charts/redis
 
 # Performance
+
 python3 scripts/build_performance_baselines.py --tier1 --compare
 
 # Multi-cloud
+
 ./scripts/multi_cloud_auth.sh --provider aws
 ./scripts/multi_cloud_auth.sh --verify
 
 # Scanning
+
 python3 scripts/scanning_marketplace.py --image redis --scanner all
 
 # Edge
+
 ./scripts/generate_arm_variants.sh --tier1 --arch arm64 --edge-profile
 ./scripts/generate_offline_sboms.sh --tier1 --output /opt/offline-sboms/
 
 # Smoke testing
+
 ./scripts/smoke_test.sh                          # Test all images
 ./scripts/smoke_test.sh redis nginx grafana      # Test specific images
 ./scripts/smoke_test.sh --tier critical           # Test critical-tier only
 
 # VEX generation
+
 python3 scripts/generate_missing_vex.py           # Generate VEX for images without it
 
 # Non-root enforcement
+
 python3 scripts/enforce_nonroot.py                # Add USER 65532 to all repack images
 python3 scripts/enforce_nonroot.py --dry-run      # Preview changes
 ```

@@ -61,12 +61,12 @@ The evergreen shim provides backup capabilities for stateful images (databases, 
 
 | Variable                     | Description               | Default     |
 | ---------------------------- | ------------------------- | ----------- |
-| `SHIM_BACKUP_ENABLED`        | Enable/disable backups    | `false`     |
-| `SHIM_BACKUP_SCHEDULE`       | Cron schedule for backups | `0 2 * * *` |
-| `SHIM_BACKUP_RETENTION_DAYS` | Days to keep backups      | `7`         |
-| `SHIM_BACKUP_OUTPUT_DIR`     | Backup output directory   | `/backups`  |
-| `SHIM_BACKUP_DB_HOST`        | Database host             | `localhost` |
-| `SHIM_BACKUP_DB_PORT`        | Database port             | `5432`      |
+| `SHIM_BACKUP_ENABLED`| Enable/disable backups    |`false`     |
+| `SHIM_BACKUP_SCHEDULE`| Cron schedule for backups |`0 2 * * *` |
+| `SHIM_BACKUP_RETENTION_DAYS`| Days to keep backups      |`7`         |
+| `SHIM_BACKUP_OUTPUT_DIR`| Backup output directory   |`/backups`  |
+| `SHIM_BACKUP_DB_HOST`| Database host             |`localhost` |
+| `SHIM_BACKUP_DB_PORT`| Database port             |`5432`      |
 
 ### 2.2 Restoring PostgreSQL from Backup
 
@@ -175,7 +175,7 @@ docker build -t ghcr.io/wyattau/evergreenimageregistry/nginx:local images/nginx/
 
 1. **Primary Maintainer**: WyattAu (repository owner)
 2. **Security Team**: Report via GitHub Security Advisories
-3. **Infrastructure**: Check GitHub Actions status at https://www.githubstatus.com/
+3. **Infrastructure**: Check GitHub Actions status at <https://www.githubstatus.com/>
 
 ### 4.3 Communication Channels
 
@@ -233,7 +233,7 @@ evergreenctl verify images/postgresql-17/
 
 - **Pre-commit hooks**: 9 hooks validate Dockerfiles before commit
 - **Pre-push gate**: 11 quality checks before pushing
-- **Nightly scans**: `nightly-scan.yml` and `daily-security-scan.yml`
+- **Nightly scans**: `nightly-scan.yml`and`daily-security-scan.yml`
 - **SBOM generation**: Every image gets an SPDX 2.3 SBOM
 - **Cosign signing**: Critical images are signed with Sigstore
 - **SLSA provenance**: Build provenance attestations for supply chain security

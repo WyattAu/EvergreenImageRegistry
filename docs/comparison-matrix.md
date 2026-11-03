@@ -234,19 +234,19 @@
 
 | Provider                   | Source URL                                                                         | Access Date |
 | -------------------------- | ---------------------------------------------------------------------------------- | ----------- |
-| Chainguard Docs            | https://edu.chainguard.dev/                                                        | Jul 2026    |
-| Chainguard Pricing         | https://www.chainguard.dev/pricing                                                 | Jul 2026    |
-| Chainguard Image Directory | https://images.chainguard.dev/                                                     | Jul 2026    |
-| Red Hat UBI                | https://developers.redhat.com/blog/2019/10/09/what-is-red-hat-universal-base-image | Jul 2026    |
-| Google Distroless          | https://github.com/GoogleContainerTools/distroless                                 | Jul 2026    |
-| Bitnami Container Images   | https://github.com/bitnami/containers                                              | Jul 2026    |
-| LinuxServer.io             | https://www.linuxserver.io/                                                        | Jul 2026    |
-| Docker Official Images     | https://docs.docker.com/docker-hub/official_images/                                | Jul 2026    |
-| Docker Hardened Images     | https://www.docker.com/blog/docker-hardened-images/                                | Jul 2026    |
-| Alpine Linux               | https://alpinelinux.org/                                                           | Jul 2026    |
-| Amazon ECR Public          | https://gallery.ecr.aws/                                                           | Jul 2026    |
-| Ubuntu                     | https://hub.docker.com/_/ubuntu                                                    | Jul 2026    |
-| EIR Repository             | https://github.com/WyattAu/EvergreenImageRegistry                                  | Jul 2026    |
+| Chainguard Docs            | <https://edu.chainguard.dev/>                                                        | Jul 2026    |
+| Chainguard Pricing         | <https://www.chainguard.dev/pricing>                                                 | Jul 2026    |
+| Chainguard Image Directory | <https://images.chainguard.dev/>                                                     | Jul 2026    |
+| Red Hat UBI                | <https://developers.redhat.com/blog/2019/10/09/what-is-red-hat-universal-base-image> | Jul 2026    |
+| Google Distroless          | <https://github.com/GoogleContainerTools/distroless>                                 | Jul 2026    |
+| Bitnami Container Images   | <https://github.com/bitnami/containers>                                              | Jul 2026    |
+| LinuxServer.io             | <https://www.linuxserver.io/>                                                        | Jul 2026    |
+| Docker Official Images     | <https://docs.docker.com/docker-hub/official_images/>                                | Jul 2026    |
+| Docker Hardened Images     | <https://www.docker.com/blog/docker-hardened-images/>                                | Jul 2026    |
+| Alpine Linux               | <https://alpinelinux.org/>                                                           | Jul 2026    |
+| Amazon ECR Public          | <https://gallery.ecr.aws/>                                                           | Jul 2026    |
+| Ubuntu                     | <https://hub.docker.com/_/ubuntu>                                                    | Jul 2026    |
+| EIR Repository             | <https://github.com/WyattAu/EvergreenImageRegistry>                                  | Jul 2026    |
 
 ---
 

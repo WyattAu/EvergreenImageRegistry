@@ -38,7 +38,7 @@ Nexus (Principal Systems Architect)
 
 87 of 223 images (39%) use `debian:bookworm-slim` as their **final** base image. These images:
 
-1. **Violate C003** (No shell): debian-slim inherits `/bin/sh` and `/bin/bash`
+1. **Violate C003** (No shell): debian-slim inherits `/bin/sh`and`/bin/bash`
 2. **Violate C004** (No package manager): `apt` remains available at runtime
 3. **Have excessive attack surface**: glibc, OpenSSL, coreutils, and other OS packages
 4. **Are larger than necessary**: Typical debian-slim image is 80-150MB vs <50MB for scratch
@@ -56,7 +56,7 @@ steps.
 
 #### Conversion Decision Tree
 
-```
+```text
 Is the software a single static binary?
 ├── YES → FROM scratch (copy binary + SSL certs + directories)
 └── NO

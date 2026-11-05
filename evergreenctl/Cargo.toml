@@ -30,7 +30,7 @@ tracing-subscriber = "0.3"
 semver = "1"
 chrono = "0.4"
 rayon = "1.10"
-rusqlite = { version = "0.31", features = ["bundled"] }
+rusqlite = { version = "0.41", features = ["bundled"] }
 policy-kit = { version = "0.1", optional = true }
 
 [[bin]]

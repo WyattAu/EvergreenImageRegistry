@@ -16,7 +16,7 @@ jobs:
     outputs:
       images: ${{ steps.find.outputs.images }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
       - id: find
@@ -37,7 +37,7 @@ jobs:
         image: ${{ fromJSON(needs.discover-changes.outputs.images) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Validate SBOM
         run: |
           IMAGE="${{ matrix.image }}"

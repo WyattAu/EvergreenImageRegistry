@@ -414,11 +414,15 @@ pub fn update_index_incremental(
 
 /// Query index statistics
 pub fn get_stats(conn: &Connection) -> Result<IndexStats> {
-    let total_images: usize = conn.query_row("SELECT COUNT(*) FROM images", [], |r| r.get(0))?;
+    let total_images: usize = conn.query_row("SELECT COUNT(*) FROM images", [], |r| {
+        r.get::<_, i64>(0).map(|v| v as usize)
+    })?;
 
     let mut by_tier = std::collections::HashMap::new();
     let mut stmt = conn.prepare("SELECT tier, COUNT(*) FROM images GROUP BY tier")?;
-    for row in stmt.query_map([], |r| Ok((r.get::<_, i32>(0)?, r.get::<_, usize>(1)?)))? {
+    for row in stmt.query_map([], |r| {
+        Ok((r.get::<_, i32>(0)?, r.get::<_, i64>(1)? as usize))
+    })? {
         let (tier, count) = row?;
         by_tier.insert(format!("tier{}", tier), count);
     }
@@ -427,38 +431,42 @@ pub fn get_stats(conn: &Connection) -> Result<IndexStats> {
     let mut stmt = conn.prepare(
         "SELECT source_type, COUNT(*) FROM images WHERE source_type != '' GROUP BY source_type",
     )?;
-    for row in stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, usize>(1)?)))? {
+    for row in stmt.query_map([], |r| {
+        Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as usize))
+    })? {
         let (stype, count) = row?;
         by_source_type.insert(stype, count);
     }
 
     let mut by_build_status = std::collections::HashMap::new();
     let mut stmt = conn.prepare("SELECT COALESCE(build_status, 'unknown'), COUNT(*) FROM images GROUP BY COALESCE(build_status, 'unknown')")?;
-    for row in stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, usize>(1)?)))? {
+    for row in stmt.query_map([], |r| {
+        Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as usize))
+    })? {
         let (status, count) = row?;
         by_build_status.insert(status, count);
     }
 
     let with_sbom: usize =
         conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| {
-            r.get(0)
+            r.get::<_, i64>(0).map(|v| v as usize)
         })?;
     let with_healthcheck: usize = conn.query_row(
         "SELECT COUNT(*) FROM images WHERE has_healthcheck = 1",
         [],
-        |r| r.get(0),
+        |r| r.get::<_, i64>(0).map(|v| v as usize),
     )?;
     let deprecated_count: usize = conn.query_row(
         "SELECT COUNT(*) FROM images WHERE is_deprecated = 1",
         [],
-        |r| r.get(0),
+        |r| r.get::<_, i64>(0).map(|v| v as usize),
     )?;
 
     let digest_pinned_pct: f64 = if total_images > 0 {
         let pinned: usize = conn.query_row(
             "SELECT COUNT(*) FROM images WHERE digest_pinned = 1",
             [],
-            |r| r.get(0),
+            |r| r.get::<_, i64>(0).map(|v| v as usize),
         )?;
         pinned as f64 / total_images as f64 * 100.0
     } else {
@@ -710,7 +718,7 @@ mod tests {
             .query_row(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='images'",
                 [],
-                |r| r.get(0),
+                |r| r.get::<_, String>(0),
             )
             .unwrap();
         assert_eq!(count, "images");

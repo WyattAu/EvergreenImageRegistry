@@ -63,37 +63,39 @@ pub struct ImageRow {
 
 pub fn collect_dashboard_data(conn: &Connection) -> Result<DashboardData> {
     // Summary stats
-    let total_images: usize = conn.query_row("SELECT COUNT(*) FROM images", [], |r| r.get(0))?;
+    let total_images: usize = conn.query_row("SELECT COUNT(*) FROM images", [], |r| {
+        r.get::<_, i64>(0).map(|v| v as usize)
+    })?;
     let with_sbom: usize =
         conn.query_row("SELECT COUNT(*) FROM images WHERE has_sbom = 1", [], |r| {
-            r.get(0)
+            r.get::<_, i64>(0).map(|v| v as usize)
         })?;
     let with_healthcheck: usize = conn.query_row(
         "SELECT COUNT(*) FROM images WHERE has_healthcheck = 1",
         [],
-        |r| r.get(0),
+        |r| r.get::<_, i64>(0).map(|v| v as usize),
     )?;
     let digest_pinned: usize = conn.query_row(
         "SELECT COUNT(*) FROM images WHERE digest_pinned = 1",
         [],
-        |r| r.get(0),
+        |r| r.get::<_, i64>(0).map(|v| v as usize),
     )?;
     let deprecated: usize = conn.query_row(
         "SELECT COUNT(*) FROM images WHERE is_deprecated = 1",
         [],
-        |r| r.get(0),
+        |r| r.get::<_, i64>(0).map(|v| v as usize),
     )?;
     let tier1_count: usize =
         conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 1", [], |r| {
-            r.get(0)
+            r.get::<_, i64>(0).map(|v| v as usize)
         })?;
     let tier2_count: usize =
         conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 2", [], |r| {
-            r.get(0)
+            r.get::<_, i64>(0).map(|v| v as usize)
         })?;
     let tier3_count: usize =
         conn.query_row("SELECT COUNT(*) FROM images WHERE tier = 3", [], |r| {
-            r.get(0)
+            r.get::<_, i64>(0).map(|v| v as usize)
         })?;
 
     let sbom_pct = if total_images > 0 {
@@ -178,7 +180,7 @@ fn query_distribution(conn: &Connection, sql: &str) -> Result<Vec<(String, usize
     let mut stmt = conn.prepare(sql)?;
     let rows = stmt
         .query_map([], |row| {
-            Ok((row.get::<_, String>(0)?, row.get::<_, usize>(1)?))
+            Ok((row.get::<_, String>(0)?, row.get::<_, i64>(1)? as usize))
         })?
         .collect::<Result<Vec<_>, _>>()?;
     Ok(rows)

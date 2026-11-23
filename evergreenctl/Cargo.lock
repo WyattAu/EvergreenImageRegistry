@@ -1310,9 +1310,9 @@ checksum = "f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548"
 
 [[package]]
 name = "policy-kit"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0dd5c78473037501e20f99a3b1196dce4c43f3850a7ec1c37f64a4bb09d8af8e"
+checksum = "985f3a7fd1cbcfbeb5b28bf523af756fc21d9a03fe7038897ebba9e5fed306b8"
 dependencies = [
  "regorus",
  "serde",

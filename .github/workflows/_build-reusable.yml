@@ -369,12 +369,25 @@ jobs:
               echo "$PUSH_OUTPUT" | tail -5
               sleep 10
             done
-            # Push versioned tag
+            # Push versioned tag — LOUD (iteration 29 lesson, EIR repo):
+            # a swallowed versioned-push failure left postgres without a
+            # version tag for weeks; downstream Renovate pins (SIS tenant
+            # templates) then named tags that never existed and every
+            # tenant pull broke. A missing version tag is a release
+            # failure, not a warning.
             if [ -n "$VERSIONED_REF" ] && [ "$PUSH_OK" = "1" ]; then
+              VERSIONED_OK=0
               for attempt in 1 2 3; do
-                timeout 300 docker push "${VERSIONED_REF}" 2>&1 && break
+                if timeout 300 docker push "${VERSIONED_REF}" 2>&1; then
+                  VERSIONED_OK=1; break
+                fi
                 sleep 10
               done
+              if [ "$VERSIONED_OK" != "1" ]; then
+                echo "::error::${image}: versioned push failed for ${VERSIONED_REF} — downstream pins now name a nonexistent tag"
+                FAILED=$((FAILED+1))
+                PUSH_FAILED_VERSIONED="${PUSH_FAILED_VERSIONED:+$PUSH_FAILED_VERSIONED }${image}"
+              fi
             fi
             if [ "$PUSH_OK" = "1" ]; then
               PUSHED=$((PUSHED+1))

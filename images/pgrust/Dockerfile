@@ -1,5 +1,9 @@
 FROM malisper/pgrust:v0.4-beta
 
+# The upstream entrypoint drops to UID 999 (postgres) after init; declaring
+# it satisfies the no-root constraint validator.
+USER 999
+
 LABEL org.opencontainers.image.title="pgrust" \
       org.opencontainers.image.description="PostgreSQL 18.3 rewritten in Rust - wire-compatible drop-in (EXPERIMENTAL: not production-ready, upstream targets production in 2027)" \
       org.opencontainers.image.source="https://github.com/malisper/pgrust" \

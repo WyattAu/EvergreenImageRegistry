@@ -1,0 +1,24 @@
+[metadata]
+name = "pgrust"
+version = "0.4-beta"
+description = "PostgreSQL 18.3 rewritten in Rust - wire-compatible drop-in (EXPERIMENTAL)"
+tier = "community"
+
+[build]
+base = "malisper/pgrust:v0.4-beta"
+
+[source]
+type = "github"
+url = "https://github.com/malisper/pgrust"
+
+[runtime]
+# The upstream image carries the official postgres docker-entrypoint.sh.
+
+[ports]
+expose = [5432]
+
+[labels]
+"org.opencontainers.image.title" = "pgrust"
+"org.opencontainers.image.version" = "0.4-beta"
+"org.opencontainers.image.description" = "PostgreSQL 18.3 rewritten in Rust - experimental wire-compatible drop-in"
+"org.opencontainers.image.licenses" = "AGPL-3.0"
